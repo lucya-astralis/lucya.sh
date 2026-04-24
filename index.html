@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>LUCYA // lucya.sh</title>
+<meta name="description" content="lucya — 18y/o autistic nerd & sysadmin from Bavaria." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Zen+Dots&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" type="image/svg+xml" href="images/logo/lucya_logo.svg" />
+</head>
+<body>
+
+<!-- ============================================================= -->
+<!-- SPLASH SCREEN                                                  -->
+<!-- ============================================================= -->
+<div id="splash" class="splash" aria-hidden="true">
+  <div class="splash__bg"></div>
+  <div class="splash__scanlines"></div>
+  <div class="splash__vignette"></div>
+
+  <div class="splash__grid">
+    <div class="splash__corner splash__corner--tl">
+      <span class="tag">LUCYA-SYS // V4.21.0</span>
+      <span class="tag tag--dim" id="splashSession">SESSION · ————————</span>
+    </div>
+    <div class="splash__corner splash__corner--tr">
+      <span class="tag">AUTH · LUCYA@CORE</span>
+      <span class="tag tag--dim">ルシア・システム</span>
+    </div>
+    <div class="splash__corner splash__corner--bl">
+      <span class="tag tag--dim">NODE 01 · CET · GEOFENCE DE-BY</span>
+    </div>
+    <div class="splash__corner splash__corner--br">
+      <span class="tag tag--warn">起動中 / BOOTING</span>
+      <span class="tag tag--dim">PRESS ANY KEY TO ABORT</span>
+    </div>
+  </div>
+
+  <ul class="splash__log" id="splashLog" aria-hidden="true"></ul>
+
+  <div class="splash__bottom">
+    <div class="splash__progress">
+      <div class="splash__progress-head">
+        <span class="splash__progress-label">INITIALIZING SIGIL</span>
+        <span class="splash__progress-pct" id="splashProgress">00%</span>
+      </div>
+      <div class="splash__progress-bar"><div class="splash__progress-fill" id="splashProgressFill"></div></div>
+      <div class="splash__progress-foot">
+        <span>KERNEL 6.8.0-LUCYA</span>
+        <span class="jp">システム起動中・・・</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="splash__logo">
+    <div class="glitch-logo" id="glitchLogo">
+      <svg class="glitch-logo__svg glitch-logo__svg--m" id="splashLogoSvg" viewBox="0 0 1337 815" xmlns="http://www.w3.org/2000/svg" aria-label="lucya">
+        <g transform="matrix(1,0,0,1,-19,-80)">
+          <g transform="matrix(4.637988,1.92625,-3.42987,8.258377,-1378.59317,-2326.521271)">
+            <path id="p0" class="piece" d="M568.113,179.949C563.902,180.919 555.23,182.915 555.23,182.915L551.826,178.599L582.04,166.062L590.133,168.64L604.765,184.318L589.166,196.837L571.821,197.022L568.113,179.949Z"/>
+          </g>
+          <g transform="matrix(-1,0,0,1,1379.120112,-65.329331)">
+            <path id="p1" class="piece" d="M446.926,615.967L270.482,618.173L558.78,745.586L446.926,615.967Z"/>
+          </g>
+          <g transform="matrix(0.927257,0,0,0.964471,302.572126,61.637284)">
+            <path id="p2" class="piece" d="M315.864,646.734L415.125,437.49L514.387,646.734L415.125,855.979L315.864,646.734Z"/>
+          </g>
+          <g transform="matrix(1,0,0,1,0.355509,-79.904613)">
+            <path id="p3" class="piece" d="M813.693,410.352L1351.9,167.7L1071.253,436.997L1320,335.3L1132.355,506.971L1235.8,497.9L1111,610.7L919.704,605.288L798.279,753.052L695.013,528.639L817.958,449.744L813.693,410.352Z"/>
+          </g>
+          <g transform="matrix(1,0,0,1,-4.120112,-65.329331)">
+            <path id="p4" class="piece" d="M446.926,615.967L270.482,618.173L558.78,745.586L446.926,615.967Z"/>
+          </g>
+          <g transform="matrix(-1,0,0,1,1374.644491,-79.904613)">
+            <path id="p5" class="piece" d="M779.185,419.829L1351.9,167.7L1071.253,436.997L1320,335.3L1132.355,506.971L1235.8,497.9L1111,610.7L919.704,605.288L798.418,753.052L695.56,535.253L800.103,494.549L779.185,419.829Z"/>
+          </g>
+        </g>
+      </svg>
+      <div class="glitch-logo__rgb glitch-logo__rgb--r" id="rgbR" aria-hidden="true">
+        <svg class="glitch-logo__svg" viewBox="0 0 1337 815" xmlns="http://www.w3.org/2000/svg">
+          <g transform="matrix(1,0,0,1,-19,-80)">
+            <g transform="matrix(4.637988,1.92625,-3.42987,8.258377,-1378.59317,-2326.521271)"><path class="piece piece--static" d="M568.113,179.949C563.902,180.919 555.23,182.915 555.23,182.915L551.826,178.599L582.04,166.062L590.133,168.64L604.765,184.318L589.166,196.837L571.821,197.022L568.113,179.949Z"/></g>
+            <g transform="matrix(-1,0,0,1,1379.120112,-65.329331)"><path class="piece piece--static" d="M446.926,615.967L270.482,618.173L558.78,745.586L446.926,615.967Z"/></g>
+            <g transform="matrix(0.927257,0,0,0.964471,302.572126,61.637284)"><path class="piece piece--static" d="M315.864,646.734L415.125,437.49L514.387,646.734L415.125,855.979L315.864,646.734Z"/></g>
+            <g transform="matrix(1,0,0,1,0.355509,-79.904613)"><path class="piece piece--static" d="M813.693,410.352L1351.9,167.7L1071.253,436.997L1320,335.3L1132.355,506.971L1235.8,497.9L1111,610.7L919.704,605.288L798.279,753.052L695.013,528.639L817.958,449.744L813.693,410.352Z"/></g>
+            <g transform="matrix(1,0,0,1,-4.120112,-65.329331)"><path class="piece piece--static" d="M446.926,615.967L270.482,618.173L558.78,745.586L446.926,615.967Z"/></g>
+            <g transform="matrix(-1,0,0,1,1374.644491,-79.904613)"><path class="piece piece--static" d="M779.185,419.829L1351.9,167.7L1071.253,436.997L1320,335.3L1132.355,506.971L1235.8,497.9L1111,610.7L919.704,605.288L798.418,753.052L695.56,535.253L800.103,494.549L779.185,419.829Z"/></g>
+          </g>
+        </svg>
+      </div>
+      <div class="glitch-logo__rgb glitch-logo__rgb--b" id="rgbB" aria-hidden="true">
+        <svg class="glitch-logo__svg" viewBox="0 0 1337 815" xmlns="http://www.w3.org/2000/svg">
+          <g transform="matrix(1,0,0,1,-19,-80)">
+            <g transform="matrix(4.637988,1.92625,-3.42987,8.258377,-1378.59317,-2326.521271)"><path class="piece piece--static" d="M568.113,179.949C563.902,180.919 555.23,182.915 555.23,182.915L551.826,178.599L582.04,166.062L590.133,168.64L604.765,184.318L589.166,196.837L571.821,197.022L568.113,179.949Z"/></g>
+            <g transform="matrix(-1,0,0,1,1379.120112,-65.329331)"><path class="piece piece--static" d="M446.926,615.967L270.482,618.173L558.78,745.586L446.926,615.967Z"/></g>
+            <g transform="matrix(0.927257,0,0,0.964471,302.572126,61.637284)"><path class="piece piece--static" d="M315.864,646.734L415.125,437.49L514.387,646.734L415.125,855.979L315.864,646.734Z"/></g>
+            <g transform="matrix(1,0,0,1,0.355509,-79.904613)"><path class="piece piece--static" d="M813.693,410.352L1351.9,167.7L1071.253,436.997L1320,335.3L1132.355,506.971L1235.8,497.9L1111,610.7L919.704,605.288L798.279,753.052L695.013,528.639L817.958,449.744L813.693,410.352Z"/></g>
+            <g transform="matrix(1,0,0,1,-4.120112,-65.329331)"><path class="piece piece--static" d="M446.926,615.967L270.482,618.173L558.78,745.586L446.926,615.967Z"/></g>
+            <g transform="matrix(-1,0,0,1,1374.644491,-79.904613)"><path class="piece piece--static" d="M779.185,419.829L1351.9,167.7L1071.253,436.997L1320,335.3L1132.355,506.971L1235.8,497.9L1111,610.7L919.704,605.288L798.418,753.052L695.56,535.253L800.103,494.549L779.185,419.829Z"/></g>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="splash__label" data-text="LUCYA SYSTEMS">
+      <span>LUCYA SYSTEMS</span>
+      <span class="jp">ルシア・システムズ</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================= -->
+<!-- NAVIGATION                                                     -->
+<!-- ============================================================= -->
+<header class="nav">
+  <div class="nav__inner">
+    <a class="nav__brand" href="#top">
+      <img src="images/logo/lucya_logo.svg" alt="" />
+      <div class="nav__brand-text">
+        <strong>LUCYA</strong>
+        <span>ルシア・インダストリーズ</span>
+      </div>
+    </a>
+
+    <nav class="nav__links">
+      <a href="#profile">PROFILE <em>/ 01</em></a>
+      <a href="#about">ABOUT <em>/ 02</em></a>
+      <a href="#interests">INTERESTS <em>/ 03</em></a>
+      <a href="#systems">SYSTEMS <em>/ 04</em></a>
+      <a href="#services">SERVICES <em>/ 05</em></a>
+    </nav>
+
+    <div class="nav__status">
+      <span class="dot dot--ok"></span>
+      <span id="navTime" class="mono">00:00:00 CET</span>
+    </div>
+  </div>
+</header>
+
+
+<!-- ============================================================= -->
+<!-- HERO / PROFILE                                                 -->
+<!-- ============================================================= -->
+<main id="top">
+
+<section class="hero" id="profile">
+  <div class="section__bg"></div>
+
+  <div class="section__head">
+    <div class="section__slug">
+      <span class="ix">// 01</span>
+      <span class="name">IDENTITY</span>
+      <span class="jp">本人確認</span>
+    </div>
+    <div class="section__meta">
+      <span class="mono">DIV. IDENTITY · CLEARANCE C-3</span>
+      <span class="mono">FILE / PROFILE.DOSSIER</span>
+    </div>
+  </div>
+
+  <div class="hero__grid">
+
+    <!-- profile card -->
+    <aside class="pcard">
+      <div class="pcard__banner">
+        <img src="images/profile/profilebanner.gif" alt="" />
+        <div class="pcard__countdown">
+          <span>あと</span><span id="countdownDays">114</span><span>日</span>
+        </div>
+      </div>
+
+      <div class="pcard__pfp">
+        <div class="pcard__pfp-ring">
+          <img class="pcard__pfp-img" src="images/profile/pfp/pfp.png" alt="" />
+          <img class="pcard__pfp-frame" src="images/profile/pfp/pfprahmen.png" alt="" />
+        </div>
+        <span class="pcard__status-dot" title="online"></span>
+      </div>
+
+      <div class="pcard__body">
+        <div class="pcard__name">lucya</div>
+        <div class="pcard__handle">DISCORD: @lucya.dev · he/they/usb-c</div>
+
+        <div class="pcard__badges">
+          <img src="images/profile/badges/apple.svg" alt="apple" title="apple" />
+          <img src="images/emoji/socks.webp" alt="uwu" title="uwu" />
+          <img src="images/profile/badges/astralt.png" alt="astra" title="astra" />
+          <img src="images/profile/badges/heart.png" alt="heart" title="♡" />
+          <img src="images/profile/badges/homelab.png" alt="homelab" title="homelab" />
+          <img src="images/profile/badges/ia.svg" alt="ia" title="inter-astra" />
+          <img src="images/profile/badges/my_computer.png" alt="my computer" title="my computer" />
+          <img src="images/profile/badges/siegel.png" alt="siegel" title="certified" />
+          <img src="images/profile/badges/flag-bavaria.png" alt="bavaria" title="bavaria" />
+        </div>
+
+        <div class="pcard__bio">
+          <img src="images/emoji/sparkle.svg" alt="" class="inline-emoji" /> 
+          18y/o autistic nerd &amp; sysadmin
+          <img src="images/emoji/femboyflag.webp" alt="" class="inline-emoji" />
+          <img src="images/emoji/flag_eu.svg" alt="" class="inline-emoji" />
+        </div>
+
+        <a class="pcard__url" href="https://lucya.sh" target="_blank" rel="noopener">https://lucya.sh/</a>
+
+        <div class="pcard__tz">
+          <span class="mono">CEST: <b id="tzLocal">12:00 PM</b></span>
+          <span class="tz-sep">for me is</span>
+          <span class="mono"><b id="tzYours">12:00 PM</b></span>
+          <span class="tz-sep">for you<span class="dots">...</span></span>
+        </div>
+
+        <div class="pcard__socials">
+          <a href="https://github.com/lucya-astralis" title="github"><img src="images/profile/sociallinks/github.svg" alt="github" /></a>
+          <a href="https://bsky.app/profile/astral.express" title="bluesky"><img src="images/profile/sociallinks/bluesky.svg" alt="bluesky" /></a>
+          <a href="https://instagram.com/lucya.dev" title="instagram"><img src="images/profile/sociallinks/insta.svg" alt="instagram" /></a>
+          <a href="https://threads.net/lucya.dev" title="threads"><img src="images/profile/sociallinks/threads.svg" alt="threads" /></a>
+          <a href="https://x.com/lucya_dev" title="x"><img src="images/profile/sociallinks/x.svg" alt="x" /></a>
+          <a href="https://www.reddit.com/user/inter-astra/" title="reddit"><img src="images/profile/sociallinks/reddit.svg" alt="reddit" /></a>
+          <a href="https://open.spotify.com/user/gadlps6tcin47iedm8uicp28t" title="spotify"><img src="images/profile/sociallinks/spotify.svg" alt="spotify" /></a>
+          <a href="https://steamcommunity.com/id/inter-astra/" title="steam"><img src="images/profile/sociallinks/steam.svg" alt="steam" /></a>
+          <a href="https://inara.cz/elite/cmdr/310217/" title="inara"><img src="images/profile/sociallinks/inara.svg" alt="inara" /></a>
+        </div>
+      </div>
+
+      <div class="pcard__pokewalk" aria-hidden="true">
+        <div class="pcard__pokewalk-track" id="pokewalkTrack"></div>
+      </div>
+
+      <div class="pcard__footer mono">
+        <span>ID · #0451-LUC</span>
+        <span>STATUS · ACTIVE</span>
+      </div>
+    </aside>
+
+
+    <!-- hero right column -->
+    <div class="hero__side">
+      <div class="hero__kicker mono">
+        <span class="dot dot--ok"></span>
+        <span>BROADCAST ONLINE · 放送中</span>
+      </div>
+
+      <h1 class="hero__title">
+        <span class="word" data-text="lucya">lucya</span>
+        <span class="hero__title-jp">ルシア</span>
+      </h1>
+
+      <p class="hero__tagline">
+        Building, breaking, and occasionally blessing the boxes that keep the lights on.<br />
+        <span class="jp-line">ネットワークの狭間で、システムを構築し、壊し、再び立ち上げる。</span>
+      </p>
+
+      <div class="hero__stats">
+        <div class="stat">
+          <span class="stat__label">DIVISION</span>
+          <span class="stat__value">SYS / OPS</span>
+          <span class="stat__jp">システム運用</span>
+        </div>
+        <div class="stat">
+          <span class="stat__label">LOCATION</span>
+          <span class="stat__value">DE · BY</span>
+          <span class="stat__jp">ババリア</span>
+        </div>
+        <div class="stat">
+          <span class="stat__label">UPTIME</span>
+          <span class="stat__value" id="uptimeStat">18y 00m</span>
+          <span class="stat__jp">稼働時間</span>
+        </div>
+        <div class="stat">
+          <span class="stat__label">FUEL</span>
+          <span class="stat__value">MONSTER</span>
+          <span class="stat__jp">エナジー</span>
+        </div>
+      </div>
+
+      <div class="hero__corner-brackets">
+        <span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+
+
+
+
+<!-- ============================================================= -->
+<!-- ABOUT                                                          -->
+<!-- ============================================================= -->
+<section class="about" id="about">
+  <div class="section__head">
+    <div class="section__slug">
+      <span class="ix">// 02</span>
+      <span class="name">ABOUT</span>
+      <span class="jp">私について</span>
+    </div>
+    <div class="section__meta">
+      <span class="mono">DIV. PERSONNEL · FILE / ABOUT.TXT</span>
+    </div>
+  </div>
+
+  <div class="about__grid">
+    <div class="about__col">
+      <h3 class="h-sub">PROFILE <em>プロフィール</em></h3>
+      <p>
+        18-year-old IT apprentice &amp; system tinkerer from Bavaria
+        <img src="images/profile/badges/flag-bavaria.png" alt="BY" class="inline-emoji" />.
+        Obsessed with tech, space, and everything that hums, blinks, or boots.
+        Runs on Monster, curiosity, and good music.
+      </p>
+
+      <h3 class="h-sub">WHAT I DO <em>仕事</em></h3>
+      <p>
+        Mostly building, breaking, and fixing systems, sometimes all at once.
+        From homelabs and servers to creative web projects, I love making stuff
+        work and look cool doing it :3
+        <img src="images/emoji/blahaj.webp" alt="blahaj" class="inline-emoji" />
+      </p>
+    </div>
+
+    <div class="about__col about__col--jp">
+      <h3 class="h-sub">プロフィール <em>PROFILE</em></h3>
+      <p class="jp-body">
+        バイエルン州在住、18歳のIT見習い兼システムいじり屋。
+        テクノロジーと宇宙、そして光って・鳴って・起動するもの全般に夢中。
+        モンスターエナジーと好奇心と良い音楽で稼働中。
+      </p>
+
+      <h3 class="h-sub">仕事 <em>WHAT I DO</em></h3>
+      <p class="jp-body">
+        基本的にはシステムを作り、壊し、直す——ときには全部同時に。
+        ホームラボやサーバーから創造的なウェブプロジェクトまで、
+        動かしてカッコよく見せるのが大好き。:3
+      </p>
+    </div>
+
+    <div class="about__marginal">
+      <div class="mono small dim">// NOTE 00A</div>
+      <div class="mono small">
+        Specimen is harmless unless<br />
+        separated from caffeine source.
+      </div>
+      <div class="mono small jp dim" style="margin-top:8px">
+        被験体はカフェインを絶つと不安定になる。
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+<!-- ============================================================= -->
+<!-- INTERESTS + FUN FACTS                                          -->
+<!-- ============================================================= -->
+<section class="interests" id="interests">
+  <div class="section__head">
+    <div class="section__slug">
+      <span class="ix">// 03</span>
+      <span class="name">INTERESTS</span>
+      <span class="jp">興味・豆知識</span>
+    </div>
+    <div class="section__meta">
+      <span class="mono">DIV. CULTURE · BEHAVIORAL INDEX</span>
+    </div>
+  </div>
+
+  <div class="interests__grid">
+    <article class="tile">
+      <span class="tile__tag">INT · 01</span>
+      <h4>Homelabs &amp; Servers</h4>
+      <p>Racks, switches, UPS beeps. The quiet thrill of a green LED.</p>
+      <span class="tile__jp">ホームラボ</span>
+    </article>
+    <article class="tile">
+      <span class="tile__tag">INT · 02</span>
+      <h4>Space &amp; Astronomy</h4>
+      <p>Elite: Dangerous, orbital mechanics, and anything past Low Earth Orbit.</p>
+      <span class="tile__jp">宇宙</span>
+    </article>
+    <article class="tile">
+      <span class="tile__tag">INT · 03</span>
+      <h4>Retro Tech</h4>
+      <p>CRTs, old ThinkPads, Win9x UI nostalgia, weird boot screens.</p>
+      <span class="tile__jp">レトロ</span>
+    </article>
+    <article class="tile">
+      <span class="tile__tag">INT · 04</span>
+      <h4>Anime &amp; Music</h4>
+      <p>City pop, vaporwave, J-rock. Mecha when it's Evangelion-shaped.</p>
+      <span class="tile__jp">アニメ</span>
+    </article>
+    <article class="tile">
+      <span class="tile__tag">INT · 05</span>
+      <h4>Web Tinkering</h4>
+      <p>Making small, pretty, strange corners of the internet.</p>
+      <span class="tile__jp">ウェブ</span>
+    </article>
+    <article class="tile">
+      <span class="tile__tag">INT · 06</span>
+      <h4>Linux &amp; FOSS</h4>
+      <p>Arch-flavored daily drivers, systemd rants, and the occasional rice.</p>
+      <span class="tile__jp">リナックス</span>
+    </article>
+  </div>
+
+  <div class="funfacts">
+    <h3 class="h-sub">FUN FACTS <em>豆知識</em></h3>
+    <ul class="funfacts__list">
+      <li><span class="fx">01</span> Autistic + ADHD combo platter</li>
+      <li><span class="fx">02</span> Listens to music 24/7 — silence is not an option</li>
+      <li><span class="fx">03</span> Likes minimal chaos, controlled complexity</li>
+      <li><span class="fx">04</span> Runs Arch btw.</li>
+      <li><span class="fx">05</span> CEO of inter-astra corp — a fictional megacorp from the future</li>
+      <li><span class="fx">06</span> Blahaj owner, certified.</li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- ============================================================= -->
+<!-- 88x31 BUTTONS                                                  -->
+<!-- ============================================================= -->
+<section class="buttons" id="buttons">
+  <div class="section__head">
+    <div class="section__slug">
+      <span class="ix">// 03.A</span>
+      <span class="name">BUTTONS</span>
+      <span class="jp">ボタン・コレクション</span>
+    </div>
+    <div class="section__meta">
+      <span class="mono">88 × 31 · FORMAT / GIF · PNG</span>
+    </div>
+  </div>
+
+  <div class="buttons__wall" id="buttonWall">
+    <!-- populated by JS from a static list so we only hit images we actually have -->
+  </div>
+
+  <div class="buttons__note mono small dim">
+    // Hover a button for the name. Collecting since forever. 集めています。
+  </div>
+</section>
+
+
+<!-- ============================================================= -->
+<!-- NEOFETCH COLLECTION                                            -->
+<!-- ============================================================= -->
+<section class="neofetch" id="systems">
+  <div class="section__head">
+    <div class="section__slug">
+      <span class="ix">// 04</span>
+      <span class="name">SYSTEMS</span>
+      <span class="jp">システム一覧</span>
+    </div>
+    <div class="section__meta">
+      <span class="mono">NEOFETCH · TERMINAL DUMP</span>
+    </div>
+  </div>
+
+  <div class="neofetch__tabs" role="tablist" id="nTabs"></div>
+  <div class="neofetch__panes" id="nPanes"></div>
+</section>
+
+<!-- ============================================================= -->
+<!-- SERVICES                                                       -->
+<!-- ============================================================= -->
+<section class="services" id="services">
+  <div class="section__head">
+    <div class="section__slug">
+      <span class="ix">// 05</span>
+      <span class="name">SERVICES</span>
+      <span class="jp">運用中サービス</span>
+    </div>
+    <div class="section__meta">
+      <span class="mono">EXTERNAL ENDPOINTS · AUTH REQUIRED</span>
+    </div>
+  </div>
+
+  <div class="domains__grid" id="domainGrid">
+    <!-- populated by JS -->
+  </div>
+</section>
+
+
+<!-- ============================================================= -->
+<!-- SPOTIFY WIDGET                                                 -->
+<!-- ============================================================= -->
+<section class="spotify" id="spotify">
+  <div class="section__head">
+    <div class="section__slug">
+      <span class="ix">// 05.A</span>
+      <span class="name">NOW PLAYING</span>
+      <span class="jp">再生中の曲</span>
+    </div>
+    <div class="section__meta">
+      <span class="mono">SPOTIFY · LAST TRACK · DUMMY</span>
+    </div>
+  </div>
+
+  <div class="spotify__card">
+    <div class="spotify__cover">
+      <img src="images/spotifywidgetdummycover.png" alt="album cover" />
+      <div class="spotify__bars"><span></span><span></span><span></span><span></span></div>
+    </div>
+
+    <div class="spotify__meta">
+      <div class="spotify__label mono">
+        <img src="images/profile/sociallinks/spotify_color.svg" alt="" />
+        <span>LAST PLAYED · 最後に再生</span>
+      </div>
+
+      <h3 class="spotify__track">All I Am</h3>
+      <div class="spotify__artist">Ninajirachi <span class="dim">· I Love My Computer</span></div>
+
+      <div class="spotify__progress">
+        <div class="spotify__bar"><div class="spotify__fill"></div></div>
+        <div class="spotify__time mono">
+          <span>02:14</span>
+          <span class="dim">08:02</span>
+        </div>
+      </div>
+
+      <div class="spotify__foot mono small dim">
+        Played 3 minutes ago · データは仮のものです
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<!-- ============================================================= -->
+<!-- FOOTER                                                         -->
+<!-- ============================================================= -->
+<footer class="foot">
+  <div class="foot__inner">
+    <div class="foot__logo">
+      <img src="images/logo/lucya_logo_text.svg" alt="lucya" />
+    </div>
+    <div class="foot__cols">
+      <div>
+        <div class="foot__label mono">LUCYA INDUSTRIES</div>
+        <div class="mono small dim">ルシア・インダストリーズ 株式会社</div>
+        <div class="mono small dim">EST. 2007 · DE-BY</div>
+      </div>
+      <div>
+        <div class="foot__label mono">LEGAL</div>
+        <div class="mono small dim">All logos belong to their respective owners.</div>
+        <div class="mono small dim">No cookies. No tracking. Just vibes.</div>
+      </div>
+      <div>
+        <div class="foot__label mono">SIGNAL</div>
+        <div class="mono small">
+          <span class="dot dot--ok"></span> <span>operational</span>
+        </div>
+        <div class="mono small dim" id="footTime">CET 00:00:00 · 通信中</div>
+      </div>
+    </div>
+    <div class="foot__rule"></div>
+    <div class="foot__tiny mono">
+      <span>© lucya.sh · <span id="thisYear">2026</span></span>
+      <span>handcrafted with monster energy &amp; bad posture</span>
+      <span>// build 2.6.1-stable</span>
+    </div>
+  </div>
+</footer>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
