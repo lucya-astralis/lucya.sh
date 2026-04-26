@@ -587,10 +587,7 @@ body.is-ready .hero__side{
   display:flex; align-items:center; gap:32px;
 }
 .nav__brand{ display:flex; align-items:center; gap:10px; }
-.nav__brand img{ height:26px; width:auto; }
-.nav__brand-text{ display:flex; flex-direction:column; line-height:1; }
-.nav__brand-text strong{ font-family:"Ethnocentric", monospace; letter-spacing:.12em; font-size:14px; }
-.nav__brand-text span{ font-family:"Noto Sans JP", sans-serif; font-size:10px; color:var(--text-dim); margin-top:3px; }
+.nav__brand img{ height:24px; width:auto; }
 
 .nav__links{
   display:flex; gap:28px;
@@ -721,7 +718,7 @@ section{
 
 .pcard__banner{
   position:relative;
-  height:130px;
+  height:200px;
   overflow:hidden;
   background:#000;
 }
@@ -738,11 +735,11 @@ section{
   font-size:12px;
   display:flex; gap:2px; align-items:center;
 }
-.pcard__countdown span:nth-child(2){ color:var(--acc-mag); font-weight:700; margin:0 2px; }
+.pcard__countdown span:nth-child(2){ color:var(--acc-cy); font-weight:700; margin:0 2px; }
 
 .pcard__pfp{
   position:absolute;
-  top:52px; left:16px;
+  top:122px; left:16px;
   width:112px; height:112px;
   z-index:3;
 }
@@ -1531,6 +1528,18 @@ section{
   color:var(--acc-cy);
   margin-bottom:8px;
 }
+.foot__legal-links{ margin-top:6px; }
+.foot__legal-links a{
+  color:var(--text-dim);
+  border-bottom:1px dashed rgba(255,255,255,.18);
+  padding-bottom:1px;
+  transition:color .15s, border-color .15s;
+}
+.foot__legal-links a:hover{
+  color:var(--acc-cy);
+  border-bottom-color:rgba(34,230,255,.55);
+}
+
 .foot__rule{ height:1px; background:var(--line); margin:10px 0 20px; }
 .foot__tiny{
   display:flex; justify-content:space-between;
@@ -1544,25 +1553,160 @@ section{
 /* ================================================================
    RESPONSIVE
    ================================================================ */
-@media (max-width: 1024px){
-  .hero__grid{ grid-template-columns:1fr; }
-  .hero__stats{ grid-template-columns:repeat(2,1fr); }
-  .about__grid{ grid-template-columns:1fr; }
-  .about__marginal{ position:static; }
-  .funfacts__list{ columns:1; }
-  .spotify__card{ grid-template-columns:1fr; }
-  .spotify__cover{ max-width:240px; }
-  .foot__cols{ grid-template-columns:1fr; }
-}
-@media (max-width: 768px){
-  .nav__links{ display:none; }
-  section{ padding: 56px 20px; }
-  .hero__title{ font-size: clamp(52px, 20vw, 90px); }
-  .hero__stats{ grid-template-columns:1fr 1fr; }
-  .foot__tiny{ flex-direction:column; }
-}
 @media (max-width: 1100px){
   .splash__log{ display:none; }
+}
+
+/* tablets / small laptops */
+@media (max-width: 1024px){
+  section{ padding: 64px 24px; }
+
+  .hero__grid{ grid-template-columns:1fr; gap:28px; }
+  .hero__stats{ grid-template-columns:repeat(2,1fr); }
+
+  .about__grid{ grid-template-columns:1fr; gap:28px; }
+  .about__marginal{ position:static; }
+
+  .funfacts__list{ columns:1; }
+
+  .spotify__card{ grid-template-columns:1fr; }
+  .spotify__cover{ max-width:240px; margin:0 auto; }
+
+  .foot__cols{ grid-template-columns:repeat(2, 1fr); gap:28px; }
+}
+
+/* phones (landscape) / large phones */
+@media (max-width: 768px){
+  section{ padding: 48px 18px; }
+
+  .nav__inner{ padding:0 16px; gap:14px; }
+  .nav__links{ display:none; }
+  .nav__status{ margin-left:auto; padding-left:14px; font-size:11px; }
+  .nav__brand-text strong{ font-size:13px; }
+  .nav__brand-text span{ font-size:9px; }
+  .nav__brand img{ height:24px; }
+
+  .section__head{ margin-bottom:28px; gap:14px; padding-bottom:14px; }
+  .section__slug{ gap:12px; flex-wrap:wrap; }
+  .section__slug .name{ font-size:clamp(24px, 7vw, 36px); }
+  .section__slug .ix{ font-size:12px; }
+  .section__slug .jp{ font-size:12px; }
+  .section__meta{ font-size:10px; gap:12px; }
+
+  .hero{ padding-top:32px; }
+  .hero__title{ font-size:clamp(48px, 18vw, 84px); margin:18px 0 8px; }
+  .hero__title-jp{ font-size:14px; letter-spacing:.24em; }
+  .hero__tagline{ font-size:15.5px; line-height:1.55; margin:14px 0 24px; }
+  .jp-line{ font-size:13px; }
+  .hero__stats{ grid-template-columns:repeat(2,1fr); max-width:none; }
+  .stat{ padding:14px 14px; }
+  .stat__value{ font-size:17px; }
+  .stat__label{ font-size:9.5px; }
+
+  .pcard__banner{ height:160px; }
+  .pcard__pfp{ width:96px; height:96px; top:100px; left:14px; }
+  .pcard__pfp-frame{ inset:-5px; width:calc(100% + 10px); height:calc(100% + 10px); }
+  .pcard__status-dot{ width:22px; height:22px; bottom:4px; right:4px; }
+  .pcard__body{ padding:54px 14px 16px; }
+  .pcard__name{ font-size:22px; }
+  .pcard__handle{ font-size:12px; word-break:break-word; }
+  .pcard__bio{ font-size:13px; padding:9px 11px; }
+  .pcard__url{ word-break:break-all; }
+  .pcard__socials{ gap:8px; padding-top:12px; margin-top:14px; }
+  .pcard__socials a{ width:48px; height:32px; }
+  .pcard__footer{ padding:9px 14px; font-size:9.5px; }
+
+  .interests__grid{ grid-template-columns:repeat(2, 1fr); }
+  .tile{ padding:18px 16px 22px; }
+  .tile h4{ font-size:16.5px; }
+  .tile p{ font-size:13px; }
+  .tile__jp{ top:18px; right:16px; font-size:10px; }
+
+  .funfacts{ padding-top:6px; }
+  .funfacts__list{ font-size:13.5px; }
+
+  .buttons__wall{ padding:12px; gap:5px; }
+
+  .neofetch__tabs{ overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:thin; }
+  .ntab{ padding:9px 14px; font-size:11px; letter-spacing:.1em; }
+  .nterm__body{ padding:14px 14px 18px; font-size:11.5px; }
+
+  .domains__grid{ grid-template-columns:repeat(2, 1fr); }
+  .dcard{ padding:16px 14px; min-height:130px; }
+  .dcard__logo{ height:30px; margin-bottom:12px; }
+  .dcard__url{ font-size:12px; }
+  .dcard__role{ font-size:12px; }
+
+  .spotify__card{ padding:16px; gap:18px; }
+  .spotify__cover{ max-width:200px; }
+  .spotify__track{ font-size:22px; }
+
+  .foot{ margin-top:56px; }
+  .foot__inner{ padding:44px 18px 24px; }
+  .foot__logo img{ height:46px; }
+  .foot__cols{ grid-template-columns:1fr; gap:22px; margin:28px 0 18px; }
+  .foot__tiny{ flex-direction:column; gap:6px; align-items:flex-start; }
+}
+
+/* small phones */
+@media (max-width: 480px){
+  section{ padding: 40px 14px; }
+
+  .nav__inner{ padding:0 12px; gap:10px; }
+  .nav__brand-text strong{ font-size:12px; }
+  .nav__brand img{ height:22px; }
+  .nav__status{ font-size:10.5px; padding-left:10px; gap:6px; }
+
+  .section__head{
+    flex-direction:column;
+    align-items:flex-start;
+    margin-bottom:22px;
+  }
+  .section__meta{ justify-content:flex-start; font-size:9.5px; gap:10px; }
+  .section__slug .name{ font-size:clamp(22px, 8vw, 28px); }
+
+  .hero__title{ font-size:clamp(44px, 18vw, 72px); }
+  .hero__tagline{ font-size:14.5px; }
+  .hero__kicker{ font-size:10px; padding:4px 8px; letter-spacing:.2em; }
+  .stat{ padding:12px 12px; }
+  .stat__value{ font-size:15.5px; }
+  .stat__jp{ font-size:10px; }
+
+  .pcard__banner{ height:130px; }
+  .pcard__pfp{ width:84px; height:84px; top:82px; left:12px; }
+  .pcard__body{ padding:48px 12px 14px; }
+  .pcard__name{ font-size:20px; }
+  .pcard__badges{ gap:4px; margin:10px 0; }
+  .pcard__badges img{ height:20px; }
+  .pcard__tz{ font-size:11px; gap:4px; }
+  .pcard__socials a{ width:44px; height:30px; }
+
+  .interests__grid{ grid-template-columns:1fr; }
+  .tile{ padding:16px 14px 20px; }
+
+  .buttons__wall{ padding:10px; gap:4px; }
+
+  .ntab{ padding:8px 11px; font-size:10.5px; letter-spacing:.06em; }
+  .nterm__body{ font-size:11px; padding:12px; }
+
+  .domains__grid{ grid-template-columns:1fr; }
+
+  .spotify__card{ padding:14px; gap:14px; }
+  .spotify__cover{ max-width:170px; }
+  .spotify__track{ font-size:20px; }
+  .spotify__artist{ font-size:13px; }
+
+  .foot__inner{ padding:32px 14px 20px; }
+  .foot__logo img{ height:38px; }
+
+  .splash__grid{ padding:12px 14px; }
+  .tag{ font-size:9px; padding:2px 6px; letter-spacing:.12em; }
+  .splash__bottom{ width:min(360px, 84vw); bottom:56px; }
+  .splash__progress-head{ font-size:9.5px; letter-spacing:.18em; }
+  .splash__progress-foot{ font-size:9px; letter-spacing:.16em; }
+  .splash__progress-bar{ height:14px; }
+  .splash__label{ font-size:15px; margin-top:22px; letter-spacing:.18em; }
+  .splash__label .jp{ font-size:10px; letter-spacing:.28em; }
 }
 
 /* a11y */
