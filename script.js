@@ -705,6 +705,69 @@
     });
   }
 
+  // ---------- SPOTIFY TOP SONGS ROTATION -------------------------
+  const spotifyCard = document.getElementById('spotifyCard');
+  if (spotifyCard) {
+    const songs = [
+      { title: "DEAD CENTER", artist: "REOL, LiSA, Giga", cover: "images/spotify_widget/dead_center.jpg" },
+      { title: "Heaven", artist: "Allison Wonderland, Ninajirachi", cover: "images/spotify_widget/cover1.png" },
+      { title: "Infohazard", artist: "Ninajirachi", cover: "images/spotify_widget/cover4.png" },
+      { title: "H.E.R", artist: "Tearz", cover: "images/spotify_widget/H.E.R.jpg" },
+      { title: "Vorozhyla", artist: "Korolova, Rokston, Go_A, Monokate", cover: "images/spotify_widget/Vorozhyla.jpg" },
+      { title: "Elevate", artist: "Sub Focus", cover: "images/spotify_widget/cover3.jpeg" },
+      { title: "Battery Death", artist: "Ninajirachi", cover: "images/spotify_widget/cover4.png" },
+      { title: "Ghostlight", artist: "Skeler, Veela", cover: "images/spotify_widget/Ghostlight.jpeg" },
+      { title: "Orbit", artist: "Koven, HALIENE", cover: "images/spotify_widget/cover5.jpg" }
+    ];
+    const INTERVAL_MS = 5000;
+    const cover = document.getElementById('spotifyCover');
+    const coverWrap = spotifyCard.querySelector('.spotify__cover');
+    const meta = spotifyCard.querySelector('.spotify__meta');
+    const trackEl = document.getElementById('spotifyTrack');
+    const artistEl = document.getElementById('spotifyArtist');
+    const counterEl = document.getElementById('spotifyCounter');
+    const dotsEl = document.getElementById('spotifyDots');
+
+    spotifyCard.style.setProperty('--spotify-interval', (INTERVAL_MS / 1000) + 's');
+
+    const dotFrag = document.createDocumentFragment();
+    songs.forEach(() => dotFrag.appendChild(document.createElement('span')));
+    dotsEl.appendChild(dotFrag);
+    const dotEls = Array.from(dotsEl.children);
+
+    songs.forEach(s => { const i = new Image(); i.src = s.cover; });
+
+    const pad2 = n => String(n).padStart(2, '0');
+    let idx = 0;
+    const render = () => {
+      const s = songs[idx];
+      coverWrap.classList.add('is-swap');
+      meta.classList.add('is-swap');
+      setTimeout(() => {
+        cover.src = s.cover;
+        cover.alt = s.title + ' — ' + s.artist;
+        trackEl.textContent = s.title;
+        artistEl.textContent = s.artist;
+        counterEl.textContent = pad2(idx + 1) + ' / ' + pad2(songs.length);
+        dotEls.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+        // restart the tick animation by re-adding the active class
+        const active = dotEls[idx];
+        if (active){
+          active.classList.remove('is-active');
+          void active.offsetWidth;
+          active.classList.add('is-active');
+        }
+        coverWrap.classList.remove('is-swap');
+        meta.classList.remove('is-swap');
+      }, 300);
+    };
+    render();
+    setInterval(() => {
+      idx = (idx + 1) % songs.length;
+      render();
+    }, INTERVAL_MS);
+  }
+
   // ---------- UPTIME STAT ----------------------------------------
   const uptime = document.getElementById('uptimeStat');
   if (uptime) {

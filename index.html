@@ -487,39 +487,34 @@
   <div class="section__head">
     <div class="section__slug">
       <span class="ix">// 05.A</span>
-      <span class="name">NOW PLAYING</span>
-      <span class="jp">再生中の曲</span>
+      <span class="name">TOP SONGS</span>
+      <span class="jp">最近のお気に入り</span>
     </div>
     <div class="section__meta">
-      <span class="mono">SPOTIFY · LAST TRACK · DUMMY</span>
+      <span class="mono">SPOTIFY · ROTATION · LAST 30D</span>
     </div>
   </div>
 
-  <div class="spotify__card">
+  <div class="spotify__card" id="spotifyCard">
     <div class="spotify__cover">
-      <img src="images/spotifywidgetdummycover.png" alt="album cover" />
+      <img id="spotifyCover" src="" alt="album cover" />
       <div class="spotify__bars"><span></span><span></span><span></span><span></span></div>
     </div>
 
     <div class="spotify__meta">
       <div class="spotify__label mono">
         <img src="images/profile/sociallinks/spotify_color.svg" alt="" />
-        <span>LAST PLAYED · 最後に再生</span>
+        <span>TOP SONGS · 最近のお気に入り</span>
+        <span class="spotify__counter mono" id="spotifyCounter">01 / 09</span>
       </div>
 
-      <h3 class="spotify__track">All I Am</h3>
-      <div class="spotify__artist">Ninajirachi <span class="dim">· I Love My Computer</span></div>
+      <h3 class="spotify__track" id="spotifyTrack">—</h3>
+      <div class="spotify__artist" id="spotifyArtist">—</div>
 
-      <div class="spotify__progress">
-        <div class="spotify__bar"><div class="spotify__fill"></div></div>
-        <div class="spotify__time mono">
-          <span>02:14</span>
-          <span class="dim">08:02</span>
-        </div>
-      </div>
+      <div class="spotify__dots" id="spotifyDots" aria-hidden="true"></div>
 
       <div class="spotify__foot mono small dim">
-        Played 3 minutes ago · データは仮のものです
+        rotating · データは仮のものです
       </div>
     </div>
   </div>
