@@ -12,7 +12,7 @@
   --text:       #eef0ff;
   --text-dim:   #9ea0bc;
   --text-ghost: #5c5e7a;
-  --acc-mag:    #EB459E;
+  --acc-mag:    #456ceb;
   --acc-cy:     #22e6ff;
   --acc-purp:   #5865F2;
   --acc-red:    #FF6767;
@@ -146,15 +146,16 @@
 
 *{ box-sizing:border-box; }
 html,body{ margin:0; padding:0; }
-html{ scroll-behavior:smooth; }
-body{
+html{ scroll-behavior:smooth; background-color:var(--bg); }
+html::before{
+  /* Fixed background layer — uses position:fixed instead of
+     background-attachment:fixed so Safari (incl. iOS) keeps the
+     wallpaper AND the grid lines pinned while content scrolls. */
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
   background-color:var(--bg);
-  color:var(--text);
-  font-family:"Space Grotesk", system-ui, sans-serif;
-  font-size:15px;
-  line-height:1.55;
-  overflow-x:hidden;
-  letter-spacing:.01em;
   background-image:
     linear-gradient(to right, rgba(255,255,255,.025) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255,255,255,.025) 1px, transparent 1px),
@@ -163,7 +164,15 @@ body{
   background-size: 32px 32px, 32px 32px, auto, cover;
   background-position: 0 0, 0 0, 0 0, center center;
   background-repeat: repeat, repeat, no-repeat, no-repeat;
-  background-attachment: scroll, scroll, fixed, fixed;
+  pointer-events:none;
+}
+body{
+  color:var(--text);
+  font-family:"Space Grotesk", system-ui, sans-serif;
+  font-size:15px;
+  line-height:1.55;
+  overflow-x:hidden;
+  letter-spacing:.01em;
 }
 
 body::before{
@@ -646,7 +655,7 @@ section{
   font-size:14px; letter-spacing:.14em;
 }
 .section__slug .name{
-  font-size:clamp(28px, 4vw, 44px);
+  font-size:clamp(22px, 2.6vw, 32px);
   font-weight:700;
   letter-spacing:.02em;
   line-height:1;
@@ -901,6 +910,11 @@ section{
   border-bottom:1px dashed rgba(34,230,255,.4);
   padding-bottom:2px;
 }
+.pcard__url--mail{
+  margin-left:10px;
+  color:var(--acc-mag);
+  border-bottom-color:#456cee66;
+}
 
 .pcard__tz{
   margin-top:14px;
@@ -945,7 +959,7 @@ section{
 /* --- hero right side --------------------------------------------- */
 .hero__side{
   position:relative;
-  padding:8px 0 0;
+  padding:0;
 }
 .hero__kicker{
   display:inline-flex; align-items:center; gap:8px;
@@ -967,6 +981,65 @@ section{
   position:relative;
   color:transparent;
   text-shadow: 0 0 60px rgba(34,230,255,.15);
+}
+
+/* SVG wordmark variant — keeps the same glitch animations as the
+   text version, but uses the lucya logotype as the visible shape. */
+.hero__title--mark{
+  font-size:0;
+  text-shadow:none;
+  margin:18px 0 14px;
+}
+.hero__wordmark{
+  position:relative;
+  display:block;
+  width:100%;
+  aspect-ratio: 5321 / 819;
+  filter: drop-shadow(0 0 60px rgba(34,230,255,.18));
+  cursor:default;
+}
+.hero__wordmark-layer{
+  position:absolute; inset:0;
+  -webkit-mask: url('images/logo/lucya_logo_text.svg') no-repeat center / contain;
+          mask: url('images/logo/lucya_logo_text.svg') no-repeat center / contain;
+  pointer-events:none;
+}
+.hero__wordmark-layer--main{
+  background:linear-gradient(
+    90deg,
+    #22e6ff 0%,
+    #7ab8ff 30%,
+    #eef5ff 50%,
+    #7ab8ff 70%,
+    #22e6ff 100%
+  );
+  background-size: 300% 100%;
+  animation:
+    heroGradient 8s linear infinite,
+    heroGlitchMain 7s steps(1,end) infinite;
+}
+.hero__wordmark-layer--r{
+  background:#22e6ff;
+  mix-blend-mode:screen;
+  opacity:0;
+  animation: heroGlitchR 7s steps(1,end) infinite;
+}
+.hero__wordmark-layer--b{
+  background:#3060ff;
+  mix-blend-mode:screen;
+  opacity:0;
+  animation: heroGlitchB 7s steps(1,end) infinite;
+}
+.hero__wordmark:hover .hero__wordmark-layer--main{
+  animation:
+    heroGradient 5s linear infinite,
+    heroGlitchMain 3.5s steps(1,end) infinite;
+}
+.hero__wordmark:hover .hero__wordmark-layer--r{
+  animation: heroGlitchR 3.5s steps(1,end) infinite;
+}
+.hero__wordmark:hover .hero__wordmark-layer--b{
+  animation: heroGlitchB 3.5s steps(1,end) infinite;
 }
 
 .hero__title .word{
@@ -1333,6 +1406,32 @@ section{
 /* ================================================================
    DOMAINS
    ================================================================ */
+.services__hv{
+  display:flex; align-items:center; gap:14px;
+  flex-wrap:wrap;
+  padding:10px 14px;
+  margin:0 0 16px;
+  background:rgba(34,230,255,.04);
+  border:1px solid var(--line);
+  border-radius:6px;
+  text-decoration:none;
+  transition:background .2s, border-color .2s;
+}
+.services__hv:hover{
+  background:rgba(34,230,255,.08);
+  border-color:rgba(34,230,255,.35);
+}
+.services__hv-label{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:11px; letter-spacing:.2em;
+  color:var(--text-dim);
+  text-transform:uppercase;
+}
+.services__hv-badge{
+  height:20px; width:auto;
+  display:block;
+}
+
 .domains__grid{
   display:grid;
   grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
@@ -1620,11 +1719,11 @@ section{
   .nav__brand-text span{ font-size:9px; }
   .nav__brand img{ height:24px; }
 
-  .section__head{ margin-bottom:28px; gap:14px; padding-bottom:14px; }
-  .section__slug{ gap:12px; flex-wrap:wrap; }
-  .section__slug .name{ font-size:clamp(24px, 7vw, 36px); }
-  .section__slug .ix{ font-size:12px; }
-  .section__slug .jp{ font-size:12px; }
+  .section__head{ margin-bottom:24px; gap:12px; padding-bottom:12px; }
+  .section__slug{ gap:10px; flex-wrap:wrap; }
+  .section__slug .name{ font-size:clamp(18px, 5.2vw, 24px); }
+  .section__slug .ix{ font-size:11px; }
+  .section__slug .jp{ font-size:11px; }
   .section__meta{ font-size:10px; gap:12px; }
 
   .hero{ padding-top:32px; }
@@ -1697,7 +1796,9 @@ section{
     margin-bottom:22px;
   }
   .section__meta{ justify-content:flex-start; font-size:9.5px; gap:10px; }
-  .section__slug .name{ font-size:clamp(22px, 8vw, 28px); }
+  .section__slug .name{ font-size:clamp(16px, 5.6vw, 22px); }
+  .section__slug .ix{ font-size:10px; }
+  .section__slug .jp{ font-size:10px; letter-spacing:.14em; }
 
   .hero__title{ font-size:clamp(44px, 18vw, 72px); }
   .hero__tagline{ font-size:14.5px; }

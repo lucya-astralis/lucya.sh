@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>LUCYA // lucya.sh</title>
+<title>LUCYA // LUCYA.SH</title>
 <meta name="description" content="lucya — 18y/o autistic nerd & sysadmin from Bavaria." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -200,6 +200,7 @@
         </div>
 
         <a class="pcard__url" href="https://lucya.sh" target="_blank" rel="noopener">https://lucya.sh/</a>
+        <a class="pcard__url pcard__url--mail" href="mailto:root@lucya.sh">root@lucya.sh</a>
 
         <div class="pcard__tz">
           <span class="mono">CEST: <b id="tzLocal">12:00 PM</b></span>
@@ -239,8 +240,12 @@
         <span>BROADCAST ONLINE · 放送中</span>
       </div>
 
-      <h1 class="hero__title">
-        <span class="word" data-text="lucya">lucya</span>
+      <h1 class="hero__title hero__title--mark">
+        <span class="hero__wordmark" aria-label="lucya">
+          <span class="hero__wordmark-layer hero__wordmark-layer--main"></span>
+          <span class="hero__wordmark-layer hero__wordmark-layer--r" aria-hidden="true"></span>
+          <span class="hero__wordmark-layer hero__wordmark-layer--b" aria-hidden="true"></span>
+        </span>
         <span class="hero__title-jp">ルシア</span>
       </h1>
 
@@ -473,6 +478,14 @@
       <span class="mono">EXTERNAL ENDPOINTS · AUTH REQUIRED</span>
     </div>
   </div>
+
+  <a class="services__hv" href="https://status.astraos.app" target="_blank" rel="noopener">
+    <span class="services__hv-label mono">
+      <span class="dot dot--ok"></span>
+      SYSTEMS · システム · 30D UPTIME
+    </span>
+    <img class="services__hv-badge" src="https://status.astraos.app/api/badge/1/uptime" alt="hypervisor uptime" />
+  </a>
 
   <div class="domains__grid" id="domainGrid">
     <!-- populated by JS -->
