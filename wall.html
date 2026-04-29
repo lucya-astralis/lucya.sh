@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Fullscreen Video</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+  }
+
+  /* Container füllt Viewport, iframe wird "cover" skaliert */
+  .video-wrap {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .video-wrap iframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* 16:9 cover: min 100vw oder 177.77vh, je nachdem was größer ist */
+    width: 100vw;
+    height: 56.25vw;      /* 16:9 basierend auf Breite */
+    min-height: 100vh;
+    min-width: 177.77vh;  /* 16:9 basierend auf Höhe */
+    transform: translate(-50%, -50%);
+    border: 0;
+    pointer-events: none; /* keine Interaktion */
+  }
+</style>
+</head>
+<body>
+  <div class="video-wrap">
+    <iframe
+      src="https://www.youtube.com/embed/_k-5U7IeK8g?autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&rel=0&playsinline=1&loop=1&playlist=_k-5U7IeK8g&iv_load_policy=3&fs=0"
+      title="YouTube video"
+      frameborder="0"
+      allow="autoplay; encrypted-media"
+      referrerpolicy="strict-origin-when-cross-origin">
+    </iframe>
+  </div>
+</body>
+</html>
