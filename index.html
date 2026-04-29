@@ -3,13 +3,76 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<!-- Primary -->
 <title>LUCYA // LUCYA.SH</title>
-<meta name="description" content="lucya — 18y/o autistic nerd & sysadmin from Bavaria." />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Zen+Dots&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css" />
+<meta name="description" content="lucya.sh — personal site of lucya, an IT apprentice and sysadmin, Homelabs, servers, retro tech, space, anime and creative web projects." />
+<meta name="author" content="lucya" />
+<meta name="keywords" content="lucya, lucya.sh, sysadmin, homelab, IT apprentice, Fachinformatiker, Bavaria, Bayern, Germany, personal site, web development, retro tech, anime" />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+<meta name="theme-color" content="#0d1117" />
+<meta name="color-scheme" content="dark" />
+<link rel="canonical" href="https://lucya.sh/" />
+
+<!-- Icons -->
 <link rel="icon" type="image/svg+xml" href="images/logo/lucya_logo.svg" />
+<link rel="apple-touch-icon" href="images/profile/pfp/pfp.png" />
+<link rel="mask-icon" href="images/logo/lucya_logo.svg" color="#0d1117" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="lucya.sh" />
+<meta property="og:title" content="LUCYA // LUCYA.SH" />
+<meta property="og:description" content="Personal site of lucya, an IT apprentice and sysadmin, Homelabs, servers, retro tech, space, anime and creative web projects." />
+<meta property="og:url" content="https://lucya.sh/" />
+<meta property="og:image" content="https://lucya.sh/images/profile/pfp/pfp.png" />
+<meta property="og:image:alt" content="lucya — profile portrait" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:locale:alternate" content="ja_JP" />
+<meta property="og:locale:alternate" content="de_DE" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="LUCYA // LUCYA.SH" />
+<meta name="twitter:description" content="Personal site of lucya, an IT apprentice and sysadmin, Homelabs, servers, retro tech, space, anime and creative web projects." />
+<meta name="twitter:image" content="https://lucya.sh/images/profile/pfp/pfp.png" />
+<meta name="twitter:image:alt" content="lucya — profile portrait" />
+
+<!-- Resource hints -->
+<link rel="preload" href="styles.css" as="style" />
+<link rel="stylesheet" href="styles.css" />
+
+<!-- Structured data: Person + WebSite -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://lucya.sh/#person",
+      "name": "lucya",
+      "alternateName": "ルシア",
+      "url": "https://lucya.sh/",
+      "image": "https://lucya.sh/images/profile/pfp/pfp.png",
+      "jobTitle": "IT Apprentice / Sysadmin",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Bavaria",
+        "addressCountry": "DE"
+      },
+      "knowsAbout": ["System Administration", "Homelabs", "Servers", "Web Development", "Retro Computing", "Astronomy"]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://lucya.sh/#website",
+      "url": "https://lucya.sh/",
+      "name": "lucya.sh",
+      "inLanguage": ["en", "ja", "de"],
+      "publisher": { "@id": "https://lucya.sh/#person" }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -241,7 +304,8 @@
       </div>
 
       <h1 class="hero__title hero__title--mark">
-        <span class="hero__wordmark" aria-label="lucya">
+        <span class="sr-only">lucya</span>
+        <span class="hero__wordmark" aria-hidden="true">
           <span class="hero__wordmark-layer hero__wordmark-layer--main"></span>
           <span class="hero__wordmark-layer hero__wordmark-layer--r" aria-hidden="true"></span>
           <span class="hero__wordmark-layer hero__wordmark-layer--b" aria-hidden="true"></span>

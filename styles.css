@@ -2,6 +2,14 @@
    LUCYA // lucya.dev  —  megacorp terminal aesthetic
    ================================================================ */
 
+.sr-only{
+  position:absolute;
+  width:1px;height:1px;
+  padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);
+  white-space:nowrap;border:0;
+}
+
 :root{
   --bg:         #07070b;
   --bg-2:       #0d0d14;
@@ -23,6 +31,50 @@
   --nav-h:      56px;
 
   --grid: 8px;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  src: local('Space Grotesk'),
+       url('./fonts/SpaceGrotesk-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Noto Sans JP';
+  src: local('Noto Sans JP'),
+       url('./fonts/NotoSansJP-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: local('JetBrains Mono'),
+       url('./fonts/JetBrainsMono-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: local('JetBrains Mono Italic'),
+       url('./fonts/JetBrainsMono-Italic-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 100 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Zen Dots';
+  src: local('Zen Dots'),
+       url('./fonts/ZenDots-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
