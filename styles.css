@@ -641,10 +641,10 @@ body.is-ready .hero__side{
   border-bottom:1px solid var(--line);
 }
 .nav__inner{
-  max-width:1400px;
+  max-width:1800px;
   margin:0 auto;
   height:100%;
-  padding:0 28px;
+  padding:0 36px;
   display:flex; align-items:center; gap:32px;
 }
 .nav__brand{ display:flex; align-items:center; gap:10px; }
@@ -682,8 +682,8 @@ main{ position:relative; z-index:10; }
 
 section{
   position:relative;
-  padding: 44px 28px 52px;
-  max-width:1400px;
+  padding: 44px 36px 52px;
+  max-width:1800px;
   margin:0 auto;
   scroll-margin-top: calc(var(--nav-h) + 8px);
 }
@@ -1243,13 +1243,86 @@ section{
 }
 .jp-line{ color:var(--text-dim); font-family:"Noto Sans JP", sans-serif; font-size:14px; }
 
+.hero__lower{
+  display:grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  gap:24px;
+  align-items:start;
+  margin-top:8px;
+}
 .hero__stats{
   display:grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap:1px;
   background:var(--line);
   border:1px solid var(--line);
-  max-width:720px;
+  max-width:none;
+  align-self:start;
+}
+
+/* SPEC SHEET — datasheet panel beside hero stats */
+.specsheet{
+  position:relative;
+  border:1px solid var(--line-strong);
+  background:
+    repeating-linear-gradient(180deg,
+      rgba(255,255,255,.02) 0 28px,
+      transparent 28px 56px),
+    linear-gradient(180deg, rgba(34,230,255,.03), transparent 60%),
+    var(--surface);
+  font-family:"Proto Nerd Font Regular", monospace;
+}
+.specsheet__head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:8px 12px;
+  border-bottom:1px solid var(--line-strong);
+  background:rgba(255,255,255,.04);
+  font-size:10.5px;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:var(--acc-cy);
+}
+.specsheet__cls{ color:var(--text-dim); letter-spacing:.18em; }
+.specsheet__cls b{ color:var(--text); font-weight:400; letter-spacing:.14em; }
+.specsheet__list{
+  margin:0;
+  padding:0;
+  font-size:11.5px;
+  letter-spacing:.06em;
+  line-height:1.5;
+}
+.specsheet__row{
+  display:grid;
+  grid-template-columns: 110px 1fr;
+  gap:10px;
+  padding:6px 12px;
+  border-bottom:1px dashed var(--line);
+}
+.specsheet__row:last-child{ border-bottom:0; }
+.specsheet__row:nth-child(odd){ background:rgba(255,255,255,.012); }
+.specsheet__list dt{
+  color:var(--text-ghost);
+  font-size:10px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  align-self:start;
+  padding-top:1px;
+}
+.specsheet__list dd{
+  margin:0;
+  color:var(--text);
+  letter-spacing:.04em;
+}
+.specsheet__foot{
+  padding:6px 12px;
+  font-size:9.5px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--text-ghost);
+  border-top:1px solid var(--line);
+  background:rgba(255,255,255,.02);
 }
 .stat{
   background:var(--surface);
@@ -1295,6 +1368,7 @@ section{
   gap:28px;
   align-items:start;
 }
+.about__col{ max-width: 70ch; }
 .about__col p{ margin:0 0 18px; font-size:15.5px; line-height:1.7; color:#d8dafa; }
 .about__col--jp .jp-body{ font-family:"Noto Sans JP", sans-serif; color:#c8caf0; font-size:14px; line-height:1.85; }
 
@@ -1478,7 +1552,7 @@ section{
   padding:18px 20px 22px;
   font-family:"Proto Nerd Font Regular", monospace;
   font-size:13px;
-  line-height:1.5;
+  line-height:1.3em;
   color:#d8dafa;
   overflow-x:auto;
   white-space:pre;
@@ -1736,9 +1810,9 @@ section{
   background:#05050a;
 }
 .foot__inner{
-  max-width:1400px;
+  max-width:1800px;
   margin:0 auto;
-  padding:36px 28px 22px;
+  padding:36px 36px 22px;
 }
 .foot__logo img{ height:60px; width:auto; opacity:.9; }
 .foot__cols{
@@ -1762,9 +1836,9 @@ section{
   overflow:hidden;
 }
 .docstrip__inner{
-  max-width:1400px;
+  max-width:1800px;
   margin:0 auto;
-  padding:6px 28px;
+  padding:6px 36px;
   display:flex;
   flex-wrap:wrap;
   align-items:center;
@@ -1787,6 +1861,103 @@ section{
 .docstrip__cls + span::before{ content:""; margin:0; }
 .docstrip__sp{ flex:1; }
 .docstrip__rev{ color:var(--acc-cy); }
+
+/* KPI STRIP — annual-report-style metrics, edge-to-edge */
+.kpibar{
+  position:relative;
+  z-index:8;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(7,7,11,.85), rgba(7,7,11,.95));
+}
+.kpibar__inner{
+  max-width:1800px;
+  margin:0 auto;
+  padding:14px 36px 18px;
+}
+.kpibar__head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+  font-size:10.5px;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:var(--text);
+  padding-bottom:10px;
+  border-bottom:1px dashed var(--line);
+  margin-bottom:14px;
+}
+.kpibar__head .dim{ color:var(--text-ghost); letter-spacing:.2em; }
+.kpibar__grid{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:0;
+  border:1px solid var(--line);
+  background:var(--line);
+}
+.kpi{
+  position:relative;
+  background:linear-gradient(180deg, rgba(255,255,255,.018), transparent);
+  padding:14px 16px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  min-width:0;
+}
+.kpi + .kpi{ /* spacer comes from grid gap=0 + parent line bg */ }
+.kpi__label{
+  font-size:10px;
+  letter-spacing:.26em;
+  color:var(--text-dim);
+  text-transform:uppercase;
+}
+.kpi__value{
+  font-family:"Ethnocentric", "Space Grotesk", sans-serif;
+  font-size:clamp(26px, 2.2vw, 38px);
+  letter-spacing:.02em;
+  color:var(--text);
+  line-height:1;
+  text-shadow: 0 0 18px rgba(34,230,255,.18);
+}
+.kpi__value em{
+  font-family:"Proto Nerd Font Regular", monospace;
+  font-style:normal;
+  font-size:.55em;
+  color:var(--acc-cy);
+  letter-spacing:.06em;
+  margin-left:1px;
+}
+.kpi__sub{
+  font-size:9.5px;
+  letter-spacing:.22em;
+  color:var(--text-ghost);
+  text-transform:uppercase;
+}
+.kpi__sub--ok{ color:var(--acc-ok); }
+.kpibar__foot{
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:12px;
+  font-size:9.5px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--text-ghost);
+}
+.kpibar__foot b{ color:var(--text-dim); font-weight:400; letter-spacing:.14em; }
+
+@media (max-width: 1100px){
+  .kpibar__grid{ grid-template-columns:repeat(2, 1fr); }
+  .kpi:nth-child(n+3){ border-top:1px solid var(--line); }
+}
+@media (max-width: 640px){
+  .kpibar__inner{ padding:12px 18px 14px; }
+  .kpibar__grid{ grid-template-columns:repeat(2, 1fr); }
+  .kpi__value{ font-size:24px; }
+  .kpibar__head{ font-size:9.5px; letter-spacing:.18em; }
+}
 
 /* live ticker — sits below docstrip, scrolls right-to-left */
 .ticker{
@@ -1842,7 +2013,6 @@ section{
   align-items:center;
   gap:18px;
   white-space:nowrap;
-  padding-left:100%;
   animation: tickerScroll 60s linear infinite;
   will-change: transform;
 }
@@ -1924,6 +2094,7 @@ section{
   .docstrip__inner{ padding:6px 24px; gap:10px; }
 
   .hero__grid{ grid-template-columns:1fr; gap:28px; }
+  .hero__lower{ grid-template-columns:1fr; gap:16px; }
   .hero__stats{ grid-template-columns:repeat(2,1fr); }
 
   .about__grid{ grid-template-columns:1fr; gap:28px; }
@@ -1940,13 +2111,54 @@ section{
 /* phones (landscape) / large phones */
 @media (max-width: 768px){
   section{ padding: 28px 18px 36px; }
+
+  /* docstrip: keep CLASSIFIED + DOC + REV only */
   .docstrip{ font-size:9.5px; letter-spacing:.16em; }
-  .docstrip__inner{ padding:5px 16px; gap:8px; }
-  .docstrip .docstrip__sp,
-  .docstrip__rev{ display:none; }
-  .section__doc{ font-size:9.5px; letter-spacing:.14em; }
-  .section__doc > span{ padding:5px 8px; }
+  .docstrip__inner{ padding:5px 14px; gap:8px; column-gap:8px; }
+  .docstrip__inner > span:nth-child(3),
+  .docstrip__inner > span:nth-child(6),
+  .docstrip__inner > span:nth-child(7),
+  .docstrip__inner > span:nth-child(8),
+  .docstrip .docstrip__sp{ display:none; }
+  .docstrip__inner > span + span::before{ margin-right:6px; }
+
+  /* ticker: drop the FEED · #01 tag, shrink label */
+  .ticker{ height:26px; font-size:10.5px; letter-spacing:.08em; }
+  .ticker__label{ padding:0 10px; font-size:9.5px; letter-spacing:.18em; gap:6px; }
+  .ticker__tag{ display:none; }
+  .ticker__viewport{ -webkit-mask-image: linear-gradient(to right, transparent 0, #000 18px, #000 calc(100% - 14px), transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 18px, #000 calc(100% - 14px), transparent 100%); }
+  .ticker__item b{ padding:1px 5px; font-size:9.5px; }
+
+  /* kpi bar: tighter padding, compress footer */
+  .kpibar__inner{ padding:10px 16px 12px; }
+  .kpibar__head{ font-size:9.5px; letter-spacing:.18em; padding-bottom:8px; margin-bottom:10px; }
+  .kpi{ padding:11px 12px; gap:4px; }
+  .kpi__label{ font-size:9px; letter-spacing:.2em; }
+  .kpi__value{ font-size:22px; }
+  .kpi__sub{ font-size:9px; letter-spacing:.16em; }
+  .kpibar__foot{ font-size:8.5px; letter-spacing:.16em; margin-top:8px; gap:6px; }
+
+  /* section doc-bar: shrink + last item flows naturally */
+  .section__doc{ font-size:9.5px; letter-spacing:.12em; }
+  .section__doc > span{ padding:4px 8px; }
   .section__doc > span:last-child{ margin-left:0; }
+
+  /* neofetch: smaller font on mobile, fade-edge hint for horizontal scroll */
+  .nterm__body{ font-size:11px; padding:14px 16px 18px; }
+  .nterm{ position:relative; }
+  .nterm::after{
+    content:"";
+    position:absolute; right:0; top:38px; bottom:0;
+    width:24px;
+    background:linear-gradient(to right, transparent, #000 80%);
+    pointer-events:none;
+  }
+  .ntab{ padding:9px 14px; font-size:11px; }
+
+  /* spotify: compact label, JP text wraps gracefully */
+  .spotify__label{ font-size:10px; gap:6px; flex-wrap:wrap; }
+  .spotify__label > span:nth-child(2){ flex:1 1 auto; min-width:0; }
+  .spotify__counter{ font-size:9px; padding:1px 6px; }
 
   .nav__inner{ padding:0 16px; gap:14px; }
   .nav__links{ display:none; }
@@ -1967,10 +2179,14 @@ section{
   .hero__title-jp{ font-size:14px; letter-spacing:.24em; }
   .hero__tagline{ font-size:15.5px; line-height:1.55; margin:14px 0 24px; }
   .jp-line{ font-size:13px; }
+  .hero__lower{ grid-template-columns:1fr; gap:14px; }
   .hero__stats{ grid-template-columns:repeat(2,1fr); max-width:none; }
   .stat{ padding:14px 14px; }
   .stat__value{ font-size:17px; }
   .stat__label{ font-size:9.5px; }
+  .specsheet__row{ grid-template-columns: 100px 1fr; padding:5px 10px; }
+  .specsheet__list dt{ font-size:9.5px; }
+  .specsheet__list{ font-size:11px; }
 
   .pcard__banner{ height:160px; }
   .pcard__pfp{ width:96px; height:96px; top:100px; left:14px; }

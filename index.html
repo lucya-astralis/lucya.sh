@@ -40,6 +40,7 @@
 
 <!-- Resource hints -->
 <link rel="preload" href="styles.css" as="style" />
+<link rel="preload" href="data.json" as="fetch" crossorigin="anonymous" />
 <link rel="stylesheet" href="styles.css" />
 
 <!-- Structured data: Person + WebSite -->
@@ -200,22 +201,6 @@
 </header>
 
 <!-- ============================================================= -->
-<!-- DOCUMENT CONTROL STRIP                                         -->
-<!-- ============================================================= -->
-<div class="docstrip" role="presentation">
-  <div class="docstrip__inner">
-    <span class="docstrip__cls">CLASSIFIED // INTERNAL</span>
-    <span>DOC <b>0451-LUC</b></span>
-    <span>FILE <b>PERSONNEL.DOSSIER</b></span>
-    <span class="docstrip__rev">REV <b>2026.Q2</b></span>
-    <span class="docstrip__sp"></span>
-    <span>HOLDER <b>LUCYA@CORE</b></span>
-    <span>NODE 01 · CET · DE-BY</span>
-    <span>PAGE 01 / 05</span>
-  </div>
-</div>
-
-<!-- ============================================================= -->
 <!-- LIVE TICKER                                                    -->
 <!-- ============================================================= -->
 <div class="ticker" role="presentation" aria-hidden="true">
@@ -252,6 +237,62 @@
     <span class="mono">FEED · #01</span>
   </div>
 </div>
+
+<!-- ============================================================= -->
+<!-- DOCUMENT CONTROL STRIP                                         -->
+<!-- ============================================================= -->
+<div class="docstrip" role="presentation">
+  <div class="docstrip__inner">
+    <span class="docstrip__cls">CLASSIFIED // INTERNAL</span>
+    <span>DOC <b>0451-LUC</b></span>
+    <span>FILE <b>PERSONNEL.DOSSIER</b></span>
+    <span class="docstrip__rev">REV <b>2026.Q2</b></span>
+    <span class="docstrip__sp"></span>
+    <span>HOLDER <b>LUCYA@CORE</b></span>
+    <span>NODE 01 · CET · DE-BY</span>
+    <span>PAGE 01 / 05</span>
+  </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- KPI STRIP — annual-report style                                -->
+<!-- ============================================================= -->
+<aside class="kpibar" aria-label="key metrics">
+  <div class="kpibar__inner">
+    <div class="kpibar__head mono">
+      <span>LUCYA INDUSTRIES<span class="reg">®</span> · KEY METRICS</span>
+      <span class="dim">FY26 · UNAUDITED · DUMMY DATA</span>
+    </div>
+    <div class="kpibar__grid" id="kpiGrid">
+      <!-- populated from data.json — fallback values below render if fetch fails -->
+      <div class="kpi" data-kpi="uptime">
+        <span class="kpi__label mono">UPTIME</span>
+        <span class="kpi__value" data-kpi-value>18y —m</span>
+        <span class="kpi__sub mono">SINCE 2007 · CONTINUOUS</span>
+      </div>
+      <div class="kpi" data-kpi="services">
+        <span class="kpi__label mono">SERVICES</span>
+        <span class="kpi__value" data-kpi-value>10 / 10</span>
+        <span class="kpi__sub mono kpi__sub--ok">NOMINAL · SLA 99.97%</span>
+      </div>
+      <div class="kpi" data-kpi="japan">
+        <span class="kpi__label mono">JAPAN</span>
+        <span class="kpi__value" data-kpi-value>— <em>d</em></span>
+        <span class="kpi__sub mono kpi__sub--ok">TRIP · 2026-08-10</span>
+      </div>
+      <div class="kpi" data-kpi="domains">
+        <span class="kpi__label mono">DOMAINS OWNED</span>
+        <span class="kpi__value" data-kpi-value>09</span>
+        <span class="kpi__sub mono">REGISTERED · ACTIVE</span>
+      </div>
+    </div>
+    <div class="kpibar__foot mono">
+      <span>// FIGURES ARE LIVE · COMPUTED CLIENT-SIDE</span>
+      <span>// ALL DATA STORED LOCALLY · NO TELEMETRY</span>
+      <span>FORM <b>KPI-A · REV 2026.Q2</b></span>
+    </div>
+  </div>
+</aside>
 
 
 <!-- ============================================================= -->
@@ -380,26 +421,82 @@
         <span class="jp-line">ネットワークの狭間で、システムを構築し、壊し、再び立ち上げる。</span>
       </p>
 
-      <div class="hero__stats">
-        <div class="stat">
-          <span class="stat__label">DIVISION</span>
-          <span class="stat__value">SYS / OPS</span>
-          <span class="stat__jp">システム運用</span>
+      <div class="hero__lower">
+        <div class="hero__stats">
+          <div class="stat">
+            <span class="stat__label">DIVISION</span>
+            <span class="stat__value">SYS / OPS</span>
+            <span class="stat__jp">システム運用</span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">LOCATION</span>
+            <span class="stat__value">DE · BY</span>
+            <span class="stat__jp">ババリア</span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">UPTIME</span>
+            <span class="stat__value" id="uptimeStat">18y 00m</span>
+            <span class="stat__jp">稼働時間</span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">FUEL</span>
+            <span class="stat__value">MONSTER</span>
+            <span class="stat__jp">エナジー</span>
+          </div>
         </div>
-        <div class="stat">
-          <span class="stat__label">LOCATION</span>
-          <span class="stat__value">DE · BY</span>
-          <span class="stat__jp">ババリア</span>
-        </div>
-        <div class="stat">
-          <span class="stat__label">UPTIME</span>
-          <span class="stat__value" id="uptimeStat">18y 00m</span>
-          <span class="stat__jp">稼働時間</span>
-        </div>
-        <div class="stat">
-          <span class="stat__label">FUEL</span>
-          <span class="stat__value">MONSTER</span>
-          <span class="stat__jp">エナジー</span>
+
+        <!-- SPEC SHEET PANEL — datasheet for the specimen -->
+        <div class="specsheet" aria-label="specimen profile">
+          <div class="specsheet__head mono">
+            <span>SPECIMEN PROFILE</span>
+            <span class="specsheet__cls">FORM <b>SP-01</b></span>
+          </div>
+          <dl class="specsheet__list mono">
+            <div class="specsheet__row">
+              <dt>DESIGNATION</dt>
+              <dd>LUC-0451</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>GENERATION</dt>
+              <dd>18 cycles</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>OPERATING SYS</dt>
+              <dd>POSIX · multi</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>PRIMARY LANG</dt>
+              <dd>DE / EN / JP*</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>DISTRO PREFS</dt>
+              <dd>Arch · Debian</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>SHELL</dt>
+              <dd>zsh / bash</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>EDITOR</dt>
+              <dd>neovim</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>KEYBOARD</dt>
+              <dd>ANSI · 65%</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>HABITAT</dt>
+              <dd>homelab · 22°C</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>FAILURE MODES</dt>
+              <dd>caffeine deprivation<br/>silence &gt; 30s</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>INSTANCES</dt>
+              <dd>1 of 1</dd>
+            </div>
+          </dl>
         </div>
       </div>
 

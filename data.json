@@ -1,0 +1,58 @@
+{
+  "_": "Edit this file to update ticker / kpis / spec. Reload = applied. UPTIME and JAPAN are computed live from anchor dates.",
+
+  "ticker": [
+    { "tag": "SYS",   "text": "aoi.inter-astra.local · uptime 03d 23h 33m" },
+    { "tag": "OPS",   "text": "10/10 services nominal · SLA 99.97%" },
+    { "tag": "NET",   "text": "uplink NODE-01 · 802.11ac · 98% signal" },
+    { "tag": "NOW",   "text": "rotation · H.E.R — Tearz" },
+    { "tag": "BUILD", "text": "lucya.sh @ 2.6.1-stable · kernel 6.8.0-LUCYA" },
+    { "tag": "FUEL",  "text": "monster reserves · 87% · resupply scheduled" },
+    { "tag": "BCN",   "text": "astra.express · all flights nominal · CMDR 310217" },
+    { "tag": "JP",    "text": "通信中・全システム稼働中・異常なし" },
+    { "tag": "NOTE",  "text": "coffee.dispenser offline since 09:14 · low priority" },
+    { "tag": "CAL",   "text": "JP trip · あと {japanDays}日" }
+  ],
+
+  "kpis": [
+    {
+      "key":   "uptime",
+      "label": "UPTIME",
+      "since": "2007-08-26",
+      "sub":   "SINCE 2007 · CONTINUOUS"
+    },
+    {
+      "key":      "services",
+      "label":    "SERVICES",
+      "value":    "15 / 15",
+      "sub":      "NOMINAL · SLA 99.97%",
+      "subClass": "ok"
+    },
+    {
+      "key":      "japan",
+      "label":    "JAPAN",
+      "target":   "2026-08-10",
+      "unit":     "d",
+      "sub":      "TRIP · 2026-08-10",
+      "subClass": "ok"
+    },
+    {
+      "key":   "domains",
+      "label": "DOMAINS OWNED",
+      "value": "17",
+      "sub":   "REGISTERED · ACTIVE"
+    }
+  ],
+
+  "spec": [
+    { "k": "DESIGNATION",   "v": "LUC-0451" },
+    { "k": "OPERATING SYS", "v": "POSIX · multi" },
+    { "k": "PRIMARY LANG",  "v": "DE / EN" },
+    { "k": "DISTRO PREFS",  "v": "Arch · Debian · Fedora" },
+    { "k": "SHELL",         "v": "zsh / fish" },
+    { "k": "EDITOR",        "v": "nano / VIM" },
+    { "k": "KEYBOARD",      "v": "ISO · 65%" },
+    { "k": "FAV ANIME",      "v": "Evangelion / Frieren" },    
+    { "k": "INSTANCES",     "v": "1 of 1" }
+  ]
+}
