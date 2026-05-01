@@ -86,7 +86,7 @@
 
   <div class="splash__grid">
     <div class="splash__corner splash__corner--tl">
-      <span class="tag">LUCYA-SYS // V4.21.0</span>
+      <span class="tag">LUCYA-SYS<span class="reg">®</span> // V4.21.0</span>
       <span class="tag tag--dim" id="splashSession">SESSION · ————————</span>
     </div>
     <div class="splash__corner splash__corner--tr">
@@ -199,6 +199,60 @@
   </div>
 </header>
 
+<!-- ============================================================= -->
+<!-- DOCUMENT CONTROL STRIP                                         -->
+<!-- ============================================================= -->
+<div class="docstrip" role="presentation">
+  <div class="docstrip__inner">
+    <span class="docstrip__cls">CLASSIFIED // INTERNAL</span>
+    <span>DOC <b>0451-LUC</b></span>
+    <span>FILE <b>PERSONNEL.DOSSIER</b></span>
+    <span class="docstrip__rev">REV <b>2026.Q2</b></span>
+    <span class="docstrip__sp"></span>
+    <span>HOLDER <b>LUCYA@CORE</b></span>
+    <span>NODE 01 · CET · DE-BY</span>
+    <span>PAGE 01 / 05</span>
+  </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- LIVE TICKER                                                    -->
+<!-- ============================================================= -->
+<div class="ticker" role="presentation" aria-hidden="true">
+  <div class="ticker__label">
+    <span class="dot dot--ok"></span>
+    <span>LIVE FEED · 中継</span>
+  </div>
+  <div class="ticker__viewport">
+    <div class="ticker__track" id="tickerTrack">
+      <!-- duplicated by JS for seamless loop -->
+      <span class="ticker__item"><b>SYS</b> aoi.inter-astra.local · uptime 03d 23h 33m</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>OPS</b> 10/10 services nominal · last incident 47d ago</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>NET</b> uplink NODE-01 · 802.11ac · 98% signal</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>NOW</b> rotation · H.E.R — Tearz</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>BUILD</b> lucya.sh @ 2.6.1-stable · kernel 6.8.0-LUCYA</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>FUEL</b> monster reserves · 87% · resupply scheduled</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>BCN</b> astra.express · all flights nominal · CMDR 310217</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>JP</b> 通信中・全システム稼働中・異常なし</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>NOTE</b> coffee.dispenser offline since 09:14 · low priority</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>CAL</b> next event · あと <span id="tickerDays">114</span>日</span>
+      <span class="ticker__sep">◇</span>
+    </div>
+  </div>
+  <div class="ticker__tag">
+    <span class="mono">FEED · #01</span>
+  </div>
+</div>
+
 
 <!-- ============================================================= -->
 <!-- HERO / PROFILE                                                 -->
@@ -208,6 +262,14 @@
 <section class="hero" id="profile">
   <div class="section__bg"></div>
 
+  <div class="section__doc">
+    <span>DOC <b>01.IDENTITY</b></span>
+    <span>REV <b>2026.05</b></span>
+    <span class="stamp stamp--ok">VERIFIED</span>
+    <span>SUBJECT <b>LUC-0451</b></span>
+    <span>FORM <b>P-01A</b></span>
+  </div>
+
   <div class="section__head">
     <div class="section__slug">
       <span class="ix">// 01</span>
@@ -216,7 +278,7 @@
     </div>
     <div class="section__meta">
       <span class="mono">DIV. IDENTITY · CLEARANCE C-3</span>
-      <span class="mono">FILE / PROFILE</span>
+      <span class="mono">FILE / PROFILE.DAT</span>
     </div>
   </div>
 
@@ -358,6 +420,14 @@
 <!-- ABOUT                                                          -->
 <!-- ============================================================= -->
 <section class="about" id="about">
+  <div class="section__doc">
+    <span>DOC <b>02.PERSONNEL</b></span>
+    <span>REV <b>2026.05</b></span>
+    <span class="stamp">REDACTED · 2 LINES</span>
+    <span>FORM <b>P-02B</b></span>
+    <span>EYES ONLY</span>
+  </div>
+
   <div class="section__head">
     <div class="section__slug">
       <span class="ix">// 02</span>
@@ -426,6 +496,14 @@
 <!-- INTERESTS + FUN FACTS                                          -->
 <!-- ============================================================= -->
 <section class="interests" id="interests">
+  <div class="section__doc">
+    <span>DOC <b>03.CULTURE</b></span>
+    <span>REV <b>2026.05</b></span>
+    <span class="stamp stamp--ok">INDEXED · 05 ENTRIES</span>
+    <span>FORM <b>BHV-03</b></span>
+    <span>OBSERVED · 18Y</span>
+  </div>
+
   <div class="section__head">
     <div class="section__slug">
       <span class="ix">// 03</span>
@@ -488,6 +566,14 @@
 <!-- 88x31 BUTTONS                                                  -->
 <!-- ============================================================= -->
 <section class="buttons" id="buttons">
+  <div class="section__doc">
+    <span>DOC <b>03.A.ARCHIVE</b></span>
+    <span>REV <b>ROLLING</b></span>
+    <span class="stamp">EXHIBIT A</span>
+    <span>FORMAT <b>88×31 · GIF/PNG</b></span>
+    <span>NON-CANONICAL</span>
+  </div>
+
   <div class="section__head">
     <div class="section__slug">
       <span class="ix">// 03.A</span>
@@ -513,6 +599,14 @@
 <!-- NEOFETCH COLLECTION                                            -->
 <!-- ============================================================= -->
 <section class="neofetch" id="systems">
+  <div class="section__doc">
+    <span>DOC <b>04.INFRA</b></span>
+    <span>REV <b>2026.05</b></span>
+    <span class="stamp stamp--ok">PROD · OPERATIONAL</span>
+    <span>FORM <b>SYS-04</b></span>
+    <span>NEOFETCH · DUMP</span>
+  </div>
+
   <div class="section__head">
     <div class="section__slug">
       <span class="ix">// 04</span>
@@ -532,6 +626,14 @@
 <!-- SERVICES                                                       -->
 <!-- ============================================================= -->
 <section class="services" id="services">
+  <div class="section__doc">
+    <span>DOC <b>05.ENDPOINTS</b></span>
+    <span>REV <b>LIVE</b></span>
+    <span class="stamp stamp--red">AUTH REQUIRED</span>
+    <span>FORM <b>EXT-05</b></span>
+    <span>SLA · BEST-EFFORT</span>
+  </div>
+
   <div class="section__head">
     <div class="section__slug">
       <span class="ix">// 05</span>
@@ -561,6 +663,14 @@
 <!-- SPOTIFY WIDGET                                                 -->
 <!-- ============================================================= -->
 <section class="spotify" id="spotify">
+  <div class="section__doc">
+    <span>DOC <b>05.A.AUDIO</b></span>
+    <span>REV <b>30D · ROLLING</b></span>
+    <span class="stamp">APPENDIX A</span>
+    <span>FORM <b>BHV-AUD</b></span>
+    <span>NON-CRITICAL</span>
+  </div>
+
   <div class="section__head">
     <div class="section__slug">
       <span class="ix">// 05.A</span>
@@ -611,14 +721,16 @@
     </div>
     <div class="foot__cols">
       <div>
-        <div class="foot__label mono">LUCYA INDUSTRIES</div>
+        <div class="foot__label mono">LUCYA INDUSTRIES<span class="reg">®</span></div>
         <div class="mono small dim">ルシア・インダストリーズ 株式会社</div>
-        <div class="mono small dim">EST. 2007 · DE-BY</div>
+        <div class="mono small dim">EST. 2007 · DE-BY · NODE 01</div>
+        <div class="mono small dim">REG. NO. 0451-LUC</div>
       </div>
       <div>
         <div class="foot__label mono">LEGAL</div>
-        <div class="mono small dim">All logos belong to their respective owners.</div>
-        <div class="mono small dim">No cookies. No tracking.</div>
+        <div class="mono small dim">All marks &amp; logos<span class="tm">™</span> belong to their respective holders.</div>
+        <div class="mono small dim">No cookies. No tracking. No telemetry.</div>
+        <div class="mono small dim">Unauthorized retransmission prohibited.</div>
         <div class="mono small foot__legal-links">
           <a href="legal.html">Impressum</a>
           <span class="dim"> · </span>
@@ -631,13 +743,14 @@
           <span class="dot dot--ok"></span> <span>operational</span>
         </div>
         <div class="mono small dim" id="footTime">CET 00:00:00 · 通信中</div>
+        <div class="mono small dim">UPLINK · NODE-01 · NOMINAL</div>
       </div>
     </div>
     <div class="foot__rule"></div>
     <div class="foot__tiny mono">
-      <span>© lucya.sh · <span id="thisYear">2026</span></span>
-      <span>handcrafted with monster energy &amp; bad posture</span>
-      <span>// build 2.6.1-stable</span>
+      <span>© LUCYA INDUSTRIES<span class="reg">®</span> <span id="thisYear">2026</span> · ALL RIGHTS RESERVED</span>
+      <span>DOC 0451-LUC · REV 2026.Q2 · CLASSIFIED // INTERNAL</span>
+      <span>// BUILD 2.6.1-STABLE · KERNEL 6.8.0-LUCYA</span>
     </div>
   </div>
 </footer>

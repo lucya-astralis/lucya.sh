@@ -799,6 +799,19 @@
     }, INTERVAL_MS);
   }
 
+  // ---------- TICKER : seamless loop -----------------------------
+  const tickerTrack = document.getElementById('tickerTrack');
+  if (tickerTrack) {
+    tickerTrack.innerHTML += tickerTrack.innerHTML;
+    const days = document.getElementById('countdownDays');
+    if (days) {
+      tickerTrack.querySelectorAll('#tickerDays').forEach((el, i) => {
+        el.id = i ? '' : 'tickerDays';
+        el.textContent = days.textContent;
+      });
+    }
+  }
+
   // ---------- UPTIME STAT ----------------------------------------
   const uptime = document.getElementById('uptimeStat');
   if (uptime) {
