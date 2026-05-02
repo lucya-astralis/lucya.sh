@@ -3,14 +3,13 @@
 
   "ticker": [
     { "tag": "SYS",   "text": "aoi.inter-astra.local · uptime 03d 23h 33m" },
-    { "tag": "OPS",   "text": "10/10 services nominal · SLA 99.97%" },
+    { "tag": "OPS",   "text": "15/15 services nominal · SLA 99.97%" },
     { "tag": "NET",   "text": "uplink NODE-01 · 802.11ac · 98% signal" },
-    { "tag": "NOW",   "text": "rotation · H.E.R — Tearz" },
-    { "tag": "BUILD", "text": "lucya.sh @ 2.6.1-stable · kernel 6.8.0-LUCYA" },
-    { "tag": "FUEL",  "text": "monster reserves · 87% · resupply scheduled" },
-    { "tag": "BCN",   "text": "astra.express · all flights nominal · CMDR 310217" },
+    { "tag": "SYS",   "text": "Try Michaelsoft Binbows · new release available" },
+    { "tag": "BUILD", "text": "astraOS @ 11-stable · kernel 6.8.0" },
+    { "tag": "FUEL",  "text": "monster reserves · 67% · resupply scheduled" },
+    { "tag": "BCN",   "text": "astral.express · all systems nominal · CMDR 310217" },
     { "tag": "JP",    "text": "通信中・全システム稼働中・異常なし" },
-    { "tag": "NOTE",  "text": "coffee.dispenser offline since 09:14 · low priority" },
     { "tag": "CAL",   "text": "JP trip · あと {japanDays}日" }
   ],
 
@@ -45,14 +44,13 @@
   ],
 
   "spec": [
-    { "k": "DESIGNATION",   "v": "LUC-0451" },
+    { "k": "DESIGNATION",   "v": "LUC-Y4" },
     { "k": "OPERATING SYS", "v": "POSIX · multi" },
     { "k": "PRIMARY LANG",  "v": "DE / EN" },
     { "k": "DISTRO PREFS",  "v": "Arch · Debian · Fedora" },
     { "k": "SHELL",         "v": "zsh / fish" },
     { "k": "EDITOR",        "v": "nano / VIM" },
     { "k": "KEYBOARD",      "v": "ISO · 65%" },
-    { "k": "FAV ANIME",      "v": "Evangelion / Frieren" },    
-    { "k": "INSTANCES",     "v": "1 of 1" }
+    { "k": "FAV ANIME",      "v": "Evangelion / Frieren" }    
   ]
 }
