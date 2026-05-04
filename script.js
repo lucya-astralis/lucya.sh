@@ -1,5 +1,5 @@
 /* ================================================================
-   LUCYA // lucya.dev  —  interactions
+   LUCYA // lucya.sh  —  interactions
    ================================================================ */
 
 (() => {
@@ -54,8 +54,8 @@
     const lines = [
       ['OK',   'LUCYA-CORE // COLD BOOT'],
       ['OK',   'MOUNTING /dev/sigil'],
-      ['OK',   'LOAD KERNEL 6.8.0-LUCYA'],
-      ['WAIT', 'HANDSHAKE · NODE-01'],
+      ['OK',   'LOAD KERNEL 7.0.1'],
+      ['WAIT', 'HANDSHAKE · ATLAS'],
       ['OK',   'AUTH KEYRING · LUCYA@CORE'],
       ['OK',   'NET · SECURE CHANNEL UP'],
       ['OK',   'LOADING RITUAL ASSETS'],
@@ -318,9 +318,9 @@
 
   // ---------- DOMAINS --------------------------------------------
   const domains = [
-    ['lucya.dev',          'lucya_logo_text.svg',     'Personal homepage · identity hub',    'PRIMARY', true, 'logo'],
+    ['lucya.sh',          'lucya_logo_text.svg',     'Personal homepage · identity hub',    'PRIMARY', true, 'logo'],
     ['aizaku.com',         'aizaku.com.svg',          'Deffence industry',                   'ACTIVE',  true],
-    ['astraos.app',        'astraos.app.svg',         'AstraOS — main product site',         'ACTIVE',  true],
+    ['astraos.app',        'astraos.app.svg',         'AstraOS · main product site',         'ACTIVE',  true],
     ['beta.astraos.app',   'beta.astraos.app.svg',    'AstraOS public beta portal',          'ACTIVE',  true],
     ['status.astraos.app', 'status.astraos.app.svg',  'System status · uptime monitor',      'ACTIVE',  true],
     ['binbows.net',        'binbows.net.svg',         'Official Binbows site',               'ACTIVE',  true],
@@ -799,10 +799,94 @@
     }, INTERVAL_MS);
   }
 
+  // ---------- TICKER : seamless loop (fallback duplication) -------
+  // duplicates the static HTML so the loop works even if data.json fails.
+  // data.json loader (below) overwrites with live content if available.
+  const tickerTrack = document.getElementById('tickerTrack');
+  if (tickerTrack) {
+    tickerTrack.innerHTML += tickerTrack.innerHTML;
+    const days = document.getElementById('countdownDays');
+    if (days) {
+      tickerTrack.querySelectorAll('#tickerDays').forEach((el, i) => {
+        el.id = i ? '' : 'tickerDays';
+        el.textContent = days.textContent;
+      });
+    }
+  }
+
+  // ---------- DATA.JSON : single source of truth -----------------
+  const escHtml = (s) => String(s).replace(/[&<>"']/g, c => (
+    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
+  ));
+  const daysUntil = (target) => {
+    const t = new Date(target);
+    return Math.max(0, Math.ceil((t - new Date()) / 86400000));
+  };
+  const yearsMonthsSince = (since) => {
+    const s = new Date(since);
+    const now = new Date();
+    let y = now.getFullYear() - s.getFullYear();
+    let m = now.getMonth() - s.getMonth();
+    if (now.getDate() < s.getDate()) m--;
+    if (m < 0) { y--; m += 12; }
+    return `${y}y ${String(m).padStart(2, '0')}m`;
+  };
+
+  fetch('data.json', { cache: 'no-cache' })
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(data => {
+      // -- KPIs --
+      if (Array.isArray(data.kpis)) {
+        for (const kpi of data.kpis) {
+          const el = document.querySelector(`.kpi[data-kpi="${kpi.key}"]`);
+          if (!el) continue;
+          const valEl = el.querySelector('[data-kpi-value]');
+          const labEl = el.querySelector('.kpi__label');
+          const subEl = el.querySelector('.kpi__sub');
+          if (kpi.label && labEl) labEl.textContent = kpi.label;
+          if (kpi.sub && subEl) subEl.textContent = kpi.sub;
+          if (subEl) {
+            subEl.classList.toggle('kpi__sub--ok', kpi.subClass === 'ok');
+          }
+          if (!valEl) continue;
+          if (kpi.since) {
+            valEl.textContent = yearsMonthsSince(kpi.since);
+          } else if (kpi.target) {
+            const d = daysUntil(kpi.target);
+            valEl.innerHTML = `${d} <em>${escHtml(kpi.unit || 'd')}</em>`;
+          } else if (kpi.value !== undefined) {
+            valEl.textContent = kpi.value;
+          }
+        }
+      }
+
+      // -- TICKER --
+      if (tickerTrack && Array.isArray(data.ticker)) {
+        const japanKpi = (data.kpis || []).find(k => k && k.target);
+        const japanDays = japanKpi ? daysUntil(japanKpi.target) : '';
+        const items = data.ticker.map(t => {
+          const text = (t.text || '').replaceAll('{japanDays}', japanDays);
+          const tag = t.tag ? `<b>${escHtml(t.tag)}</b> ` : '';
+          return `<span class="ticker__item">${tag}${escHtml(text)}</span><span class="ticker__sep">◇</span>`;
+        }).join('');
+        tickerTrack.innerHTML = items + items;
+      }
+
+      // -- SPEC SHEET --
+      const specList = document.querySelector('.specsheet__list');
+      if (specList && Array.isArray(data.spec)) {
+        specList.innerHTML = data.spec.map(({ k, v }) => {
+          const value = escHtml(v).replace(/\n/g, '<br/>');
+          return `<div class="specsheet__row"><dt>${escHtml(k)}</dt><dd>${value}</dd></div>`;
+        }).join('');
+      }
+    })
+    .catch(err => console.warn('[lucya] data.json unavailable, using fallback HTML', err));
+
   // ---------- UPTIME STAT ----------------------------------------
   const uptime = document.getElementById('uptimeStat');
   if (uptime) {
-    const born = new Date(2007, 11, 1);
+    const born = new Date(2007, 8, 26);
     const now = new Date();
     let years = now.getFullYear() - born.getFullYear();
     let months = now.getMonth() - born.getMonth();

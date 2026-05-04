@@ -1,0 +1,56 @@
+{
+  "_": "Edit this file to update ticker / kpis / spec. Reload = applied. UPTIME and JAPAN are computed live from anchor dates.",
+
+  "ticker": [
+    { "tag": "SYS",   "text": "aoi.inter-astra.local · uptime 03d 23h 33m" },
+    { "tag": "OPS",   "text": "15/15 services nominal · SLA 99.97%" },
+    { "tag": "NET",   "text": "uplink NODE-01 · 802.11ac · 98% signal" },
+    { "tag": "SYS",   "text": "Try Michaelsoft Binbows · new release available" },
+    { "tag": "BUILD", "text": "astraOS @ 11-stable · kernel 6.8.0" },
+    { "tag": "FUEL",  "text": "monster reserves · 67% · resupply scheduled" },
+    { "tag": "BCN",   "text": "astral.express · all systems nominal · CMDR 310217" },
+    { "tag": "JP",    "text": "通信中・全システム稼働中・異常なし" },
+    { "tag": "CAL",   "text": "JP trip · あと {japanDays}日" }
+  ],
+
+  "kpis": [
+    {
+      "key":   "uptime",
+      "label": "UPTIME",
+      "since": "2007-08-26",
+      "sub":   "SINCE 2007 · CONTINUOUS"
+    },
+    {
+      "key":      "services",
+      "label":    "SERVICES",
+      "value":    "15 / 15",
+      "sub":      "NOMINAL · SLA 99.97%",
+      "subClass": "ok"
+    },
+    {
+      "key":      "japan",
+      "label":    "JAPAN",
+      "target":   "2026-08-10",
+      "unit":     "d",
+      "sub":      "TRIP · 2026-08-10",
+      "subClass": "ok"
+    },
+    {
+      "key":   "domains",
+      "label": "DOMAINS OWNED",
+      "value": "19",
+      "sub":   "REGISTERED · ACTIVE"
+    }
+  ],
+
+  "spec": [
+    { "k": "DESIGNATION",   "v": "LUC-Y4" },
+    { "k": "OPERATING SYS", "v": "MacOS / Linux" },
+    { "k": "PRIMARY LANG",  "v": "DE / EN" },
+    { "k": "DISTRO PREFS",  "v": "Arch · Debian · Fedora" },
+    { "k": "SHELL",         "v": "zsh / fish" },
+    { "k": "EDITOR",        "v": "nano / VIM" },
+    { "k": "KEYBOARD",      "v": "ISO · 65%" },
+    { "k": "FAV ANIME",      "v": "Evangelion / Frieren" }    
+  ]
+}

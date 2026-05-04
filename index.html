@@ -16,7 +16,7 @@
 
 <!-- Icons -->
 <link rel="icon" type="image/svg+xml" href="images/logo/lucya_logo.svg" />
-<link rel="apple-touch-icon" href="images/profile/pfp/pfp.png" />
+<link rel="apple-touch-icon" href="images/logo/lucya_logo.svg" />
 <link rel="mask-icon" href="images/logo/lucya_logo.svg" color="#0d1117" />
 
 <!-- Open Graph -->
@@ -25,8 +25,8 @@
 <meta property="og:title" content="LUCYA // LUCYA.SH" />
 <meta property="og:description" content="Personal site of lucya, an IT apprentice and sysadmin, Homelabs, servers, retro tech, space, anime and creative web projects." />
 <meta property="og:url" content="https://lucya.sh/" />
-<meta property="og:image" content="https://lucya.sh/images/profile/pfp/pfp.png" />
-<meta property="og:image:alt" content="lucya — profile portrait" />
+<meta property="og:image" content="https://lucya.sh/images/card.png" />
+<meta property="og:image:alt" content="lucya - personal website" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:locale:alternate" content="ja_JP" />
 <meta property="og:locale:alternate" content="de_DE" />
@@ -35,11 +35,12 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="LUCYA // LUCYA.SH" />
 <meta name="twitter:description" content="Personal site of lucya, an IT apprentice and sysadmin, Homelabs, servers, retro tech, space, anime and creative web projects." />
-<meta name="twitter:image" content="https://lucya.sh/images/profile/pfp/pfp.png" />
-<meta name="twitter:image:alt" content="lucya — profile portrait" />
+<meta name="twitter:image" content="https://lucya.sh/images/card.png" />
+<meta name="twitter:image:alt" content="lucya - personal website" />
 
 <!-- Resource hints -->
 <link rel="preload" href="styles.css" as="style" />
+<link rel="preload" href="data.json" as="fetch" crossorigin="anonymous" />
 <link rel="stylesheet" href="styles.css" />
 
 <!-- Structured data: Person + WebSite -->
@@ -86,7 +87,7 @@
 
   <div class="splash__grid">
     <div class="splash__corner splash__corner--tl">
-      <span class="tag">LUCYA-SYS // V4.21.0</span>
+      <span class="tag">LUCYA-SYSTEMS<span class="reg">®</span> CORE // V4.21.0</span>
       <span class="tag tag--dim" id="splashSession">SESSION · ————————</span>
     </div>
     <div class="splash__corner splash__corner--tr">
@@ -94,7 +95,7 @@
       <span class="tag tag--dim">ルシア・システム</span>
     </div>
     <div class="splash__corner splash__corner--bl">
-      <span class="tag tag--dim">NODE 01 · CET · GEOFENCE DE-BY</span>
+      <span class="tag tag--dim">ATLAS · CET · GEOFENCE DE-BY</span>
     </div>
     <div class="splash__corner splash__corner--br">
       <span class="tag tag--warn">起動中 / BOOTING</span>
@@ -107,12 +108,12 @@
   <div class="splash__bottom">
     <div class="splash__progress">
       <div class="splash__progress-head">
-        <span class="splash__progress-label">INITIALIZING SIGIL</span>
+        <span class="splash__progress-label">INITIALIZING CORE SYSTEM</span>
         <span class="splash__progress-pct" id="splashProgress">00%</span>
       </div>
       <div class="splash__progress-bar"><div class="splash__progress-fill" id="splashProgressFill"></div></div>
       <div class="splash__progress-foot">
-        <span>KERNEL 6.8.0-LUCYA</span>
+        <span>KERNEL 7.0.1</span>
         <span class="jp">システム起動中・・・</span>
       </div>
     </div>
@@ -168,7 +169,7 @@
       </div>
     </div>
     <div class="splash__label" data-text="LUCYA">
-      <span>LUCYA</span>
+      <span>LUCYA SYSTEMS</span>
       <span class="jp">ルシア・システムズ</span>
     </div>
   </div>
@@ -199,6 +200,100 @@
   </div>
 </header>
 
+<!-- ============================================================= -->
+<!-- LIVE TICKER                                                    -->
+<!-- ============================================================= -->
+<div class="ticker" role="presentation" aria-hidden="true">
+  <div class="ticker__label">
+    <span class="dot dot--ok"></span>
+    <span>LIVE FEED · 中継</span>
+  </div>
+  <div class="ticker__viewport">
+    <div class="ticker__track" id="tickerTrack">
+      <!-- duplicated by JS for seamless loop -->
+      <span class="ticker__item"><b>SYS</b> aoi.inter-astra.local · uptime 03d 23h 33m</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>OPS</b> 10/10 services nominal · last incident 47d ago</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>NET</b> uplink ATLAS · 802.11ac · 98% signal</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>NOW</b> rotation · H.E.R — Tearz</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>BUILD</b> lucya.sh @ 2.6.1-stable · kernel 7.0.1</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>FUEL</b> monster reserves · 87% · resupply scheduled</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>BCN</b> astra.express · all flights nominal · CMDR 310217</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>JP</b> 通信中・全システム稼働中・異常なし</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>NOTE</b> coffee.dispenser offline since 09:14 · low priority</span>
+      <span class="ticker__sep">◇</span>
+      <span class="ticker__item"><b>CAL</b> next event · あと <span id="tickerDays">114</span>日</span>
+      <span class="ticker__sep">◇</span>
+    </div>
+  </div>
+  <div class="ticker__tag">
+    <span class="mono">FEED · #01</span>
+  </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- DOCUMENT CONTROL STRIP                                         -->
+<!-- ============================================================= -->
+<div class="docstrip" role="presentation">
+  <div class="docstrip__inner">
+    <span class="docstrip__cls">CLASSIFIED // INTERNAL</span>
+    <span>DOC <b>0451-LUC</b></span>
+    <span>FILE <b>PERSONNEL.DOSSIER</b></span>
+    <span class="docstrip__rev">REV <b>2026.Q2</b></span>
+    <span class="docstrip__sp"></span>
+    <span>HOLDER <b>LUCYA@CORE</b></span>
+    <span>ATLAS · CET · DE-BY</span>
+    <span>PAGE 01 / 05</span>
+  </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- KPI STRIP — annual-report style                                -->
+<!-- ============================================================= -->
+<aside class="kpibar" aria-label="key metrics">
+  <div class="kpibar__inner">
+    <div class="kpibar__head mono">
+      <span>LUCYA SYSTEMS<span class="reg">®</span> · KEY METRICS</span>
+      <span class="dim">FY26 · UNAUDITED · REALTIME DATA</span>
+    </div>
+    <div class="kpibar__grid" id="kpiGrid">
+      <!-- populated from data.json — fallback values below render if fetch fails -->
+      <div class="kpi" data-kpi="uptime">
+        <span class="kpi__label mono">UPTIME</span>
+        <span class="kpi__value" data-kpi-value>18y —m</span>
+        <span class="kpi__sub mono">SINCE 2007 · CONTINUOUS</span>
+      </div>
+      <div class="kpi" data-kpi="services">
+        <span class="kpi__label mono">SERVICES</span>
+        <span class="kpi__value" data-kpi-value>15 / 15</span>
+        <span class="kpi__sub mono kpi__sub--ok">NOMINAL · SLA 99.97%</span>
+      </div>
+      <div class="kpi" data-kpi="japan">
+        <span class="kpi__label mono">JAPAN</span>
+        <span class="kpi__value" data-kpi-value>— <em>d</em></span>
+        <span class="kpi__sub mono kpi__sub--ok">TRIP · 2026-08-10</span>
+      </div>
+      <div class="kpi" data-kpi="domains">
+        <span class="kpi__label mono">DOMAINS OWNED</span>
+        <span class="kpi__value" data-kpi-value>17</span>
+        <span class="kpi__sub mono">REGISTERED · ACTIVE</span>
+      </div>
+    </div>
+    <div class="kpibar__foot mono">
+      <span>// FIGURES ARE LIVE · COMPUTED CLIENT-SIDE</span>
+      <span>// ALL DATA STORED LOCALLY · NO TELEMETRY</span>
+      <span>FORM <b>KPI-A · REV 2026.Q2</b></span>
+    </div>
+  </div>
+</aside>
+
 
 <!-- ============================================================= -->
 <!-- HERO / PROFILE                                                 -->
@@ -208,6 +303,14 @@
 <section class="hero" id="profile">
   <div class="section__bg"></div>
 
+  <div class="section__doc">
+    <span>DOC <b>01.IDENTITY</b></span>
+    <span>REV <b>2026.05</b></span>
+    <span class="stamp stamp--ok">VERIFIED</span>
+    <span>SUBJECT <b>LUC-Y4</b></span>
+    <span>FORM <b>P-01A</b></span>
+  </div>
+
   <div class="section__head">
     <div class="section__slug">
       <span class="ix">// 01</span>
@@ -216,7 +319,7 @@
     </div>
     <div class="section__meta">
       <span class="mono">DIV. IDENTITY · CLEARANCE C-3</span>
-      <span class="mono">FILE / PROFILE</span>
+      <span class="mono">FILE / PROFILE.DAT</span>
     </div>
   </div>
 
@@ -318,26 +421,82 @@
         <span class="jp-line">ネットワークの狭間で、システムを構築し、壊し、再び立ち上げる。</span>
       </p>
 
-      <div class="hero__stats">
-        <div class="stat">
-          <span class="stat__label">DIVISION</span>
-          <span class="stat__value">SYS / OPS</span>
-          <span class="stat__jp">システム運用</span>
+      <div class="hero__lower">
+        <div class="hero__stats">
+          <div class="stat">
+            <span class="stat__label">DIVISION</span>
+            <span class="stat__value">SYS / OPS</span>
+            <span class="stat__jp">システム運用</span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">LOCATION</span>
+            <span class="stat__value">DE · BY</span>
+            <span class="stat__jp">ババリア</span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">UPTIME</span>
+            <span class="stat__value" id="uptimeStat">18y 00m</span>
+            <span class="stat__jp">稼働時間</span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">FUEL</span>
+            <span class="stat__value">MONSTER</span>
+            <span class="stat__jp">エナジー</span>
+          </div>
         </div>
-        <div class="stat">
-          <span class="stat__label">LOCATION</span>
-          <span class="stat__value">DE · BY</span>
-          <span class="stat__jp">ババリア</span>
-        </div>
-        <div class="stat">
-          <span class="stat__label">UPTIME</span>
-          <span class="stat__value" id="uptimeStat">18y 00m</span>
-          <span class="stat__jp">稼働時間</span>
-        </div>
-        <div class="stat">
-          <span class="stat__label">FUEL</span>
-          <span class="stat__value">MONSTER</span>
-          <span class="stat__jp">エナジー</span>
+
+        <!-- SPEC SHEET PANEL — datasheet for the specimen -->
+        <div class="specsheet" aria-label="specimen profile">
+          <div class="specsheet__head mono">
+            <span>SPECIMEN PROFILE</span>
+            <span class="specsheet__cls">FORM <b>SP-01</b></span>
+          </div>
+          <dl class="specsheet__list mono">
+            <div class="specsheet__row">
+              <dt>DESIGNATION</dt>
+              <dd>LUC-0451</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>GENERATION</dt>
+              <dd>18 cycles</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>OPERATING SYS</dt>
+              <dd>POSIX · multi</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>PRIMARY LANG</dt>
+              <dd>DE / EN / JP*</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>DISTRO PREFS</dt>
+              <dd>Arch · Debian</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>SHELL</dt>
+              <dd>zsh / bash</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>EDITOR</dt>
+              <dd>neovim</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>KEYBOARD</dt>
+              <dd>ANSI · 65%</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>HABITAT</dt>
+              <dd>homelab · 22°C</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>FAILURE MODES</dt>
+              <dd>caffeine deprivation<br/>silence &gt; 30s</dd>
+            </div>
+            <div class="specsheet__row">
+              <dt>INSTANCES</dt>
+              <dd>1 of 1</dd>
+            </div>
+          </dl>
         </div>
       </div>
 
@@ -358,6 +517,14 @@
 <!-- ABOUT                                                          -->
 <!-- ============================================================= -->
 <section class="about" id="about">
+  <div class="section__doc">
+    <span>DOC <b>02.PERSONNEL</b></span>
+    <span>REV <b>2026.05</b></span>
+    <span class="stamp">REDACTED · 2 LINES</span>
+    <span>FORM <b>P-02B</b></span>
+    <span>EYES ONLY</span>
+  </div>
+
   <div class="section__head">
     <div class="section__slug">
       <span class="ix">// 02</span>
@@ -426,6 +593,14 @@
 <!-- INTERESTS + FUN FACTS                                          -->
 <!-- ============================================================= -->
 <section class="interests" id="interests">
+  <div class="section__doc">
+    <span>DOC <b>03.CULTURE</b></span>
+    <span>REV <b>2026.05</b></span>
+    <span class="stamp stamp--ok">INDEXED · 05 ENTRIES</span>
+    <span>FORM <b>BHV-03</b></span>
+    <span>OBSERVED · 18Y</span>
+  </div>
+
   <div class="section__head">
     <div class="section__slug">
       <span class="ix">// 03</span>
@@ -477,7 +652,7 @@
       <li><span class="fx">02</span> Listens to music 24/7, silence is not an option</li>
       <li><span class="fx">03</span> Likes minimal chaos, controlled complexity</li>
       <li><span class="fx">04</span> POSIX enthusiast</li>
-      <li><span class="fx">05</span> CEO of inter-astra corp — a fictional megacorp</li>
+      <li><span class="fx">05</span> CEO of inter-astra corp, a fictional megacorp</li>
       <li><span class="fx">06</span> Blahaj owner, certified.</li>
     </ul>
   </div>
@@ -488,6 +663,14 @@
 <!-- 88x31 BUTTONS                                                  -->
 <!-- ============================================================= -->
 <section class="buttons" id="buttons">
+  <div class="section__doc">
+    <span>DOC <b>03.A.ARCHIVE</b></span>
+    <span>REV <b>ROLLING</b></span>
+    <span class="stamp">EXHIBIT A</span>
+    <span>FORMAT <b>88×31 · GIF/PNG</b></span>
+    <span>NON-CANONICAL</span>
+  </div>
+
   <div class="section__head">
     <div class="section__slug">
       <span class="ix">// 03.A</span>
@@ -513,6 +696,14 @@
 <!-- NEOFETCH COLLECTION                                            -->
 <!-- ============================================================= -->
 <section class="neofetch" id="systems">
+  <div class="section__doc">
+    <span>DOC <b>04.INFRA</b></span>
+    <span>REV <b>2026.05</b></span>
+    <span class="stamp stamp--ok">PROD · OPERATIONAL</span>
+    <span>FORM <b>SYS-04</b></span>
+    <span>NEOFETCH · SYSTEM INFO</span>
+  </div>
+
   <div class="section__head">
     <div class="section__slug">
       <span class="ix">// 04</span>
@@ -520,7 +711,7 @@
       <span class="jp">システム一覧</span>
     </div>
     <div class="section__meta">
-      <span class="mono">NEOFETCH · TERMINAL DUMP</span>
+      <span class="mono">NEOFETCH · SYSTEM INFO</span>
     </div>
   </div>
 
@@ -532,6 +723,14 @@
 <!-- SERVICES                                                       -->
 <!-- ============================================================= -->
 <section class="services" id="services">
+  <div class="section__doc">
+    <span>DOC <b>05.ENDPOINTS</b></span>
+    <span>REV <b>LIVE</b></span>
+    <span class="stamp stamp--red">AUTH REQUIRED</span>
+    <span>FORM <b>EXT-05</b></span>
+    <span>SLA · BEST-EFFORT</span>
+  </div>
+
   <div class="section__head">
     <div class="section__slug">
       <span class="ix">// 05</span>
@@ -561,6 +760,14 @@
 <!-- SPOTIFY WIDGET                                                 -->
 <!-- ============================================================= -->
 <section class="spotify" id="spotify">
+  <div class="section__doc">
+    <span>DOC <b>05.A.AUDIO</b></span>
+    <span>REV <b>30D · ROLLING</b></span>
+    <span class="stamp">APPENDIX A</span>
+    <span>FORM <b>BHV-AUD</b></span>
+    <span>NON-CRITICAL</span>
+  </div>
+
   <div class="section__head">
     <div class="section__slug">
       <span class="ix">// 05.A</span>
@@ -611,14 +818,16 @@
     </div>
     <div class="foot__cols">
       <div>
-        <div class="foot__label mono">LUCYA INDUSTRIES</div>
+        <div class="foot__label mono">LUCYA SYSTEMS<span class="reg">®</span></div>
         <div class="mono small dim">ルシア・インダストリーズ 株式会社</div>
-        <div class="mono small dim">EST. 2007 · DE-BY</div>
+        <div class="mono small dim">EST. 2007 · DE-BY · ATLAS</div>
+        <div class="mono small dim">REG. NO. 0451-LUC</div>
       </div>
       <div>
         <div class="foot__label mono">LEGAL</div>
-        <div class="mono small dim">All logos belong to their respective owners.</div>
-        <div class="mono small dim">No cookies. No tracking.</div>
+        <div class="mono small dim">All marks &amp; logos<span class="tm">™</span> belong to their respective holders.</div>
+        <div class="mono small dim">No cookies. No tracking. No telemetry.</div>
+        <div class="mono small dim">Unauthorized retransmission prohibited.</div>
         <div class="mono small foot__legal-links">
           <a href="legal.html">Impressum</a>
           <span class="dim"> · </span>
@@ -631,13 +840,14 @@
           <span class="dot dot--ok"></span> <span>operational</span>
         </div>
         <div class="mono small dim" id="footTime">CET 00:00:00 · 通信中</div>
+        <div class="mono small dim">UPLINK · ATLAS · NOMINAL</div>
       </div>
     </div>
     <div class="foot__rule"></div>
     <div class="foot__tiny mono">
-      <span>© lucya.sh · <span id="thisYear">2026</span></span>
-      <span>handcrafted with monster energy &amp; bad posture</span>
-      <span>// build 2.6.1-stable</span>
+      <span>© LUCYA SYSTEMS<span class="reg">®</span> <span id="thisYear">2026</span> · ALL RIGHTS RESERVED</span>
+      <span>DOC 0451-LUC · REV 2026.Q2 · CLASSIFIED // INTERNAL</span>
+      <span>// BUILD 2.6.1-STABLE · KERNEL 7.0.1</span>
     </div>
   </div>
 </footer>
