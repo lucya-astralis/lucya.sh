@@ -38,14 +38,14 @@
     {
       "key":   "domains",
       "label": "DOMAINS OWNED",
-      "value": "17",
+      "value": "19",
       "sub":   "REGISTERED · ACTIVE"
     }
   ],
 
   "spec": [
     { "k": "DESIGNATION",   "v": "LUC-Y4" },
-    { "k": "OPERATING SYS", "v": "POSIX · multi" },
+    { "k": "OPERATING SYS", "v": "MacOS / Linux" },
     { "k": "PRIMARY LANG",  "v": "DE / EN" },
     { "k": "DISTRO PREFS",  "v": "Arch · Debian · Fedora" },
     { "k": "SHELL",         "v": "zsh / fish" },

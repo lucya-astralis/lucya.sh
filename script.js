@@ -1,5 +1,5 @@
 /* ================================================================
-   LUCYA // lucya.dev  —  interactions
+   LUCYA // lucya.sh  —  interactions
    ================================================================ */
 
 (() => {
@@ -318,9 +318,9 @@
 
   // ---------- DOMAINS --------------------------------------------
   const domains = [
-    ['lucya.dev',          'lucya_logo_text.svg',     'Personal homepage · identity hub',    'PRIMARY', true, 'logo'],
+    ['lucya.sh',          'lucya_logo_text.svg',     'Personal homepage · identity hub',    'PRIMARY', true, 'logo'],
     ['aizaku.com',         'aizaku.com.svg',          'Deffence industry',                   'ACTIVE',  true],
-    ['astraos.app',        'astraos.app.svg',         'AstraOS — main product site',         'ACTIVE',  true],
+    ['astraos.app',        'astraos.app.svg',         'AstraOS · main product site',         'ACTIVE',  true],
     ['beta.astraos.app',   'beta.astraos.app.svg',    'AstraOS public beta portal',          'ACTIVE',  true],
     ['status.astraos.app', 'status.astraos.app.svg',  'System status · uptime monitor',      'ACTIVE',  true],
     ['binbows.net',        'binbows.net.svg',         'Official Binbows site',               'ACTIVE',  true],
@@ -886,7 +886,7 @@
   // ---------- UPTIME STAT ----------------------------------------
   const uptime = document.getElementById('uptimeStat');
   if (uptime) {
-    const born = new Date(2007, 11, 1);
+    const born = new Date(2007, 8, 26);
     const now = new Date();
     let years = now.getFullYear() - born.getFullYear();
     let months = now.getMonth() - born.getMonth();
