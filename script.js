@@ -54,8 +54,8 @@
     const lines = [
       ['OK',   'LUCYA-CORE // COLD BOOT'],
       ['OK',   'MOUNTING /dev/sigil'],
-      ['OK',   'LOAD KERNEL 6.8.0-LUCYA'],
-      ['WAIT', 'HANDSHAKE · NODE-01'],
+      ['OK',   'LOAD KERNEL 7.0.1'],
+      ['WAIT', 'HANDSHAKE · ATLAS'],
       ['OK',   'AUTH KEYRING · LUCYA@CORE'],
       ['OK',   'NET · SECURE CHANNEL UP'],
       ['OK',   'LOADING RITUAL ASSETS'],
