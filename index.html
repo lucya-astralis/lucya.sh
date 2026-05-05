@@ -308,6 +308,9 @@
 <!-- ============================================================= -->
 <main id="top">
 
+<div class="layout">
+<div class="layout__main">
+
 <section class="hero" id="profile">
   <div class="section__bg"></div>
 
@@ -668,6 +671,72 @@
 
 
 <!-- ============================================================= -->
+<!-- NEOFETCH COLLECTION                                            -->
+<!-- ============================================================= -->
+<section class="neofetch" id="systems">
+  <div class="section__doc">
+    <span>DOC <b>04.INFRA</b></span>
+    <span>REV <b>2026.05</b></span>
+    <span class="stamp stamp--ok">PROD · OPERATIONAL</span>
+    <span>FORM <b>SYS-04</b></span>
+    <span>NEOFETCH · SYSTEM INFO</span>
+  </div>
+
+  <div class="section__head">
+    <div class="section__slug">
+      <span class="ix">// 04</span>
+      <span class="name">SYSTEMS</span>
+      <span class="jp">システム一覧</span>
+    </div>
+    <div class="section__meta">
+      <span class="mono">NEOFETCH · SYSTEM INFO</span>
+    </div>
+  </div>
+
+  <div class="neofetch__tabs" role="tablist" id="nTabs"></div>
+  <div class="neofetch__panes" id="nPanes"></div>
+</section>
+
+<!-- ============================================================= -->
+<!-- SERVICES                                                       -->
+<!-- ============================================================= -->
+<section class="services" id="services">
+  <div class="section__doc">
+    <span>DOC <b>05.ENDPOINTS</b></span>
+    <span>REV <b>LIVE</b></span>
+    <span class="stamp stamp--red">AUTH REQUIRED</span>
+    <span>FORM <b>EXT-05</b></span>
+    <span>SLA · BEST-EFFORT</span>
+  </div>
+
+  <div class="section__head">
+    <div class="section__slug">
+      <span class="ix">// 05</span>
+      <span class="name">SERVICES</span>
+      <span class="jp">運用中サービス</span>
+    </div>
+    <div class="section__meta">
+      <span class="mono">EXTERNAL ENDPOINTS · AUTH REQUIRED</span>
+    </div>
+  </div>
+
+  <a class="services__hv" href="https://status.astraos.app" target="_blank" rel="noopener">
+    <span class="services__hv-label mono">
+      <span class="dot dot--ok"></span>
+      SYSTEMS · システム
+    </span>
+    <img class="services__hv-badge" src="https://status.astraos.app/api/badge/1/uptime" alt="hypervisor uptime" />
+  </a>
+
+  <div class="domains__grid" id="domainGrid">
+    <!-- populated by JS -->
+  </div>
+</section>
+
+</div><!-- /layout__main -->
+<div class="layout__side">
+
+<!-- ============================================================= -->
 <!-- 88x31 BUTTONS                                                  -->
 <!-- ============================================================= -->
 <section class="buttons" id="buttons">
@@ -699,32 +768,52 @@
   </div>
 </section>
 
-
 <!-- ============================================================= -->
-<!-- NEOFETCH COLLECTION                                            -->
+<!-- SPOTIFY WIDGET                                                 -->
 <!-- ============================================================= -->
-<section class="neofetch" id="systems">
+<section class="spotify" id="spotify">
   <div class="section__doc">
-    <span>DOC <b>04.INFRA</b></span>
-    <span>REV <b>2026.05</b></span>
-    <span class="stamp stamp--ok">PROD · OPERATIONAL</span>
-    <span>FORM <b>SYS-04</b></span>
-    <span>NEOFETCH · SYSTEM INFO</span>
+    <span>DOC <b>05.A.AUDIO</b></span>
+    <span>REV <b>30D · ROLLING</b></span>
+    <span class="stamp">APPENDIX A</span>
+    <span>FORM <b>BHV-AUD</b></span>
+    <span>NON-CRITICAL</span>
   </div>
 
   <div class="section__head">
     <div class="section__slug">
-      <span class="ix">// 04</span>
-      <span class="name">SYSTEMS</span>
-      <span class="jp">システム一覧</span>
+      <span class="ix">// 05.A</span>
+      <span class="name">TOP SONGS</span>
+      <span class="jp">最近のお気に入り</span>
     </div>
     <div class="section__meta">
-      <span class="mono">NEOFETCH · SYSTEM INFO</span>
+      <span class="mono">SPOTIFY · ROTATION · LAST 30D</span>
     </div>
   </div>
 
-  <div class="neofetch__tabs" role="tablist" id="nTabs"></div>
-  <div class="neofetch__panes" id="nPanes"></div>
+  <div class="spotify__card" id="spotifyCard">
+    <div class="spotify__cover">
+      <img id="spotifyCover" src="" alt="album cover" />
+      <div class="spotify__bars"><span></span><span></span><span></span><span></span></div>
+    </div>
+
+    <div class="spotify__meta">
+      <div class="spotify__label mono">
+        <img src="images/profile/sociallinks/spotify_color.svg" alt="" />
+        <span>TOP SONGS · 最近のお気に入り</span>
+        <span class="spotify__counter mono" id="spotifyCounter">01 / 09</span>
+      </div>
+
+      <h3 class="spotify__track" id="spotifyTrack">—</h3>
+      <div class="spotify__artist" id="spotifyArtist">—</div>
+
+      <div class="spotify__dots" id="spotifyDots" aria-hidden="true"></div>
+
+      <div class="spotify__foot mono small dim">
+        rotating · データは仮のものです
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ============================================================= -->
@@ -827,94 +916,8 @@
   <div class="photos__note mono small dim">// Click to expand · ラボの記録</div>
 </section>
 
-<!-- ============================================================= -->
-<!-- SERVICES                                                       -->
-<!-- ============================================================= -->
-<section class="services" id="services">
-  <div class="section__doc">
-    <span>DOC <b>05.ENDPOINTS</b></span>
-    <span>REV <b>LIVE</b></span>
-    <span class="stamp stamp--red">AUTH REQUIRED</span>
-    <span>FORM <b>EXT-05</b></span>
-    <span>SLA · BEST-EFFORT</span>
-  </div>
-
-  <div class="section__head">
-    <div class="section__slug">
-      <span class="ix">// 05</span>
-      <span class="name">SERVICES</span>
-      <span class="jp">運用中サービス</span>
-    </div>
-    <div class="section__meta">
-      <span class="mono">EXTERNAL ENDPOINTS · AUTH REQUIRED</span>
-    </div>
-  </div>
-
-  <a class="services__hv" href="https://status.astraos.app" target="_blank" rel="noopener">
-    <span class="services__hv-label mono">
-      <span class="dot dot--ok"></span>
-      SYSTEMS · システム
-    </span>
-    <img class="services__hv-badge" src="https://status.astraos.app/api/badge/1/uptime" alt="hypervisor uptime" />
-  </a>
-
-  <div class="domains__grid" id="domainGrid">
-    <!-- populated by JS -->
-  </div>
-</section>
-
-
-<!-- ============================================================= -->
-<!-- SPOTIFY WIDGET                                                 -->
-<!-- ============================================================= -->
-<section class="spotify" id="spotify">
-  <div class="section__doc">
-    <span>DOC <b>05.A.AUDIO</b></span>
-    <span>REV <b>30D · ROLLING</b></span>
-    <span class="stamp">APPENDIX A</span>
-    <span>FORM <b>BHV-AUD</b></span>
-    <span>NON-CRITICAL</span>
-  </div>
-
-  <div class="section__head">
-    <div class="section__slug">
-      <span class="ix">// 05.A</span>
-      <span class="name">TOP SONGS</span>
-      <span class="jp">最近のお気に入り</span>
-    </div>
-    <div class="section__meta">
-      <span class="mono">SPOTIFY · ROTATION · LAST 30D</span>
-    </div>
-  </div>
-
-  <div class="spotify__card" id="spotifyCard">
-    <div class="spotify__cover">
-      <img id="spotifyCover" src="" alt="album cover" />
-      <div class="spotify__bars"><span></span><span></span><span></span><span></span></div>
-    </div>
-
-    <div class="spotify__meta">
-      <div class="spotify__label mono">
-        <img src="images/profile/sociallinks/spotify_color.svg" alt="" />
-        <span>TOP SONGS · 最近のお気に入り</span>
-        <span class="spotify__counter mono" id="spotifyCounter">01 / 09</span>
-      </div>
-
-      <h3 class="spotify__track" id="spotifyTrack">—</h3>
-      <div class="spotify__artist" id="spotifyArtist">—</div>
-
-      <div class="spotify__dots" id="spotifyDots" aria-hidden="true"></div>
-
-      <div class="spotify__foot mono small dim">
-        rotating · データは仮のものです
-      </div>
-    </div>
-  </div>
-</section>
-
-
-
-
+</div><!-- /layout__side -->
+</div><!-- /layout -->
 
 <!-- ============================================================= -->
 <!-- FOOTER                                                         -->

@@ -702,6 +702,80 @@ section{
   scroll-margin-top: calc(var(--nav-h) + 8px);
 }
 
+/* ================================================================
+   2-COLUMN LAYOUT (desktop 80/20)
+   ================================================================ */
+.layout{
+  max-width:var(--page-max);
+  margin:0 auto;
+  padding:0 var(--page-pad);
+}
+.layout__main,
+.layout__side{ min-width:0; }
+
+.layout section{
+  max-width:none;
+  margin:0;
+  padding-left:0;
+  padding-right:0;
+}
+
+@media (min-width: 1100px){
+  .layout{
+    display:grid;
+    grid-template-columns: minmax(0, min(80%, 1325px)) minmax(0, 1fr);
+    column-gap:32px;
+    align-items:start;
+  }
+
+  /* ----- slim sidebar ------------------------------------------ */
+  .layout__side section{ padding:28px 0 32px; }
+
+  .layout__side .section__doc{
+    font-size:9.5px;
+    letter-spacing:.14em;
+    margin-bottom:10px;
+  }
+  .layout__side .section__doc > span{ padding:5px 8px; }
+  .layout__side .section__doc > span:nth-child(n+4){ display:none; }
+  .layout__side .section__doc > span:last-child{ margin-left:auto; }
+
+  .layout__side .section__head{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:6px;
+    margin-bottom:16px;
+    padding-bottom:8px;
+  }
+  .layout__side .section__slug{ gap:10px; flex-wrap:wrap; }
+  .layout__side .section__slug .ix{ font-size:11px; }
+  .layout__side .section__slug .name{ font-size:18px; }
+  .layout__side .section__slug .jp{ font-size:11px; letter-spacing:.14em; }
+  .layout__side .section__meta{ display:none; }
+
+  .layout__side .photos__grid{ grid-template-columns:1fr; }
+  .layout__side .photo-card__img-wrap{ aspect-ratio:16/9; }
+  .layout__side .photo-card__cap{ padding:10px 12px 12px; gap:2px; }
+  .layout__side .photo-card__title{ font-size:12px; }
+  .layout__side .photo-card__desc{ font-size:10.5px; }
+
+  .layout__side .buttons__wall{ padding:10px; gap:4px; }
+
+  .layout__side .spotify__card{
+    grid-template-columns:1fr;
+    max-width:none;
+    padding:14px;
+    gap:12px;
+    border-left-width:2px;
+  }
+  .layout__side .spotify__cover{ max-width:160px; margin:0 auto; }
+  .layout__side .spotify__track{ font-size:18px; }
+  .layout__side .spotify__artist{ font-size:12px; }
+  .layout__side .spotify__label{ font-size:10px; letter-spacing:.18em; }
+  .layout__side .spotify__counter{ font-size:9px; padding:1px 6px; }
+  .layout__side .spotify__foot{ font-size:10px; margin-top:10px; }
+}
+
 /* doc-control bar — sits above the section head like a dossier sticker row */
 .section__doc{
   display:flex;
@@ -1997,8 +2071,8 @@ section{
   z-index:8;
   border-bottom:1px solid var(--line);
   background:
-    linear-gradient(180deg, rgba(91,138,255,.018) 0%, transparent 45%),
-    linear-gradient(180deg, rgba(13,13,20,.85), rgba(7,7,11,.92));
+    linear-gradient(180deg, rgba(91, 137, 255, 0.068) 0%, transparent 45%),
+    linear-gradient(180deg, rgba(13, 13, 20, 0.295), rgba(7, 7, 11, 0.452));
 }
 .kpibar__inner{
   max-width:var(--page-max);
