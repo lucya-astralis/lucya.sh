@@ -2071,8 +2071,8 @@ section{
   z-index:8;
   border-bottom:1px solid var(--line);
   background:
-    linear-gradient(180deg, rgba(91,138,255,.018) 0%, transparent 45%),
-    linear-gradient(180deg, rgba(13,13,20,.85), rgba(7,7,11,.92));
+    linear-gradient(180deg, rgba(91, 137, 255, 0.068) 0%, transparent 45%),
+    linear-gradient(180deg, rgba(13, 13, 20, 0.295), rgba(7, 7, 11, 0.452));
 }
 .kpibar__inner{
   max-width:var(--page-max);
