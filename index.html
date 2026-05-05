@@ -77,10 +77,18 @@
 </head>
 <body>
 
+<video class="wallpaper-video" autoplay muted loop playsinline>
+  <source src="images/wallpaper/elite.mp4" type="video/mp4">
+</video>
+<div class="wallpaper-overlay" aria-hidden="true"></div>
+
 <!-- ============================================================= -->
 <!-- SPLASH SCREEN                                                  -->
 <!-- ============================================================= -->
 <div id="splash" class="splash" aria-hidden="true">
+  <video class="splash__video" autoplay muted loop playsinline>
+    <source src="images/wallpaper/elite.mp4" type="video/mp4">
+  </video>
   <div class="splash__bg"></div>
   <div class="splash__scanlines"></div>
   <div class="splash__vignette"></div>
@@ -720,6 +728,106 @@
 </section>
 
 <!-- ============================================================= -->
+<!-- PHOTOS                                                         -->
+<!-- ============================================================= -->
+<section class="photos" id="photos">
+  <div class="section__doc">
+    <span>DOC <b>04.A.VISUAL</b></span>
+    <span>REV <b>2026.05</b></span>
+    <span class="stamp stamp--ok">6 ASSETS · INDEXED</span>
+    <span>FORM <b>VIS-04A</b></span>
+    <span>HOMELAB · DOCUMENTATION</span>
+  </div>
+
+  <div class="section__head">
+    <div class="section__slug">
+      <span class="ix">// 04.A</span>
+      <span class="name">PHOTOS</span>
+      <span class="jp">写真・ドキュメント</span>
+    </div>
+    <div class="section__meta">
+      <span class="mono">VISUAL · HOMELAB DOCUMENTATION</span>
+    </div>
+  </div>
+
+  <div class="photos__grid">
+    <figure class="photo-card" data-src="images/photos/datacenter.jpeg" data-caption="DATACENTER // Complete homelab setup">
+      <div class="photo-card__img-wrap">
+        <img src="images/photos/datacenter.jpeg" alt="Complete homelab — full datacenter setup" loading="lazy" />
+        <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
+      </div>
+      <figcaption class="photo-card__cap">
+        <span class="photo-card__tag mono">PHOTO · 01</span>
+        <span class="photo-card__title">DATACENTER</span>
+        <span class="photo-card__desc mono small">Complete homelab setup — racks, switches, servers.</span>
+      </figcaption>
+    </figure>
+
+    <figure class="photo-card" data-src="images/photos/server.jpeg" data-caption="SERVER + CRT // Rack server being set up">
+      <div class="photo-card__img-wrap">
+        <img src="images/photos/server.jpeg" alt="Rack server and CRT monitor on a bed — being set up" loading="lazy" />
+        <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
+      </div>
+      <figcaption class="photo-card__cap">
+        <span class="photo-card__tag mono">PHOTO · 02</span>
+        <span class="photo-card__title">SERVER + CRT</span>
+        <span class="photo-card__desc mono small">Rack server &amp; CRT on a bed — work in progress.</span>
+      </figcaption>
+    </figure>
+
+    <figure class="photo-card" data-src="images/photos/wallserver.jpeg" data-caption="WALL SERVER // Server as wall decoration">
+      <div class="photo-card__img-wrap">
+        <img src="images/photos/wallserver.jpeg" alt="Server rack mounted as wall decoration" loading="lazy" />
+        <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
+      </div>
+      <figcaption class="photo-card__cap">
+        <span class="photo-card__tag mono">PHOTO · 03</span>
+        <span class="photo-card__title">WALL SERVER</span>
+        <span class="photo-card__desc mono small">Server as wall decoration — form meets function.</span>
+      </figcaption>
+    </figure>
+
+    <figure class="photo-card" data-src="images/photos/iphone-crt.jpeg" data-caption="iPHONE + CRT // iPhone 17 on a CRT">
+      <div class="photo-card__img-wrap">
+        <img src="images/photos/iphone-crt.jpeg" alt="iPhone 17 connected to a CRT monitor" loading="lazy" />
+        <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
+      </div>
+      <figcaption class="photo-card__cap">
+        <span class="photo-card__tag mono">PHOTO · 04</span>
+        <span class="photo-card__title">iPHONE + CRT</span>
+        <span class="photo-card__desc mono small">iPhone 17 on a CRT — old meets new.</span>
+      </figcaption>
+    </figure>
+
+    <figure class="photo-card" data-src="images/photos/iphones.jpeg" data-caption="iPHONE COLLECTION // Part of the collection">
+      <div class="photo-card__img-wrap">
+        <img src="images/photos/iphones.jpeg" alt="Part of the iPhone collection" loading="lazy" />
+        <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
+      </div>
+      <figcaption class="photo-card__cap">
+        <span class="photo-card__tag mono">PHOTO · 05</span>
+        <span class="photo-card__title">iPHONE COLLECTION</span>
+        <span class="photo-card__desc mono small">Part of the iPhone collection.</span>
+      </figcaption>
+    </figure>
+
+    <figure class="photo-card" data-src="images/photos/server-macbook.jpeg" data-caption="SERVER MACBOOK // MacBook running as a server">
+      <div class="photo-card__img-wrap">
+        <img src="images/photos/server-macbook.jpeg" alt="MacBook repurposed as a server" loading="lazy" />
+        <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
+      </div>
+      <figcaption class="photo-card__cap">
+        <span class="photo-card__tag mono">PHOTO · 06</span>
+        <span class="photo-card__title">SERVER MACBOOK</span>
+        <span class="photo-card__desc mono small">MacBook as a server — repurposed hardware.</span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="photos__note mono small dim">// Click to expand · ラボの記録</div>
+</section>
+
+<!-- ============================================================= -->
 <!-- SERVICES                                                       -->
 <!-- ============================================================= -->
 <section class="services" id="services">
@@ -853,6 +961,15 @@
 </footer>
 
 </main>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lightbox__close" id="lightboxClose" aria-label="Close">✕</button>
+  <div class="lightbox__inner">
+    <img class="lightbox__img" id="lightboxImg" src="" alt="" />
+    <div class="lightbox__cap mono" id="lightboxCap"></div>
+  </div>
+</div>
 
 <script src="script.js"></script>
 </body>

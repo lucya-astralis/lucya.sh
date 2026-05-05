@@ -21,7 +21,7 @@
   --text-dim:   #9ea0bc;
   --text-ghost: #5c5e7a;
   --acc-mag:    #456ceb;
-  --acc-cy:     #22e6ff;
+  --acc-cy:     #5b8aff;
   --acc-purp:   #5865F2;
   --acc-red:    #FF6767;
   --acc-amb:    #ffb547;
@@ -200,33 +200,40 @@
 
 *{ box-sizing:border-box; }
 html,body{ margin:0; padding:0; }
-html{ scroll-behavior:smooth; background-color:var(--bg); }
-html::before{
-  /* Fixed background layer — uses position:fixed instead of
-     background-attachment:fixed so Safari (incl. iOS) keeps the
-     wallpaper AND the grid lines pinned while content scrolls. */
-  content:"";
+html{ scroll-behavior:smooth; }
+
+.wallpaper-video{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:-2;
+  pointer-events:none;
+}
+
+.wallpaper-overlay{
   position:fixed;
   inset:0;
   z-index:-1;
-  background-color:var(--bg);
   background-image:
     linear-gradient(to right, rgba(255,255,255,.025) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255,255,255,.025) 1px, transparent 1px),
-    linear-gradient(rgba(7,7,11,0.82), rgba(7,7,11,0.92)),
-    url('images/wallpaper/wall.jpg');
-  background-size: 32px 32px, 32px 32px, auto, cover;
-  background-position: 0 0, 0 0, 0 0, center center;
-  background-repeat: repeat, repeat, no-repeat, no-repeat;
+    linear-gradient(rgba(7,7,11,0.72), rgba(7,7,11,0.85));
+  background-size: 32px 32px, 32px 32px, auto;
+  background-position: 0 0, 0 0, 0 0;
+  background-repeat: repeat, repeat, no-repeat;
   pointer-events:none;
 }
 body{
   color:var(--text);
+  background-color:var(--bg);
   font-family:"Space Grotesk", system-ui, sans-serif;
   font-size:15px;
   line-height:1.55;
   overflow-x:hidden;
   letter-spacing:.01em;
+  isolation:isolate;
 }
 
 body::before{
@@ -273,21 +280,26 @@ img{ user-select:none; -webkit-user-drag:none; }
   overflow:hidden;
   animation: splashOut 0.6s ease 7.4s forwards;
 }
+.splash__video{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  z-index:0;
+  pointer-events:none;
+}
 .splash.is-done{ pointer-events:none; }
 
 .splash__bg{
   position:absolute; inset:0;
-  background-color:#05050a;
   background-image:
     linear-gradient(to right, rgba(255,255,255,.035) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255,255,255,.035) 1px, transparent 1px),
-    radial-gradient(ellipse at center, rgba(34,230,255,0.14) 0%, transparent 55%),
-    radial-gradient(ellipse at 25% 80%, rgba(34,230,255,0.08) 0%, transparent 55%),
-    linear-gradient(rgba(7,7,11,0.82), rgba(5,5,10,0.92)),
-    url('images/wallpaper/wall.jpg');
-  background-size: 28px 28px, 28px 28px, auto, auto, auto, cover;
-  background-position: 0 0, 0 0, center, 25% 80%, center, center center;
-  background-repeat: repeat, repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+    radial-gradient(ellipse at center, rgba(15,50,180,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 25% 80%, rgba(15,50,180,0.10) 0%, transparent 55%),
+    linear-gradient(rgba(7,7,11,0.55), rgba(5,5,10,0.70));
+  background-size: 28px 28px, 28px 28px, auto, auto, auto;
+  background-position: 0 0, 0 0, center, 25% 80%, center;
+  background-repeat: repeat, repeat, no-repeat, no-repeat, no-repeat;
   animation: splashBgFlicker 3.2s ease-in-out infinite;
 }
 .splash__vignette{
@@ -458,8 +470,8 @@ img{ user-select:none; -webkit-user-drag:none; }
 .splash__progress-fill{
   height:100%;
   width:0%;
-  background:linear-gradient(90deg, #1aa7c4 0%, #22e6ff 60%, #eef5ff 100%);
-  box-shadow:0 0 10px rgba(34,230,255,.55);
+  background:linear-gradient(90deg, #2a4dcc 0%, #5b8aff 60%, #eef5ff 100%);
+  box-shadow:0 0 10px rgba(91,138,255,.55);
   transition: width .16s steps(3);
 }
 .splash__progress-foot{
@@ -504,7 +516,7 @@ img{ user-select:none; -webkit-user-drag:none; }
   width:min(620px, 78vw);
   aspect-ratio: 1337 / 815;
   margin:0 auto;
-  filter:drop-shadow(0 0 36px rgba(34,230,255,.35));
+  filter:drop-shadow(0 0 36px rgba(91,138,255,.35));
 }
 .glitch-logo__svg{
   position:absolute; inset:0;
@@ -529,8 +541,8 @@ img{ user-select:none; -webkit-user-drag:none; }
   stroke-dasharray:none;
   stroke-dashoffset:0;
 }
-.glitch-logo__rgb--r .piece--static{ stroke:#22e6ff; fill:#22e6ff; }
-.glitch-logo__rgb--b .piece--static{ stroke:#3060ff; fill:#3060ff; }
+.glitch-logo__rgb--r .piece--static{ stroke:#7aa6ff; fill:#7aa6ff; }
+.glitch-logo__rgb--b .piece--static{ stroke:#b478ff; fill:#b478ff; }
 
 .piece{
   fill: rgba(255,255,255,0);
@@ -806,14 +818,14 @@ section{
   border-radius:10px;
   overflow:hidden;
   box-shadow:
-    0 0 0 1px rgba(34,230,255,.05) inset,
+    0 0 0 1px rgba(91,138,255,.05) inset,
     0 25px 60px -25px rgba(0,0,0,.6),
     0 4px 0 0 rgba(0,0,0,.4);
 }
 .pcard::before{
   content:""; position:absolute; inset:0;
   background:
-    radial-gradient(circle at 20% -30%, rgba(34,230,255,.14), transparent 55%),
+    radial-gradient(circle at 20% -30%, rgba(91,138,255,.14), transparent 55%),
     radial-gradient(circle at 120% 120%, rgba(255,181,71,.08), transparent 50%);
   pointer-events:none;
 }
@@ -904,7 +916,7 @@ section{
   margin-top:-6px;
   overflow:hidden;
   background:
-    linear-gradient(180deg, transparent, rgba(34,230,255,.06)),
+    linear-gradient(180deg, transparent, rgba(91,138,255,.06)),
     repeating-linear-gradient(90deg,
       rgba(255,255,255,.04) 0 1px,
       transparent 1px 6px);
@@ -965,7 +977,7 @@ section{
   font-size:26px;
   color:#eef5ff;
   line-height:1;
-  text-shadow:0 0 22px rgba(34,230,255,.3);
+  text-shadow:0 0 22px rgba(91,138,255,.3);
 }
 .pcard__handle{
   font-size:13px;
@@ -1000,7 +1012,7 @@ section{
   font-family:"Proto Nerd Font Regular", monospace;
   font-size:12px;
   color:var(--acc-cy);
-  border-bottom:1px dashed rgba(34,230,255,.4);
+  border-bottom:1px dashed rgba(91,138,255,.4);
   padding-bottom:2px;
 }
 .pcard__url--mail{
@@ -1033,8 +1045,8 @@ section{
   transition:all .2s;
 }
 .pcard__socials a:hover{
-  background:rgba(34,230,255,.14);
-  border-color:rgba(34,230,255,.55);
+  background:rgba(91,138,255,.14);
+  border-color:rgba(91,138,255,.55);
   transform:translateY(-2px);
 }
 .pcard__socials img{ height:16px; width:auto; filter:brightness(0) invert(1) opacity(.9); }
@@ -1073,7 +1085,7 @@ section{
   letter-spacing:-.02em;
   position:relative;
   color:transparent;
-  text-shadow: 0 0 60px rgba(34,230,255,.15);
+  text-shadow: 0 0 60px rgba(91,138,255,.15);
 }
 
 /* SVG wordmark variant — keeps the same glitch animations as the
@@ -1088,7 +1100,7 @@ section{
   display:block;
   width:100%;
   aspect-ratio: 5321 / 819;
-  filter: drop-shadow(0 0 60px rgba(34,230,255,.18));
+  filter: drop-shadow(0 0 60px rgba(91,138,255,.18));
   cursor:default;
 }
 .hero__wordmark-layer{
@@ -1100,11 +1112,11 @@ section{
 .hero__wordmark-layer--main{
   background:linear-gradient(
     90deg,
-    #22e6ff 0%,
+    #5b8aff 0%,
     #7ab8ff 30%,
     #eef5ff 50%,
     #7ab8ff 70%,
-    #22e6ff 100%
+    #5b8aff 100%
   );
   background-size: 300% 100%;
   animation:
@@ -1112,7 +1124,7 @@ section{
     heroGlitchMain 7s steps(1,end) infinite;
 }
 .hero__wordmark-layer--r{
-  background:#22e6ff;
+  background:#5b8aff;
   mix-blend-mode:screen;
   opacity:0;
   animation: heroGlitchR 7s steps(1,end) infinite;
@@ -1140,11 +1152,11 @@ section{
   display:inline-block;
   background:linear-gradient(
     90deg,
-    #22e6ff 0%,
+    #5b8aff 0%,
     #7ab8ff 30%,
     #eef5ff 50%,
     #7ab8ff 70%,
-    #22e6ff 100%
+    #5b8aff 100%
   );
   background-size: 300% 100%;
   -webkit-background-clip:text;
@@ -1169,7 +1181,7 @@ section{
   -webkit-text-fill-color: currentColor;
 }
 .hero__title .word::before{
-  color:#22e6ff;
+  color:#5b8aff;
   animation: heroGlitchR 7s steps(1,end) infinite;
 }
 .hero__title .word::after{
@@ -1270,7 +1282,7 @@ section{
     repeating-linear-gradient(180deg,
       rgba(255,255,255,.02) 0 28px,
       transparent 28px 56px),
-    linear-gradient(180deg, rgba(34,230,255,.03), transparent 60%),
+    linear-gradient(180deg, rgba(91,138,255,.03), transparent 60%),
     var(--surface);
   font-family:"Proto Nerd Font Regular", monospace;
 }
@@ -1578,15 +1590,15 @@ section{
   flex-wrap:wrap;
   padding:10px 14px;
   margin:0 0 16px;
-  background:rgba(34,230,255,.04);
+  background:rgba(91,138,255,.04);
   border:1px solid var(--line);
   border-radius:6px;
   text-decoration:none;
   transition:background .2s, border-color .2s;
 }
 .services__hv:hover{
-  background:rgba(34,230,255,.08);
-  border-color:rgba(34,230,255,.35);
+  background:rgba(91,138,255,.08);
+  border-color:rgba(91,138,255,.35);
 }
 .services__hv-label{
   display:inline-flex; align-items:center; gap:8px;
@@ -1760,6 +1772,121 @@ section{
 .spotify__foot{ margin-top:12px; }
 
 /* ================================================================
+   PHOTOS
+   ================================================================ */
+.photos__grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+}
+.photo-card{
+  margin:0;
+  background:var(--surface);
+  cursor:pointer;
+  display:flex; flex-direction:column;
+  transition:background .2s;
+}
+.photo-card:hover{ background:var(--surface-2); }
+.photo-card__img-wrap{
+  position:relative;
+  overflow:hidden;
+  aspect-ratio:4/3;
+}
+.photo-card__img-wrap img{
+  width:100%; height:100%;
+  object-fit:cover;
+  display:block;
+  transition:transform .35s ease, filter .35s ease;
+  filter:saturate(.85) brightness(.9);
+}
+.photo-card:hover .photo-card__img-wrap img{
+  transform:scale(1.04);
+  filter:saturate(1) brightness(1);
+}
+.photo-card__overlay{
+  position:absolute; inset:0;
+  display:flex; align-items:flex-end; justify-content:flex-end;
+  padding:10px 12px;
+  opacity:0; transition:opacity .2s;
+  background:linear-gradient(to top, rgba(7,7,11,.7) 0%, transparent 60%);
+}
+.photo-card__overlay span{ font-size:10px; letter-spacing:.18em; color:var(--acc-cy); }
+.photo-card:hover .photo-card__overlay{ opacity:1; }
+.photo-card__cap{
+  padding:14px 16px 18px;
+  display:flex; flex-direction:column; gap:4px;
+  border-top:1px solid var(--line);
+}
+.photo-card__tag{ font-size:9px; letter-spacing:.22em; color:var(--text-ghost); text-transform:uppercase; }
+.photo-card__title{ font-size:13px; font-weight:600; letter-spacing:.06em; color:var(--text); }
+.photo-card__desc{ color:var(--text-dim); font-size:11px; }
+.photos__note{ margin-top:12px; }
+
+@media(max-width:860px){
+  .photos__grid{ grid-template-columns:repeat(2,1fr); }
+}
+@media(max-width:500px){
+  .photos__grid{ grid-template-columns:1fr; }
+}
+
+/* lightbox */
+.lightbox{
+  display:none;
+  position:fixed; inset:0; z-index:9999;
+  background:rgba(5,5,10,.92);
+  backdrop-filter:blur(6px);
+  align-items:center; justify-content:center;
+}
+.lightbox.is-open{
+  display:flex;
+  animation:lbFadeIn .18s ease;
+}
+@keyframes lbFadeIn{
+  from{ opacity:0; }
+  to  { opacity:1; }
+}
+.lightbox__close{
+  position:absolute; top:20px; right:24px;
+  background:none; border:1px solid var(--line-strong);
+  color:var(--text-dim); font-size:16px;
+  width:36px; height:36px;
+  cursor:pointer; border-radius:var(--radius);
+  transition:all .15s;
+}
+.lightbox__close:hover{ border-color:var(--acc-cy); color:var(--acc-cy); }
+.lightbox__inner{
+  max-width:min(92vw,1200px);
+  display:flex; flex-direction:column; gap:14px;
+  align-items:center;
+}
+.lightbox__img{
+  max-width:100%;
+  max-height:82vh;
+  object-fit:contain;
+  border:1px solid var(--line-strong);
+}
+.lightbox__cap{
+  font-size:11px; letter-spacing:.14em;
+  color:var(--text-dim); text-transform:uppercase;
+}
+
+@media(max-width:900px){
+  .page-layout{ grid-template-columns:1fr; }
+  .photo-sidebar{
+    position:static;
+    height:auto;
+    border-left:none;
+    border-top:1px solid var(--line);
+    flex-direction:row;
+    flex-wrap:wrap;
+  }
+  .photo-sidebar__head{ width:100%; }
+  .psb-item{ width:50%; border-bottom:1px solid var(--line); }
+}
+
+/* ================================================================
    SERVICES
    ================================================================ */
 .services__grid{
@@ -1829,7 +1956,7 @@ section{
   position:relative;
   z-index:9;
   border-bottom:1px solid var(--line);
-  background:linear-gradient(180deg, rgba(34,230,255,.04), rgba(7,7,11,.7));
+  background:linear-gradient(180deg, rgba(91,138,255,.04), rgba(7,7,11,.7));
   font-family:"Proto Nerd Font Regular", monospace;
   font-size:10.5px;
   letter-spacing:.22em;
@@ -1870,7 +1997,7 @@ section{
   z-index:8;
   border-bottom:1px solid var(--line);
   background:
-    linear-gradient(180deg, rgba(34,230,255,.018) 0%, transparent 45%),
+    linear-gradient(180deg, rgba(91,138,255,.018) 0%, transparent 45%),
     linear-gradient(180deg, rgba(13,13,20,.85), rgba(7,7,11,.92));
 }
 .kpibar__inner{
@@ -1922,7 +2049,7 @@ section{
   letter-spacing:.02em;
   color:var(--text);
   line-height:1;
-  text-shadow: 0 0 18px rgba(34,230,255,.18);
+  text-shadow: 0 0 18px rgba(91,138,255,.18);
 }
 .kpi__value em{
   font-family:"Proto Nerd Font Regular", monospace;
@@ -2072,7 +2199,7 @@ section{
 }
 .foot__legal-links a:hover{
   color:var(--acc-cy);
-  border-bottom-color:rgba(34,230,255,.55);
+  border-bottom-color:rgba(91,138,255,.55);
 }
 
 .foot__rule{ height:1px; background:var(--line); margin:10px 0 20px; }
