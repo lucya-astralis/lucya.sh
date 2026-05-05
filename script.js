@@ -883,6 +883,35 @@
     })
     .catch(err => console.warn('[lucya] data.json unavailable, using fallback HTML', err));
 
+  // ---------- PHOTO LIGHTBOX ------------------------------------
+  const lightbox    = document.getElementById('lightbox');
+  const lbImg       = document.getElementById('lightboxImg');
+  const lbCap       = document.getElementById('lightboxCap');
+  const lbClose     = document.getElementById('lightboxClose');
+  if (lightbox && lbImg && lbCap && lbClose) {
+    const openLb = card => {
+      lbImg.src = card.dataset.src || '';
+      lbImg.alt = card.querySelector('img')?.alt || '';
+      lbCap.textContent = card.dataset.caption || '';
+      lightbox.classList.add('is-open');
+      lightbox.setAttribute('aria-hidden','false');
+      lbClose.focus();
+    };
+    const closeLb = () => {
+      lightbox.classList.remove('is-open');
+      lightbox.setAttribute('aria-hidden','true');
+    };
+    document.querySelectorAll('.photo-card').forEach(card => {
+      card.addEventListener('click', () => openLb(card));
+      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openLb(card); });
+      card.setAttribute('tabindex','0');
+      card.setAttribute('role','button');
+    });
+    lbClose.addEventListener('click', closeLb);
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLb(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lightbox.classList.contains('is-open')) closeLb(); });
+  }
+
   // ---------- UPTIME STAT ----------------------------------------
   const uptime = document.getElementById('uptimeStat');
   if (uptime) {
