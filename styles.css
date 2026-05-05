@@ -728,21 +728,52 @@ section{
     align-items:start;
   }
 
-  /* tighten the right column for the narrow 20% strip */
+  /* ----- slim sidebar ------------------------------------------ */
+  .layout__side section{ padding:28px 0 32px; }
+
+  .layout__side .section__doc{
+    font-size:9.5px;
+    letter-spacing:.14em;
+    margin-bottom:10px;
+  }
+  .layout__side .section__doc > span{ padding:5px 8px; }
+  .layout__side .section__doc > span:nth-child(n+4){ display:none; }
+  .layout__side .section__doc > span:last-child{ margin-left:auto; }
+
+  .layout__side .section__head{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:6px;
+    margin-bottom:16px;
+    padding-bottom:8px;
+  }
+  .layout__side .section__slug{ gap:10px; flex-wrap:wrap; }
+  .layout__side .section__slug .ix{ font-size:11px; }
+  .layout__side .section__slug .name{ font-size:18px; }
+  .layout__side .section__slug .jp{ font-size:11px; letter-spacing:.14em; }
+  .layout__side .section__meta{ display:none; }
+
   .layout__side .photos__grid{ grid-template-columns:1fr; }
-  .layout__side .domains__grid{ grid-template-columns:1fr; }
+  .layout__side .photo-card__img-wrap{ aspect-ratio:16/9; }
+  .layout__side .photo-card__cap{ padding:10px 12px 12px; gap:2px; }
+  .layout__side .photo-card__title{ font-size:12px; }
+  .layout__side .photo-card__desc{ font-size:10.5px; }
+
+  .layout__side .buttons__wall{ padding:10px; gap:4px; }
 
   .layout__side .spotify__card{
     grid-template-columns:1fr;
     max-width:none;
-    padding:18px;
-    gap:16px;
+    padding:14px;
+    gap:12px;
+    border-left-width:2px;
   }
-  .layout__side .spotify__cover{
-    max-width:220px;
-    margin:0 auto;
-  }
-  .layout__side .spotify__track{ font-size:22px; }
+  .layout__side .spotify__cover{ max-width:160px; margin:0 auto; }
+  .layout__side .spotify__track{ font-size:18px; }
+  .layout__side .spotify__artist{ font-size:12px; }
+  .layout__side .spotify__label{ font-size:10px; letter-spacing:.18em; }
+  .layout__side .spotify__counter{ font-size:9px; padding:1px 6px; }
+  .layout__side .spotify__foot{ font-size:10px; margin-top:10px; }
 }
 
 /* doc-control bar — sits above the section head like a dossier sticker row */
