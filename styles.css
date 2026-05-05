@@ -702,6 +702,49 @@ section{
   scroll-margin-top: calc(var(--nav-h) + 8px);
 }
 
+/* ================================================================
+   2-COLUMN LAYOUT (desktop 80/20)
+   ================================================================ */
+.layout{
+  max-width:var(--page-max);
+  margin:0 auto;
+  padding:0 var(--page-pad);
+}
+.layout__main,
+.layout__side{ min-width:0; }
+
+.layout section{
+  max-width:none;
+  margin:0;
+  padding-left:0;
+  padding-right:0;
+}
+
+@media (min-width: 1100px){
+  .layout{
+    display:grid;
+    grid-template-columns: minmax(0, min(80%, 1325px)) minmax(0, 1fr);
+    column-gap:32px;
+    align-items:start;
+  }
+
+  /* tighten the right column for the narrow 20% strip */
+  .layout__side .photos__grid{ grid-template-columns:1fr; }
+  .layout__side .domains__grid{ grid-template-columns:1fr; }
+
+  .layout__side .spotify__card{
+    grid-template-columns:1fr;
+    max-width:none;
+    padding:18px;
+    gap:16px;
+  }
+  .layout__side .spotify__cover{
+    max-width:220px;
+    margin:0 auto;
+  }
+  .layout__side .spotify__track{ font-size:22px; }
+}
+
 /* doc-control bar — sits above the section head like a dossier sticker row */
 .section__doc{
   display:flex;
