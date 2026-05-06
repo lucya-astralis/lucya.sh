@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(curl -s \"http://127.0.0.1:8765/styles.css\")",
+      "Bash(curl -s \"http://127.0.0.1:8765/styles.css?nocache=$\\(date +%s\\)\")"
+    ]
+  }
+}
