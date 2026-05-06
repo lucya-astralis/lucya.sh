@@ -11,21 +11,25 @@
 }
 
 :root{
+  /* surfaces */
   --bg:         #07070b;
   --bg-2:       #0d0d14;
   --surface:    #11111a;
   --surface-2:  #15151f;
   --line:       rgba(255,255,255,0.08);
   --line-strong:rgba(255,255,255,0.18);
+
+  /* text */
   --text:       #eef0ff;
   --text-dim:   #9ea0bc;
   --text-ghost: #5c5e7a;
-  --acc-mag:    #456ceb;
-  --acc-cy:     #5b8aff;
-  --acc-purp:   #5865F2;
-  --acc-red:    #FF6767;
-  --acc-amb:    #ffb547;
-  --acc-ok:     #3dffa5;
+
+  /* accents — cool palette: primary blue, secondary lavender, status amber/green/red */
+  --acc-cy:     #5b8aff;   /* primary  — links, slugs, h-subs */
+  --acc-mag:    #a594ff;   /* secondary — handles, key-glyphs, mail */
+  --acc-amb:    #ffb547;   /* warn / stamp */
+  --acc-ok:     #3dffa5;   /* ok / status */
+  --acc-red:    #ff6767;   /* error / red stamp */
 
   --radius:     2px;
   --nav-h:      56px;
@@ -660,6 +664,7 @@ body.is-ready .hero__side{
   height:100%;
   padding:0 var(--page-pad);
   display:flex; align-items:center; gap:32px;
+  min-width:0;
 }
 .nav__brand{ display:flex; align-items:center; gap:10px; }
 .nav__brand img{ height:24px; width:auto; }
@@ -667,12 +672,13 @@ body.is-ready .hero__side{
 .nav__links{
   display:flex; gap:28px;
   margin-left:auto;
+  min-width:0;
   font-family:"Proto Nerd Font Regular", monospace;
   font-size:12px;
   letter-spacing:.16em;
   text-transform:uppercase;
 }
-.nav__links a{ color:var(--text); position:relative; padding:6px 0; transition:color .2s; }
+.nav__links a{ color:var(--text); position:relative; padding:6px 0; transition:color .2s; white-space:nowrap; }
 .nav__links a em{ color:var(--text-ghost); font-style:normal; margin-left:4px; font-size:10px; }
 .nav__links a:hover{ color:var(--acc-cy); }
 .nav__links a:hover em{ color:var(--acc-mag); }
@@ -704,6 +710,7 @@ section{
 
 /* ================================================================
    2-COLUMN LAYOUT (desktop 80/20)
+   on mobile/tablet: columns flatten and sections interleave by `order`
    ================================================================ */
 .layout{
   max-width:var(--page-max);
@@ -718,6 +725,24 @@ section{
   margin:0;
   padding-left:0;
   padding-right:0;
+}
+
+/* below the 2-col breakpoint: flatten columns and interleave sections.
+   visual order: hero → about → photos → interests → buttons → systems → spotify → services
+   (sidebar content threads between main sections instead of dumping to the end) */
+@media (max-width: 1099.98px){
+  .layout{ display:flex; flex-direction:column; gap:0; }
+  .layout__main,
+  .layout__side{ display:contents; }
+
+  .hero      { order:1; }
+  .about     { order:2; }
+  .photos    { order:3; }
+  .interests { order:4; }
+  .buttons   { order:5; }
+  .neofetch  { order:6; }
+  .spotify   { order:7; }
+  .services  { order:8; }
 }
 
 @media (min-width: 1100px){
@@ -910,7 +935,16 @@ section{
   overflow:hidden;
   background:#000;
 }
-.pcard__banner img{ width:100%; height:100%; object-fit:cover; filter:saturate(1.1) brightness(.85); }
+.pcard__banner img{
+  width:100%; height:100%; object-fit:cover;
+  filter: saturate(.55) brightness(.7) hue-rotate(170deg) contrast(1.05);
+}
+.pcard__banner::after{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:
+    linear-gradient(180deg, rgba(7,7,11,0) 40%, rgba(7,7,11,.85) 100%),
+    linear-gradient(135deg, rgba(91,138,255,.18), rgba(165,148,255,.10) 60%, transparent 100%);
+}
 .pcard__countdown{
   position:absolute;
   top:10px; right:10px;
@@ -1946,20 +1980,6 @@ section{
   color:var(--text-dim); text-transform:uppercase;
 }
 
-@media(max-width:900px){
-  .page-layout{ grid-template-columns:1fr; }
-  .photo-sidebar{
-    position:static;
-    height:auto;
-    border-left:none;
-    border-top:1px solid var(--line);
-    flex-direction:row;
-    flex-wrap:wrap;
-  }
-  .photo-sidebar__head{ width:100%; }
-  .psb-item{ width:50%; border-bottom:1px solid var(--line); }
-}
-
 /* ================================================================
    SERVICES
    ================================================================ */
@@ -2299,8 +2319,8 @@ section{
   .docstrip__inner{ padding:6px 24px; gap:10px; }
 
   .hero__grid{ grid-template-columns:1fr; gap:28px; }
-  .hero__lower{ grid-template-columns:1fr; gap:16px; }
-  .hero__stats{ grid-template-columns:repeat(2,1fr); }
+  .hero__lower{ grid-template-columns:1fr; gap:18px; }
+  .hero__stats{ grid-template-columns:repeat(4,1fr); max-width:none; }
 
   .about__grid{ grid-template-columns:1fr; gap:28px; }
   .about__marginal{ position:static; }
@@ -2365,12 +2385,24 @@ section{
   .spotify__label > span:nth-child(2){ flex:1 1 auto; min-width:0; }
   .spotify__counter{ font-size:9px; padding:1px 6px; }
 
-  .nav__inner{ padding:0 16px; gap:14px; }
-  .nav__links{ display:none; }
-  .nav__status{ margin-left:auto; padding-left:14px; font-size:11px; }
-  .nav__brand-text strong{ font-size:13px; }
-  .nav__brand-text span{ font-size:9px; }
-  .nav__brand img{ height:24px; }
+  .nav__inner{ padding:0 14px; gap:12px; }
+  .nav__links{
+    gap:16px;
+    margin-left:0;
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    mask-image: linear-gradient(to right, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
+    flex:1 1 auto;
+    font-size:11px;
+    letter-spacing:.14em;
+  }
+  .nav__links::-webkit-scrollbar{ display:none; }
+  .nav__links a em{ display:none; }
+  .nav__status{ flex:0 0 auto; padding-left:10px; font-size:10.5px; }
+  .nav__brand img{ height:22px; }
 
   .section__head{ margin-bottom:24px; gap:12px; padding-bottom:12px; }
   .section__slug{ gap:10px; flex-wrap:wrap; }
@@ -2440,7 +2472,7 @@ section{
 
 /* small phones */
 @media (max-width: 480px){
-  section{ padding: 40px 14px; }
+  section{ padding: 26px 14px 32px; }
 
   .nav__inner{ padding:0 12px; gap:10px; }
   .nav__brand-text strong{ font-size:12px; }
