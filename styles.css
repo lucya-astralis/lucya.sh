@@ -912,7 +912,9 @@ section{
 /* --- profile card ------------------------------------------------ */
 .pcard{
   position:relative;
-  background:linear-gradient(180deg, #12141c 0%, #0c0e14 100%);
+  background-image: url(/images/wallpaper/wall1.jpg);
+  background-size: cover;
+
   border:1px solid var(--line-strong);
   border-radius:10px;
   overflow:hidden;
@@ -1579,7 +1581,7 @@ section{
   grid-template-columns: repeat(auto-fill, 88px);
   gap:6px;
   padding:18px;
-  background: #000;
+  background: #0000008f;
   background-image:
     linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
