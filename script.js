@@ -251,7 +251,7 @@
 
   // ---------- COUNTDOWN : "noch XX Tage" / "あとXX日" -------------
   // anchor the target so the count decreases over time
-  const countdownTarget = new Date('2026-08-10T00:00:00');
+  const countdownTarget = new Date('2026-08-09T00:00:00');
   const updateCountdown = () => {
     const now = new Date();
     const diff = Math.max(0, Math.ceil((countdownTarget - now) / 86400000));

@@ -30,15 +30,15 @@
     {
       "key":      "japan",
       "label":    "JAPAN",
-      "target":   "2026-08-10",
+      "target":   "2026-08-09",
       "unit":     "d",
-      "sub":      "TRIP · 2026-08-10",
+      "sub":      "TRIP · 2026-08-09",
       "subClass": "ok"
     },
     {
       "key":   "domains",
       "label": "DOMAINS OWNED",
-      "value": "19",
+      "value": "21",
       "sub":   "REGISTERED · ACTIVE"
     }
   ],
