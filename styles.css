@@ -732,22 +732,22 @@ section{
 }
 
 /* below the 2-col breakpoint: flatten columns and interleave sections.
-   visual order: hero → about → photos → interests → buttons → systems → spotify → services
-   (sidebar content threads between main sections instead of dumping to the end) */
+   visual order: hero → kpibar → about → interests → buttons → systems → services → spotify → photos
+   (identity → narrative → personal cluster → technical → lighter/visual content) */
 @media (max-width: 1099.98px){
   .layout{ display:flex; flex-direction:column; gap:0; }
   .layout__main,
   .layout__side{ display:contents; }
 
   .hero      { order:1; }
-  .kpibar    { order:1; } /* JS moves kpibar after .hero in DOM; tied order → renders right after */
+  .kpibar    { order:1; } /* JS relocates kpibar after .hero in DOM; tied order → renders right after */
   .about     { order:2; }
-  .photos    { order:3; }
-  .interests { order:4; }
-  .buttons   { order:5; }
-  .neofetch  { order:6; }
+  .interests { order:3; }
+  .buttons   { order:4; }
+  .neofetch  { order:5; }
+  .services  { order:6; }
   .spotify   { order:7; }
-  .services  { order:8; }
+  .photos    { order:8; }
 }
 
 @media (min-width: 1100px){
@@ -918,7 +918,7 @@ section{
 .pcard{
   position:relative;
   background:
-    linear-gradient(180deg, rgba(7,7,11,.55) 0%, rgba(7,7,11,.92) 60%, rgba(7,7,11,.96) 100%),
+    linear-gradient(180deg, rgba(7, 7, 11, 0.452) 0%, rgba(7, 7, 11, 0.623) 60%, rgba(7, 7, 11, 0.719) 100%),
     url(images/wallpaper/wall1.jpg) center/cover no-repeat;
 
   border:1px solid var(--line-strong);
@@ -2347,11 +2347,13 @@ section{
   /* docstrip: keep CLASSIFIED + DOC + REV only */
   .docstrip{ font-size:9.5px; letter-spacing:.16em; }
   .docstrip__inner{ padding:5px 14px; gap:8px; column-gap:8px; }
+  .docstrip__inner > span:nth-child(2),
   .docstrip__inner > span:nth-child(3),
   .docstrip__inner > span:nth-child(6),
   .docstrip__inner > span:nth-child(7),
   .docstrip__inner > span:nth-child(8),
   .docstrip .docstrip__sp{ display:none; }
+  .docstrip__inner{ flex-wrap:nowrap; overflow:hidden; }
   .docstrip__inner > span + span::before{ margin-right:6px; }
 
   /* ticker: drop the FEED · #01 tag, shrink label */
@@ -2370,9 +2372,12 @@ section{
   .kpi__sub{ font-size:8px; letter-spacing:.14em; }
   .kpibar__foot{ font-size:7.5px; letter-spacing:.14em; margin-top:6px; gap:5px; }
 
-  /* section doc-bar: shrink + last item flows naturally */
-  .section__doc{ font-size:9.5px; letter-spacing:.12em; }
+  /* section doc-bar: keep just DOC name + stamp on mobile so it fits one row */
+  .section__doc{ font-size:9.5px; letter-spacing:.12em; flex-wrap:nowrap; overflow:hidden; }
   .section__doc > span{ padding:4px 8px; }
+  .section__doc > span:nth-child(2),
+  .section__doc > span:nth-child(n+4){ display:none; }
+  .section__doc > span:nth-child(3){ margin-left:auto; }
   .section__doc > span:last-child{ margin-left:0; }
 
   /* neofetch: smaller font on mobile, fade-edge hint for horizontal scroll */
