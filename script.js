@@ -855,7 +855,11 @@
             const d = daysUntil(kpi.target);
             valEl.innerHTML = `${d} <em>${escHtml(kpi.unit || 'd')}</em>`;
           } else if (kpi.value !== undefined) {
-            valEl.textContent = kpi.value;
+            if (kpi.unit) {
+              valEl.innerHTML = `${escHtml(kpi.value)} <em>${escHtml(kpi.unit)}</em>`;
+            } else {
+              valEl.textContent = kpi.value;
+            }
           }
         }
       }
@@ -921,6 +925,27 @@
     let months = now.getMonth() - born.getMonth();
     if (months < 0) { years--; months += 12; }
     uptime.textContent = `${years}y ${String(months).padStart(2, '0')}m`;
+  }
+
+  // ---------- KPI BAR RELOCATION (mobile under profile) ----------
+  const kpiBar = document.querySelector('.kpibar');
+  const profileSection = document.getElementById('profile');
+  const docstrip = document.querySelector('.docstrip');
+  if (kpiBar && profileSection && docstrip) {
+    const mq = matchMedia('(max-width: 768px)');
+    const place = () => {
+      if (mq.matches) {
+        if (kpiBar.previousElementSibling !== profileSection) {
+          profileSection.insertAdjacentElement('afterend', kpiBar);
+        }
+      } else {
+        if (kpiBar.previousElementSibling !== docstrip) {
+          docstrip.insertAdjacentElement('afterend', kpiBar);
+        }
+      }
+    };
+    place();
+    mq.addEventListener('change', place);
   }
 
 })();

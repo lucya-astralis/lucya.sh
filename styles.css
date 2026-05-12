@@ -740,6 +740,7 @@ section{
   .layout__side{ display:contents; }
 
   .hero      { order:1; }
+  .kpibar    { order:1; } /* JS moves kpibar after .hero in DOM; tied order → renders right after */
   .about     { order:2; }
   .photos    { order:3; }
   .interests { order:4; }
@@ -2124,7 +2125,7 @@ section{
 .kpibar__grid{
   display:grid;
   grid-template-columns:repeat(4, 1fr);
-  gap:0;
+  gap:1px;
   border:1px solid var(--line);
   background:var(--line);
 }
@@ -2182,7 +2183,6 @@ section{
 
 @media (max-width: 1100px){
   .kpibar__grid{ grid-template-columns:repeat(2, 1fr); }
-  .kpi:nth-child(n+3){ border-top:1px solid var(--line); }
 }
 @media (max-width: 640px){
   .kpibar__inner{ padding:8px 14px 10px; }
@@ -2361,14 +2361,14 @@ section{
   .ticker__viewport{ -webkit-mask-image: linear-gradient(to right, transparent 0, #000 18px, #000 calc(100% - 14px), transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 18px, #000 calc(100% - 14px), transparent 100%); }
   .ticker__item b{ padding:1px 5px; font-size:9.5px; }
 
-  /* kpi bar: tighter padding, drop head/foot chrome for cleaner mobile */
-  .kpibar__inner{ padding:6px 12px 8px; }
-  .kpibar__head,
-  .kpibar__foot{ display:none; }
+  /* kpi bar: tighter padding, compress footer */
+  .kpibar__inner{ padding:8px 12px 10px; }
+  .kpibar__head{ font-size:8.5px; letter-spacing:.16em; padding-bottom:6px; margin-bottom:8px; }
   .kpi{ padding:8px 9px; gap:3px; }
   .kpi__label{ font-size:8px; letter-spacing:.18em; }
   .kpi__value{ font-size:16px; }
   .kpi__sub{ font-size:8px; letter-spacing:.14em; }
+  .kpibar__foot{ font-size:7.5px; letter-spacing:.14em; margin-top:6px; gap:5px; }
 
   /* section doc-bar: shrink + last item flows naturally */
   .section__doc{ font-size:9.5px; letter-spacing:.12em; }
