@@ -11,9 +11,9 @@
     height: 100%;
     background: #000;
     overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
 
-  /* Container füllt Viewport, iframe wird "cover" skaliert */
   .video-wrap {
     position: fixed;
     inset: 0;
@@ -24,18 +24,55 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    /* 16:9 cover: min 100vw oder 177.77vh, je nachdem was größer ist */
     width: 100vw;
-    height: 56.25vw;      /* 16:9 basierend auf Breite */
+    height: 56.25vw;
     min-height: 100vh;
-    min-width: 177.77vh;  /* 16:9 basierend auf Höhe */
+    min-width: 177.77vh;
     transform: translate(-50%, -50%);
     border: 0;
-    pointer-events: none; /* keine Interaktion */
+    pointer-events: none;
+  }
+
+  /* Counter */
+  .countdown {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 10;
+
+    padding: 10px 16px;
+    border-radius: 14px;
+
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(10px);
+
+    color: white;
+    text-align: right;
+
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 0 25px rgba(0,0,0,0.35);
+  }
+
+  .countdown .label {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    letter-spacing: 0.08em;
+  }
+
+  .countdown .days {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.1;
   }
 </style>
 </head>
 <body>
+
+  <div class="countdown">
+    <div class="label">日本まで</div>
+    <div class="days" id="daysLeft">...</div>
+  </div>
+
   <div class="video-wrap">
     <iframe
       src="https://www.youtube.com/embed/_k-5U7IeK8g?autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&rel=0&playsinline=1&loop=1&playlist=_k-5U7IeK8g&iv_load_policy=3&fs=0"
@@ -45,5 +82,23 @@
       referrerpolicy="strict-origin-when-cross-origin">
     </iframe>
   </div>
+
+<script>
+  const targetDate = new Date("2026-08-09T00:00:00");
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = targetDate - now;
+
+    const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+    document.getElementById("daysLeft").textContent =
+      days > 0 ? `${days}日` : "到着";
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 60000);
+</script>
+
 </body>
 </html>

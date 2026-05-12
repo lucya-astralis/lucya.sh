@@ -283,14 +283,14 @@
 
   // ---------- 88x31 BUTTON WALL ----------------------------------
   const buttons = [
-    ['pride.png','pride'],['eu.gif','eu'],['adhd.png','adhd'],['autism-new.png','autism'],
-    ['binbows.gif','binbows.net'],['twitter.gif','twitter'],['discord.gif','discord'],
+    ['pride.png','pride'],['adhd.png','adhd'],['autism-new.png','autism'],
+    ['eu.gif','eu'],['binbows.gif','binbows.net'],['twitter.gif','twitter'],['discord.gif','discord'],
     ['steam.gif','steam'],['landshut.png','landshut'],['pilsting.png','pilsting'],
     ['think.gif','think'],['gif8.gif','gif'],['gif16.gif','gif'],
     ['ie.gif','internet explorer'],
     ['amd.gif','amd'],['archlinux.gif','arch linux'],
     ['archive.gif','archive'],['astra.gif','astra'],
-    ['autism.png','autism'],['computer.png','my computer'],
+    ['linuxnow.jpg','linux now'],['computer.png','my computer'],
     ['dance.gif','dance'],
     ['face.gif','face'],['debian.gif','debian'],
     ['gif15.gif','gif'],['gif2.gif','gif'],
