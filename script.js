@@ -284,7 +284,8 @@
   // ---------- 88x31 BUTTON WALL ----------------------------------
   const buttons = [
     ['pride.png','pride'],['adhd.png','adhd'],['autism-new.png','autism'],
-    ['eu.gif','eu'],['binbows.gif','binbows.net'],['twitter.gif','twitter'],['discord.gif','discord'],
+    ['eu.gif','eu'],['binbows.gif','binbows.net'],['lucya.png','lucya.sh'],
+    ['twitter.gif','twitter'],['discord.gif','discord'],
     ['steam.gif','steam'],['landshut.png','landshut'],['pilsting.png','pilsting'],
     ['think.gif','think'],['gif8.gif','gif'],['gif16.gif','gif'],
     ['ie.gif','internet explorer'],
