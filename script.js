@@ -77,7 +77,7 @@
   const logItems = logEl ? Array.from(logEl.children) : [];
 
   // ---------- REVEAL : mark below-fold blocks (observer starts post-splash) ----------
-  const revealSelectors = ['.about', '.interests', '.buttons', '.neofetch', '.services', '.spotify', '.foot'];
+  const revealSelectors = ['.about', '.interests', '.buttons', '.neofetch', '.services', '.spotify', '.photos', '.foot'];
   const revealTargets = revealSelectors.flatMap(sel => Array.from(document.querySelectorAll(sel)));
   revealTargets.forEach(el => el.classList.add('reveal-block'));
 

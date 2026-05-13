@@ -759,7 +759,7 @@ section{
   }
 
   /* ----- slim sidebar ------------------------------------------ */
-  .layout__side section{ padding:28px 0 32px; }
+  .layout__side section{ padding:36px 0 32px; }
 
   .layout__side .section__doc{
     font-size:9.5px;
