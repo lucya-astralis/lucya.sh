@@ -324,7 +324,7 @@
     ['aizaku.com',         'aizaku.com.svg',          'Deffence industry',                   'ACTIVE',  true],
     ['astraos.app',        'astraos.app.svg',         'AstraOS · main product site',         'ACTIVE',  true],
     ['beta.astraos.app',   'beta.astraos.app.svg',    'AstraOS public beta portal',          'ACTIVE',  true],
-    ['status.astraos.app', 'status.astraos.app.svg',  'System status · uptime monitor',      'ACTIVE',  true],
+    ['status.lucya.systems', 'status.lucya.systems.svg',  'System status · uptime monitor',      'ACTIVE',  true],
     ['binbows.net',        'binbows.net.svg',         'Official Binbows site',               'ACTIVE',  true],
     ['inter-astra.org',    'inter-astra.org.svg',     'inter-astra collective',              'PARKED',  true],
     ['gov.inter-astra.org','gov.inter-astra.org.svg', 'Internal governance portal',          'ACTIVE',  true],
