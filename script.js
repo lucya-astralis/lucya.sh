@@ -811,15 +811,17 @@
   const spotifyCard = document.getElementById('spotifyCard');
   if (spotifyCard) {
     const songs = [
-      { title: "DEAD CENTER", artist: "REOL, LiSA, Giga", cover: "images/spotify_widget/dead_center.jpg" },
-      { title: "Rebirth", artist: "SHIMA", cover: "images/spotify_widget/rebirth.jpeg" },      
-      { title: "Heaven", artist: "Allison Wonderland, Ninajirachi", cover: "images/spotify_widget/cover1.png" },
+      { title: "Rebirth", artist: "SHIMA", cover: "images/spotify_widget/rebirth.jpeg" },  
       { title: "Infohazard", artist: "Ninajirachi", cover: "images/spotify_widget/cover4.png" },
-      { title: "H.E.R", artist: "Tearz", cover: "images/spotify_widget/H.E.R.jpg" },
+      { title: "Heaven", artist: "Allison Wonderland, Ninajirachi", cover: "images/spotify_widget/cover1.png" },      
+      { title: "Flesh without Blood", artist: "Grimes", cover: "images/spotify_widget/artangels.png" },      
+      { title: "Delicate Weapon", artist: "Grimes", cover: "images/spotify_widget/CPv2.jpg" },
+      { title: "FORTUNE", artist: "SAKUREYE", cover: "images/spotify_widget/fortune.jpg" },
       { title: "Vorozhyla", artist: "Korolova, Rokston, Go_A, Monokate", cover: "images/spotify_widget/Vorozhyla.jpg" },
       { title: "Elevate", artist: "Sub Focus", cover: "images/spotify_widget/cover3.jpeg" },
       { title: "Battery Death", artist: "Ninajirachi", cover: "images/spotify_widget/cover4.png" },
-      { title: "Ghostlight", artist: "Skeler, Veela", cover: "images/spotify_widget/Ghostlight.jpeg" }
+      { title: "Ghostlight", artist: "Skeler, Veela", cover: "images/spotify_widget/Ghostlight.jpeg" },
+      { title: "THE BADDEST", artist: "K/DA", cover: "images/spotify_widget/the_baddest.jpg" }
     ];
     const INTERVAL_MS = 5000;
     const cover = document.getElementById('spotifyCover');
