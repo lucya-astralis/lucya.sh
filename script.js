@@ -225,6 +225,75 @@
     })();
   })();
 
+  // ---------- TEXT SCRAMBLE --------------------------------------
+  // decoder-style transition. Random glyphs flicker, then resolve to the
+  // target text one char at a time. Used for section headers, hero stats,
+  // and the spotify track title on rotation.
+  const SCRAMBLE_CHARS = '!<>-_\\/[]{}=+*^?#$&%01ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿ';
+  const escScrambleChar = c => c === '<' ? '&lt;' : c === '>' ? '&gt;' : c === '&' ? '&amp;' : c;
+  class TextScrambler {
+    constructor(el){ this.el = el; this.queue = []; this.frame = 0; }
+    setText(newText){
+      const oldText = this.el.textContent;
+      const len = Math.max(oldText.length, newText.length);
+      this.queue = [];
+      for (let i = 0; i < len; i++){
+        const start = Math.floor(Math.random() * 14);
+        const end = start + 12 + Math.floor(Math.random() * 22);
+        this.queue.push({ from: oldText[i] || '', to: newText[i] || '', start, end, char: '' });
+      }
+      cancelAnimationFrame(this.rafId);
+      this.frame = 0;
+      return new Promise(res => { this.resolve = res; this._tick(); });
+    }
+    _tick = () => {
+      let out = '';
+      let done = 0;
+      for (let i = 0; i < this.queue.length; i++){
+        const q = this.queue[i];
+        if (this.frame >= q.end){ done++; out += escScrambleChar(q.to); }
+        else if (this.frame >= q.start){
+          if (!q.char || Math.random() < 0.28){
+            q.char = SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+          }
+          out += `<span class="scramble-char">${escScrambleChar(q.char)}</span>`;
+        } else {
+          out += escScrambleChar(q.from);
+        }
+      }
+      this.el.innerHTML = out;
+      if (done === this.queue.length){ this.resolve(); }
+      else { this.rafId = requestAnimationFrame(this._tick); this.frame++; }
+    };
+  }
+  const scramblers = new WeakMap();
+  const scrambleTo = (el, text) => {
+    if (!el) return;
+    let s = scramblers.get(el);
+    if (!s){ s = new TextScrambler(el); scramblers.set(el, s); }
+    return s.setText(String(text));
+  };
+  const scrambleOnView = (els) => {
+    const list = els.filter(el => el && !el.dataset.scrambleSetup);
+    list.forEach(el => {
+      el.dataset.scrambleSetup = '1';
+      el.dataset.scrambleTarget = el.textContent.trim();
+    });
+    if (!('IntersectionObserver' in window)){
+      list.forEach(el => scrambleTo(el, el.dataset.scrambleTarget));
+      return;
+    }
+    const io = new IntersectionObserver((ents, obs) => {
+      ents.forEach(e => {
+        if (e.isIntersecting){
+          scrambleTo(e.target, e.target.dataset.scrambleTarget);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.35, rootMargin: '0px 0px -10% 0px' });
+    list.forEach(el => io.observe(el));
+  };
+
   // ---------- CLOCK ----------------------------------------------
   const pad = n => String(n).padStart(2, '0');
   const fmt12 = d => {
@@ -779,7 +848,7 @@
       setTimeout(() => {
         cover.src = s.cover;
         cover.alt = s.title + ' — ' + s.artist;
-        trackEl.textContent = s.title;
+        scrambleTo(trackEl, s.title);
         artistEl.textContent = s.artist;
         counterEl.textContent = pad2(idx + 1) + ' / ' + pad2(songs.length);
         dotEls.forEach((d, i) => d.classList.toggle('is-active', i === idx));
@@ -928,6 +997,14 @@
     if (months < 0) { years--; months += 12; }
     uptime.textContent = `${years}y ${String(months).padStart(2, '0')}m`;
   }
+
+  // ---------- ENABLE SCRAMBLE ON STATIC LABELS -------------------
+  // wait for splash to fade so the decoder reveal coincides with content reveal
+  setTimeout(() => {
+    scrambleOnView(Array.from(document.querySelectorAll('.section__slug .name')));
+    scrambleOnView(Array.from(document.querySelectorAll('.stat__value')));
+    scrambleOnView(Array.from(document.querySelectorAll('.section__doc b')));
+  }, 7600);
 
   // ---------- KPI BAR RELOCATION (mobile under profile) ----------
   const kpiBar = document.querySelector('.kpibar');

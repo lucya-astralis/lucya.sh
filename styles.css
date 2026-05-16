@@ -1639,7 +1639,7 @@ section{
 .buttons__note{ margin-top:12px; }
 
 /* ================================================================
-   NEOFETCH
+   NEOFETCH — retro CRT terminal
    ================================================================ */
 .neofetch__tabs{
   display:flex; gap:1px;
@@ -1659,52 +1659,134 @@ section{
   cursor:pointer;
   transition:all .2s;
   white-space:nowrap;
+  text-shadow: 0 0 6px transparent;
 }
-.ntab:hover{ color:var(--text); }
+.ntab:hover{ color:var(--text); text-shadow: 0 0 8px currentColor; }
 .ntab.is-active{
-  background:#000;
+  background:#020306;
   color:var(--acc-cy);
   box-shadow: inset 0 2px 0 var(--acc-cy);
+  text-shadow: 0 0 6px currentColor, 0 0 12px rgba(91,138,255,.5);
 }
 .neofetch__panes{ position:relative; }
 .nterm{
   display:none;
-  background:#000;
+  position:relative;
+  background: radial-gradient(ellipse at center, #060509 0%, #020205 70%, #000 100%);
   border:1px solid var(--line);
   border-top:0;
+  overflow:hidden;
+  box-shadow:
+    inset 0 0 60px rgba(0,0,0,0.85),
+    inset 0 0 6px rgba(91,138,255,0.06);
+  animation: ntermFlicker 5.5s ease-in-out infinite;
 }
 .nterm.is-active{ display:block; }
+/* CRT scanlines */
+.nterm::before{
+  content:"";
+  position:absolute; inset:0;
+  pointer-events:none;
+  z-index:2;
+  background:
+    repeating-linear-gradient(to bottom,
+      rgba(255,255,255,0.045) 0 1px,
+      transparent 1px 3px),
+    repeating-linear-gradient(to right,
+      rgba(0,0,0,0.18) 0 2px,
+      transparent 2px 4px);
+  mix-blend-mode: overlay;
+  animation: ntermScan 8s linear infinite;
+}
+/* CRT vignette */
+.nterm::after{
+  content:"";
+  position:absolute; inset:0;
+  pointer-events:none;
+  z-index:3;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 100%);
+}
 .nterm__bar{
+  position:relative;
+  z-index:4;
   display:flex; align-items:center; gap:6px;
   padding:8px 12px;
-  background:#0a0a12;
+  background:linear-gradient(180deg, #0a0a12 0%, #060610 100%);
   border-bottom:1px solid var(--line);
+  box-shadow: inset 0 -1px 0 rgba(91,138,255,0.08);
 }
 .nterm__dot{ width:10px; height:10px; border-radius:50%; background:#2a2a36; }
-.nterm__dot:nth-child(1){ background:#ff5f56; }
-.nterm__dot:nth-child(2){ background:#ffbd2e; }
-.nterm__dot:nth-child(3){ background:#27c93f; }
+.nterm__dot:nth-child(1){ background:#ff5f56; box-shadow: 0 0 5px rgba(255,95,86,.6); }
+.nterm__dot:nth-child(2){ background:#ffbd2e; box-shadow: 0 0 5px rgba(255,189,46,.6); }
+.nterm__dot:nth-child(3){ background:#27c93f; box-shadow: 0 0 5px rgba(39,201,63,.6); }
 .nterm__title{
   margin-left:10px;
   font-family:"Proto Nerd Font Regular", monospace;
   font-size:12px;
   color:var(--text-dim);
+  text-shadow: 0 0 5px currentColor;
 }
 .nterm__body{
+  position:relative;
+  z-index:1;
   margin:0;
-  padding:18px 20px 22px;
+  padding:18px 20px 32px;
   font-family:"Proto Nerd Font Regular", monospace;
   font-size:13px;
   line-height:1.3em;
   color:#d8dafa;
   overflow-x:auto;
   white-space:pre;
+  text-shadow:
+    0 0 1px currentColor,
+    0 0 6px rgba(91,138,255,0.25);
+}
+/* phosphor glow follows each span's own color so palette stays intact */
+.nterm__body span{
+  text-shadow:
+    0 0 1px currentColor,
+    0 0 6px currentColor,
+    0 0 12px rgba(255,255,255,0.08);
 }
 .nterm__body .k{ color:var(--acc-mag); font-weight:700; }
 .nterm__body .c1{ color:#b98cff; }
 .nterm__body .c2{ color:#ff79c6; }
 .nterm__body .c3{ color:#8be9fd; }
 .nterm__body .c4{ color:#50fa7b; }
+/* blinking block cursor at the end of each terminal */
+.nterm__body::after{
+  content:"";
+  position:absolute;
+  left: 20px;
+  bottom: 12px;
+  width: 9px;
+  height: 14px;
+  background: #d8dafa;
+  box-shadow: 0 0 6px #5b8aff, 0 0 12px rgba(91,138,255,.6);
+  animation: ntermCursor 1.05s steps(1) infinite;
+}
+@keyframes ntermCursor{
+  0%, 49% { opacity: .9; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes ntermScan{
+  0%   { background-position: 0 0, 0 0; }
+  100% { background-position: 0 120px, 0 0; }
+}
+@keyframes ntermFlicker{
+  0%, 92%, 100% { filter: brightness(1); }
+  93%           { filter: brightness(1.06); }
+  94%           { filter: brightness(.94); }
+  95%           { filter: brightness(1.03); }
+  96%           { filter: brightness(.97); }
+}
+
+/* ---- TEXT SCRAMBLE ---- */
+.scramble-char{
+  color: var(--acc-mag);
+  opacity: .85;
+  text-shadow: 0 0 6px currentColor;
+}
 .sw{ display:inline-block; width:24px; height:12px; margin-right:2px; }
 .sw1{ background:#1f1f2a; } .sw2{ background:#ff5555; }
 .sw3{ background:#50fa7b; } .sw4{ background:#f1fa8c; }
