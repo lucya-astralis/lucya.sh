@@ -553,6 +553,9 @@ img{ user-select:none; -webkit-user-drag:none; }
   stroke-dasharray:none;
   stroke-dashoffset:0;
 }
+.glitch-logo__rgb .piece--static.piece--head{
+  stroke-width:0.21;
+}
 .glitch-logo__rgb--r .piece--static{ stroke:#7aa6ff; fill:#7aa6ff; }
 .glitch-logo__rgb--b .piece--static{ stroke:#b478ff; fill:#b478ff; }
 
@@ -576,6 +579,11 @@ img{ user-select:none; -webkit-user-drag:none; }
   stroke-width: .6;
   transition: fill .08s steps(2), stroke .3s ease;
 }
+
+/* eagle head sits inside a matrix(4.6, 1.9, -3.4, 8.3, …) parent
+   (~6.7× linear scale). Compensate so its stroke matches the rest. */
+.piece--head{ stroke-width: 0.22; }
+.piece--head.filled{ stroke-width: 0.09; }
 
 @keyframes splashLogoReveal{
   from{ opacity:0; transform:scale(.94); filter:blur(4px); }
@@ -2072,13 +2080,14 @@ section{
   overflow:hidden;
 }
 .docstrip__inner{
-  max-width:var(--page-max);
-  margin:0 auto;
-  padding:6px var(--page-pad);
+  max-width:none;
+  margin:0;
+  padding:6px 14px;
   display:flex;
-  flex-wrap:wrap;
+  flex-wrap:nowrap;
   align-items:center;
   gap:14px;
+  white-space:nowrap;
 }
 .docstrip__inner > span{ display:inline-flex; align-items:center; gap:6px; white-space:nowrap; }
 .docstrip__inner > span + span::before{
@@ -2365,17 +2374,8 @@ section{
 @media (max-width: 768px){
   section{ padding: 28px 18px 36px; }
 
-  /* docstrip: keep CLASSIFIED + DOC + REV only */
-  .docstrip{ font-size:9.5px; letter-spacing:.16em; }
-  .docstrip__inner{ padding:5px 14px; gap:8px; column-gap:8px; }
-  .docstrip__inner > span:nth-child(2),
-  .docstrip__inner > span:nth-child(3),
-  .docstrip__inner > span:nth-child(6),
-  .docstrip__inner > span:nth-child(7),
-  .docstrip__inner > span:nth-child(8),
-  .docstrip .docstrip__sp{ display:none; }
-  .docstrip__inner{ flex-wrap:nowrap; overflow:hidden; }
-  .docstrip__inner > span + span::before{ margin-right:6px; }
+  /* docstrip: hide completely on mobile */
+  .docstrip{ display:none; }
 
   /* ticker: drop the FEED · #01 tag, shrink label */
   .ticker{ height:26px; font-size:10.5px; letter-spacing:.08em; }
