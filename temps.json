@@ -1,0 +1,10 @@
+{
+  "host": "raspberrypi",
+  "ts": 1779580800,
+  "cpu_temp_c": 52.8,
+  "load_1m": 0.42,
+  "load_5m": 0.31,
+  "load_15m": 0.28,
+  "uptime_s": 1234567,
+  "mem_used_pct": 63.4
+}

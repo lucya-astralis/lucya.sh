@@ -267,38 +267,94 @@
 <!-- ============================================================= -->
 <aside class="kpibar" aria-label="key metrics">
   <div class="kpibar__inner">
-    <div class="kpibar__head mono">
-      <span>LUCYA SYSTEMS<span class="reg">®</span> · KEY METRICS</span>
-      <span class="dim">FY26 · UNAUDITED · REALTIME DATA</span>
+    <div class="kpibar__main">
+      <div class="kpibar__head mono">
+        <span>LUCYA SYSTEMS<span class="reg">®</span> · KEY METRICS</span>
+        <span class="dim">FY26 · UNAUDITED · REALTIME DATA</span>
+      </div>
+      <div class="kpibar__grid" id="kpiGrid">
+        <!-- populated from data.json — fallback values below render if fetch fails -->
+        <div class="kpi" data-kpi="uptime">
+          <span class="kpi__label mono">UPTIME</span>
+          <span class="kpi__value" data-kpi-value>18y —m</span>
+          <span class="kpi__sub mono">SINCE 2007 · CONTINUOUS</span>
+        </div>
+        <div class="kpi" data-kpi="services">
+          <span class="kpi__label mono">SERVICES</span>
+          <span class="kpi__value" data-kpi-value>15 / 15</span>
+          <span class="kpi__sub mono kpi__sub--ok">NOMINAL · SLA 99.97%</span>
+        </div>
+        <div class="kpi" data-kpi="japan">
+          <span class="kpi__label mono">JAPAN</span>
+          <span class="kpi__value" data-kpi-value>— <em>d</em></span>
+          <span class="kpi__sub mono kpi__sub--ok">TRIP · 2026-08-10</span>
+        </div>
+        <div class="kpi" data-kpi="domains">
+          <span class="kpi__label mono">DOMAINS OWNED</span>
+          <span class="kpi__value" data-kpi-value>17</span>
+          <span class="kpi__sub mono">REGISTERED · ACTIVE</span>
+        </div>
+      </div>
+      <div class="kpibar__foot mono">
+        <span>// FIGURES ARE LIVE · COMPUTED CLIENT-SIDE</span>
+        <span>// ALL DATA STORED LOCALLY · NO TELEMETRY</span>
+        <span>FORM <b>KPI-A · REV 2026.Q2</b></span>
+      </div>
     </div>
-    <div class="kpibar__grid" id="kpiGrid">
-      <!-- populated from data.json — fallback values below render if fetch fails -->
-      <div class="kpi" data-kpi="uptime">
-        <span class="kpi__label mono">UPTIME</span>
-        <span class="kpi__value" data-kpi-value>18y —m</span>
-        <span class="kpi__sub mono">SINCE 2007 · CONTINUOUS</span>
+
+    <!-- live telemetry from the webserver (Pi 4B) — fed by scripts/temps.sh -->
+    <section class="therm" id="thermal" data-state="boot" aria-label="thermal telemetry">
+      <div class="therm__head mono">
+        <span class="therm__title">
+          <span class="dot dot--ok" id="thermDot"></span>
+          THERMAL // PROBE
+        </span>
+        <span class="therm__tag">T-01 · LIVE</span>
       </div>
-      <div class="kpi" data-kpi="services">
-        <span class="kpi__label mono">SERVICES</span>
-        <span class="kpi__value" data-kpi-value>15 / 15</span>
-        <span class="kpi__sub mono kpi__sub--ok">NOMINAL · SLA 99.97%</span>
+
+      <div class="therm__body">
+        <div class="therm__primary">
+          <span class="therm__label mono">CPU CORE</span>
+          <span class="therm__value">
+            <b id="thermCpu">—.—</b><em>°C</em>
+          </span>
+          <div class="therm__bar" data-band="ok">
+            <div class="therm__bar-fill" id="thermCpuBar"></div>
+            <span class="therm__bar-tick" style="left:55%"></span>
+            <span class="therm__bar-tick" style="left:78%"></span>
+          </div>
+        </div>
+
+        <div class="therm__grid">
+          <div class="therm__cell">
+            <span class="therm__label mono">LOAD 1m</span>
+            <span class="therm__cell-val mono"><b id="thermLoad">—.——</b></span>
+            <span class="therm__cell-sub mono dim" id="thermLoadSub">—— · ——</span>
+          </div>
+          <div class="therm__cell">
+            <span class="therm__label mono">UPTIME</span>
+            <span class="therm__cell-val mono"><b id="thermUptime">—d —h</b></span>
+            <span class="therm__cell-sub mono dim">SINCE BOOT</span>
+          </div>
+        </div>
+
+        <div class="therm__primary">
+          <span class="therm__label mono">MEMORY</span>
+          <span class="therm__value therm__value--sm">
+            <b id="thermRam">—.—</b><em>%</em>
+          </span>
+          <div class="therm__bar therm__bar--mem">
+            <div class="therm__bar-fill therm__bar-fill--mem" id="thermRamBar"></div>
+          </div>
+        </div>
       </div>
-      <div class="kpi" data-kpi="japan">
-        <span class="kpi__label mono">JAPAN</span>
-        <span class="kpi__value" data-kpi-value>— <em>d</em></span>
-        <span class="kpi__sub mono kpi__sub--ok">TRIP · 2026-08-10</span>
+
+      <div class="therm__foot mono">
+        <span id="thermHost">awaiting probe…</span>
+        <span class="therm__sep">·</span>
+        <span id="thermAge">—</span>
       </div>
-      <div class="kpi" data-kpi="domains">
-        <span class="kpi__label mono">DOMAINS OWNED</span>
-        <span class="kpi__value" data-kpi-value>17</span>
-        <span class="kpi__sub mono">REGISTERED · ACTIVE</span>
-      </div>
-    </div>
-    <div class="kpibar__foot mono">
-      <span>// FIGURES ARE LIVE · COMPUTED CLIENT-SIDE</span>
-      <span>// ALL DATA STORED LOCALLY · NO TELEMETRY</span>
-      <span>FORM <b>KPI-A · REV 2026.Q2</b></span>
-    </div>
+    </section>
   </div>
 </aside>
 

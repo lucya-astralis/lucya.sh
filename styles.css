@@ -931,8 +931,8 @@ section{
 .pcard{
   position:relative;
   background:
-    linear-gradient(180deg, rgba(7, 7, 11, 0.452) 0%, rgba(7, 7, 11, 0.623) 60%, rgba(7, 7, 11, 0.719) 100%),
-    url(images/profile/astralia1.png) center/cover no-repeat;
+    linear-gradient(180deg, rgba(7, 7, 11, 0.658) 0%, rgba(7, 7, 11, 0.774) 60%, rgba(7, 7, 11, 0.815) 100%),
+    url(images/profile/astralia2.png) center/cover no-repeat;
 
   border:1px solid var(--line-strong);
   border-radius:10px;
@@ -2202,6 +2202,15 @@ section{
   max-width:var(--page-max);
   margin:0 auto;
   padding:14px var(--page-pad) 18px;
+  display:grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap:22px;
+  align-items:stretch;
+}
+.kpibar__main{ min-width:0; display:flex; flex-direction:column; }
+.kpibar__main .kpibar__grid{ flex:1; }
+@media (max-width: 1024px){
+  .kpibar__inner{ grid-template-columns: 1fr; gap:14px; }
 }
 .kpibar__head{
   display:flex;
@@ -2276,6 +2285,171 @@ section{
   color:var(--text-ghost);
 }
 .kpibar__foot b{ color:var(--text-dim); font-weight:400; letter-spacing:.14em; }
+
+/* ---- THERMAL TELEMETRY (live widget fed by /temps.json) ----------------- */
+.therm{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  border:1px solid var(--line);
+  background:
+    linear-gradient(180deg, rgba(91,138,255,.04), transparent 30%),
+    radial-gradient(ellipse at 50% 0%, rgba(91,138,255,.06), transparent 60%),
+    rgba(5,5,10,0.78);
+  box-shadow:
+    inset 0 0 40px rgba(0,0,0,0.55),
+    inset 0 0 1px rgba(91,138,255,0.18);
+  overflow:hidden;
+}
+.therm::before{
+  content:"";
+  position:absolute; inset:0;
+  pointer-events:none;
+  background: repeating-linear-gradient(to bottom,
+    rgba(255,255,255,0.025) 0 1px,
+    transparent 1px 3px);
+  mix-blend-mode: overlay;
+}
+.therm__head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:9px 12px;
+  font-size:10px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(91,138,255,.08), transparent);
+}
+.therm__title{
+  display:inline-flex; align-items:center; gap:8px;
+  color:var(--text);
+}
+.therm__tag{ color:var(--text-ghost); }
+.therm__body{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  padding:14px 14px 10px;
+}
+.therm__label{
+  font-size:9.5px;
+  letter-spacing:.26em;
+  color:var(--text-dim);
+  text-transform:uppercase;
+}
+.therm__primary{
+  display:grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  column-gap:10px;
+  align-items:baseline;
+}
+.therm__primary > .therm__label{ grid-column:1; grid-row:1; }
+.therm__primary > .therm__value{ grid-column:2; grid-row:1; }
+.therm__primary > .therm__bar{ grid-column:1 / -1; grid-row:2; margin-top:6px; }
+.therm__value{
+  font-family:"Ethnocentric", "Space Grotesk", sans-serif;
+  font-size:24px;
+  letter-spacing:.02em;
+  color:var(--text);
+  text-shadow: 0 0 14px rgba(91,138,255,.45);
+  line-height:1;
+  white-space:nowrap;
+}
+.therm__value--sm{ font-size:18px; }
+.therm__value em{
+  font-family:"Proto Nerd Font Regular", monospace;
+  font-style:normal;
+  font-size:.55em;
+  letter-spacing:.06em;
+  color:var(--acc-cy);
+  margin-left:3px;
+}
+/* CPU temp bar: progress 0..90°C with two ticks at 55/78°C — band changes color */
+.therm__bar{
+  position:relative;
+  height:8px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--line);
+  overflow:hidden;
+}
+.therm__bar-fill{
+  height:100%; width:0%;
+  background:linear-gradient(90deg, var(--acc-ok), var(--acc-cy));
+  box-shadow: 0 0 8px rgba(91,138,255,.55);
+  transition: width .8s cubic-bezier(.2,.8,.2,1), background .4s ease;
+}
+.therm__bar[data-band="warm"] .therm__bar-fill{
+  background:linear-gradient(90deg, var(--acc-cy), var(--acc-amb));
+  box-shadow: 0 0 8px rgba(255,181,71,.55);
+}
+.therm__bar[data-band="hot"] .therm__bar-fill{
+  background:linear-gradient(90deg, var(--acc-amb), var(--acc-red));
+  box-shadow: 0 0 10px rgba(255,103,103,.6);
+}
+.therm__bar[data-band="crit"] .therm__bar-fill{
+  background:var(--acc-red);
+  box-shadow: 0 0 14px rgba(255,103,103,.8);
+  animation: thermCrit .8s steps(2) infinite;
+}
+@keyframes thermCrit{ 50%{ opacity:.55; } }
+.therm__bar-tick{
+  position:absolute;
+  top:-2px; bottom:-2px;
+  width:1px;
+  background:rgba(255,255,255,.18);
+}
+.therm__bar-fill--mem{
+  background:linear-gradient(90deg, var(--acc-mag), var(--acc-cy));
+  box-shadow: 0 0 8px rgba(165,148,255,.4);
+}
+.therm__grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+}
+.therm__cell{
+  background:rgba(7,7,11,.6);
+  padding:10px 11px;
+  display:flex; flex-direction:column; gap:3px;
+}
+.therm__cell-val{
+  font-family:"Proto Nerd Font Regular", monospace;
+  font-size:16px;
+  color:var(--text);
+  letter-spacing:.04em;
+  text-shadow: 0 0 8px rgba(91,138,255,.3);
+  line-height:1.1;
+}
+.therm__cell-sub{
+  font-size:8.5px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+}
+.therm__foot{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  font-size:9.5px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--text-ghost);
+  border-top:1px solid var(--line);
+  background:rgba(0,0,0,0.25);
+}
+.therm__foot .therm__sep{ color:var(--line-strong); }
+/* probe lifecycle state colors the head dot */
+.therm[data-state="ok"]    #thermDot{ background:var(--acc-ok);  box-shadow:0 0 8px var(--acc-ok); }
+.therm[data-state="stale"] #thermDot{ background:var(--acc-amb); box-shadow:0 0 8px var(--acc-amb); animation: thermBlink 1.6s steps(2) infinite; }
+.therm[data-state="dead"]  #thermDot{ background:var(--acc-red); box-shadow:0 0 8px var(--acc-red); animation: thermBlink .9s steps(2) infinite; }
+.therm[data-state="boot"]  #thermDot,
+.therm[data-state="down"]  #thermDot{ background:var(--text-ghost); box-shadow:none; animation: thermBlink 1s steps(2) infinite; }
+@keyframes thermBlink{ 50%{ opacity:.25; } }
 
 @media (max-width: 1100px){
   .kpibar__grid{ grid-template-columns:repeat(2, 1fr); }
