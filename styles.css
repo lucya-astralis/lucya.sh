@@ -221,14 +221,17 @@ html{ scroll-behavior:smooth; }
   inset:0;
   z-index:-1;
   background-image:
-    linear-gradient(to right, rgba(255,255,255,.025) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,.025) 1px, transparent 1px),
-    linear-gradient(rgba(7,7,11,0.72), rgba(7,7,11,0.85));
-  background-size: 32px 32px, 32px 32px, auto;
-  background-position: 0 0, 0 0, 0 0;
-  background-repeat: repeat, repeat, no-repeat;
+    linear-gradient(to right, rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.03) 1px, transparent 1px),
+    radial-gradient(ellipse at 22% 52%, rgba(40,90,220,0.18) 0%, transparent 45%),
+    radial-gradient(ellipse at 80% 50%, rgba(120,60,220,0.10) 0%, transparent 50%),
+    linear-gradient(rgba(6,8,14,0.74), rgba(4,5,10,0.88));
+  background-size: 32px 32px, 32px 32px, auto, auto, auto;
+  background-position: 0 0, 0 0, 22% 52%, 80% 50%, 0 0;
+  background-repeat: repeat, repeat, no-repeat, no-repeat, no-repeat;
   pointer-events:none;
 }
+
 body{
   color:var(--text);
   background-color:var(--bg);
@@ -250,19 +253,20 @@ body::before{
 }
 
 body::after{
-  /* global scanlines */
+  /* global scanlines — CRT feel from splash, applied site-wide */
   content:"";
   position:fixed; inset:0;
-  background:repeating-linear-gradient(
-    to bottom,
-    rgba(255,255,255,0.018) 0px,
-    rgba(255,255,255,0.018) 1px,
-    transparent 1px,
-    transparent 3px
-  );
+  background:
+    repeating-linear-gradient(to bottom,
+      rgba(255,255,255,0.05) 0 1px,
+      transparent 1px 3px),
+    repeating-linear-gradient(to right,
+      rgba(0,0,0,0.22) 0 2px,
+      transparent 2px 4px);
   pointer-events:none;
   z-index:2;
   mix-blend-mode:overlay;
+  animation: scan 8s linear infinite;
 }
 
 a{ color:inherit; text-decoration:none; }
