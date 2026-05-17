@@ -1,521 +1,706 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Impressum & Datenschutz — lucya.sh</title>
-    <meta name="description" content="Impressum und Datenschutzerklärung von lucya.sh — rechtliche Hinweise nach §5 TMG und Informationen zur Datenverarbeitung." />
+    <title>PRIVACY // LUCYA.SH</title>
+    <meta name="description" content="Datenschutzerklärung von lucya.sh — privates, nicht-kommerzielles Projekt. Informationen zur Datenverarbeitung nach DSGVO." />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#0d1117" />
+    <meta name="theme-color" content="#07070b" />
+    <meta name="color-scheme" content="dark" />
     <link rel="canonical" href="https://lucya.sh/legal.html" />
     <link rel="icon" type="image/svg+xml" href="images/logo/lucya_logo.svg" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="lucya.sh" />
-    <meta property="og:title" content="Impressum & Datenschutz — lucya.sh" />
-    <meta property="og:description" content="Impressum und Datenschutzerklärung von lucya.sh." />
+    <meta property="og:title" content="Privacy Policy — lucya.sh" />
+    <meta property="og:description" content="Datenschutzerklärung von lucya.sh." />
     <meta property="og:url" content="https://lucya.sh/legal.html" />
-    <meta property="og:locale" content="de_DE" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="de_DE" />
+
+    <link rel="stylesheet" href="styles.css" />
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* ================================================================
+           LEGAL — page-local styles. Inherits fonts/cursor/scanlines/wallpaper
+           from styles.css.
+           ================================================================ */
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #e0e0e0;
-            background-color: #0d1117;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            background-color: #161b22;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            font-size: 14.5px;
+            line-height: 1.65;
             min-height: 100vh;
         }
 
-        .topbar {
+        .legal-wrap {
+            position: relative;
+            z-index: 3;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: clamp(72px, 8vw, 120px) clamp(20px, 4vw, 56px) clamp(56px, 6vw, 96px);
+        }
+
+        /* Terminal corner tags (mirrors splash style) */
+        .legal-corners {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 18px 22px;
+            pointer-events: none;
+            z-index: 5;
+            font-family: "Proto Nerd Font Regular", monospace;
+            font-size: 10.5px;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+        .legal-corners .tag {
+            font-family: inherit;
+            font-size: inherit;
+            letter-spacing: inherit;
+            padding: 3px 8px;
+            border: 1px solid var(--line-strong);
+            background: rgba(255,255,255,.04);
+        }
+        .legal-corners .tag b { color: var(--acc-cy); font-weight: 600; }
+
+        /* Page header */
+        .legal-head {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 48px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--line);
+        }
+        .legal-head__brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 6px;
+        }
+        .legal-head__logo {
+            width: 52px;
+            height: 52px;
+            display: block;
+            filter: drop-shadow(0 0 12px rgba(91,138,255,.45));
+            animation: logoPulse 4.2s ease-in-out infinite;
+        }
+        .legal-head__stamp {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-family: "Proto Nerd Font Regular", monospace;
+            font-size: 10.5px;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: var(--text-ghost);
+            line-height: 1.4;
+        }
+        .legal-head__stamp b {
+            color: var(--acc-cy);
+            font-weight: 600;
+            letter-spacing: .28em;
+        }
+        @keyframes logoPulse {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(91,138,255,.35)); }
+            50%      { filter: drop-shadow(0 0 16px rgba(91,138,255,.65)); }
+        }
+
+        /* Footer watermark */
+        .legal-foot__mark {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .legal-foot__mark img {
+            width: 22px;
+            height: 22px;
+            opacity: .55;
+            filter: drop-shadow(0 0 6px rgba(91,138,255,.4));
+        }
+        .legal-head__slug {
+            font-family: "Proto Nerd Font Regular", monospace;
+            font-size: 11px;
+            letter-spacing: .28em;
+            text-transform: uppercase;
+            color: var(--acc-cy);
+        }
+        .legal-head__title {
+            font-family: "Chakra Petch", "Space Grotesk", sans-serif;
+            font-weight: 700;
+            font-size: clamp(34px, 5vw, 56px);
+            line-height: 1.05;
+            letter-spacing: .02em;
+            color: var(--text);
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .legal-head__sub {
+            font-family: "Proto Nerd Font Regular", monospace;
+            font-size: 12px;
+            letter-spacing: .14em;
+            color: var(--text-ghost);
+            text-transform: uppercase;
+        }
+        .legal-head__row {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 16px;
-            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
-        .topbar h1 {
-            margin-bottom: 0;
-            flex: 1;
-        }
-
+        /* Lang toggle */
         .lang-toggle {
             display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background-color: #0d1117;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 999px;
-            padding: 6px 10px;
-            -webkit-user-select: none;
-            user-select: none;
+            align-items: stretch;
+            border: 1px solid var(--line-strong);
+            background: rgba(255,255,255,.03);
+            font-family: "Proto Nerd Font Regular", monospace;
+            font-size: 11px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
         }
-
         .lang-toggle button {
             appearance: none;
-            border: none;
             background: transparent;
-            color: #c9d1d9;
-            font-weight: 600;
-            padding: 6px 10px;
-            border-radius: 999px;
-            cursor: pointer;
+            border: 0;
+            color: var(--text-dim);
+            padding: 7px 14px;
+            font: inherit;
+            letter-spacing: inherit;
+            text-transform: inherit;
+            cursor: url('misc/pointer.cur'), pointer;
+            transition: color .12s ease, background .12s ease;
         }
-
+        .lang-toggle button + button { border-left: 1px solid var(--line-strong); }
+        .lang-toggle button:hover { color: var(--text); }
         .lang-toggle button[aria-pressed="true"] {
-            background-color: #1f6feb;
-            color: #ffffff;
+            color: var(--text);
+            background: rgba(91,138,255,.14);
+            box-shadow: inset 0 0 0 1px rgba(91,138,255,.35);
         }
 
-        .lang {
-            display: none;
-        }
+        /* Language gating */
+        .lang { display: none; }
+        body[data-lang="en"] .lang-en { display: block; }
+        body[data-lang="de"] .lang-de { display: block; }
 
-        body[data-lang="en"] .lang-en {
-            display: block;
+        /* Domain scope card */
+        .domain-notice {
+            margin-bottom: 40px;
+            padding: 18px 22px;
+            background: rgba(91,138,255,.06);
+            border: 1px solid rgba(91,138,255,.25);
+            border-left: 3px solid var(--acc-cy);
         }
-
-        body[data-lang="de"] .lang-de {
-            display: block;
+        .domain-notice .label {
+            font-family: "Proto Nerd Font Regular", monospace;
+            font-size: 10.5px;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: var(--acc-cy);
+            margin-bottom: 6px;
         }
-
-        h1 {
-            font-size: 2.5em;
-            color: #58a6ff;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #1f6feb;
+        .domain-notice .list {
+            font-family: "Proto Nerd Font Regular", monospace;
+            font-size: 13px;
+            color: var(--text);
+            letter-spacing: .04em;
         }
+        .domain-notice .list .sep { color: var(--text-ghost); margin: 0 6px; }
 
-        h2 {
-            font-size: 1.8em;
-            color: #79c0ff;
-            margin-top: 40px;
+        /* Sections */
+        .legal-wrap section {
+            margin-bottom: 44px;
+            position: relative;
+        }
+        .legal-wrap section + section { padding-top: 8px; }
+
+        .sec-head {
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
             margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed var(--line);
+        }
+        .sec-head__num {
+            font-family: "Proto Nerd Font Regular", monospace;
+            font-size: 12px;
+            letter-spacing: .22em;
+            color: var(--acc-cy);
+            padding: 2px 7px;
+            border: 1px solid rgba(91,138,255,.3);
+            background: rgba(91,138,255,.08);
+        }
+        .sec-head h2 {
+            font-family: "Chakra Petch", "Space Grotesk", sans-serif;
+            font-weight: 600;
+            font-size: clamp(20px, 2.3vw, 26px);
+            color: var(--text);
+            margin: 0;
+            letter-spacing: .02em;
+            text-transform: uppercase;
         }
 
         h3 {
-            font-size: 1.3em;
-            color: #c9d1d9;
-            margin-top: 25px;
-            margin-bottom: 15px;
+            font-family: "Proto Nerd Font Regular", monospace;
+            font-size: 13px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--acc-mag);
+            margin: 26px 0 10px;
         }
+        h3:first-of-type { margin-top: 4px; }
 
-        p {
-            margin-bottom: 15px;
-            text-align: justify;
+        .legal-wrap p {
+            margin: 0 0 14px;
+            color: var(--text);
+            text-align: left;
+            hyphens: auto;
         }
-
-        a {
-            color: #58a6ff;
+        .legal-wrap a {
+            color: var(--acc-cy);
             text-decoration: none;
+            border-bottom: 1px dashed rgba(91,138,255,.4);
+            transition: color .12s ease, border-color .12s ease;
+        }
+        .legal-wrap a:hover {
+            color: var(--text);
+            border-bottom-color: var(--text);
         }
 
-        a:hover {
-            text-decoration: underline;
+        .callout {
+            margin: 14px 0;
+            padding: 14px 16px;
+            border: 1px solid rgba(255,181,71,.35);
+            background: rgba(255,181,71,.06);
+            border-left: 3px solid var(--acc-amb);
+            font-size: 13.5px;
+        }
+        .callout strong { color: var(--acc-amb); letter-spacing: .04em; }
+
+        .contact-block {
+            display: inline-block;
+            margin: 6px 0 12px;
+            padding: 12px 16px;
+            border: 1px solid var(--line-strong);
+            background: rgba(255,255,255,.03);
+            font-family: "Proto Nerd Font Regular", monospace;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+        .contact-block .k {
+            color: var(--text-ghost);
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            font-size: 11px;
+            margin-right: 8px;
         }
 
-        section {
-            margin-bottom: 30px;
+        ul.plain {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 14px;
+            font-family: "Proto Nerd Font Regular", monospace;
+            font-size: 13px;
+            color: var(--text);
+        }
+        ul.plain li {
+            padding: 3px 0 3px 18px;
+            position: relative;
+        }
+        ul.plain li::before {
+            content: "›";
+            position: absolute;
+            left: 0;
+            color: var(--acc-cy);
         }
 
-        .domain-notice {
-            background-color: #1c2532;
-            border-left: 4px solid #1f6feb;
-            padding: 15px 20px;
-            margin-bottom: 30px;
-            border-radius: 4px;
+        code {
+            font-family: "Proto Nerd Font Regular", monospace;
+            font-size: 12.5px;
+            padding: 1px 6px;
+            background: rgba(255,255,255,.06);
+            border: 1px solid var(--line);
+            color: var(--text);
         }
 
-        .domain-notice p {
-            margin: 0;
-            color: #e0e0e0;
+        /* Footer */
+        .legal-foot {
+            margin-top: 56px;
+            padding-top: 22px;
+            border-top: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-family: "Proto Nerd Font Regular", monospace;
+            font-size: 11px;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--text-ghost);
         }
-
-        .domain-list {
-            margin-top: 10px;
-            font-weight: 500;
+        .legal-foot a {
+            color: var(--acc-cy);
+            border-bottom: 1px dashed rgba(91,138,255,.4);
         }
+        .legal-foot a:hover { color: var(--text); border-bottom-color: var(--text); }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px 15px;
-            }
-
-            h1 {
-                font-size: 2em;
-            }
-
-            h2 {
-                font-size: 1.5em;
-            }
+        @media (max-width: 640px) {
+            .legal-corners { font-size: 9.5px; padding: 12px 14px; }
+            .legal-corners .tag { padding: 2px 6px; }
+            .sec-head { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .domain-notice .list { font-size: 12px; }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="topbar">
-            <h1 id="page-title">Privacy Policy</h1>
-            <div class="lang-toggle" role="group" aria-label="Language">
-                <button type="button" id="lang-en" aria-pressed="true">EN</button>
-                <button type="button" id="lang-de" aria-pressed="false">DE</button>
-            </div>
-        </div>
+<body data-lang="en">
 
+    <div class="legal-corners">
+        <span class="tag"><b>LUCYA</b> · LEGAL // PRIVACY</span>
+        <span class="tag">SECTION · 04</span>
+    </div>
+
+    <main class="legal-wrap">
+
+        <header class="legal-head">
+            <div class="legal-head__brand">
+                <img class="legal-head__logo" src="images/logo/lucya_logo.svg" alt="lucya" />
+                <div class="legal-head__stamp">
+                    <span><b>LUCYA</b> · personal systems</span>
+                    <span>/// document · privacy_policy.md</span>
+                </div>
+            </div>
+            <h1 class="legal-head__title" id="page-title">Privacy Policy</h1>
+            <div class="legal-head__row">
+                <span class="legal-head__sub">private project · non-commercial · self-hosted · EU/DE</span>
+                <div class="lang-toggle" role="group" aria-label="Language">
+                    <button type="button" id="lang-en" aria-pressed="true">EN</button>
+                    <button type="button" id="lang-de" aria-pressed="false">DE</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- ================================================================ -->
+        <!-- ENGLISH                                                          -->
+        <!-- ================================================================ -->
         <div class="lang lang-en">
+
             <div class="domain-notice">
-                <p><strong>Scope:</strong> This privacy policy applies to the following domains:</p>
-                <p class="domain-list">lucya.sh • lucya.systems • inter-astra.org • astralytic.net • nekolabs.me • astraOS.app • aizaku.com • binbows.net</p>
+                <div class="label">Scope · this policy applies to:</div>
+                <div class="list">
+                    lucya.sh<span class="sep">·</span>lucya.systems<span class="sep">·</span>inter-astra.org<span class="sep">·</span>inter-astra.net<span class="sep">·</span>astralytic.net<span class="sep">·</span>nekolabs.me<span class="sep">·</span>astraOS.app<span class="sep">·</span>aizaku.com<span class="sep">·</span>binbows.net
+                </div>
             </div>
 
             <section>
-                <h2>1. Privacy at a glance</h2>
+                <div class="sec-head"><span class="sec-head__num">01</span><h2>Privacy at a glance</h2></div>
 
                 <h3>General information</h3>
                 <p>The following information provides a simple overview of what happens to your personal data when you visit this website. Personal data is any data that can be used to personally identify you. Detailed information on data protection can be found in the privacy policy below.</p>
 
-                <h3>Data collection on this website</h3>
-
                 <h3>Who is responsible for data collection on this website?</h3>
-                <p>Data processing on this website is carried out by the website operator. You can find the operator’s contact details in the section “Information about the controller”.</p>
+                <p>Data processing on this website is carried out by the operator of the site. You can find the operator's contact details in the section "Information about the controller".</p>
 
                 <h3>How do we collect your data?</h3>
-                <p>Some data is collected when you provide it to us, e.g. when you enter data into a contact form.</p>
-                <p>Other data is collected automatically or after your consent when you visit the website through our IT systems. This is mainly technical data (e.g. internet browser, operating system, or time of page access). This data is collected automatically as soon as you enter this website.</p>
+                <p>Some data is collected when you provide it to us, e.g. when you contact us by email.</p>
+                <p>Other data is collected automatically when you visit the website. This is mainly technical data (e.g. internet browser, operating system, or time of page access). This data is collected automatically as soon as you enter this website.</p>
 
                 <h3>What do we use your data for?</h3>
-                <p>Some of the data is collected to ensure the website is provided without errors. Other data may be used to analyze your user behavior. If contracts can be concluded or initiated via the website, the transmitted data will also be processed for contract offers, orders, or other requests.</p>
+                <p>The data is collected to ensure that the website is provided without errors and to optimise it. This is a privately operated, non-commercial website. No data is processed for advertising, analytics, profiling or contract conclusion.</p>
 
                 <h3>What rights do you have regarding your data?</h3>
-                <p>You have the right to receive information about the origin, recipient, and purpose of your stored personal data at any time free of charge. You also have the right to request correction or deletion of this data. If you have given consent to data processing, you can revoke this consent at any time for the future. You also have the right, under certain circumstances, to request restriction of the processing of your personal data. Furthermore, you have the right to lodge a complaint with the competent supervisory authority.</p>
-                <p>You can contact us at any time if you have further questions about data protection.</p>
-
-                <h3>Analytics tools and third-party tools</h3>
-                <p>When you visit this website, your browsing behavior may be statistically evaluated, primarily using analytics programs.</p>
-                <p>Detailed information about these analytics programs can be found in the following privacy policy sections.</p>
+                <p>You have the right to receive information about the origin, recipient and purpose of your stored personal data at any time free of charge. You also have the right to request correction or deletion of this data. If you have given consent to data processing, you can revoke this consent at any time for the future. You also have the right, under certain circumstances, to request restriction of the processing of your personal data. Furthermore, you have the right to lodge a complaint with the competent supervisory authority.</p>
             </section>
 
             <section>
-                <h2>2. Hosting</h2>
-                <p>This website is operated on our own servers (self-hosting).</p>
-                <p>No personal data is passed on to external hosting providers.</p>
-                <p>The server location is Germany.</p>
+                <div class="sec-head"><span class="sec-head__num">02</span><h2>Hosting</h2></div>
+                <p>This website is operated on our own servers (self-hosting). No personal data is passed on to external hosting providers.</p>
+                <p>The server location is Germany. Delivery is accelerated and protected via Cloudflare as a CDN (see section 05).</p>
             </section>
 
             <section>
-                <h2>3. General information and mandatory disclosures</h2>
+                <div class="sec-head"><span class="sec-head__num">03</span><h2>General information and mandatory disclosures</h2></div>
 
                 <h3>Data protection</h3>
-                <p>The operators of this website take the protection of your personal data very seriously. We treat your personal data confidentially and in accordance with the statutory data protection regulations and this privacy policy.</p>
-                <p>When you use this website, various personal data is collected. Personal data is data that can be used to personally identify you. This privacy policy explains what data we collect and what we use it for. It also explains how and for what purpose this happens.</p>
+                <p>The operator of this website takes the protection of your personal data very seriously. We treat your personal data confidentially and in accordance with the statutory data protection regulations (in particular the GDPR) and this privacy policy.</p>
+                <p>When you use this website, various personal data is collected. Personal data is data that can be used to personally identify you. This privacy policy explains what data we collect and what we use it for.</p>
                 <p>We point out that data transmission over the internet (e.g. communication via email) can have security gaps. Complete protection of data from access by third parties is not possible.</p>
 
                 <h3>Information about the controller</h3>
                 <p>The controller responsible for data processing on this website is:</p>
-                <p>Timo Wager<br>
-                Email: <a href="mailto:info@inter-astra.net">info@inter-astra.net</a></p>
-                <p>The controller is the natural or legal person who alone or jointly with others determines the purposes and means of processing personal data (e.g. names, email addresses, etc.).</p>
+                <div class="contact-block">
+                    <span class="k">Name</span>Timo Wager<br>
+                    <span class="k">Email</span><a href="mailto:privacy@lucya.sh">privacy@lucya.sh</a>
+                </div>
+                <p>The controller is the natural person who alone or jointly with others determines the purposes and means of processing personal data.</p>
 
                 <h3>Storage duration</h3>
-                <p>Unless a more specific storage period has been specified within this privacy policy, your personal data will remain with us until the purpose for data processing no longer applies. If you assert a legitimate request for deletion or revoke your consent to data processing, your data will be deleted unless we have other legally permissible reasons for storing your personal data (e.g. retention periods under tax or commercial law); in the latter case, the data will be deleted once those reasons no longer apply.</p>
+                <p>Unless a more specific storage period has been specified within this privacy policy, your personal data will remain with us until the purpose for data processing no longer applies. If you assert a legitimate request for deletion or revoke your consent to data processing, your data will be deleted unless we have other legally permissible reasons for storing your personal data; in that case, the data will be deleted once those reasons no longer apply.</p>
 
-                <h3>General information on the legal basis for data processing on this website</h3>
-                <p>If you have consented to data processing, we process your personal data on the basis of Art. 6(1)(a) GDPR and/or Art. 9(2)(a) GDPR if special categories of data within the meaning of Art. 9(1) GDPR are processed. In the case of explicit consent to the transfer of personal data to third countries, processing also takes place on the basis of Art. 49(1)(a) GDPR. If you have consented to the storage of cookies or access to information on your end device (e.g. via device fingerprinting), processing additionally takes place on the basis of § 25(1) TDDDG. Consent can be revoked at any time. If your data is required to fulfill a contract or to carry out pre-contractual measures, we process your data on the basis of Art. 6(1)(b) GDPR. Furthermore, we process your data if this is necessary to fulfill a legal obligation on the basis of Art. 6(1)(c) GDPR. Data processing may also take place on the basis of our legitimate interest pursuant to Art. 6(1)(f) GDPR. The relevant legal bases in each individual case are explained in the following sections of this privacy policy.</p>
+                <h3>Legal basis for data processing</h3>
+                <p>If you have consented to data processing, we process your personal data on the basis of Art. 6(1)(a) GDPR. If you have consented to the storage of cookies or to access to information on your end device, processing additionally takes place on the basis of § 25(1) TDDDG. Consent can be revoked at any time. Furthermore, we process your data on the basis of our legitimate interest pursuant to Art. 6(1)(f) GDPR (e.g. error-free operation of the website). The relevant legal bases in each individual case are explained in the following sections.</p>
 
                 <h3>Recipients of personal data</h3>
-                <p>In the course of our business activities, we work with various external parties. In some cases, it is necessary to transfer personal data to these external parties. We only pass on personal data to external parties if this is necessary for the performance of a contract, if we are legally obliged to do so (e.g. transfer of data to tax authorities), if we have a legitimate interest in doing so pursuant to Art. 6(1)(f) GDPR, or if another legal basis permits the transfer. When using processors, we only pass on our customers’ personal data on the basis of a valid data processing agreement. In the case of joint processing, a joint processing agreement is concluded.</p>
+                <p>Personal data is only passed on to external parties if this is required to operate the website (e.g. to our CDN provider Cloudflare), if we are legally obliged to do so, or if you have given consent. When processors are used, we work on the basis of a valid data processing agreement.</p>
 
                 <h3>Withdrawal of your consent to data processing</h3>
                 <p>Many data processing operations are only possible with your explicit consent. You can revoke consent you have already given at any time. The lawfulness of the data processing carried out up to the revocation remains unaffected.</p>
 
-                <h3>Right to object to data collection in special cases and to direct marketing (Art. 21 GDPR)</h3>
-                <p><strong>IF DATA PROCESSING IS BASED ON ART. 6(1)(E) OR (F) GDPR, YOU HAVE THE RIGHT AT ANY TIME TO OBJECT, ON GROUNDS RELATING TO YOUR PARTICULAR SITUATION, TO THE PROCESSING OF YOUR PERSONAL DATA; THIS ALSO APPLIES TO PROFILING BASED ON THESE PROVISIONS. THE LEGAL BASIS ON WHICH PROCESSING IS BASED CAN BE FOUND IN THIS PRIVACY POLICY. IF YOU OBJECT, WE WILL NO LONGER PROCESS YOUR PERSONAL DATA UNLESS WE CAN DEMONSTRATE COMPELLING LEGITIMATE GROUNDS FOR THE PROCESSING WHICH OVERRIDE YOUR INTERESTS, RIGHTS AND FREEDOMS OR THE PROCESSING SERVES THE ESTABLISHMENT, EXERCISE OR DEFENSE OF LEGAL CLAIMS (OBJECTION PURSUANT TO ART. 21(1) GDPR).</strong></p>
-                <p><strong>IF YOUR PERSONAL DATA IS PROCESSED FOR THE PURPOSE OF DIRECT MARKETING, YOU HAVE THE RIGHT TO OBJECT AT ANY TIME TO THE PROCESSING OF YOUR PERSONAL DATA FOR THE PURPOSE OF SUCH MARKETING; THIS ALSO APPLIES TO PROFILING INSOFAR AS IT IS RELATED TO SUCH DIRECT MARKETING. IF YOU OBJECT, YOUR PERSONAL DATA WILL SUBSEQUENTLY NO LONGER BE USED FOR THE PURPOSE OF DIRECT MARKETING (OBJECTION PURSUANT TO ART. 21(2) GDPR).</strong></p>
+                <div class="callout">
+                    <p><strong>RIGHT TO OBJECT (ART. 21 GDPR) —</strong> If data processing is based on Art. 6(1)(e) or (f) GDPR, you have the right at any time to object, on grounds relating to your particular situation, to the processing of your personal data; this also applies to profiling based on these provisions. If you object, we will no longer process your personal data unless we can demonstrate compelling legitimate grounds for the processing which override your interests, rights and freedoms, or the processing serves the establishment, exercise or defence of legal claims.</p>
+                </div>
 
                 <h3>Right to lodge a complaint with the competent supervisory authority</h3>
                 <p>In the event of violations of the GDPR, data subjects have the right to lodge a complaint with a supervisory authority, in particular in the member state of their habitual residence, their place of work, or the place of the alleged infringement. This right exists without prejudice to other administrative or judicial remedies.</p>
 
                 <h3>Right to data portability</h3>
-                <p>You have the right to have data that we process automatically on the basis of your consent or in fulfillment of a contract handed over to you or to a third party in a commonly used, machine-readable format. If you request the direct transfer of the data to another controller, this will only be done insofar as it is technically feasible.</p>
+                <p>You have the right to have data that we process automatically on the basis of your consent or in fulfilment of a contract handed over to you or to a third party in a commonly used, machine-readable format. If you request the direct transfer of the data to another controller, this will only be done insofar as it is technically feasible.</p>
 
-                <h3>Information, rectification, and erasure</h3>
+                <h3>Information, rectification and erasure</h3>
                 <p>Within the scope of the applicable legal provisions, you have the right at any time to receive free information about your stored personal data, its origin and recipients, and the purpose of data processing and, if applicable, a right to rectification or erasure of this data. You can contact us at any time regarding this and other questions about personal data.</p>
 
                 <h3>Right to restriction of processing</h3>
-                <p>You have the right to request restriction of the processing of your personal data. You can contact us at any time about this. The right to restriction of processing exists in the following cases:</p>
-                <p>If you contest the accuracy of your personal data stored by us, we generally need time to verify this. For the duration of the verification, you have the right to request restriction of the processing of your personal data.</p>
-                <p>If the processing of your personal data was/is unlawful, you can request restriction of data processing instead of deletion.</p>
-                <p>If we no longer need your personal data, but you need it to exercise, defend, or assert legal claims, you have the right to request restriction of processing instead of deletion.</p>
-                <p>If you have lodged an objection pursuant to Art. 21(1) GDPR, a balancing of your interests and ours must be carried out. As long as it has not yet been determined whose interests prevail, you have the right to request restriction of the processing of your personal data.</p>
-                <p>If you have restricted the processing of your personal data, this data may only be processed – apart from being stored – with your consent or for the establishment, exercise or defense of legal claims or for the protection of the rights of another natural or legal person or for reasons of important public interest of the European Union or a member state.</p>
+                <p>You have the right to request restriction of the processing of your personal data. You can contact us at any time about this.</p>
 
                 <h3>SSL/TLS encryption</h3>
-                <p>This site uses SSL/TLS encryption for security reasons and to protect the transmission of confidential content, such as orders or inquiries that you send to us as the site operator. You can recognize an encrypted connection by the browser address line changing from “http://” to “https://” and the lock symbol in your browser bar.</p>
-                <p>If SSL/TLS encryption is activated, the data you transmit to us cannot be read by third parties.</p>
+                <p>This site uses SSL/TLS encryption for security reasons and to protect the transmission of confidential content. You can recognise an encrypted connection by the browser address line changing from <code>http://</code> to <code>https://</code> and by the lock symbol in your browser bar.</p>
             </section>
 
             <section>
-                <h2>4. Data collection on this website</h2>
+                <div class="sec-head"><span class="sec-head__num">04</span><h2>Data collection on this website</h2></div>
 
                 <h3>Cookies</h3>
-                <p>Our websites use so-called “cookies”. Cookies are small data packets and do not cause any damage to your end device. They are stored either temporarily for the duration of a session (session cookies) or permanently (persistent cookies) on your end device. Session cookies are automatically deleted after your visit ends. Persistent cookies remain stored on your end device until you delete them yourself or your web browser deletes them automatically.</p>
-                <p>Cookies can come from us (first-party cookies) or from third-party companies (so-called third-party cookies). Third-party cookies enable the integration of certain services from third-party companies within websites (e.g. cookies for processing payment services).</p>
-                <p>Cookies have different functions. Many cookies are technically necessary, as certain website functions would not work without them. Other cookies can be used to analyze user behavior or for advertising purposes.</p>
-                <p>Cookies that are necessary to carry out electronic communication processes, to provide certain functions you require (e.g. shopping cart function), or to optimize the website (e.g. cookies to measure the web audience) are stored on the basis of Art. 6(1)(f) GDPR unless another legal basis is stated. The website operator has a legitimate interest in storing necessary cookies for technically error-free and optimized provision of its services. If consent for storing cookies and comparable recognition technologies was requested, processing takes place exclusively on the basis of this consent (Art. 6(1)(a) GDPR and § 25(1) TDDDG); consent can be revoked at any time.</p>
-                <p>You can set your browser so that you are informed about the setting of cookies and allow cookies only in individual cases, exclude acceptance of cookies for certain cases or in general, and activate automatic deletion of cookies when closing the browser. Disabling cookies may limit the functionality of this website.</p>
-                <p>You can find which cookies and services are used on this website in this privacy policy.</p>
+                <p>This website does not set tracking cookies. The site may make use of small functional storage entries in your browser (e.g. <code>localStorage</code>) only where strictly necessary to remember a setting you have made yourself. The legal basis for this is § 25(2) no. 2 TDDDG (storage strictly necessary to provide a service explicitly requested by the user) and Art. 6(1)(f) GDPR.</p>
+                <p>You can configure your browser to inform you about the setting of cookies and storage and to delete them automatically.</p>
 
                 <h3>Server log files</h3>
                 <p>The provider of this website automatically collects and stores information in so-called server log files, which your browser transmits to us automatically. These are:</p>
-                <p>Browser type and version<br>
-                Operating system used<br>
-                Referrer URL<br>
-                Hostname of the accessing computer<br>
-                Time of the server request<br>
-                IP address</p>
-                <p>This data is not merged with other data sources.</p>
-                <p>This data is collected on the basis of Art. 6(1)(f) GDPR. The website operator has a legitimate interest in the technically error-free presentation and optimization of its website – for this purpose, server log files must be collected.</p>
+                <ul class="plain">
+                    <li>Browser type and version</li>
+                    <li>Operating system used</li>
+                    <li>Referrer URL</li>
+                    <li>Hostname of the accessing computer</li>
+                    <li>Time of the server request</li>
+                    <li>IP address</li>
+                </ul>
+                <p>This data is not merged with other data sources. Collection is based on Art. 6(1)(f) GDPR — the website operator has a legitimate interest in the technically error-free presentation and security of the website.</p>
 
-                <h3>Contact form</h3>
-                <p>If you send us inquiries via the contact form, your details from the inquiry form including the contact details you provide there will be stored by us for the purpose of processing the inquiry and in case of follow-up questions. We do not pass on this data without your consent.</p>
-                <p>This data is processed on the basis of Art. 6(1)(b) GDPR if your request is related to the performance of a contract or is necessary to carry out pre-contractual measures. In all other cases, processing is based on our legitimate interest in effectively processing the inquiries addressed to us (Art. 6(1)(f) GDPR) or on your consent (Art. 6(1)(a) GDPR) if this was requested; consent can be revoked at any time.</p>
-                <p>The data you enter in the contact form remains with us until you request deletion, revoke your consent to storage, or the purpose for data storage no longer applies (e.g. after your inquiry has been processed). Mandatory statutory provisions – in particular retention periods – remain unaffected.</p>
-
-                <h3>Contact by email, phone, or fax</h3>
-                <p>If you contact us by email, phone, or fax, your inquiry including all personal data resulting from it (name, inquiry) will be stored and processed by us for the purpose of handling your request. We do not pass on this data without your consent.</p>
-                <p>This data is processed on the basis of Art. 6(1)(b) GDPR if your request is related to the performance of a contract or is necessary to carry out pre-contractual measures. In all other cases, processing is based on our legitimate interest in effectively processing the inquiries addressed to us (Art. 6(1)(f) GDPR) or on your consent (Art. 6(1)(a) GDPR) if this was requested; consent can be revoked at any time.</p>
-                <p>The data you send to us via contact inquiries remains with us until you request deletion, revoke your consent to storage, or the purpose for data storage no longer applies (e.g. after your request has been fully processed). Mandatory statutory provisions – in particular statutory retention periods – remain unaffected.</p>
+                <h3>Contact by email</h3>
+                <p>If you contact us by email, your inquiry including all personal data resulting from it (name, message content) will be stored and processed by us for the sole purpose of handling your request. We do not pass on this data without your consent.</p>
+                <p>This data is processed on the basis of Art. 6(1)(f) GDPR (legitimate interest in handling inquiries addressed to us) or, where applicable, on your consent (Art. 6(1)(a) GDPR). Consent can be revoked at any time.</p>
+                <p>The data you send to us via email remains with us until you request deletion, revoke your consent to storage, or the purpose for data storage no longer applies. Mandatory statutory provisions — in particular statutory retention periods — remain unaffected.</p>
             </section>
 
             <section>
-                <h2>5. Plugins and tools</h2>
+                <div class="sec-head"><span class="sec-head__num">05</span><h2>Plugins and tools</h2></div>
 
                 <h3>Font Awesome (local hosting)</h3>
-                <p>This site uses Font Awesome for consistent display of fonts/icons. Font Awesome is installed locally. No connection to servers of Fonticons, Inc. takes place.</p>
-                <p>More information about Font Awesome can be found in Font Awesome’s privacy policy at: <a href="https://fontawesome.com/privacy" target="_blank" rel="noopener noreferrer">https://fontawesome.com/privacy</a>.</p>
+                <p>This site uses Font Awesome icons. Font Awesome is installed locally on our server. No connection to servers of Fonticons, Inc. takes place. More information: <a href="https://fontawesome.com/privacy" target="_blank" rel="noopener noreferrer">fontawesome.com/privacy</a>.</p>
+
+                <h3>Web fonts (self-hosted)</h3>
+                <p>All web fonts used (e.g. Space Grotesk, JetBrains Mono, Chakra Petch, Noto Sans JP, Whitney) are served from our own infrastructure. No connection to Google Fonts or any other third-party font CDN is established when you visit the site.</p>
 
                 <h3>Cloudflare</h3>
-                <p>We use the Content Delivery Network (CDN) of Cloudflare Germany GmbH, Rosental 7, c/o Mindspace, 80331 Munich, Germany (Cloudflare) to increase the security and delivery speed of our website. This corresponds to our legitimate interest (Art. 6(1)(f) GDPR). A CDN is a network of globally distributed servers that can deliver optimized content to website users. For this purpose, personal data may be processed in Cloudflare’s server log files. Please also see the information under “Hosting”.</p>
-                <p>Cloudflare is a recipient of your personal data and acts as a processor for us. This corresponds to our legitimate interest within the meaning of Art. 6(1)(f) GDPR not to operate our own CDN.</p>
-                <p>You have the right to object to processing. Whether the objection is successful must be determined as part of a balancing of interests.</p>
-                <p>Processing of the data specified in this section is neither legally nor contractually required. The functionality of the website is not guaranteed without processing.</p>
-                <p>Your personal data will be stored by Cloudflare for as long as necessary for the purposes described.</p>
-                <p>Further information on options to object and remove data with regard to Cloudflare can be found at: Cloudflare DPA</p>
-                <p>Cloudflare has implemented compliance measures for international data transfers. These apply to all worldwide activities where Cloudflare processes personal data of individuals in the EU. These measures are based on the EU Standard Contractual Clauses (SCCs). More information can be found at: <a href="https://www.cloudflare.com/cloudflare_customer_SCCs-German.pdf" target="_blank" rel="noopener noreferrer">https://www.cloudflare.com/cloudflare_customer_SCCs-German.pdf</a></p>
+                <p>We use the Content Delivery Network (CDN) of Cloudflare Germany GmbH, Rosental 7, c/o Mindspace, 80331 Munich, Germany ("Cloudflare") to increase the security and delivery speed of our website. This corresponds to our legitimate interest pursuant to Art. 6(1)(f) GDPR. A CDN is a network of globally distributed servers that can deliver optimised content to website users. For this purpose, personal data (in particular IP addresses) may be processed in Cloudflare's server log files.</p>
+                <p>Cloudflare acts as a processor for us on the basis of a data processing agreement. You have the right to object to the processing; whether the objection succeeds must be determined as part of a balancing of interests. The functionality of the website is not guaranteed without this processing.</p>
+                <p>Cloudflare has implemented compliance measures for international data transfers based on the EU Standard Contractual Clauses (SCCs). More information: <a href="https://www.cloudflare.com/cloudflare-customer-dpa/" target="_blank" rel="noopener noreferrer">Cloudflare Customer DPA</a> and <a href="https://www.cloudflare.com/cloudflare_customer_SCCs-German.pdf" target="_blank" rel="noopener noreferrer">SCCs (PDF)</a>.</p>
 
                 <h3>Uptime status badge (status.lucya.systems)</h3>
-                <p>This website embeds a live uptime badge from <a href="https://status.lucya.systems" target="_blank" rel="noopener noreferrer">https://status.lucya.systems</a> in order to display the current availability of the “Hypervisor” service. The badge is loaded as an image directly from the status server (<code>https://status.lucya.systems/api/badge/1/uptime</code>).</p>
-                <p>When the page is loaded, your browser establishes a direct connection to that server. In doing so, the following data is transmitted to the status server and may be processed in its server log files:</p>
-                <p>IP address<br>
-                Browser type and version<br>
-                Operating system<br>
-                Referrer URL<br>
-                Time of the request<br>
-                User agent string</p>
-                <p>The status server (status.lucya.systems) is operated by us on our own infrastructure within the European Union. Data is not passed on to third parties beyond what is technically required to deliver the badge image. The legal basis for this processing is Art. 6(1)(f) GDPR; we have a legitimate interest in transparently displaying the operational status of our infrastructure to visitors.</p>
-                <p>You can prevent the loading of the badge by using a content blocker or by disabling JavaScript and image loading in your browser. The functionality of the rest of the website is not affected by this.</p>
+                <p>This website embeds a live uptime badge from <a href="https://status.lucya.systems" target="_blank" rel="noopener noreferrer">status.lucya.systems</a> to display the current availability of the "Hypervisor" service. The badge is loaded as an image directly from the status server (<code>https://status.lucya.systems/api/badge/1/uptime</code>).</p>
+                <p>When the page loads, your browser establishes a direct connection to that server. The following data may be processed in its server log files: IP address, browser type and version, operating system, referrer URL, time of the request, user agent string.</p>
+                <p>The status server is operated by us on our own infrastructure within the European Union. Data is not passed on to third parties beyond what is technically required to deliver the badge image. The legal basis is Art. 6(1)(f) GDPR — we have a legitimate interest in transparently displaying the operational status of our infrastructure.</p>
+                <p>You can prevent the badge from loading by using a content blocker or by disabling image loading in your browser. The rest of the website is not affected.</p>
+
+                <h3>External links to social media and third-party platforms</h3>
+                <p>This website contains links to our profiles on external platforms (e.g. GitHub, Bluesky, Instagram, Threads, X/Twitter, Reddit, Spotify, Steam, Inara). These are plain hyperlinks — no embedded widgets, no tracking pixels, no data is transmitted to those platforms simply by loading our page.</p>
+                <p>As soon as you <em>click</em> one of those links, your browser connects to the operator of the linked platform, which will receive your IP address and may store cookies or other identifiers according to their own policies. We have no influence on this. Please refer to the respective platform's privacy policy for details.</p>
             </section>
 
             <section>
-                <h2>6. Legal Notice Regarding Media Usage</h2>
-                <p>This website includes various visual elements such as Slackmojis, 88x31 buttons, fan artwork, and logos. These assets may be protected by copyright or trademark law and are the property of their respective owners, including but not limited to:</p>
-                <p>
-                    • Nintendo / Game Freak / The Pokémon Company (Pokémon)<br>
-                    • Apple Inc.<br>
-                    • Microsoft Corporation<br>
-                    • Advanced Micro Devices, Inc. (AMD)
-                </p>
-                <p>Their usage on this website is entirely non-commercial and intended purely for aesthetic, nostalgic, or referential purposes. This site is not affiliated with, endorsed by, or officially connected to any of the mentioned brands or companies.</p>
-                <p>All trademarks and logos remain the property of their respective owners. No copyright infringement is intended. If you are a rights holder and wish to have specific content removed, please contact me at <a href="mailto:info@inter-astra.net">info@inter-astra.net</a>.</p>
+                <div class="sec-head"><span class="sec-head__num">06</span><h2>Media usage / trademarks</h2></div>
+                <p>This website includes various visual elements such as Slackmojis, 88×31 buttons, fan artwork and logos. These assets may be protected by copyright or trademark law and are the property of their respective owners, including but not limited to:</p>
+                <ul class="plain">
+                    <li>Nintendo / Game Freak / The Pokémon Company (Pokémon)</li>
+                    <li>Apple Inc.</li>
+                    <li>Microsoft Corporation</li>
+                    <li>Advanced Micro Devices, Inc. (AMD)</li>
+                </ul>
+                <p>Their usage on this website is entirely non-commercial and intended purely for aesthetic, nostalgic or referential purposes. This site is not affiliated with, endorsed by, or officially connected to any of the mentioned brands or companies.</p>
+                <p>All trademarks and logos remain the property of their respective owners. No copyright infringement is intended. If you are a rights holder and wish to have specific content removed, please contact <a href="mailto:privacy@lucya.sh">privacy@lucya.sh</a>.</p>
             </section>
+
         </div>
 
+        <!-- ================================================================ -->
+        <!-- DEUTSCH                                                          -->
+        <!-- ================================================================ -->
         <div class="lang lang-de">
+
             <div class="domain-notice">
-                <p><strong>Geltungsbereich:</strong> Diese Datenschutzerklärung gilt für folgende Domains:</p>
-                <p class="domain-list">lucya.sh • lucya.systems • inter-astra.org • astralytic.net • nekolabs.me • astraOS.app • aizaku.com • binbows.net</p>
+                <div class="label">Geltungsbereich · diese Erklärung gilt für:</div>
+                <div class="list">
+                    lucya.sh<span class="sep">·</span>lucya.systems<span class="sep">·</span>inter-astra.org<span class="sep">·</span>inter-astra.net<span class="sep">·</span>astralytic.net<span class="sep">·</span>nekolabs.me<span class="sep">·</span>astraOS.app<span class="sep">·</span>aizaku.com<span class="sep">·</span>binbows.net
+                </div>
             </div>
 
             <section>
-                <h2>1. Datenschutz auf einen Blick</h2>
+                <div class="sec-head"><span class="sec-head__num">01</span><h2>Datenschutz auf einen Blick</h2></div>
 
                 <h3>Allgemeine Hinweise</h3>
-                <p>Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können. Ausführliche Informationen zum Thema Datenschutz entnehmen Sie unserer unter diesem Text aufgeführten Datenschutzerklärung.</p>
-
-                <h3>Datenerfassung auf dieser Website</h3>
+                <p>Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit deinen personenbezogenen Daten passiert, wenn du diese Website besuchst. Personenbezogene Daten sind alle Daten, mit denen du persönlich identifiziert werden kannst. Ausführliche Informationen zum Thema Datenschutz findest du in der unter diesem Text aufgeführten Datenschutzerklärung.</p>
 
                 <h3>Wer ist verantwortlich für die Datenerfassung auf dieser Website?</h3>
-                <p>Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber. Dessen Kontaktdaten können Sie dem Abschnitt „Hinweis zur Verantwortlichen Stelle" in dieser Datenschutzerklärung entnehmen.</p>
+                <p>Die Datenverarbeitung auf dieser Website erfolgt durch den Betreiber der Seite. Dessen Kontaktdaten findest du im Abschnitt "Hinweis zur verantwortlichen Stelle".</p>
 
-                <h3>Wie erfassen wir Ihre Daten?</h3>
-                <p>Ihre Daten werden zum einen dadurch erhoben, dass Sie uns diese mitteilen. Hierbei kann es sich z. B. um Daten handeln, die Sie in ein Kontaktformular eingeben.</p>
-                <p>Andere Daten werden automatisch oder nach Ihrer Einwilligung beim Besuch der Website durch unsere IT-Systeme erfasst. Das sind vor allem technische Daten (z. B. Internetbrowser, Betriebssystem oder Uhrzeit des Seitenaufrufs). Die Erfassung dieser Daten erfolgt automatisch, sobald Sie diese Website betreten.</p>
+                <h3>Wie erfassen wir deine Daten?</h3>
+                <p>Deine Daten werden zum einen dadurch erhoben, dass du sie uns mitteilst — zum Beispiel beim Schreiben einer E-Mail.</p>
+                <p>Andere Daten werden automatisch beim Besuch der Website durch unsere IT-Systeme erfasst. Das sind vor allem technische Daten (z. B. Internetbrowser, Betriebssystem oder Uhrzeit des Seitenaufrufs).</p>
 
-                <h3>Wofür nutzen wir Ihre Daten?</h3>
-                <p>Ein Teil der Daten wird erhoben, um eine fehlerfreie Bereitstellung der Website zu gewährleisten. Andere Daten können zur Analyse Ihres Nutzerverhaltens verwendet werden. Sofern über die Website Verträge geschlossen oder angebahnt werden können, werden die übermittelten Daten auch für Vertragsangebote, Bestellungen oder sonstige Auftragsanfragen verarbeitet.</p>
+                <h3>Wofür nutzen wir deine Daten?</h3>
+                <p>Die Daten werden erhoben, um eine fehlerfreie Bereitstellung der Website zu gewährleisten und sie zu optimieren. Diese Website ist ein privat betriebenes, nicht-kommerzielles Projekt. Eine Verarbeitung zu Werbe-, Analyse-, Profiling- oder Vertragszwecken findet nicht statt.</p>
 
-                <h3>Welche Rechte haben Sie bezüglich Ihrer Daten?</h3>
-                <p>Sie haben jederzeit das Recht, unentgeltlich Auskunft über Herkunft, Empfänger und Zweck Ihrer gespeicherten personenbezogenen Daten zu erhalten. Sie haben außerdem ein Recht, die Berichtigung oder Löschung dieser Daten zu verlangen. Wenn Sie eine Einwilligung zur Datenverarbeitung erteilt haben, können Sie diese Einwilligung jederzeit für die Zukunft widerrufen. Außerdem haben Sie das Recht, unter bestimmten Umständen die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen. Des Weiteren steht Ihnen ein Beschwerderecht bei der zuständigen Aufsichtsbehörde zu.</p>
-                <p>Hierzu sowie zu weiteren Fragen zum Thema Datenschutz können Sie sich jederzeit an uns wenden.</p>
-
-                <h3>Analyse-Tools und Tools von Drittanbietern</h3>
-                <p>Beim Besuch dieser Website kann Ihr Surf-Verhalten statistisch ausgewertet werden. Das geschieht vor allem mit sogenannten Analyseprogrammen.</p>
-                <p>Detaillierte Informationen zu diesen Analyseprogrammen finden Sie in der folgenden Datenschutzerklärung.</p>
+                <h3>Welche Rechte hast du bezüglich deiner Daten?</h3>
+                <p>Du hast jederzeit das Recht, unentgeltlich Auskunft über Herkunft, Empfänger und Zweck deiner gespeicherten personenbezogenen Daten zu erhalten. Du hast außerdem ein Recht, die Berichtigung oder Löschung dieser Daten zu verlangen. Wenn du eine Einwilligung zur Datenverarbeitung erteilt hast, kannst du diese jederzeit für die Zukunft widerrufen. Außerdem hast du das Recht, unter bestimmten Umständen die Einschränkung der Verarbeitung deiner personenbezogenen Daten zu verlangen. Des Weiteren steht dir ein Beschwerderecht bei der zuständigen Aufsichtsbehörde zu.</p>
             </section>
 
             <section>
-                <h2>2. Hosting</h2>
-                <p>Diese Website wird auf eigenen Servern betrieben (Self-Hosting).</p>
-                <p>Eine Weitergabe personenbezogener Daten an externe Hosting-Dienstleister findet nicht statt.</p>
-                <p>Serverstandort ist Deutschland.</p>
+                <div class="sec-head"><span class="sec-head__num">02</span><h2>Hosting</h2></div>
+                <p>Diese Website wird auf eigenen Servern betrieben (Self-Hosting). Eine Weitergabe personenbezogener Daten an externe Hosting-Dienstleister findet nicht statt.</p>
+                <p>Serverstandort ist Deutschland. Die Auslieferung wird über Cloudflare als CDN beschleunigt und abgesichert (siehe Abschnitt 05).</p>
             </section>
 
             <section>
-                <h2>3. Allgemeine Hinweise und Pflichtinformationen</h2>
+                <div class="sec-head"><span class="sec-head__num">03</span><h2>Allgemeine Hinweise und Pflichtinformationen</h2></div>
 
                 <h3>Datenschutz</h3>
-                <p>Die Betreiber dieser Seiten nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend den gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.</p>
-                <p>Wenn Sie diese Website benutzen, werden verschiedene personenbezogene Daten erhoben. Personenbezogene Daten sind Daten, mit denen Sie persönlich identifiziert werden können. Die vorliegende Datenschutzerklärung erläutert, welche Daten wir erheben und wofür wir sie nutzen. Sie erläutert auch, wie und zu welchem Zweck das geschieht.</p>
+                <p>Der Betreiber dieser Seite nimmt den Schutz deiner persönlichen Daten sehr ernst. Wir behandeln deine personenbezogenen Daten vertraulich und entsprechend den gesetzlichen Datenschutzvorschriften (insbesondere der DSGVO) sowie dieser Datenschutzerklärung.</p>
+                <p>Wenn du diese Website benutzt, werden verschiedene personenbezogene Daten erhoben. Personenbezogene Daten sind Daten, mit denen du persönlich identifiziert werden kannst. Die vorliegende Datenschutzerklärung erläutert, welche Daten wir erheben und wofür wir sie nutzen.</p>
                 <p>Wir weisen darauf hin, dass die Datenübertragung im Internet (z. B. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.</p>
 
                 <h3>Hinweis zur verantwortlichen Stelle</h3>
                 <p>Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:</p>
-                <p>Timo Wager<br>
-                E-Mail: <a href="mailto:info@inter-astra.net">info@inter-astra.net</a></p>
-                <p>Verantwortliche Stelle ist die natürliche oder juristische Person, die allein oder gemeinsam mit anderen über die Zwecke und Mittel der Verarbeitung von personenbezogenen Daten (z. B. Namen, E-Mail-Adressen o. Ä.) entscheidet.</p>
+                <div class="contact-block">
+                    <span class="k">Name</span>Timo Wager<br>
+                    <span class="k">E-Mail</span><a href="mailto:privacy@lucya.sh">privacy@lucya.sh</a>
+                </div>
+                <p>Verantwortliche Stelle ist die natürliche Person, die allein oder gemeinsam mit anderen über die Zwecke und Mittel der Verarbeitung von personenbezogenen Daten entscheidet.</p>
 
                 <h3>Speicherdauer</h3>
-                <p>Soweit innerhalb dieser Datenschutzerklärung keine speziellere Speicherdauer genannt wurde, verbleiben Ihre personenbezogenen Daten bei uns, bis der Zweck für die Datenverarbeitung entfällt. Wenn Sie ein berechtigtes Löschersuchen geltend machen oder eine Einwilligung zur Datenverarbeitung widerrufen, werden Ihre Daten gelöscht, sofern wir keine anderen rechtlich zulässigen Gründe für die Speicherung Ihrer personenbezogenen Daten haben (z. B. steuer- oder handelsrechtliche Aufbewahrungsfristen); im letztgenannten Fall erfolgt die Löschung nach Fortfall dieser Gründe.</p>
+                <p>Soweit innerhalb dieser Datenschutzerklärung keine speziellere Speicherdauer genannt wurde, verbleiben deine personenbezogenen Daten bei uns, bis der Zweck für die Datenverarbeitung entfällt. Wenn du ein berechtigtes Löschersuchen geltend machst oder eine Einwilligung zur Datenverarbeitung widerrufst, werden deine Daten gelöscht, sofern wir keine anderen rechtlich zulässigen Gründe für die Speicherung haben; im letztgenannten Fall erfolgt die Löschung nach Fortfall dieser Gründe.</p>
 
-                <h3>Allgemeine Hinweise zu den Rechtsgrundlagen der Datenverarbeitung auf dieser Website</h3>
-                <p>Sofern Sie in die Datenverarbeitung eingewilligt haben, verarbeiten wir Ihre personenbezogenen Daten auf Grundlage von Art. 6 Abs. 1 lit. a DSGVO bzw. Art. 9 Abs. 2 lit. a DSGVO, sofern besondere Datenkategorien nach Art. 9 Abs. 1 DSGVO verarbeitet werden. Im Falle einer ausdrücklichen Einwilligung in die Übertragung personenbezogener Daten in Drittstaaten erfolgt die Datenverarbeitung außerdem auf Grundlage von Art. 49 Abs. 1 lit. a DSGVO. Sofern Sie in die Speicherung von Cookies oder in den Zugriff auf Informationen in Ihr Endgerät (z. B. via Device-Fingerprinting) eingewilligt haben, erfolgt die Datenverarbeitung zusätzlich auf Grundlage von § 25 Abs. 1 TDDDG. Die Einwilligung ist jederzeit widerrufbar. Sind Ihre Daten zur Vertragserfüllung oder zur Durchführung vorvertraglicher Maßnahmen erforderlich, verarbeiten wir Ihre Daten auf Grundlage des Art. 6 Abs. 1 lit. b DSGVO. Des Weiteren verarbeiten wir Ihre Daten, sofern diese zur Erfüllung einer rechtlichen Verpflichtung erforderlich sind auf Grundlage von Art. 6 Abs. 1 lit. c DSGVO. Die Datenverarbeitung kann ferner auf Grundlage unseres berechtigten Interesses nach Art. 6 Abs. 1 lit. f DSGVO erfolgen. Über die jeweils im Einzelfall einschlägigen Rechtsgrundlagen wird in den folgenden Absätzen dieser Datenschutzerklärung informiert.</p>
+                <h3>Allgemeine Hinweise zu den Rechtsgrundlagen der Datenverarbeitung</h3>
+                <p>Sofern du in die Datenverarbeitung eingewilligt hast, verarbeiten wir deine personenbezogenen Daten auf Grundlage von Art. 6 Abs. 1 lit. a DSGVO. Sofern du in die Speicherung von Cookies oder den Zugriff auf Informationen in deinem Endgerät eingewilligt hast, erfolgt die Datenverarbeitung zusätzlich auf Grundlage von § 25 Abs. 1 TDDDG. Die Einwilligung ist jederzeit widerrufbar. Darüber hinaus verarbeiten wir deine Daten auf Grundlage unseres berechtigten Interesses nach Art. 6 Abs. 1 lit. f DSGVO (z. B. fehlerfreier Betrieb der Website). Über die jeweils im Einzelfall einschlägigen Rechtsgrundlagen wird in den folgenden Absätzen informiert.</p>
 
                 <h3>Empfänger von personenbezogenen Daten</h3>
-                <p>Im Rahmen unserer Geschäftstätigkeit arbeiten wir mit verschiedenen externen Stellen zusammen. Dabei ist teilweise auch eine Übermittlung von personenbezogenen Daten an diese externen Stellen erforderlich. Wir geben personenbezogene Daten nur dann an externe Stellen weiter, wenn dies im Rahmen einer Vertragserfüllung erforderlich ist, wenn wir gesetzlich hierzu verpflichtet sind (z. B. Weitergabe von Daten an Steuerbehörden), wenn wir ein berechtigtes Interesse nach Art. 6 Abs. 1 lit. f DSGVO an der Weitergabe haben oder wenn eine sonstige Rechtsgrundlage die Datenweitergabe erlaubt. Beim Einsatz von Auftragsverarbeitern geben wir personenbezogene Daten unserer Kunden nur auf Grundlage eines gültigen Vertrags über Auftragsverarbeitung weiter. Im Falle einer gemeinsamen Verarbeitung wird ein Vertrag über gemeinsame Verarbeitung geschlossen.</p>
+                <p>Wir geben personenbezogene Daten nur dann an externe Stellen weiter, wenn dies zum Betrieb der Website erforderlich ist (z. B. an unseren CDN-Dienstleister Cloudflare), wenn wir gesetzlich hierzu verpflichtet sind oder wenn du eingewilligt hast. Beim Einsatz von Auftragsverarbeitern erfolgt die Weitergabe auf Grundlage eines gültigen Auftragsverarbeitungsvertrags.</p>
 
-                <h3>Widerruf Ihrer Einwilligung zur Datenverarbeitung</h3>
-                <p>Viele Datenverarbeitungsvorgänge sind nur mit Ihrer ausdrücklichen Einwilligung möglich. Sie können eine bereits erteilte Einwilligung jederzeit widerrufen. Die Rechtmäßigkeit der bis zum Widerruf erfolgten Datenverarbeitung bleibt vom Widerruf unberührt.</p>
+                <h3>Widerruf deiner Einwilligung zur Datenverarbeitung</h3>
+                <p>Viele Datenverarbeitungsvorgänge sind nur mit deiner ausdrücklichen Einwilligung möglich. Du kannst eine bereits erteilte Einwilligung jederzeit widerrufen. Die Rechtmäßigkeit der bis zum Widerruf erfolgten Datenverarbeitung bleibt vom Widerruf unberührt.</p>
 
-                <h3>Widerspruchsrecht gegen die Datenerhebung in besonderen Fällen sowie gegen Direktwerbung (Art. 21 DSGVO)</h3>
-                <p><strong>WENN DIE DATENVERARBEITUNG AUF GRUNDLAGE VON ART. 6 ABS. 1 LIT. E ODER F DSGVO ERFOLGT, HABEN SIE JEDERZEIT DAS RECHT, AUS GRÜNDEN, DIE SICH AUS IHRER BESONDEREN SITUATION ERGEBEN, GEGEN DIE VERARBEITUNG IHRER PERSONENBEZOGENEN DATEN WIDERSPRUCH EINZULEGEN; DIES GILT AUCH FÜR EIN AUF DIESE BESTIMMUNGEN GESTÜTZTES PROFILING. DIE JEWEILIGE RECHTSGRUNDLAGE, AUF DENEN EINE VERARBEITUNG BERUHT, ENTNEHMEN SIE DIESER DATENSCHUTZERKLÄRUNG. WENN SIE WIDERSPRUCH EINLEGEN, WERDEN WIR IHRE BETROFFENEN PERSONENBEZOGENEN DATEN NICHT MEHR VERARBEITEN, ES SEI DENN, WIR KÖNNEN ZWINGENDE SCHUTZWÜRDIGE GRÜNDE FÜR DIE VERARBEITUNG NACHWEISEN, DIE IHRE INTERESSEN, RECHTE UND FREIHEITEN ÜBERWIEGEN ODER DIE VERARBEITUNG DIENT DER GELTENDMACHUNG, AUSÜBUNG ODER VERTEIDIGUNG VON RECHTSANSPRÜCHEN (WIDERSPRUCH NACH ART. 21 ABS. 1 DSGVO).</strong></p>
-                <p><strong>WERDEN IHRE PERSONENBEZOGENEN DATEN VERARBEITET, UM DIREKTWERBUNG ZU BETREIBEN, SO HABEN SIE DAS RECHT, JEDERZEIT WIDERSPRUCH GEGEN DIE VERARBEITUNG SIE BETREFFENDER PERSONENBEZOGENER DATEN ZUM ZWECKE DERARTIGER WERBUNG EINZULEGEN; DIES GILT AUCH FÜR DAS PROFILING, SOWEIT ES MIT SOLCHER DIREKTWERBUNG IN VERBINDUNG STEHT. WENN SIE WIDERSPRECHEN, WERDEN IHRE PERSONENBEZOGENEN DATEN ANSCHLIESSEND NICHT MEHR ZUM ZWECKE DER DIREKTWERBUNG VERWENDET (WIDERSPRUCH NACH ART. 21 ABS. 2 DSGVO).</strong></p>
+                <div class="callout">
+                    <p><strong>WIDERSPRUCHSRECHT (ART. 21 DSGVO) —</strong> Wenn die Datenverarbeitung auf Grundlage von Art. 6 Abs. 1 lit. e oder f DSGVO erfolgt, hast du jederzeit das Recht, aus Gründen, die sich aus deiner besonderen Situation ergeben, gegen die Verarbeitung deiner personenbezogenen Daten Widerspruch einzulegen; dies gilt auch für ein auf diese Bestimmungen gestütztes Profiling. Wenn du Widerspruch einlegst, werden wir deine betroffenen personenbezogenen Daten nicht mehr verarbeiten, es sei denn, wir können zwingende schutzwürdige Gründe für die Verarbeitung nachweisen, die deine Interessen, Rechte und Freiheiten überwiegen, oder die Verarbeitung dient der Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen.</p>
+                </div>
 
                 <h3>Beschwerderecht bei der zuständigen Aufsichtsbehörde</h3>
-                <p>Im Falle von Verstößen gegen die DSGVO steht den Betroffenen ein Beschwerderecht bei einer Aufsichtsbehörde, insbesondere in dem Mitgliedstaat ihres gewöhnlichen Aufenthalts, ihres Arbeitsplatzes oder des Orts des mutmaßlichen Verstoßes zu. Das Beschwerderecht besteht unbeschadet anderweitiger verwaltungsrechtlicher oder gerichtlicher Rechtsbehelfe.</p>
+                <p>Im Falle von Verstößen gegen die DSGVO steht den Betroffenen ein Beschwerderecht bei einer Aufsichtsbehörde zu, insbesondere im Mitgliedstaat ihres gewöhnlichen Aufenthalts, ihres Arbeitsplatzes oder des Orts des mutmaßlichen Verstoßes. Das Beschwerderecht besteht unbeschadet anderweitiger verwaltungsrechtlicher oder gerichtlicher Rechtsbehelfe.</p>
 
                 <h3>Recht auf Datenübertragbarkeit</h3>
-                <p>Sie haben das Recht, Daten, die wir auf Grundlage Ihrer Einwilligung oder in Erfüllung eines Vertrags automatisiert verarbeiten, an sich oder an einen Dritten in einem gängigen, maschinenlesbaren Format aushändigen zu lassen. Sofern Sie die direkte Übertragung der Daten an einen anderen Verantwortlichen verlangen, erfolgt dies nur, soweit es technisch machbar ist.</p>
+                <p>Du hast das Recht, Daten, die wir auf Grundlage deiner Einwilligung oder in Erfüllung eines Vertrags automatisiert verarbeiten, an dich oder an einen Dritten in einem gängigen, maschinenlesbaren Format aushändigen zu lassen. Sofern du die direkte Übertragung der Daten an einen anderen Verantwortlichen verlangst, erfolgt dies nur, soweit es technisch machbar ist.</p>
 
                 <h3>Auskunft, Berichtigung und Löschung</h3>
-                <p>Sie haben im Rahmen der geltenden gesetzlichen Bestimmungen jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung und ggf. ein Recht auf Berichtigung oder Löschung dieser Daten. Hierzu sowie zu weiteren Fragen zum Thema personenbezogene Daten können Sie sich jederzeit an uns wenden.</p>
+                <p>Du hast im Rahmen der geltenden gesetzlichen Bestimmungen jederzeit das Recht auf unentgeltliche Auskunft über deine gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung und ggf. ein Recht auf Berichtigung oder Löschung dieser Daten.</p>
 
                 <h3>Recht auf Einschränkung der Verarbeitung</h3>
-                <p>Sie haben das Recht, die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen. Hierzu können Sie sich jederzeit an uns wenden. Das Recht auf Einschränkung der Verarbeitung besteht in folgenden Fällen:</p>
-                <p>Wenn Sie die Richtigkeit Ihrer bei uns gespeicherten personenbezogenen Daten bestreiten, benötigen wir in der Regel Zeit, um dies zu überprüfen. Für die Dauer der Prüfung haben Sie das Recht, die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen.</p>
-                <p>Wenn die Verarbeitung Ihrer personenbezogenen Daten unrechtmäßig geschah/geschieht, können Sie statt der Löschung die Einschränkung der Datenverarbeitung verlangen.</p>
-                <p>Wenn wir Ihre personenbezogenen Daten nicht mehr benötigen, Sie sie jedoch zur Ausübung, Verteidigung oder Geltendmachung von Rechtsansprüchen benötigen, haben Sie das Recht, statt der Löschung die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen.</p>
-                <p>Wenn Sie einen Widerspruch nach Art. 21 Abs. 1 DSGVO eingelegt haben, muss eine Abwägung zwischen Ihren und unseren Interessen vorgenommen werden. Solange noch nicht feststeht, wessen Interessen überwiegen, haben Sie das Recht, die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen.</p>
-                <p>Wenn Sie die Verarbeitung Ihrer personenbezogenen Daten eingeschränkt haben, dürfen diese Daten – von ihrer Speicherung abgesehen – nur mit Ihrer Einwilligung oder zur Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen oder zum Schutz der Rechte einer anderen natürlichen oder juristischen Person oder aus Gründen eines wichtigen öffentlichen Interesses der Europäischen Union oder eines Mitgliedstaats verarbeitet werden.</p>
+                <p>Du hast das Recht, die Einschränkung der Verarbeitung deiner personenbezogenen Daten zu verlangen. Hierzu kannst du dich jederzeit an uns wenden.</p>
 
                 <h3>SSL- bzw. TLS-Verschlüsselung</h3>
-                <p>Diese Seite nutzt aus Sicherheitsgründen und zum Schutz der Übertragung vertraulicher Inhalte, wie zum Beispiel Bestellungen oder Anfragen, die Sie an uns als Seitenbetreiber senden, eine SSL- bzw. TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie daran, dass die Adresszeile des Browsers von „http://" auf „https://" wechselt und an dem Schloss-Symbol in Ihrer Browserzeile.</p>
-                <p>Wenn die SSL- bzw. TLS-Verschlüsselung aktiviert ist, können die Daten, die Sie an uns übermitteln, nicht von Dritten mitgelesen werden.</p>
+                <p>Diese Seite nutzt aus Sicherheitsgründen und zum Schutz der Übertragung vertraulicher Inhalte eine SSL- bzw. TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennst du daran, dass die Adresszeile des Browsers von <code>http://</code> auf <code>https://</code> wechselt und am Schloss-Symbol in deiner Browserzeile.</p>
             </section>
 
             <section>
-                <h2>4. Datenerfassung auf dieser Website</h2>
+                <div class="sec-head"><span class="sec-head__num">04</span><h2>Datenerfassung auf dieser Website</h2></div>
 
                 <h3>Cookies</h3>
-                <p>Unsere Internetseiten verwenden so genannte „Cookies". Cookies sind kleine Datenpakete und richten auf Ihrem Endgerät keinen Schaden an. Sie werden entweder vorübergehend für die Dauer einer Sitzung (Session-Cookies) oder dauerhaft (permanente Cookies) auf Ihrem Endgerät gespeichert. Session-Cookies werden nach Ende Ihres Besuchs automatisch gelöscht. Permanente Cookies bleiben auf Ihrem Endgerät gespeichert, bis Sie diese selbst löschen oder eine automatische Löschung durch Ihren Webbrowser erfolgt.</p>
-                <p>Cookies können von uns (First-Party-Cookies) oder von Drittunternehmen stammen (sog. Third-Party-Cookies). Third-Party-Cookies ermöglichen die Einbindung bestimmter Dienstleistungen von Drittunternehmen innerhalb von Webseiten (z. B. Cookies zur Abwicklung von Zahlungsdienstleistungen).</p>
-                <p>Cookies haben verschiedene Funktionen. Zahlreiche Cookies sind technisch notwendig, da bestimmte Webseitenfunktionen ohne diese nicht funktionieren würden (z. B. die Warenkorbfunktion oder die Anzeige von Videos). Andere Cookies können zur Auswertung des Nutzerverhaltens oder zu Werbezwecken verwendet werden.</p>
-                <p>Cookies, die zur Durchführung des elektronischen Kommunikationsvorgangs, zur Bereitstellung bestimmter, von Ihnen erwünschter Funktionen (z. B. für die Warenkorbfunktion) oder zur Optimierung der Website (z. B. Cookies zur Messung des Webpublikums) erforderlich sind (notwendige Cookies), werden auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO gespeichert, sofern keine andere Rechtsgrundlage angegeben wird. Der Websitebetreiber hat ein berechtigtes Interesse an der Speicherung von notwendigen Cookies zur technisch fehlerfreien und optimierten Bereitstellung seiner Dienste. Sofern eine Einwilligung zur Speicherung von Cookies und vergleichbaren Wiedererkennungstechnologien abgefragt wurde, erfolgt die Verarbeitung ausschließlich auf Grundlage dieser Einwilligung (Art. 6 Abs. 1 lit. a DSGVO und § 25 Abs. 1 TDDDG); die Einwilligung ist jederzeit widerrufbar.</p>
-                <p>Sie können Ihren Browser so einstellen, dass Sie über das Setzen von Cookies informiert werden und Cookies nur im Einzelfall erlauben, die Annahme von Cookies für bestimmte Fälle oder generell ausschließen sowie das automatische Löschen der Cookies beim Schließen des Browsers aktivieren. Bei der Deaktivierung von Cookies kann die Funktionalität dieser Website eingeschränkt sein.</p>
-                <p>Welche Cookies und Dienste auf dieser Website eingesetzt werden, können Sie dieser Datenschutzerklärung entnehmen.</p>
+                <p>Diese Website setzt keine Tracking-Cookies. Die Seite verwendet ggf. kleine funktionale Speichereinträge in deinem Browser (z. B. <code>localStorage</code>) ausschließlich dort, wo dies unbedingt erforderlich ist, um eine von dir selbst getroffene Einstellung zu merken. Rechtsgrundlage ist § 25 Abs. 2 Nr. 2 TDDDG (unbedingt erforderlich für die Bereitstellung eines vom Nutzer ausdrücklich gewünschten Dienstes) und Art. 6 Abs. 1 lit. f DSGVO.</p>
+                <p>Du kannst deinen Browser so einstellen, dass du über das Setzen von Cookies und Speichereinträgen informiert wirst und diese automatisch gelöscht werden.</p>
 
                 <h3>Server-Log-Dateien</h3>
-                <p>Der Provider der Seiten erhebt und speichert automatisch Informationen in so genannten Server-Log-Dateien, die Ihr Browser automatisch an uns übermittelt. Dies sind:</p>
-                <p>Browsertyp und Browserversion<br>
-                verwendetes Betriebssystem<br>
-                Referrer URL<br>
-                Hostname des zugreifenden Rechners<br>
-                Uhrzeit der Serveranfrage<br>
-                IP-Adresse</p>
-                <p>Eine Zusammenführung dieser Daten mit anderen Datenquellen wird nicht vorgenommen.</p>
-                <p>Die Erfassung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Der Websitebetreiber hat ein berechtigtes Interesse an der technisch fehlerfreien Darstellung und der Optimierung seiner Website – hierzu müssen die Server-Log-Files erfasst werden.</p>
+                <p>Der Provider der Seite erhebt und speichert automatisch Informationen in so genannten Server-Log-Dateien, die dein Browser automatisch an uns übermittelt. Dies sind:</p>
+                <ul class="plain">
+                    <li>Browsertyp und Browserversion</li>
+                    <li>verwendetes Betriebssystem</li>
+                    <li>Referrer-URL</li>
+                    <li>Hostname des zugreifenden Rechners</li>
+                    <li>Uhrzeit der Serveranfrage</li>
+                    <li>IP-Adresse</li>
+                </ul>
+                <p>Eine Zusammenführung dieser Daten mit anderen Datenquellen wird nicht vorgenommen. Die Erfassung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Der Websitebetreiber hat ein berechtigtes Interesse an der technisch fehlerfreien Darstellung und Sicherheit seiner Website.</p>
 
-                <h3>Kontaktformular</h3>
-                <p>Wenn Sie uns per Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben aus dem Anfrageformular inklusive der von Ihnen dort angegebenen Kontaktdaten zwecks Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter.</p>
-                <p>Die Verarbeitung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO, sofern Ihre Anfrage mit der Erfüllung eines Vertrags zusammenhängt oder zur Durchführung vorvertraglicher Maßnahmen erforderlich ist. In allen übrigen Fällen beruht die Verarbeitung auf unserem berechtigten Interesse an der effektiven Bearbeitung der an uns gerichteten Anfragen (Art. 6 Abs. 1 lit. f DSGVO) oder auf Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO) sofern diese abgefragt wurde; die Einwilligung ist jederzeit widerrufbar.</p>
-                <p>Die von Ihnen im Kontaktformular eingegebenen Daten verbleiben bei uns, bis Sie uns zur Löschung auffordern, Ihre Einwilligung zur Speicherung widerrufen oder der Zweck für die Datenspeicherung entfällt (z. B. nach abgeschlossener Bearbeitung Ihrer Anfrage). Zwingende gesetzliche Bestimmungen – insbesondere Aufbewahrungsfristen – bleiben unberührt.</p>
-
-                <h3>Anfrage per E-Mail, Telefon oder Telefax</h3>
-                <p>Wenn Sie uns per E-Mail, Telefon oder Telefax kontaktieren, wird Ihre Anfrage inklusive aller daraus hervorgehenden personenbezogenen Daten (Name, Anfrage) zum Zwecke der Bearbeitung Ihres Anliegens bei uns gespeichert und verarbeitet. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter.</p>
-                <p>Die Verarbeitung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO, sofern Ihre Anfrage mit der Erfüllung eines Vertrags zusammenhängt oder zur Durchführung vorvertraglicher Maßnahmen erforderlich ist. In allen übrigen Fällen beruht die Verarbeitung auf unserem berechtigten Interesse an der effektiven Bearbeitung der an uns gerichteten Anfragen (Art. 6 Abs. 1 lit. f DSGVO) oder auf Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO) sofern diese abgefragt wurde; die Einwilligung ist jederzeit widerrufbar.</p>
-                <p>Die von Ihnen an uns per Kontaktanfragen übersandten Daten verbleiben bei uns, bis Sie uns zur Löschung auffordern, Ihre Einwilligung zur Speicherung widerrufen oder der Zweck für die Datenspeicherung entfällt (z. B. nach abgeschlossener Bearbeitung Ihres Anliegens). Zwingende gesetzliche Bestimmungen – insbesondere gesetzliche Aufbewahrungsfristen – bleiben unberührt.</p>
+                <h3>Anfrage per E-Mail</h3>
+                <p>Wenn du uns per E-Mail kontaktierst, wird deine Anfrage inklusive aller daraus hervorgehenden personenbezogenen Daten (Name, Nachrichteninhalt) zum Zwecke der Bearbeitung deines Anliegens bei uns gespeichert und verarbeitet. Diese Daten geben wir nicht ohne deine Einwilligung weiter.</p>
+                <p>Die Verarbeitung erfolgt auf Grundlage unseres berechtigten Interesses an der effektiven Bearbeitung der an uns gerichteten Anfragen (Art. 6 Abs. 1 lit. f DSGVO) oder auf deiner Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), sofern diese abgefragt wurde. Die Einwilligung ist jederzeit widerrufbar.</p>
+                <p>Die von dir an uns per E-Mail übersandten Daten verbleiben bei uns, bis du uns zur Löschung aufforderst, deine Einwilligung zur Speicherung widerrufst oder der Zweck für die Datenspeicherung entfällt. Zwingende gesetzliche Bestimmungen — insbesondere gesetzliche Aufbewahrungsfristen — bleiben unberührt.</p>
             </section>
 
             <section>
-                <h2>5. Plugins und Tools</h2>
+                <div class="sec-head"><span class="sec-head__num">05</span><h2>Plugins und Tools</h2></div>
 
                 <h3>Font Awesome (lokales Hosting)</h3>
-                <p>Diese Seite nutzt zur einheitlichen Darstellung von Schriftarten Font Awesome. Font Awesome ist lokal installiert. Eine Verbindung zu Servern von Fonticons, Inc. findet dabei nicht statt.</p>
-                <p>Weitere Informationen zu Font Awesome finden Sie in der Datenschutzerklärung für Font Awesome unter: <a href="https://fontawesome.com/privacy" target="_blank" rel="noopener noreferrer">https://fontawesome.com/privacy</a>.</p>
+                <p>Diese Seite nutzt Font Awesome zur einheitlichen Darstellung von Icons. Font Awesome ist lokal auf unserem Server installiert. Eine Verbindung zu Servern von Fonticons, Inc. findet dabei nicht statt. Weitere Informationen: <a href="https://fontawesome.com/privacy" target="_blank" rel="noopener noreferrer">fontawesome.com/privacy</a>.</p>
+
+                <h3>Webfonts (selbst gehostet)</h3>
+                <p>Sämtliche auf dieser Seite verwendeten Webfonts (z. B. Space Grotesk, JetBrains Mono, Chakra Petch, Noto Sans JP, Whitney) werden von eigener Infrastruktur ausgeliefert. Eine Verbindung zu Google Fonts oder einem anderen Drittanbieter-Font-CDN findet beim Besuch der Seite nicht statt.</p>
 
                 <h3>Cloudflare</h3>
-                <p>Wir nutzen das Content Delivery Network (CDN) von Cloudflare Germany GmbH, Rosental 7, c/o Mindspace, 80331 München Deutschland (Cloudflare), um die Sicherheit und die Auslieferungsgeschwindigkeit unserer Website zu erhöhen. Dies entspricht unserem berechtigten Interesse (Art. 6 Abs. 1 lit. f DSGVO). Ein CDN ist ein Netzwerk aus [weltweit] verteilten Servern, das in der Lage ist, optimiert Inhalte an den Websitenutzer auszuliefern. Für diesen Zweck können personenbezogene Daten in Server-Logfiles von Cloudflare verarbeitet werden. Bitte vergleichen Sie die Ausführungen unter „Hosting".</p>
-                <p>Cloudflare ist Empfänger Ihrer personenbezogenen Daten und als Auftragsverarbeiter für uns tätig. Die entspricht unserem berechtigten Interesse im Sinne des Art. 6 Abs. 1 S. 1 lit. f DSGVO, selbst kein Content Delivery Network zu betreiben.</p>
-                <p>Sie haben das Recht der Verarbeitung zu widersprechen. Ob der Widerspruch erfolgreich ist, ist im Rahmen einer Interessenabwägung zu ermitteln.</p>
-                <p>Die Verarbeitung der unter diesem Abschnitt angegebenen Daten ist weder gesetzlich noch vertraglich vorgeschrieben. Die Funktionsfähigkeit der Website ist ohne die Verarbeitung nicht gewährleistet.</p>
-                <p>Ihre personenbezogenen Daten werden von Cloudflare so lange gespeichert, wie es für die beschriebenen Zwecke erforderlich ist.</p>
-                <p>Weitere Informationen zu Widerspruchs- und Beseitigungsmöglichkeiten gegenüber Cloudflare finden Sie unter: Cloudflare DPA</p>
-                <p>Cloudflare hat Compliance-Maßnahmen für internationale Datenübermittlungen umgesetzt. Diese gelten für alle weltweiten Aktivitäten, bei denen Cloudflare personenbezogene Daten von natürlichen Personen in der EU verarbeitet. Diese Maßnahmen basieren auf den EU-Standardvertragsklauseln (SCCs). Weitere Informationen finden Sie unter: <a href="https://www.cloudflare.com/cloudflare_customer_SCCs-German.pdf" target="_blank" rel="noopener noreferrer">https://www.cloudflare.com/cloudflare_customer_SCCs-German.pdf</a></p>
+                <p>Wir nutzen das Content Delivery Network (CDN) der Cloudflare Germany GmbH, Rosental 7, c/o Mindspace, 80331 München, Deutschland ("Cloudflare"), um die Sicherheit und die Auslieferungsgeschwindigkeit unserer Website zu erhöhen. Dies entspricht unserem berechtigten Interesse nach Art. 6 Abs. 1 lit. f DSGVO. Ein CDN ist ein Netzwerk aus weltweit verteilten Servern, das Inhalte optimiert an den Websitenutzer ausliefern kann. Für diesen Zweck können personenbezogene Daten (insbesondere IP-Adressen) in Server-Logfiles von Cloudflare verarbeitet werden.</p>
+                <p>Cloudflare ist als Auftragsverarbeiter auf Grundlage eines Auftragsverarbeitungsvertrags für uns tätig. Du hast das Recht, der Verarbeitung zu widersprechen; ob der Widerspruch erfolgreich ist, ist im Rahmen einer Interessenabwägung zu ermitteln. Die Funktionsfähigkeit der Website ist ohne diese Verarbeitung nicht gewährleistet.</p>
+                <p>Cloudflare hat Compliance-Maßnahmen für internationale Datenübermittlungen umgesetzt, die auf den EU-Standardvertragsklauseln (SCCs) basieren. Weitere Informationen: <a href="https://www.cloudflare.com/cloudflare-customer-dpa/" target="_blank" rel="noopener noreferrer">Cloudflare Customer DPA</a> und <a href="https://www.cloudflare.com/cloudflare_customer_SCCs-German.pdf" target="_blank" rel="noopener noreferrer">SCCs (PDF)</a>.</p>
 
                 <h3>Uptime-Status-Badge (status.lucya.systems)</h3>
-                <p>Auf dieser Website wird ein Live-Uptime-Badge von <a href="https://status.lucya.systems" target="_blank" rel="noopener noreferrer">https://status.lucya.systems</a> eingebunden, um die aktuelle Verfügbarkeit des „Hypervisor"-Dienstes anzuzeigen. Das Badge wird als Bild direkt vom Status-Server (<code>https://status.lucya.systems/api/badge/1/uptime</code>) geladen.</p>
-                <p>Beim Aufruf der Seite stellt Ihr Browser eine direkte Verbindung zu diesem Server her. Dabei werden folgende Daten an den Status-Server übermittelt und können in dessen Server-Logfiles verarbeitet werden:</p>
-                <p>IP-Adresse<br>
-                Browsertyp und Browserversion<br>
-                Betriebssystem<br>
-                Referrer-URL<br>
-                Uhrzeit der Anfrage<br>
-                User-Agent-String</p>
-                <p>Der Status-Server (status.lucya.systems) wird von uns auf eigener Infrastruktur innerhalb der Europäischen Union betrieben. Eine Weitergabe der Daten an Dritte über das technisch zur Auslieferung des Badges Notwendige hinaus findet nicht statt. Rechtsgrundlage der Verarbeitung ist Art. 6 Abs. 1 lit. f DSGVO; wir haben ein berechtigtes Interesse daran, den Betriebszustand unserer Infrastruktur transparent für Besucher anzuzeigen.</p>
-                <p>Sie können das Laden des Badges durch den Einsatz eines Content-Blockers oder durch Deaktivierung von JavaScript und Bildladevorgängen in Ihrem Browser verhindern. Die übrige Funktionalität der Website wird hiervon nicht beeinträchtigt.</p>
+                <p>Auf dieser Website wird ein Live-Uptime-Badge von <a href="https://status.lucya.systems" target="_blank" rel="noopener noreferrer">status.lucya.systems</a> eingebunden, um die aktuelle Verfügbarkeit des "Hypervisor"-Dienstes anzuzeigen. Das Badge wird als Bild direkt vom Status-Server (<code>https://status.lucya.systems/api/badge/1/uptime</code>) geladen.</p>
+                <p>Beim Aufruf der Seite stellt dein Browser eine direkte Verbindung zu diesem Server her. Dabei können folgende Daten in dessen Server-Logfiles verarbeitet werden: IP-Adresse, Browsertyp und Browserversion, Betriebssystem, Referrer-URL, Uhrzeit der Anfrage, User-Agent-String.</p>
+                <p>Der Status-Server wird von uns auf eigener Infrastruktur innerhalb der Europäischen Union betrieben. Eine Weitergabe der Daten an Dritte über das technisch zur Auslieferung des Badges Notwendige hinaus findet nicht statt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO — wir haben ein berechtigtes Interesse, den Betriebszustand unserer Infrastruktur transparent für Besucher anzuzeigen.</p>
+                <p>Du kannst das Laden des Badges durch den Einsatz eines Content-Blockers oder durch Deaktivierung von Bildladevorgängen in deinem Browser verhindern. Die übrige Funktionalität der Website wird hiervon nicht beeinträchtigt.</p>
+
+                <h3>Externe Verlinkungen zu Social Media und Drittanbietern</h3>
+                <p>Auf dieser Website befinden sich Links zu unseren Profilen auf externen Plattformen (z. B. GitHub, Bluesky, Instagram, Threads, X/Twitter, Reddit, Spotify, Steam, Inara). Es handelt sich dabei um gewöhnliche Hyperlinks — es werden keine Widgets oder Tracking-Pixel eingebunden und beim bloßen Laden unserer Seite werden keine Daten an diese Plattformen übertragen.</p>
+                <p>Sobald du einen dieser Links <em>anklickst</em>, baut dein Browser eine Verbindung zum Betreiber der verlinkten Plattform auf. Dabei werden mindestens deine IP-Adresse und ggf. weitere Daten an den jeweiligen Betreiber übermittelt; dieser kann gemäß seiner eigenen Datenschutzerklärung Cookies oder andere Identifier setzen. Wir haben darauf keinen Einfluss. Bitte beachte für Details die Datenschutzerklärungen der jeweiligen Plattformen.</p>
             </section>
 
             <section>
-                <h2>6. Rechtlicher Hinweis zur Mediennutzung</h2>
-                <p>Diese Website enthält verschiedene visuelle Elemente wie Slackmojis, 88x31-Buttons, Fan-Artworks und Logos. Diese Inhalte können urheberrechtlich oder markenrechtlich geschützt sein und gehören ihren jeweiligen Rechteinhabern, einschließlich (aber nicht beschränkt auf):</p>
-                <p>
-                    • Nintendo / Game Freak / The Pokémon Company (Pokémon)<br>
-                    • Apple Inc.<br>
-                    • Microsoft Corporation<br>
-                    • Advanced Micro Devices, Inc. (AMD)
-                </p>
+                <div class="sec-head"><span class="sec-head__num">06</span><h2>Rechtlicher Hinweis zur Mediennutzung</h2></div>
+                <p>Diese Website enthält verschiedene visuelle Elemente wie Slackmojis, 88×31-Buttons, Fan-Artworks und Logos. Diese Inhalte können urheberrechtlich oder markenrechtlich geschützt sein und gehören ihren jeweiligen Rechteinhabern, einschließlich (aber nicht beschränkt auf):</p>
+                <ul class="plain">
+                    <li>Nintendo / Game Freak / The Pokémon Company (Pokémon)</li>
+                    <li>Apple Inc.</li>
+                    <li>Microsoft Corporation</li>
+                    <li>Advanced Micro Devices, Inc. (AMD)</li>
+                </ul>
                 <p>Die Nutzung auf dieser Website erfolgt ausschließlich nicht-kommerziell und dient rein ästhetischen, nostalgischen oder referenziellen Zwecken. Diese Seite ist nicht mit den genannten Marken oder Unternehmen verbunden, wird nicht von ihnen unterstützt und steht in keiner offiziellen Beziehung zu ihnen.</p>
-                <p>Alle Marken und Logos bleiben Eigentum ihrer jeweiligen Inhaber. Es ist keine Urheberrechtsverletzung beabsichtigt. Wenn Sie Rechteinhaber sind und möchten, dass bestimmte Inhalte entfernt werden, kontaktieren Sie mich bitte unter <a href="mailto:info@inter-astra.net">info@inter-astra.net</a>.</p>
+                <p>Alle Marken und Logos bleiben Eigentum ihrer jeweiligen Inhaber. Es ist keine Urheberrechtsverletzung beabsichtigt. Wenn du Rechteinhaber:in bist und möchtest, dass bestimmte Inhalte entfernt werden, kontaktiere uns bitte unter <a href="mailto:privacy@lucya.sh">privacy@lucya.sh</a>.</p>
             </section>
+
         </div>
-    </div>
+
+        <footer class="legal-foot">
+            <span class="legal-foot__mark">
+                <img src="images/logo/lucya_logo.svg" alt="" aria-hidden="true" />
+                // EOF · privacy_policy.md
+            </span>
+            <a href="/">← back to lucya.sh</a>
+        </footer>
+
+    </main>
 
     <script>
         (function () {
             const DEFAULT_LANG = 'en';
-            const STORAGE_KEY = 'legal.lang';
-
             const buttonEn = document.getElementById('lang-en');
             const buttonDe = document.getElementById('lang-de');
             const pageTitle = document.getElementById('page-title');
@@ -532,29 +717,15 @@
                 if (pageTitle) {
                     pageTitle.textContent = isEn ? 'Privacy Policy' : 'Datenschutzerklärung';
                 }
-                document.title = isEn ? 'Privacy Policy' : 'Datenschutzerklärung';
-
-                try {
-                    localStorage.setItem(STORAGE_KEY, safeLang);
-                } catch (_) {
-                    // ignore
-                }
-            }
-
-            function getInitialLang() {
-                try {
-                    const stored = localStorage.getItem(STORAGE_KEY);
-                    if (stored === 'en' || stored === 'de') return stored;
-                } catch (_) {
-                    // ignore
-                }
-                return DEFAULT_LANG;
+                document.title = isEn ? 'PRIVACY // LUCYA.SH' : 'DATENSCHUTZ // LUCYA.SH';
             }
 
             buttonEn.addEventListener('click', function () { setLang('en'); });
             buttonDe.addEventListener('click', function () { setLang('de'); });
 
-            setLang(getInitialLang());
+            // Initial: respect browser preference, no persistence.
+            const browserLang = (navigator.language || 'en').toLowerCase().startsWith('de') ? 'de' : 'en';
+            setLang(browserLang);
         })();
     </script>
     <script type="module" src="./haptics.js"></script>
