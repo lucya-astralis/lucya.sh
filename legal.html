@@ -130,12 +130,16 @@
         .legal-head__title {
             font-family: "Chakra Petch", "Space Grotesk", sans-serif;
             font-weight: 700;
-            font-size: clamp(34px, 5vw, 56px);
+            font-size: clamp(28px, 5vw, 56px);
             line-height: 1.05;
             letter-spacing: .02em;
             color: var(--text);
             margin: 0;
             text-transform: uppercase;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            hyphens: auto;
+            -webkit-hyphens: auto;
         }
         .legal-head__sub {
             font-family: "Proto Nerd Font Regular", monospace;
@@ -209,8 +213,19 @@
             font-size: 13px;
             color: var(--text);
             letter-spacing: .04em;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px 0;
         }
-        .domain-notice .list .sep { color: var(--text-ghost); margin: 0 6px; }
+        .domain-notice .list .dom {
+            white-space: nowrap;
+        }
+        .domain-notice .list .dom + .dom::before {
+            content: "·";
+            color: var(--text-ghost);
+            margin: 0 10px;
+        }
 
         /* Sections */
         .legal-wrap section {
@@ -351,11 +366,96 @@
         }
         .legal-foot a:hover { color: var(--text); border-bottom-color: var(--text); }
 
+        /* prevent horizontal overflow from long URLs / inline code */
+        .legal-wrap a,
+        .legal-wrap code {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        @media (max-width: 760px) {
+            body { font-size: 14px; }
+            .legal-wrap {
+                padding: clamp(68px, 16vw, 96px) 18px 56px;
+            }
+            .legal-head { margin-bottom: 36px; padding-bottom: 18px; }
+            .legal-head__title { font-size: clamp(28px, 7.5vw, 40px); }
+            .legal-head__brand { gap: 12px; }
+            .legal-head__logo { width: 44px; height: 44px; }
+            .legal-head__stamp { font-size: 10px; letter-spacing: .18em; }
+            .legal-head__sub { font-size: 11px; letter-spacing: .12em; }
+
+            .domain-notice {
+                margin-bottom: 32px;
+                padding: 14px 16px;
+            }
+            .domain-notice .list {
+                font-size: 12px;
+                line-height: 1.7;
+            }
+            .domain-notice .list .sep { margin: 0 4px; }
+
+            .legal-wrap section { margin-bottom: 36px; }
+            .sec-head { gap: 10px; margin-bottom: 16px; }
+            .sec-head h2 { font-size: clamp(18px, 4.6vw, 22px); }
+
+            h3 { font-size: 12px; letter-spacing: .12em; margin: 22px 0 8px; }
+
+            .contact-block {
+                display: block;
+                width: 100%;
+                font-size: 12.5px;
+                padding: 12px 14px;
+            }
+
+            .callout { padding: 12px 14px; font-size: 13px; }
+        }
+
         @media (max-width: 640px) {
-            .legal-corners { font-size: 9.5px; padding: 12px 14px; }
-            .legal-corners .tag { padding: 2px 6px; }
+            .legal-corners {
+                font-size: 9px;
+                padding: 10px 12px;
+                gap: 8px;
+            }
+            .legal-corners .tag {
+                padding: 2px 6px;
+                letter-spacing: .14em;
+            }
             .sec-head { flex-direction: column; align-items: flex-start; gap: 8px; }
-            .domain-notice .list { font-size: 12px; }
+            .sec-head__num { font-size: 11px; padding: 2px 6px; }
+
+            .lang-toggle { font-size: 10.5px; letter-spacing: .16em; }
+            .lang-toggle button { padding: 6px 11px; }
+
+            .legal-foot {
+                font-size: 10px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+        }
+
+        @media (max-width: 440px) {
+            .legal-wrap {
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+            /* drop the right corner tag — saves space, the left one identifies the page */
+            .legal-corners .tag + .tag { display: none; }
+
+            .legal-head__brand {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .legal-head__row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 14px;
+            }
+            .lang-toggle { align-self: flex-start; }
+
+            .domain-notice .list { font-size: 11.5px; }
         }
     </style>
 </head>
@@ -394,7 +494,15 @@
             <div class="domain-notice">
                 <div class="label">Scope · this policy applies to:</div>
                 <div class="list">
-                    lucya.sh<span class="sep">·</span>lucya.systems<span class="sep">·</span>inter-astra.org<span class="sep">·</span>inter-astra.net<span class="sep">·</span>astralytic.net<span class="sep">·</span>nekolabs.me<span class="sep">·</span>astraOS.app<span class="sep">·</span>aizaku.com<span class="sep">·</span>binbows.net
+                    <span class="dom">lucya.sh</span>
+                    <span class="dom">lucya.systems</span>
+                    <span class="dom">inter-astra.org</span>
+                    <span class="dom">inter-astra.net</span>
+                    <span class="dom">astralytic.net</span>
+                    <span class="dom">nekolabs.me</span>
+                    <span class="dom">astraOS.app</span>
+                    <span class="dom">aizaku.com</span>
+                    <span class="dom">binbows.net</span>
                 </div>
             </div>
 
@@ -545,7 +653,15 @@
             <div class="domain-notice">
                 <div class="label">Geltungsbereich · diese Erklärung gilt für:</div>
                 <div class="list">
-                    lucya.sh<span class="sep">·</span>lucya.systems<span class="sep">·</span>inter-astra.org<span class="sep">·</span>inter-astra.net<span class="sep">·</span>astralytic.net<span class="sep">·</span>nekolabs.me<span class="sep">·</span>astraOS.app<span class="sep">·</span>aizaku.com<span class="sep">·</span>binbows.net
+                    <span class="dom">lucya.sh</span>
+                    <span class="dom">lucya.systems</span>
+                    <span class="dom">inter-astra.org</span>
+                    <span class="dom">inter-astra.net</span>
+                    <span class="dom">astralytic.net</span>
+                    <span class="dom">nekolabs.me</span>
+                    <span class="dom">astraOS.app</span>
+                    <span class="dom">aizaku.com</span>
+                    <span class="dom">binbows.net</span>
                 </div>
             </div>
 

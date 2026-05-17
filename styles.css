@@ -241,7 +241,7 @@ body{
   overflow-x:hidden;
   letter-spacing:.01em;
   isolation:isolate;
-  cursor: url('misc/cursor.gif'), auto;
+  cursor: url('misc/pointer.cur'), auto;
 }
 
 a, button, [role="button"], summary, label, input[type="submit"], input[type="button"]{
