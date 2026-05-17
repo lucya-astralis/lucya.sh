@@ -830,7 +830,7 @@
 <section class="spotify" id="spotify">
   <div class="section__doc">
     <span>DOC <b>05.A.AUDIO</b></span>
-    <span>REV <b>30D · ROLLING</b></span>
+    <span>REV <b>MIXED · ROLLING</b></span>
     <span class="stamp">APPENDIX A</span>
     <span>FORM <b>BHV-AUD</b></span>
     <span>NON-CRITICAL</span>
@@ -843,30 +843,73 @@
       <span class="jp">最近のお気に入り</span>
     </div>
     <div class="section__meta">
-      <span class="mono">SPOTIFY · ROTATION · LAST 30D</span>
+      <span class="mono">SPOTIFY · ROTATION · ASSORTED</span>
     </div>
   </div>
 
-  <div class="spotify__card" id="spotifyCard">
-    <div class="spotify__cover">
-      <img id="spotifyCover" src="" alt="album cover" />
-      <div class="spotify__bars"><span></span><span></span><span></span><span></span></div>
-    </div>
+  <div class="spotify__card" id="spotifyCard" role="button" tabindex="0" aria-label="open audio manifest" aria-haspopup="dialog">
+    <span class="spotify__cover" id="spotifyCover">
+      <img id="spotifyCoverImg" src="" alt="album cover" />
+      <span class="spotify__corner spotify__corner--tl" aria-hidden="true"></span>
+      <span class="spotify__corner spotify__corner--tr" aria-hidden="true"></span>
+      <span class="spotify__corner spotify__corner--bl" aria-hidden="true"></span>
+      <span class="spotify__corner spotify__corner--br" aria-hidden="true"></span>
+      <span class="spotify__scan" aria-hidden="true"></span>
+      <div class="spotify__bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+    </span>
 
     <div class="spotify__meta">
       <div class="spotify__label mono">
         <img src="images/profile/sociallinks/spotify_color.svg" alt="" />
-        <span>TOP SONGS · 最近のお気に入り</span>
+        <span class="spotify__label-name">NOW SAMPLING · 最近のお気に入り</span>
         <span class="spotify__counter mono" id="spotifyCounter">01 / 09</span>
       </div>
 
       <h3 class="spotify__track" id="spotifyTrack">—</h3>
       <div class="spotify__artist" id="spotifyArtist">—</div>
 
-      <div class="spotify__dots" id="spotifyDots" aria-hidden="true"></div>
+      <div class="spotify__timeline" aria-hidden="true">
+        <span class="spotify__time mono" id="spotifyElapsed">00:00</span>
+        <div class="spotify__dots" id="spotifyDots" role="tablist" aria-label="track selector"></div>
+        <span class="spotify__time mono" id="spotifyTotal">00:05</span>
+      </div>
 
-      <div class="spotify__foot mono small dim">
-        rotating · データは仮のものです
+      <div class="spotify__foot mono small">
+        <span class="spotify__pill"><i></i> ROTATION</span>
+        <span class="spotify__hint mono">▸ TAP FOR MANIFEST</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIO MANIFEST — full track list overlay -->
+  <div class="manifest" id="spotifyManifest" role="dialog" aria-modal="true" aria-labelledby="manifestTitle" hidden>
+    <div class="manifest__backdrop" data-manifest-close></div>
+    <div class="manifest__sheet" role="document">
+      <div class="manifest__doc">
+        <span>DOC <b>05.A.MANIFEST</b></span>
+        <span>REV <b>FULL ROSTER</b></span>
+        <span class="stamp">EYES ONLY</span>
+        <button class="manifest__close" type="button" data-manifest-close aria-label="close manifest">
+          <span aria-hidden="true">✕</span>
+        </button>
+      </div>
+
+      <div class="manifest__head">
+        <div class="section__slug">
+          <span class="ix">// 05.A</span>
+          <span class="name">AUDIO MANIFEST</span>
+          <span class="jp">トラック一覧</span>
+        </div>
+        <div class="section__meta">
+          <span class="mono"><span id="manifestCount">11</span> TRACKS · ROTATION</span>
+        </div>
+      </div>
+
+      <ul class="manifest__list" id="manifestList"></ul>
+
+      <div class="manifest__foot mono small">
+        <span class="dim">SRC <b>SPOTIFY · ROTATION</b></span>
+        <span class="dim">CLICK TO JUMP · ESC TO CLOSE</span>
       </div>
     </div>
   </div>

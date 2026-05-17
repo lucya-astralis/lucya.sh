@@ -813,6 +813,7 @@
     const songs = [
       { title: "Rebirth", artist: "SHIMA", cover: "images/spotify_widget/rebirth.jpeg" },  
       { title: "Infohazard", artist: "Ninajirachi", cover: "images/spotify_widget/cover4.png" },
+      { title: "Affection Addiction", artist: "VocaloKAT, Aku P", cover: "images/spotify_widget/affection.jpeg" },
       { title: "Heaven", artist: "Allison Wonderland, Ninajirachi", cover: "images/spotify_widget/cover1.png" },      
       { title: "Flesh without Blood", artist: "Grimes", cover: "images/spotify_widget/artangels.png" },      
       { title: "Delicate Weapon", artist: "Grimes", cover: "images/spotify_widget/CPv2.jpg" },
@@ -824,25 +825,54 @@
       { title: "THE BADDEST", artist: "K/DA", cover: "images/spotify_widget/the_baddest.jpg" }
     ];
     const INTERVAL_MS = 5000;
-    const cover = document.getElementById('spotifyCover');
-    const coverWrap = spotifyCard.querySelector('.spotify__cover');
+    const coverWrap = document.getElementById('spotifyCover');
+    const cover = document.getElementById('spotifyCoverImg');
     const meta = spotifyCard.querySelector('.spotify__meta');
     const trackEl = document.getElementById('spotifyTrack');
     const artistEl = document.getElementById('spotifyArtist');
     const counterEl = document.getElementById('spotifyCounter');
     const dotsEl = document.getElementById('spotifyDots');
+    const elapsedEl = document.getElementById('spotifyElapsed');
+    const totalEl = document.getElementById('spotifyTotal');
+
+    const pad2 = n => String(n).padStart(2, '0');
+    const fmtTime = sec => pad2(Math.floor(sec / 60)) + ':' + pad2(Math.floor(sec % 60));
 
     spotifyCard.style.setProperty('--spotify-interval', (INTERVAL_MS / 1000) + 's');
+    if (totalEl) totalEl.textContent = fmtTime(INTERVAL_MS / 1000);
 
     const dotFrag = document.createDocumentFragment();
-    songs.forEach(() => dotFrag.appendChild(document.createElement('span')));
+    songs.forEach((_, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-label', 'track ' + (i + 1));
+      b.dataset.idx = i;
+      dotFrag.appendChild(b);
+    });
     dotsEl.appendChild(dotFrag);
     const dotEls = Array.from(dotsEl.children);
 
     songs.forEach(s => { const i = new Image(); i.src = s.cover; });
 
-    const pad2 = n => String(n).padStart(2, '0');
     let idx = 0;
+    let tickStart = 0;
+    let elapsedRaf = 0;
+
+    const stopElapsed = () => { if (elapsedRaf) cancelAnimationFrame(elapsedRaf); elapsedRaf = 0; };
+    const startElapsed = () => {
+      stopElapsed();
+      tickStart = performance.now();
+      const total = INTERVAL_MS / 1000;
+      const step = () => {
+        const e = Math.min(total, (performance.now() - tickStart) / 1000);
+        if (elapsedEl) elapsedEl.textContent = fmtTime(e);
+        if (e < total) elapsedRaf = requestAnimationFrame(step);
+      };
+      elapsedRaf = requestAnimationFrame(step);
+    };
+
+    let onAfterRender = null;
     const render = () => {
       const s = songs[idx];
       coverWrap.classList.add('is-swap');
@@ -853,7 +883,10 @@
         scrambleTo(trackEl, s.title);
         artistEl.textContent = s.artist;
         counterEl.textContent = pad2(idx + 1) + ' / ' + pad2(songs.length);
-        dotEls.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+        dotEls.forEach((d, i) => {
+          d.classList.toggle('is-active', i === idx);
+          d.classList.toggle('is-played', i < idx);
+        });
         // restart the tick animation by re-adding the active class
         const active = dotEls[idx];
         if (active){
@@ -863,13 +896,112 @@
         }
         coverWrap.classList.remove('is-swap');
         meta.classList.remove('is-swap');
+        startElapsed();
+        if (onAfterRender) onAfterRender();
       }, 300);
     };
-    render();
-    setInterval(() => {
-      idx = (idx + 1) % songs.length;
+
+    let timer = 0;
+    const schedule = () => {
+      clearInterval(timer);
+      timer = setInterval(() => {
+        idx = (idx + 1) % songs.length;
+        render();
+      }, INTERVAL_MS);
+    };
+
+    const jumpTo = (i) => {
+      idx = ((i % songs.length) + songs.length) % songs.length;
       render();
-    }, INTERVAL_MS);
+      schedule();
+    };
+
+    dotsEl.addEventListener('click', (e) => {
+      const t = e.target.closest('button[data-idx]');
+      if (!t) return;
+      e.stopPropagation();
+      jumpTo(parseInt(t.dataset.idx, 10));
+    });
+
+    // ---------- MANIFEST : full track list overlay ----------------
+    const manifest = document.getElementById('spotifyManifest');
+    const manifestList = document.getElementById('manifestList');
+    const manifestCount = document.getElementById('manifestCount');
+    let lastFocus = null;
+
+    if (manifest && manifestList) {
+      // portal to body so position:fixed isn't broken by transformed ancestors
+      if (manifest.parentElement !== document.body) document.body.appendChild(manifest);
+      manifestCount.textContent = songs.length;
+      const listFrag = document.createDocumentFragment();
+      songs.forEach((s, i) => {
+        const li = document.createElement('li');
+        li.className = 'manifest__item';
+        li.innerHTML =
+          '<button type="button" class="manifest__row" data-idx="' + i + '">' +
+            '<span class="manifest__idx mono">' + pad2(i + 1) + '</span>' +
+            '<span class="manifest__thumb"><img src="' + s.cover + '" alt="" loading="lazy" /></span>' +
+            '<span class="manifest__txt">' +
+              '<span class="manifest__title">' + s.title.replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])) + '</span>' +
+              '<span class="manifest__artist">' + s.artist.replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])) + '</span>' +
+            '</span>' +
+            '<span class="manifest__status mono" aria-hidden="true"></span>' +
+          '</button>';
+        listFrag.appendChild(li);
+      });
+      manifestList.appendChild(listFrag);
+
+      const markActive = () => {
+        manifestList.querySelectorAll('.manifest__row').forEach((r, i) => {
+          r.classList.toggle('is-active', i === idx);
+          const st = r.querySelector('.manifest__status');
+          if (st) st.textContent = i === idx ? '▸ PLAYING' : '';
+        });
+      };
+
+      const openManifest = () => {
+        lastFocus = document.activeElement;
+        manifest.hidden = false;
+        requestAnimationFrame(() => manifest.classList.add('is-open'));
+        document.body.style.overflow = 'hidden';
+        markActive();
+        const first = manifestList.querySelector('.manifest__row.is-active') || manifestList.querySelector('.manifest__row');
+        if (first) first.focus({ preventScroll: true });
+      };
+      const closeManifest = () => {
+        manifest.classList.remove('is-open');
+        document.body.style.overflow = '';
+        setTimeout(() => { manifest.hidden = true; }, 200);
+        if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus({ preventScroll: true });
+      };
+
+      spotifyCard.addEventListener('click', (e) => {
+        if (e.target.closest('#spotifyDots')) return;
+        openManifest();
+      });
+      spotifyCard.addEventListener('keydown', (e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('#spotifyDots')) {
+          e.preventDefault();
+          openManifest();
+        }
+      });
+
+      manifest.addEventListener('click', (e) => {
+        if (e.target.closest('[data-manifest-close]')) { closeManifest(); return; }
+        const row = e.target.closest('.manifest__row');
+        if (row) { jumpTo(parseInt(row.dataset.idx, 10)); closeManifest(); }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !manifest.hidden) closeManifest();
+      });
+
+      // keep the manifest highlight in sync with the rotating widget
+      onAfterRender = () => { if (!manifest.hidden) markActive(); };
+    }
+
+    render();
+    schedule();
   }
 
   // ---------- TICKER : seamless loop (fallback duplication) -------
