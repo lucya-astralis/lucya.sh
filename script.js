@@ -811,15 +811,17 @@
   const spotifyCard = document.getElementById('spotifyCard');
   if (spotifyCard) {
     const songs = [
-      { title: "DEAD CENTER", artist: "REOL, LiSA, Giga", cover: "images/spotify_widget/dead_center.jpg" },
-      { title: "Rebirth", artist: "SHIMA", cover: "images/spotify_widget/rebirth.jpeg" },      
-      { title: "Heaven", artist: "Allison Wonderland, Ninajirachi", cover: "images/spotify_widget/cover1.png" },
+      { title: "Rebirth", artist: "SHIMA", cover: "images/spotify_widget/rebirth.jpeg" },  
       { title: "Infohazard", artist: "Ninajirachi", cover: "images/spotify_widget/cover4.png" },
-      { title: "H.E.R", artist: "Tearz", cover: "images/spotify_widget/H.E.R.jpg" },
+      { title: "Heaven", artist: "Allison Wonderland, Ninajirachi", cover: "images/spotify_widget/cover1.png" },      
+      { title: "Flesh without Blood", artist: "Grimes", cover: "images/spotify_widget/artangels.png" },      
+      { title: "Delicate Weapon", artist: "Grimes", cover: "images/spotify_widget/CPv2.jpg" },
+      { title: "FORTUNE", artist: "SAKUREYE", cover: "images/spotify_widget/fortune.jpg" },
       { title: "Vorozhyla", artist: "Korolova, Rokston, Go_A, Monokate", cover: "images/spotify_widget/Vorozhyla.jpg" },
       { title: "Elevate", artist: "Sub Focus", cover: "images/spotify_widget/cover3.jpeg" },
       { title: "Battery Death", artist: "Ninajirachi", cover: "images/spotify_widget/cover4.png" },
-      { title: "Ghostlight", artist: "Skeler, Veela", cover: "images/spotify_widget/Ghostlight.jpeg" }
+      { title: "Ghostlight", artist: "Skeler, Veela", cover: "images/spotify_widget/Ghostlight.jpeg" },
+      { title: "THE BADDEST", artist: "K/DA", cover: "images/spotify_widget/the_baddest.jpg" }
     ];
     const INTERVAL_MS = 5000;
     const cover = document.getElementById('spotifyCover');
@@ -997,6 +999,90 @@
     if (months < 0) { years--; months += 12; }
     uptime.textContent = `${years}y ${String(months).padStart(2, '0')}m`;
   }
+
+  // ---------- THERMAL TELEMETRY ----------------------------------
+  // Polls /temps.json (written by scripts/temps.sh on the Pi 4B webserver
+  // every minute). Fails silently — widget shows a dim "down" state if the
+  // file is missing or stale.
+  (() => {
+    const root = document.getElementById('thermal');
+    if (!root) return;
+    const cpu      = document.getElementById('thermCpu');
+    const cpuBar   = document.getElementById('thermCpuBar');
+    const cpuBarEl = cpuBar ? cpuBar.parentElement : null;
+    const load     = document.getElementById('thermLoad');
+    const loadSub  = document.getElementById('thermLoadSub');
+    const uptime   = document.getElementById('thermUptime');
+    const ram      = document.getElementById('thermRam');
+    const ramBar   = document.getElementById('thermRamBar');
+    const host     = document.getElementById('thermHost');
+    const ageEl    = document.getElementById('thermAge');
+
+    let last = null;
+
+    const fmtUptime = (s) => {
+      if (!isFinite(s) || s < 0) return '—';
+      const d = Math.floor(s / 86400);
+      const h = Math.floor((s % 86400) / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      if (d >= 1) return `${d}d ${h}h`;
+      if (h >= 1) return `${h}h ${m}m`;
+      return `${m}m`;
+    };
+    const tempBand = (c) => {
+      if (c >= 80) return 'crit';
+      if (c >= 70) return 'hot';
+      if (c >= 55) return 'warm';
+      return 'ok';
+    };
+
+    const render = () => {
+      if (!last) return;
+      const t = Number(last.cpu_temp_c) || 0;
+      if (cpu) cpu.textContent = t.toFixed(1);
+      if (cpuBar) cpuBar.style.width = Math.min(100, Math.max(0, t / 90 * 100)).toFixed(1) + '%';
+      if (cpuBarEl) cpuBarEl.dataset.band = tempBand(t);
+      const l1  = Number(last.load_1m)  || 0;
+      const l5  = Number(last.load_5m)  || 0;
+      const l15 = Number(last.load_15m) || 0;
+      if (load)    load.textContent    = l1.toFixed(2);
+      if (loadSub) loadSub.textContent = `${l5.toFixed(2)} · ${l15.toFixed(2)}`;
+      if (uptime)  uptime.textContent  = fmtUptime(Number(last.uptime_s));
+      const m = Number(last.mem_used_pct) || 0;
+      if (ram)    ram.textContent    = m.toFixed(1);
+      if (ramBar) ramBar.style.width = Math.min(100, Math.max(0, m)).toFixed(1) + '%';
+      if (host)   host.textContent   = String(last.host || 'unknown').toLowerCase();
+    };
+
+    const tickAge = () => {
+      if (!last){ if (ageEl) ageEl.textContent = '—'; return; }
+      const now = Math.floor(Date.now() / 1000);
+      const age = Math.max(0, now - Number(last.ts || now));
+      if (ageEl){
+        ageEl.textContent = age < 60 ? `${age}s ago`
+                          : age < 3600 ? `${Math.floor(age/60)}m ago`
+                          : `${Math.floor(age/3600)}h ago`;
+      }
+      root.dataset.state = age < 120 ? 'ok' : age < 900 ? 'stale' : 'dead';
+    };
+
+    const refresh = async () => {
+      try {
+        const r = await fetch('/temps.json?t=' + Date.now(), { cache: 'no-store' });
+        if (!r.ok) throw new Error('http ' + r.status);
+        last = await r.json();
+        render();
+        tickAge();
+      } catch (e) {
+        root.dataset.state = 'down';
+        if (host) host.textContent = 'probe offline';
+      }
+    };
+
+    refresh();
+    setInterval(refresh, 20000);
+    setInterval(tickAge, 1000);
+  })();
 
   // ---------- ENABLE SCRAMBLE ON STATIC LABELS -------------------
   // wait for splash to fade so the decoder reveal coincides with content reveal
