@@ -389,7 +389,8 @@
 
   // ---------- DOMAINS --------------------------------------------
   const domains = [
-    ['lucya.sh',          'lucya_logo_text.svg',     'Personal homepage · identity hub',    'PRIMARY', true, 'logo'],
+    ['lucya.sh',          'lucya_logo_text.svg',     'Personal homepage',    'PRIMARY', true, 'logo'],
+    ['images.lucya.sh',          'gallery.svg',     'Image gallery',    'ACTIVE', true, 'true'],
     ['aizaku.com',         'aizaku.com.svg',          'Deffence industry',                   'ACTIVE',  true],
     ['astraos.app',        'astraos.app.svg',         'AstraOS · main product site',         'ACTIVE',  true],
     ['beta.astraos.app',   'beta.astraos.app.svg',    'AstraOS public beta portal',          'ACTIVE',  true],
