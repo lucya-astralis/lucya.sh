@@ -77,7 +77,7 @@
   const logItems = logEl ? Array.from(logEl.children) : [];
 
   // ---------- REVEAL : mark below-fold blocks (observer starts post-splash) ----------
-  const revealSelectors = ['.about', '.interests', '.buttons', '.neofetch', '.services', '.spotify', '.photos', '.foot'];
+  const revealSelectors = ['.about', '.interests', '.buttons', '.neofetch', '.services', '.spotify', '.photos', '.games', '.foot'];
   const revealTargets = revealSelectors.flatMap(sel => Array.from(document.querySelectorAll(sel)));
   revealTargets.forEach(el => el.classList.add('reveal-block'));
 
@@ -819,7 +819,7 @@
       { title: "Flesh without Blood", artist: "Grimes", cover: "images/spotify_widget/artangels.png" },      
       { title: "Delicate Weapon", artist: "Grimes", cover: "images/spotify_widget/CPv2.jpg" },
       { title: "FORTUNE", artist: "SAKUREYE", cover: "images/spotify_widget/fortune.jpg" },
-      { title: "Vorozhyla", artist: "Korolova, Rokston, Go_A, Monokate", cover: "images/spotify_widget/Vorozhyla.jpg" },
+      { title: "Darling Game Over Love", artist: "MAIKI P", cover: "images/spotify_widget/maikip.jpg" },
       { title: "Elevate", artist: "Sub Focus", cover: "images/spotify_widget/cover3.jpeg" },
       { title: "Battery Death", artist: "Ninajirachi", cover: "images/spotify_widget/cover4.png" },
       { title: "Ghostlight", artist: "Skeler, Veela", cover: "images/spotify_widget/Ghostlight.jpeg" },
