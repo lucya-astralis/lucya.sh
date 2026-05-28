@@ -407,9 +407,9 @@
     ['beta.astraos.app',   'beta.astraos.app.svg',    'AstraOS public beta portal',          'ACTIVE',  true],
     ['status.lucya.systems', 'status.lucya.systems.svg',  'System status · uptime monitor',      'ACTIVE',  true],
     ['binbows.net',        'binbows.net.svg',         'Official Binbows site',               'ACTIVE',  true],
-    ['inter-astra.org',    'inter-astra.org.svg',     'inter-astra collective',              'PARKED',  true],
+    ['inter-astra.org',    'inter-astra.org.svg',     'inter-astra Corp.',              'PARKED',  true],
     ['gov.inter-astra.org','gov.inter-astra.org.svg', 'Internal governance portal',          'ACTIVE',  true],
-    ['wirtaufendeinauto.de','wirtaufendeinauto.de.svg','gag domain · for the memes',         'ACTIVE',  true],
+    ['wirtaufendeinauto.de','wirtaufendeinauto.de.svg','Lass dein Auto taufen',         'ACTIVE',  true],
   ];
   const dGrid = document.getElementById('domainGrid');
   if (dGrid) {
