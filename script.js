@@ -103,9 +103,11 @@
       const scrollGated = revealTargets.filter(el => el.matches('.about, .photos'));
       revealTargets.filter(el => !scrollGated.includes(el)).forEach(el => io.observe(el));
       if (scrollGated.length){
-        window.addEventListener('scroll', () => {
+        // the page scrolls on <body> (overflow-y:auto), whose scroll events don't
+        // bubble to window — capture on document so we catch the first scroll.
+        document.addEventListener('scroll', () => {
           scrollGated.forEach(el => io.observe(el));
-        }, { passive: true, once: true });
+        }, { passive: true, once: true, capture: true });
       }
     } else {
       revealTargets.forEach(el => el.classList.add('is-visible'));
