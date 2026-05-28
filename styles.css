@@ -1831,15 +1831,15 @@ section{
   flex-wrap:wrap;
   padding:10px 14px;
   margin:0 0 16px;
-  background:rgba(91,138,255,.04);
+  background:var(--surface);
   border:1px solid var(--line);
-  border-radius:6px;
+  border-left:2px solid var(--acc-cy);
   text-decoration:none;
-  transition:background .2s, border-color .2s;
+  transition:background .18s, border-color .18s;
 }
 .services__hv:hover{
-  background:rgba(91,138,255,.08);
-  border-color:rgba(91,138,255,.35);
+  background:var(--surface-2);
+  border-left-color:var(--acc-mag);
 }
 .services__hv-label{
   display:inline-flex; align-items:center; gap:8px;
@@ -1867,7 +1867,7 @@ section{
   position:relative;
   transition: background .2s;
 }
-.dcard:hover{ background:#16121f; }
+.dcard:hover{ background:var(--surface-2); }
 .dcard__logo{
   height:34px;
   margin-bottom:14px;
@@ -1942,7 +1942,7 @@ section{
 .spotify__card:hover{
   background:
     linear-gradient(180deg, rgba(91,138,255,.07), transparent 60%),
-    #16121f;
+    var(--surface-2);
 }
 
 .spotify__cover{
