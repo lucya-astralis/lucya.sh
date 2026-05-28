@@ -97,7 +97,16 @@
           }
         });
       }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
-      revealTargets.forEach(el => io.observe(el));
+      // .about and .photos sit high enough to already be in view on load, so the
+      // observer would reveal them without any scroll. Gate them behind the first
+      // user scroll so they always play the reveal animation on scroll instead.
+      const scrollGated = revealTargets.filter(el => el.matches('.about, .photos'));
+      revealTargets.filter(el => !scrollGated.includes(el)).forEach(el => io.observe(el));
+      if (scrollGated.length){
+        window.addEventListener('scroll', () => {
+          scrollGated.forEach(el => io.observe(el));
+        }, { passive: true, once: true });
+      }
     } else {
       revealTargets.forEach(el => el.classList.add('is-visible'));
     }
