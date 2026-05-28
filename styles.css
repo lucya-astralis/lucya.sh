@@ -961,9 +961,8 @@ section{
 .pcard{
   position:relative;
   background:
-    linear-gradient(180deg, rgba(7, 7, 11, 0.658) 0%, rgba(7, 7, 11, 0.774) 60%, rgba(7, 7, 11, 0.815) 100%),
-    url(images/profile/astralia2.png) center/cover no-repeat;
-
+    linear-gradient(180deg, rgba(7, 7, 11, 0.747) 0%, rgba(7, 7, 11, 0.829) 60%, rgba(7, 7, 11, 0.877) 100%),
+    url(images/profile/astralia3.png) center/cover no-repeat;
   border:1px solid var(--line-strong);
   border-radius:10px;
   overflow:hidden;
