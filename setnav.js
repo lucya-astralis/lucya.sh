@@ -18,8 +18,9 @@
   var pager, hint;
 
   var EXIT_MS = 320;
-  var ENTER_MS = 520;
-  var COOLDOWN = 260;       // extra lock after enter finishes
+  var ENTER_MS = 620;       // matches the slide-in duration
+  var COOLDOWN = 200;       // extra lock after enter finishes
+  var STAGGER = 110;        // per-card delay so they don't appear all at once
 
   function ready(fn) {
     if (document.readyState === 'loading') {
@@ -40,14 +41,24 @@
       { main: pick(['about', 'interests']), side: pick(['games']) },
       { main: pick(['systems', 'services']),side: pick(['photos']) }
     ];
-    if (footer) panels.push({ footer: footer });
+    // footer is no longer a panel — it's rendered as a slim persistent bar
+  }
 
-    // mark set 1's sections so only they keep entrance animations on desktop
-    if (panels[0]) {
-      panels[0].main.concat(panels[0].side).forEach(function (el) {
-        el.classList.add('set-anim');
-      });
-    }
+  // staggered slide+flicker entrance for a set's sections
+  function playEntrance(els) {
+    els.forEach(function (el, idx) {
+      el.style.setProperty('--set-delay', (idx * STAGGER) + 'ms');
+      el.classList.add('set-in');
+    });
+  }
+  function clearEntrance(els) {
+    els.forEach(function (el) {
+      el.classList.remove('set-in');
+      el.style.removeProperty('--set-delay');
+    });
+  }
+  function entranceMs(count) {
+    return ENTER_MS + Math.max(0, count - 1) * STAGGER;
   }
 
   function elementsFor(i) {
@@ -58,9 +69,10 @@
   }
 
   function measureStage() {
-    // height of the chrome above <main> (nav + ticker + kpibar + thermal)
+    // height of the chrome above <main> (nav + ticker + kpibar + thermal),
+    // minus the slim footer bar reserved at the very bottom (--setbar-h)
     var top = Math.max(0, Math.round(main.getBoundingClientRect().top + window.scrollY));
-    root.style.setProperty('--stage-h', 'calc(100vh - ' + top + 'px)');
+    root.style.setProperty('--stage-h', 'calc(100vh - ' + top + 'px - var(--setbar-h, 0px))');
   }
 
   function applyColumnMode(i) {
@@ -92,6 +104,7 @@
     var inEls = elementsFor(target);
 
     main.classList.add('is-swapping');
+    clearEntrance(outEls); // drop any lingering entrance delay before exit
     outEls.forEach(function (el) { el.classList.add('set-exit'); });
 
     setTimeout(function () {
@@ -102,21 +115,18 @@
       current = target;
       applyColumnMode(current);
 
-      // only set 1 plays the glitch entrance animation
-      var animate = current === 0;
-      inEls.forEach(function (el) {
-        el.classList.add('is-set-active');
-        if (animate) el.classList.add('set-enter');
-      });
+      // every set animates in: staggered slide + flicker
+      inEls.forEach(function (el) { el.classList.add('is-set-active'); });
+      playEntrance(inEls);
       revealInside(inEls);
       updatePager();
       updateNav();
 
       setTimeout(function () {
-        inEls.forEach(function (el) { el.classList.remove('set-enter'); });
+        clearEntrance(inEls);
         main.classList.remove('is-swapping');
         setTimeout(function () { transitioning = false; }, COOLDOWN);
-      }, ENTER_MS);
+      }, entranceMs(inEls.length));
     }, EXIT_MS);
   }
 
@@ -229,6 +239,40 @@
     hint.className = 'sethint';
     hint.innerHTML = '<span>SCROLL</span><span class="sethint__arrow">▼</span><span>NEXT</span>';
     document.body.appendChild(hint);
+
+    buildBar();
+  }
+
+  // slim persistent footer bar (set-mode only); keeps Impressum/Datenschutz
+  // reachable on every set without a dedicated panel
+  function buildBar() {
+    var bar = document.createElement('div');
+    bar.className = 'setbar mono';
+    bar.setAttribute('aria-label', 'site footer');
+
+    var copy = document.createElement('span');
+    copy.className = 'setbar__copy';
+    var yrEl = document.getElementById('thisYear');
+    var yr = (yrEl && yrEl.textContent.trim()) || String(new Date().getFullYear());
+    copy.innerHTML = '© LUCYA SYSTEMS<span class="reg">®</span> ' + yr + ' · ALL RIGHTS RESERVED';
+    bar.appendChild(copy);
+
+    var links = document.createElement('span');
+    links.className = 'setbar__links';
+    var src = footer && footer.querySelector('.foot__legal-links');
+    var anchors = src ? Array.prototype.slice.call(src.querySelectorAll('a')) : [];
+    for (var i = 0; i < anchors.length; i++) {
+      if (i) {
+        var sep = document.createElement('span');
+        sep.className = 'setbar__sep';
+        sep.textContent = '·';
+        links.appendChild(sep);
+      }
+      links.appendChild(anchors[i].cloneNode(true));
+    }
+    bar.appendChild(links);
+
+    document.body.appendChild(bar);
   }
 
   function updatePager() {

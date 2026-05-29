@@ -3477,36 +3477,66 @@ html.setmode .layout__side::-webkit-scrollbar{ width:0; height:0; }
 html.setmode .layout__main > section,
 html.setmode .layout__side > section{ display:none; }
 html.setmode .layout__main > section.is-set-active,
-html.setmode .layout__side > section.is-set-active{ display:block; }
+html.setmode .layout__side > section.is-set-active{ display:block; opacity:1; }
 
 /* services has no side panel -> let the main column span full width */
 html.setmode .layout.is-solo{ grid-template-columns:1fr; }
 
-/* footer shown as its own final panel, overlaying the whole stage */
-html.setmode .foot{
-  position:absolute;
-  inset:0;
-  z-index:5;
-  display:none;
-  overflow-y:auto;
-  overflow-x:hidden;
-  scrollbar-width:none;
-}
-html.setmode .foot::-webkit-scrollbar{ width:0; height:0; }
-html.setmode .foot.is-set-active{ display:block; }
-html.setmode .foot .foot__inner{ min-height:100%; display:flex; flex-direction:column; justify-content:center; }
+/* in set-mode the full footer is replaced by a slim persistent bar */
+html.setmode{ --setbar-h:34px; }
+html.setmode .foot{ display:none; }
 
-/* ----- glitch transitions ----- */
-html.setmode .set-enter{ animation: setIn .52s cubic-bezier(.2,.7,.2,1) both; }
+/* slim persistent footer bar — always visible, keeps legal links reachable */
+.setbar{
+  position:fixed; left:0; right:0; bottom:0;
+  z-index:160;
+  display:none;
+  align-items:center; justify-content:space-between;
+  gap:18px;
+  height:var(--setbar-h, 34px);
+  padding:0 22px;
+  font-family:"Proto Nerd Font Regular", monospace;
+  font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--text-ghost);
+  background:rgba(7,7,11,.86);
+  -webkit-backdrop-filter:blur(7px);
+  backdrop-filter:blur(7px);
+  border-top:1px solid var(--line);
+}
+.setbar::before{
+  content:""; position:absolute; left:0; right:0; top:-1px; height:1px;
+  background:var(--grad-accent-fade); opacity:.55;
+}
+html.setmode .setbar{ display:flex; }
+.setbar__copy{ overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.setbar__links{ display:flex; align-items:center; gap:9px; white-space:nowrap; }
+.setbar__links a{ color:var(--text-dim); text-decoration:none; transition:color .2s; }
+.setbar__links a:hover{ color:var(--acc-cy); }
+.setbar__sep{ opacity:.5; }
+
+/* ----- exit glitch ----- */
 html.setmode .set-exit { animation: setOut .32s ease-in both; }
 
-/* desktop: only set 1 keeps its entrance animation. Other sets appear
-   instantly — suppress the reveal-block re-animation that otherwise
-   re-fires every time a section flips from display:none to block. */
-html.setmode .layout__main > section:not(.set-anim).reveal-block.is-visible,
-html.setmode .layout__side > section:not(.set-anim).reveal-block.is-visible,
-html.setmode .layout__main > section:not(.set-anim) .reveal-block.is-visible,
-html.setmode .layout__side > section:not(.set-anim) .reveal-block.is-visible{
+/* ----- staggered entrance (every set) -----
+   Cards don't appear all at once: each active section slides + flickers in,
+   with a per-card delay applied inline by setnav.js (--set-delay). Main-column
+   cards slide from the left, side-column cards from the right — mirroring the
+   set 1 entrance the rest of the page is modelled on. */
+html.setmode .layout__main > section.set-in{
+  animation: slideInL .6s cubic-bezier(.2,.8,.2,1) both,
+             flickerIn .5s steps(1,end) both;
+  animation-delay: var(--set-delay, 0ms);
+}
+html.setmode .layout__side > section.set-in{
+  animation: slideInR .6s cubic-bezier(.2,.8,.2,1) both,
+             flickerIn .5s steps(1,end) both;
+  animation-delay: var(--set-delay, 0ms);
+}
+/* The sections themselves are .reveal-block; their base reveal animation must
+   not fire in set-mode (the .set-in entrance owns it). The :not(.set-in) guard
+   lets .set-in animate, and prevents any re-fire once it's cleared. */
+html.setmode .layout__main > section.reveal-block.is-visible:not(.set-in),
+html.setmode .layout__side > section.reveal-block.is-visible:not(.set-in){
   animation:none;
   opacity:1;
 }
@@ -3567,7 +3597,7 @@ html.setmode .setpager{ display:flex; }
 
 /* ----- wheel/scroll hint ----- */
 .sethint{
-  position:fixed; bottom:14px; left:50%;
+  position:fixed; bottom:calc(var(--setbar-h, 0px) + 12px); left:50%;
   transform:translateX(-50%);
   z-index:160;
   display:none;
