@@ -3459,49 +3459,57 @@ html.setmode .layout{
   grid-template-rows:100%;
   align-items:stretch;
 }
+/* columns are the scroll containers; their sections stack in normal flow */
 html.setmode .layout__main,
 html.setmode .layout__side{
   position:relative;
   height:100%;
   min-height:0;
-}
-
-/* every section + footer becomes an overlaid panel inside its column */
-html.setmode .layout__main > section,
-html.setmode .layout__side > section,
-html.setmode .foot{
-  position:absolute;
-  inset:0;
   overflow-y:auto;
   overflow-x:hidden;
-  opacity:0;
-  visibility:hidden;
-  pointer-events:none;
   scrollbar-width:none;
   padding-bottom:24px;
 }
-html.setmode .layout__main > section::-webkit-scrollbar,
-html.setmode .layout__side > section::-webkit-scrollbar,
-html.setmode .foot::-webkit-scrollbar{ width:0; height:0; }
+html.setmode .layout__main::-webkit-scrollbar,
+html.setmode .layout__side::-webkit-scrollbar{ width:0; height:0; }
 
+/* hide every section by default; active ones stack within their column */
+html.setmode .layout__main > section,
+html.setmode .layout__side > section{ display:none; }
 html.setmode .layout__main > section.is-set-active,
-html.setmode .layout__side > section.is-set-active,
-html.setmode .foot.is-set-active{
-  opacity:1;
-  visibility:visible;
-  pointer-events:auto;
-}
+html.setmode .layout__side > section.is-set-active{ display:block; }
 
 /* services has no side panel -> let the main column span full width */
 html.setmode .layout.is-solo{ grid-template-columns:1fr; }
 
-/* footer shown as its own final panel, spanning the whole stage */
-html.setmode .foot{ display:block; }
+/* footer shown as its own final panel, overlaying the whole stage */
+html.setmode .foot{
+  position:absolute;
+  inset:0;
+  z-index:5;
+  display:none;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-width:none;
+}
+html.setmode .foot::-webkit-scrollbar{ width:0; height:0; }
+html.setmode .foot.is-set-active{ display:block; }
 html.setmode .foot .foot__inner{ min-height:100%; display:flex; flex-direction:column; justify-content:center; }
 
 /* ----- glitch transitions ----- */
 html.setmode .set-enter{ animation: setIn .52s cubic-bezier(.2,.7,.2,1) both; }
 html.setmode .set-exit { animation: setOut .32s ease-in both; }
+
+/* desktop: only set 1 keeps its entrance animation. Other sets appear
+   instantly — suppress the reveal-block re-animation that otherwise
+   re-fires every time a section flips from display:none to block. */
+html.setmode .layout__main > section:not(.set-anim).reveal-block.is-visible,
+html.setmode .layout__side > section:not(.set-anim).reveal-block.is-visible,
+html.setmode .layout__main > section:not(.set-anim) .reveal-block.is-visible,
+html.setmode .layout__side > section:not(.set-anim) .reveal-block.is-visible{
+  animation:none;
+  opacity:1;
+}
 
 @keyframes setOut{
   0%  { opacity:1; transform:translate(0,0);            filter:none;                          clip-path:inset(0 0 0 0); }

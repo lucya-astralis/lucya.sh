@@ -10,9 +10,7 @@
   var root = document.documentElement;
 
   var main, layout, mainCol, sideCol, footer;
-  var mainSections = [];
-  var sideSections = [];
-  var panels = [];          // [{ main, side } ...] + footer panel appended
+  var panels = [];          // [{ main:[...], side:[...] } ...] + footer panel appended
   var current = 0;
   var transitioning = false;
   var wheelLock = false;
@@ -31,20 +29,32 @@
     }
   }
 
+  function byId(id) { return document.getElementById(id); }
+  function pick(ids) {
+    return ids.map(byId).filter(Boolean);
+  }
+
   function buildPanels() {
-    mainSections = Array.prototype.slice.call(mainCol.querySelectorAll(':scope > section'));
-    sideSections = Array.prototype.slice.call(sideCol.querySelectorAll(':scope > section'));
-    panels = mainSections.map(function (m, i) {
-      return { main: m, side: sideSections[i] || null };
-    });
+    panels = [
+      { main: pick(['profile']),            side: pick(['buttons', 'spotify']) },
+      { main: pick(['about', 'interests']), side: pick(['games']) },
+      { main: pick(['systems', 'services']),side: pick(['photos']) }
+    ];
     if (footer) panels.push({ footer: footer });
+
+    // mark set 1's sections so only they keep entrance animations on desktop
+    if (panels[0]) {
+      panels[0].main.concat(panels[0].side).forEach(function (el) {
+        el.classList.add('set-anim');
+      });
+    }
   }
 
   function elementsFor(i) {
     var p = panels[i];
     if (!p) return [];
     if (p.footer) return [p.footer];
-    return p.main && p.side ? [p.main, p.side] : [p.main];
+    return p.main.concat(p.side);
   }
 
   function measureStage() {
@@ -55,10 +65,16 @@
 
   function applyColumnMode(i) {
     var p = panels[i];
-    layout.classList.toggle('is-solo', !!(p && p.main && !p.side && !p.footer));
+    layout.classList.toggle('is-solo', !!(p && p.main && p.main.length && (!p.side || !p.side.length) && !p.footer));
+  }
+
+  function resetColumns() {
+    if (mainCol) mainCol.scrollTop = 0;
+    if (sideCol) sideCol.scrollTop = 0;
   }
 
   function revealInside(els) {
+    resetColumns();
     els.forEach(function (el) {
       el.scrollTop = 0;
       el.classList.add('is-visible');
@@ -86,8 +102,11 @@
       current = target;
       applyColumnMode(current);
 
+      // only set 1 plays the glitch entrance animation
+      var animate = current === 0;
       inEls.forEach(function (el) {
-        el.classList.add('is-set-active', 'set-enter');
+        el.classList.add('is-set-active');
+        if (animate) el.classList.add('set-enter');
       });
       revealInside(inEls);
       updatePager();
@@ -159,7 +178,9 @@
     for (var i = 0; i < links.length; i++) {
       (function (a) {
         var id = a.getAttribute('href').slice(1);
-        var idx = panels.findIndex(function (p) { return p.main && p.main.id === id; });
+        var idx = panels.findIndex(function (p) {
+          return elementsForIds(p).indexOf(id) > -1;
+        });
         if (idx < 0) return;
         navMap[id] = idx;
         a.addEventListener('click', function (e) {
@@ -171,13 +192,19 @@
     }
   }
 
+  function elementsForIds(p) {
+    if (!p || p.footer) return [];
+    return p.main.concat(p.side).map(function (el) { return el.id; });
+  }
+
   function updateNav() {
     var links = document.querySelectorAll('.nav__links a[href^="#"]');
-    var activeId = panels[current] && panels[current].main ? panels[current].main.id : null;
+    var activeIds = panels[current] ? elementsForIds(panels[current]) : [];
     for (var i = 0; i < links.length; i++) {
       var id = links[i].getAttribute('href').slice(1);
-      links[i].classList.toggle('is-current', id === activeId);
-      if (id === activeId) links[i].setAttribute('aria-current', 'true');
+      var on = activeIds.indexOf(id) > -1;
+      links[i].classList.toggle('is-current', on);
+      if (on) links[i].setAttribute('aria-current', 'true');
       else links[i].removeAttribute('aria-current');
     }
   }
@@ -191,7 +218,7 @@
       var b = document.createElement('button');
       b.className = 'setpager__dot';
       b.type = 'button';
-      var label = p.footer ? 'INFO' : (p.main ? p.main.id : ('panel ' + (i + 1)));
+      var label = p.footer ? 'INFO' : (p.main && p.main[0] ? p.main[0].id : ('panel ' + (i + 1)));
       b.setAttribute('aria-label', label);
       b.addEventListener('click', function () { if (active) jumpTo(i); });
       pager.appendChild(b);
