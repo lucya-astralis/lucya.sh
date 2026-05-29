@@ -3442,6 +3442,137 @@ section{
   .splash__label .jp{ font-size:10px; letter-spacing:.28em; }
 }
 
+/* ============================================================= */
+/* SET-NAV — show one main+side panel-set at a time, glitch swap  */
+/* (desktop only; JS adds .setmode to <html> at >=1100px)         */
+/* ============================================================= */
+html.setmode,
+html.setmode body{ height:100%; overflow:hidden; }
+
+html.setmode #top{
+  position:relative;
+  height:var(--stage-h, 100vh);
+  overflow:hidden;
+}
+html.setmode .layout{
+  height:100%;
+  grid-template-rows:100%;
+  align-items:stretch;
+}
+html.setmode .layout__main,
+html.setmode .layout__side{
+  position:relative;
+  height:100%;
+  min-height:0;
+}
+
+/* every section + footer becomes an overlaid panel inside its column */
+html.setmode .layout__main > section,
+html.setmode .layout__side > section,
+html.setmode .foot{
+  position:absolute;
+  inset:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  scrollbar-width:none;
+  padding-bottom:24px;
+}
+html.setmode .layout__main > section::-webkit-scrollbar,
+html.setmode .layout__side > section::-webkit-scrollbar,
+html.setmode .foot::-webkit-scrollbar{ width:0; height:0; }
+
+html.setmode .layout__main > section.is-set-active,
+html.setmode .layout__side > section.is-set-active,
+html.setmode .foot.is-set-active{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}
+
+/* services has no side panel -> let the main column span full width */
+html.setmode .layout.is-solo{ grid-template-columns:1fr; }
+
+/* footer shown as its own final panel, spanning the whole stage */
+html.setmode .foot{ display:block; }
+html.setmode .foot .foot__inner{ min-height:100%; display:flex; flex-direction:column; justify-content:center; }
+
+/* ----- glitch transitions ----- */
+html.setmode .set-enter{ animation: setIn .52s cubic-bezier(.2,.7,.2,1) both; }
+html.setmode .set-exit { animation: setOut .32s ease-in both; }
+
+@keyframes setOut{
+  0%  { opacity:1; transform:translate(0,0);            filter:none;                          clip-path:inset(0 0 0 0); }
+  18% { opacity:1; transform:translate(-7px,0) skewX(2deg); filter:hue-rotate(45deg) saturate(1.6); clip-path:inset(0 0 62% 0); }
+  38% { opacity:.9; transform:translate(9px,0);          filter:hue-rotate(-55deg);            clip-path:inset(56% 0 0 0); }
+  60% { opacity:.7; transform:translate(-4px,0) skewX(-1deg); clip-path:inset(22% 0 34% 0); }
+  100%{ opacity:0; transform:translate(0,14px) scale(.985); filter:saturate(.5) brightness(1.25); clip-path:inset(0 0 0 0); }
+}
+@keyframes setIn{
+  0%  { opacity:0; transform:translate(0,-16px) scale(1.012); filter:saturate(1.7) brightness(1.35); clip-path:inset(0 0 72% 0); }
+  16% { opacity:1; transform:translate(8px,0) skewX(-2deg);   filter:hue-rotate(-35deg);             clip-path:inset(46% 0 0 0); }
+  34% { opacity:1; transform:translate(-7px,0) skewX(1deg);   filter:hue-rotate(40deg);              clip-path:inset(12% 0 42% 0); }
+  58% { opacity:1; transform:translate(3px,0);                filter:none;                           clip-path:inset(0 0 0 0); }
+  100%{ opacity:1; transform:translate(0,0);                  filter:none;                           clip-path:inset(0 0 0 0); }
+}
+
+/* a thin scan-flash sweep across the stage during a swap */
+html.setmode #top.is-swapping::after{
+  content:"";
+  position:absolute; inset:0; z-index:50;
+  pointer-events:none;
+  background:linear-gradient(180deg, transparent, rgba(91,138,255,.10) 48%, rgba(165,148,255,.10) 52%, transparent);
+  mix-blend-mode:screen;
+  animation: setScan .42s linear both;
+}
+@keyframes setScan{
+  0%  { transform:translateY(-100%); opacity:0; }
+  20% { opacity:1; }
+  100%{ transform:translateY(100%); opacity:0; }
+}
+
+/* ----- pager dots ----- */
+.setpager{
+  position:fixed; right:18px; top:50%;
+  transform:translateY(-50%);
+  z-index:160;
+  display:none;
+  flex-direction:column; gap:11px;
+  align-items:center;
+}
+html.setmode .setpager{ display:flex; }
+.setpager__dot{
+  width:10px; height:10px; padding:0;
+  border:1px solid var(--line-strong);
+  background:transparent;
+  border-radius:50%;
+  transition:background .2s, box-shadow .2s, border-color .2s, transform .2s;
+}
+.setpager__dot:hover{ border-color:var(--acc-cy); transform:scale(1.15); }
+.setpager__dot.is-on{
+  background:var(--acc-cy);
+  border-color:var(--acc-cy);
+  box-shadow:0 0 10px rgba(91,138,255,.7);
+}
+
+/* ----- wheel/scroll hint ----- */
+.sethint{
+  position:fixed; bottom:14px; left:50%;
+  transform:translateX(-50%);
+  z-index:160;
+  display:none;
+  align-items:center; gap:8px;
+  font-family:"Proto Nerd Font Regular", monospace;
+  font-size:10.5px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--text-ghost);
+  pointer-events:none;
+}
+html.setmode .sethint{ display:flex; }
+.sethint__arrow{ color:var(--acc-cy); animation: sethintBob 1.6s ease-in-out infinite; }
+@keyframes sethintBob{ 0%,100%{ transform:translateY(0); opacity:.6; } 50%{ transform:translateY(3px); opacity:1; } }
+
 /* a11y */
 @media (prefers-reduced-motion: reduce){
   *{ animation:none !important; transition:none !important; }
