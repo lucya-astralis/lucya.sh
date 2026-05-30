@@ -44,21 +44,44 @@
     // footer is no longer a panel — it's rendered as a slim persistent bar
   }
 
-  // staggered slide+flicker entrance for a set's sections
+  var SLIDE_MS = 600;       // .set-in slide duration
+  var TXT_OFFSET = 80;      // text starts shortly after its card
+  var TXT_STEP = 26;        // per-line stagger
+  var TXT_CAP = 14;         // cap stagger so long cards don't drag
+  var TXT_DUR = 380;        // textBuild duration
+  var TXT_SEL = '.section__doc, .section__slug, .section__meta,' +
+                'h1,h2,h3,h4,h5,h6, p, li, dt, dd, figcaption, blockquote';
+
+  // staggered slide+flicker entrance for a set's sections, plus a per-line
+  // "text builds up" reveal. returns the ms until all animations finish.
   function playEntrance(els) {
+    var maxEnd = 0;
     els.forEach(function (el, idx) {
-      el.style.setProperty('--set-delay', (idx * STAGGER) + 'ms');
+      var cardDelay = idx * STAGGER;
+      el.style.setProperty('--set-delay', cardDelay + 'ms');
       el.classList.add('set-in');
+      maxEnd = Math.max(maxEnd, cardDelay + SLIDE_MS);
+
+      var nodes = el.querySelectorAll(TXT_SEL);
+      for (var i = 0; i < nodes.length; i++) {
+        var d = cardDelay + TXT_OFFSET + Math.min(i, TXT_CAP) * TXT_STEP;
+        nodes[i].style.animationDelay = d + 'ms';
+        nodes[i].classList.add('txt-build');
+        if (d + TXT_DUR > maxEnd) maxEnd = d + TXT_DUR;
+      }
     });
+    return maxEnd;
   }
   function clearEntrance(els) {
     els.forEach(function (el) {
       el.classList.remove('set-in');
       el.style.removeProperty('--set-delay');
+      var nodes = el.querySelectorAll('.txt-build');
+      for (var i = 0; i < nodes.length; i++) {
+        nodes[i].classList.remove('txt-build');
+        nodes[i].style.animationDelay = '';
+      }
     });
-  }
-  function entranceMs(count) {
-    return ENTER_MS + Math.max(0, count - 1) * STAGGER;
   }
 
   function elementsFor(i) {
@@ -103,7 +126,6 @@
     var outEls = elementsFor(current);
     var inEls = elementsFor(target);
 
-    main.classList.add('is-swapping');
     clearEntrance(outEls); // drop any lingering entrance delay before exit
     outEls.forEach(function (el) { el.classList.add('set-exit'); });
 
@@ -115,18 +137,17 @@
       current = target;
       applyColumnMode(current);
 
-      // every set animates in: staggered slide + flicker
+      // every set animates in: staggered slide + flicker + text build-up
       inEls.forEach(function (el) { el.classList.add('is-set-active'); });
-      playEntrance(inEls);
+      var total = playEntrance(inEls);
       revealInside(inEls);
       updatePager();
       updateNav();
 
       setTimeout(function () {
         clearEntrance(inEls);
-        main.classList.remove('is-swapping');
         setTimeout(function () { transitioning = false; }, COOLDOWN);
-      }, entranceMs(inEls.length));
+      }, total);
     }, EXIT_MS);
   }
 

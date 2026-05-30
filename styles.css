@@ -3534,27 +3534,38 @@ html.setmode .layout__side > section.set-in{
              chromaShift .5s ease-out both;
   animation-delay: var(--set-delay, 0ms);
 }
-/* the small green chroma shift seen on set 1 -> 2, applied to every card */
+/* subtle RGB shift (chromatic aberration) — red/blue channel split, no hue tint */
 @keyframes chromaShift{
-  0%  { filter: hue-rotate(-58deg) saturate(1.6) drop-shadow(0 0 7px rgba(61,255,165,.55)); }
-  35% { filter: hue-rotate(-26deg) saturate(1.3) drop-shadow(0 0 3px rgba(61,255,165,.30)); }
+  0%  { filter: drop-shadow(-2.5px 0 0 rgba(255,42,82,.55)) drop-shadow(2.5px 0 0 rgba(58,150,255,.55)); }
+  55% { filter: drop-shadow(-1px 0 0 rgba(255,42,82,.30))   drop-shadow(1px 0 0 rgba(58,150,255,.30)); }
   100%{ filter: none; }
+}
+
+/* text builds up: text lines/blocks rise + de-blur, staggered after the card.
+   setnav.js adds .txt-build with a per-line animation-delay. */
+html.setmode .txt-build{ animation: textBuild .38s ease-out both; }
+@keyframes textBuild{
+  0%  { opacity:0; transform:translateY(7px); filter:blur(2px); }
+  60% { opacity:1; }
+  100%{ opacity:1; transform:none; filter:blur(0); }
 }
 /* The sections themselves are .reveal-block; their base reveal animation must
    not fire in set-mode (the .set-in entrance owns it). The :not(.set-in) guard
    lets .set-in animate, and prevents any re-fire once it's cleared. */
-html.setmode .layout__main > section.reveal-block.is-visible:not(.set-in),
-html.setmode .layout__side > section.reveal-block.is-visible:not(.set-in){
+html.setmode .layout__main > section.reveal-block.is-visible:not(.set-in):not(.set-exit),
+html.setmode .layout__side > section.reveal-block.is-visible:not(.set-in):not(.set-exit){
   animation:none;
   opacity:1;
 }
 
 @keyframes setOut{
-  0%  { opacity:1; transform:translate(0,0);            filter:none;                          clip-path:inset(0 0 0 0); }
-  18% { opacity:1; transform:translate(-7px,0) skewX(2deg); filter:hue-rotate(45deg) saturate(1.6); clip-path:inset(0 0 62% 0); }
-  38% { opacity:.9; transform:translate(9px,0);          filter:hue-rotate(-55deg);            clip-path:inset(56% 0 0 0); }
-  60% { opacity:.7; transform:translate(-4px,0) skewX(-1deg); clip-path:inset(22% 0 34% 0); }
-  100%{ opacity:0; transform:translate(0,14px) scale(.985); filter:saturate(.5) brightness(1.25); clip-path:inset(0 0 0 0); }
+  0%  { opacity:1; transform:translate(0,0);                 clip-path:inset(0 0 0 0);   filter:none; }
+  18% { opacity:1; transform:translate(-7px,0) skewX(2deg);  clip-path:inset(0 0 62% 0);
+        filter: drop-shadow(-3px 0 0 rgba(255,42,82,.6))  drop-shadow(3px 0 0 rgba(58,150,255,.6)); }
+  38% { opacity:.9; transform:translate(9px,0);              clip-path:inset(56% 0 0 0);
+        filter: drop-shadow(3px 0 0 rgba(255,42,82,.5))   drop-shadow(-3px 0 0 rgba(58,150,255,.5)); }
+  60% { opacity:.7; transform:translate(-4px,0) skewX(-1deg); clip-path:inset(22% 0 34% 0); filter:none; }
+  100%{ opacity:0; transform:translate(0,14px) scale(.985);  clip-path:inset(0 0 0 0);   filter:brightness(1.12); }
 }
 @keyframes setIn{
   0%  { opacity:0; transform:translate(0,-16px) scale(1.012); filter:saturate(1.7) brightness(1.35); clip-path:inset(0 0 72% 0); }
@@ -3562,21 +3573,6 @@ html.setmode .layout__side > section.reveal-block.is-visible:not(.set-in){
   34% { opacity:1; transform:translate(-7px,0) skewX(1deg);   filter:hue-rotate(40deg);              clip-path:inset(12% 0 42% 0); }
   58% { opacity:1; transform:translate(3px,0);                filter:none;                           clip-path:inset(0 0 0 0); }
   100%{ opacity:1; transform:translate(0,0);                  filter:none;                           clip-path:inset(0 0 0 0); }
-}
-
-/* a thin scan-flash sweep across the stage during a swap */
-html.setmode #top.is-swapping::after{
-  content:"";
-  position:absolute; inset:0; z-index:50;
-  pointer-events:none;
-  background:linear-gradient(180deg, transparent, rgba(91,138,255,.10) 48%, rgba(165,148,255,.10) 52%, transparent);
-  mix-blend-mode:screen;
-  animation: setScan .42s linear both;
-}
-@keyframes setScan{
-  0%  { transform:translateY(-100%); opacity:0; }
-  20% { opacity:1; }
-  100%{ transform:translateY(100%); opacity:0; }
 }
 
 /* ----- pager dots ----- */
