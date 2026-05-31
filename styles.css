@@ -44,6 +44,106 @@
   --page-max: 2000px;
 }
 
+/* ================================================================
+   PRIDE MONTH — pastel rainbow theme (June only · temporary skin)
+   ----------------------------------------------------------------
+   Self-contained override block. Nothing above this block was
+   changed — these rules only override variables/elements.
+
+   HOW TO REVERT (after June):
+     1. Delete this entire block (down to the matching end marker
+        "PRIDE MONTH — end of block" below).
+     2. In index.html, remove:
+          - the <div class="pride-bar"> right after <body>
+          - the <span class="pride-tag">PRIDE.MONTH <b>2026</b></span>
+            inside the .docstrip
+          - the ticker <span class="ticker__item"><b>PRIDE</b>…</span>
+            (+ its following <span class="ticker__sep">◇</span>)
+     That's it — the original theme below is untouched.
+
+   ORIGINAL VALUES (already live in :root above + their rules — listed
+   here only as reference in case anything gets edited by accident):
+     --acc-cy:  #5b8aff;
+     --acc-mag: #a594ff;
+     --grad-accent:      linear-gradient(90deg, var(--acc-cy), var(--acc-mag));
+     --grad-accent-fade: linear-gradient(90deg, var(--acc-cy), var(--acc-mag) 60%, transparent);
+     --grad-accent-vert: linear-gradient(180deg, var(--acc-cy), var(--acc-mag) 55%, transparent);
+
+     .hero__wordmark-layer--main (original):
+       background: linear-gradient(90deg,
+         #5b8aff 0%, #7ab8ff 30%, #eef5ff 50%, #7ab8ff 70%, #5b8aff 100%);
+       background-size: 300% 100%;
+       animation: heroGradient 8s linear infinite,
+                  heroGlitchMain 7s steps(1,end) infinite;
+   ================================================================ */
+:root{
+  /* pride spectrum — pastel, but with enough colour to read clearly */
+  --pride-1: #ff8fa8;  /* pink   */
+  --pride-2: #ffb377;  /* orange */
+  --pride-3: #ffdd87;  /* yellow */
+  --pride-4: #82d6a3;  /* green  */
+  --pride-5: #79b8ec;  /* blue   */
+  --pride-6: #b894ee;  /* purple */
+
+  --grad-pride: linear-gradient(90deg,
+    var(--pride-1), var(--pride-2), var(--pride-3),
+    var(--pride-4), var(--pride-5), var(--pride-6));
+
+  /* retint the site-wide accent gradients used by all the thin
+     divider bars, rules, KPI fills, stat bars, dividers, etc. */
+  --grad-accent: linear-gradient(90deg,
+    var(--pride-1), var(--pride-2), var(--pride-3),
+    var(--pride-4), var(--pride-5), var(--pride-6));
+  --grad-accent-fade: linear-gradient(90deg,
+    var(--pride-1), var(--pride-3) 35%, var(--pride-5) 70%, transparent);
+  --grad-accent-vert: linear-gradient(180deg,
+    var(--pride-1), var(--pride-2), var(--pride-3),
+    var(--pride-4), var(--pride-5), var(--pride-6));
+}
+
+/* thin pastel rainbow line pinned to the very top edge */
+.pride-bar{
+  position:fixed;
+  top:0; left:0; right:0;
+  height:3px;
+  z-index:250;            /* above nav (200), below splash (9999) */
+  background:var(--grad-pride);
+  opacity:.9;
+  pointer-events:none;
+}
+
+/* small on-brand dossier tag */
+.pride-tag{
+  display:inline-flex; align-items:center; gap:6px;
+}
+.pride-tag::before{
+  content:"";
+  width:22px; height:9px; flex:none;
+  border-radius:1px;
+  background:var(--grad-pride);
+}
+.pride-tag b{ color:var(--text) !important; }
+
+/* hero wordmark: full rainbow across the letters at once.
+   background-size 100% so all 6 colours fit; no horizontal pan
+   (the default 300% size + heroGradient pan only showed ~2 colours). */
+.hero__wordmark-layer--main,
+.hero__wordmark:hover .hero__wordmark-layer--main{
+  background:linear-gradient(95deg,
+    var(--pride-1) 2%,
+    var(--pride-2) 22%,
+    var(--pride-3) 40%,
+    var(--pride-4) 58%,
+    var(--pride-5) 76%,
+    var(--pride-6) 98%) !important;
+  background-size:100% 100% !important;
+  background-position:0 0 !important;
+  animation:heroGlitchMain 7s steps(1,end) infinite !important;
+}
+/* ================================================================
+   PRIDE MONTH — end of block (delete from the start marker to here)
+   ================================================================ */
+
 @font-face {
   font-family: 'Space Grotesk';
   src: local('Space Grotesk'),
