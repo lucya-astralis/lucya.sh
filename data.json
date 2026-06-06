@@ -22,7 +22,7 @@
     },
     {
       "key":      "services",
-      "label":    "SERVICES",
+      "label":    "WEBSERVICES",
       "value":    "15 / 15",
       "sub":      "SELF-HOSTED · BEST EFFORT",
       "subClass": "ok"
