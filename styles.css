@@ -87,30 +87,10 @@
 
   --grad-pride: linear-gradient(90deg,
     var(--pride-1), var(--pride-2), var(--pride-3),
-    var(--pride-4), var(--pride-5), var(--pride-6));
-
-  /* retint the site-wide accent gradients used by all the thin
-     divider bars, rules, KPI fills, stat bars, dividers, etc. */
-  --grad-accent: linear-gradient(90deg,
-    var(--pride-1), var(--pride-2), var(--pride-3),
-    var(--pride-4), var(--pride-5), var(--pride-6));
-  --grad-accent-fade: linear-gradient(90deg,
-    var(--pride-1), var(--pride-3) 35%, var(--pride-5) 70%, transparent);
-  --grad-accent-vert: linear-gradient(180deg,
-    var(--pride-1), var(--pride-2), var(--pride-3),
-    var(--pride-4), var(--pride-5), var(--pride-6));
+    var(--pride-4), var(--pride-5), var(--pride-6))
 }
 
 /* thin pastel rainbow line pinned to the very top edge */
-.pride-bar{
-  position:fixed;
-  top:0; left:0; right:0;
-  height:3px;
-  z-index:250;            /* above nav (200), below splash (9999) */
-  background:var(--grad-pride);
-  opacity:.9;
-  pointer-events:none;
-}
 
 /* small on-brand dossier tag */
 .pride-tag{
@@ -124,22 +104,7 @@
 }
 .pride-tag b{ color:var(--text) !important; }
 
-/* hero wordmark: full rainbow across the letters at once.
-   background-size 100% so all 6 colours fit; no horizontal pan
-   (the default 300% size + heroGradient pan only showed ~2 colours). */
-.hero__wordmark-layer--main,
-.hero__wordmark:hover .hero__wordmark-layer--main{
-  background:linear-gradient(95deg,
-    var(--pride-1) 2%,
-    var(--pride-2) 22%,
-    var(--pride-3) 40%,
-    var(--pride-4) 58%,
-    var(--pride-5) 76%,
-    var(--pride-6) 98%) !important;
-  background-size:100% 100% !important;
-  background-position:0 0 !important;
-  animation:heroGlitchMain 7s steps(1,end) infinite !important;
-}
+
 /* ================================================================
    PRIDE MONTH — end of block (delete from the start marker to here)
    ================================================================ */
@@ -1085,7 +1050,7 @@ section{
   position:relative;
   background:
     linear-gradient(180deg, rgba(7, 7, 11, 0.747) 0%, rgba(7, 7, 11, 0.829) 60%, rgba(7, 7, 11, 0.877) 100%),
-    url(images/profile/astralia3.png) center/cover no-repeat;
+    url(images/wallpaper/jp1.jpg) center/cover no-repeat;
   border:1px solid var(--line-strong);
   border-radius:10px;
   overflow:hidden;
