@@ -53,14 +53,14 @@
     const hex = () => Math.random().toString(16).slice(2, 8).toUpperCase();
     const lines = [
       ['OK',   'LUCYA-CORE // COLD BOOT'],
-      ['OK',   'MOUNTING /dev/sigil'],
+      ['OK',   'MOUNTING /dev/coffee'],
       ['OK',   'LOAD KERNEL 7.0.1'],
       ['WAIT', 'HANDSHAKE · ATLAS'],
       ['OK',   'AUTH KEYRING · LUCYA@CORE'],
       ['OK',   'NET · SECURE CHANNEL UP'],
-      ['OK',   'LOADING RITUAL ASSETS'],
-      ['WAIT', 'DECRYPT /var/soul'],
-      ['OK',   'GEOFENCE · DE-BY LOCKED'],
+      ['OK',   'LOADING FONTS · ICONS'],
+      ['WAIT', 'WARMING UP CRT TUBES'],
+      ['OK',   'LOCALE · DE-BY'],
       ['OK',   'CALIBRATING HUE BUFFER'],
       ['OK',   'SPAWN COMPOSITOR'],
       ['OK',   'READY · HANDOFF TO UI'],
@@ -77,7 +77,7 @@
   const logItems = logEl ? Array.from(logEl.children) : [];
 
   // ---------- REVEAL : mark below-fold blocks (observer starts post-splash) ----------
-  const revealSelectors = ['.about', '.interests', '.buttons', '.neofetch', '.services', '.spotify', '.photos', '.games', '.foot'];
+  const revealSelectors = ['.about', '.interests', '.skills', '.ops', '.buttons', '.neofetch', '.services', '.spotify', '.photos', '.games', '.foot'];
   const revealTargets = revealSelectors.flatMap(sel => Array.from(document.querySelectorAll(sel)));
   revealTargets.forEach(el => el.classList.add('reveal-block'));
 
@@ -1144,87 +1144,121 @@
     uptime.textContent = `${years}y ${String(months).padStart(2, '0')}m`;
   }
 
-  // ---------- THERMAL TELEMETRY ----------------------------------
-  // Polls /temps.json (written by scripts/temps.sh on the Pi 4B webserver
-  // every minute). Fails silently — widget shows a dim "down" state if the
-  // file is missing or stale.
+  // ---------- CHECKMK STATUS : fleet overview + selected hosts ---
+  // One poll of /status.json drives the header overview (aggregate counts)
+  // and the SKILLS sidebar (selected hosts). A server-side puller writes it.
+  // Counts/metrics only — no host/IP details leak. Shows a clearly-labelled
+  // "sample" until live data arrives; never fakes "live".
   (() => {
-    const root = document.getElementById('thermal');
-    if (!root) return;
-    const cpu      = document.getElementById('thermCpu');
-    const cpuBar   = document.getElementById('thermCpuBar');
-    const cpuBarEl = cpuBar ? cpuBar.parentElement : null;
-    const load     = document.getElementById('thermLoad');
-    const loadSub  = document.getElementById('thermLoadSub');
-    const uptime   = document.getElementById('thermUptime');
-    const ram      = document.getElementById('thermRam');
-    const ramBar   = document.getElementById('thermRamBar');
-    const host     = document.getElementById('thermHost');
-    const ageEl    = document.getElementById('thermAge');
+    const ov = document.getElementById('thermal');   // header fleet overview (therm shell)
+    const hp = document.getElementById('opsBoard');   // sidebar host panel (opsbrd shell)
+    if (!ov && !hp) return;
+    const $ = (id) => document.getElementById(id);
+
+    const ovTag=$('ovTag'), ovHosts=$('ovHosts'), ovHostsBar=$('ovHostsBar'),
+          ovWarn=$('ovWarn'), ovCrit=$('ovCrit'), ovSvc=$('ovSvc'),
+          ovSvcBar=$('ovSvcBar'), ovSrc=$('ovSrc'), ovAge=$('ovAge');
+    const opsTag=$('opsTag'), opsSrc=$('opsSrc'), opsAge=$('opsAge'),
+          opsHostList=$('opsHostList');
 
     let last = null;
-
-    const fmtUptime = (s) => {
-      if (!isFinite(s) || s < 0) return '—';
-      const d = Math.floor(s / 86400);
-      const h = Math.floor((s % 86400) / 3600);
-      const m = Math.floor((s % 3600) / 60);
-      if (d >= 1) return `${d}d ${h}h`;
-      if (h >= 1) return `${h}h ${m}m`;
-      return `${m}m`;
+    const pct = (n, d) => d > 0 ? Math.min(100, Math.max(0, n / d * 100)) : 0;
+    const esc = (s) => String(s).replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
+    const fmtAge = () => {
+      if (!last) return 'awaiting probe';
+      const a = Math.max(0, Math.floor(Date.now()/1000) - Number(last.ts || 0));
+      return a < 60 ? `${a}s ago` : a < 3600 ? `${Math.floor(a/60)}m ago`
+           : a < 86400 ? `${Math.floor(a/3600)}h ago` : `${Math.floor(a/86400)}d ago`;
     };
-    const tempBand = (c) => {
-      if (c >= 80) return 'crit';
-      if (c >= 70) return 'hot';
-      if (c >= 55) return 'warm';
-      return 'ok';
+    const fmtUp = (s) => {
+      s = Number(s) || 0;
+      const d = Math.floor(s/86400), h = Math.floor(s%86400/3600), m = Math.floor(s%3600/60);
+      return d >= 1 ? `${d}d` : h >= 1 ? `${h}h` : `${m}m`;
+    };
+    const band = (v, w, c) => v >= c ? 'crit' : v >= w ? 'warn' : 'ok';
+
+    const renderHeader = () => {
+      if (!ov || !last) return;
+      const s = last.summary || last;
+      const hu = +s.hosts_up||0, ht = +s.hosts_total||0;
+      const ok = +s.services_ok||0, warn = +s.services_warn||0, crit = +s.services_crit||0;
+      const st = +s.services_total || (ok + warn + crit);
+      if (ovHosts) ovHosts.textContent = `${hu} / ${ht}`;
+      if (ovSvc)   ovSvc.textContent   = `${ok} / ${st}`;
+      if (ovWarn){ ovWarn.textContent = warn; ovWarn.style.color = warn>0 ? 'var(--acc-amb)' : ''; }
+      if (ovCrit){ ovCrit.textContent = crit; ovCrit.style.color = crit>0 ? 'var(--acc-red)' : ''; }
+      if (ovHostsBar){ ovHostsBar.style.width = pct(hu,ht).toFixed(1)+'%';
+        ovHostsBar.parentElement.dataset.band = hu<ht ? (hu===0?'crit':'warm') : 'ok'; }
+      if (ovSvcBar){ ovSvcBar.style.width = pct(ok,st).toFixed(1)+'%';
+        ovSvcBar.parentElement.dataset.band = crit>0?'crit':warn>0?'warm':'ok'; }
+      ov.dataset.state = crit>0 ? 'dead' : warn>0 ? 'stale' : 'ok';
+      if (ovTag) ovTag.textContent = 'CHECKMK · LIVE';
+      if (ovSrc) ovSrc.textContent = String(last.source || 'checkmk');
+      if (ovAge) ovAge.textContent = fmtAge();
     };
 
-    const render = () => {
-      if (!last) return;
-      const t = Number(last.cpu_temp_c) || 0;
-      if (cpu) cpu.textContent = t.toFixed(1);
-      if (cpuBar) cpuBar.style.width = Math.min(100, Math.max(0, t / 90 * 100)).toFixed(1) + '%';
-      if (cpuBarEl) cpuBarEl.dataset.band = tempBand(t);
-      const l1  = Number(last.load_1m)  || 0;
-      const l5  = Number(last.load_5m)  || 0;
-      const l15 = Number(last.load_15m) || 0;
-      if (load)    load.textContent    = l1.toFixed(2);
-      if (loadSub) loadSub.textContent = `${l5.toFixed(2)} · ${l15.toFixed(2)}`;
-      if (uptime)  uptime.textContent  = fmtUptime(Number(last.uptime_s));
-      const m = Number(last.mem_used_pct) || 0;
-      if (ram)    ram.textContent    = m.toFixed(1);
-      if (ramBar) ramBar.style.width = Math.min(100, Math.max(0, m)).toFixed(1) + '%';
-      if (host)   host.textContent   = String(last.host || 'unknown').toLowerCase();
+    const cell = (val, label, b) =>
+      `<div class="hostcard__m"${b ? ` data-band="${b}"` : ''}>` +
+      `<span class="hostcard__mv">${val}</span>` +
+      `<span class="hostcard__ml mono">${label}</span></div>`;
+
+    const hostCard = (h) => {
+      const cpu  = h.cpu_pct  != null ? `${Math.round(h.cpu_pct)}%` : '—';
+      const mem  = h.mem_pct  != null ? `${Math.round(h.mem_pct)}%` : '—';
+      const temp = h.temp_c   != null ? `${Math.round(h.temp_c)}°`  : '—';
+      const up   = h.uptime_s != null ? fmtUp(h.uptime_s)           : '—';
+      const cpuB = h.cpu_pct  != null ? band(h.cpu_pct, 75, 90) : '';
+      const memB = h.mem_pct  != null ? band(h.mem_pct, 75, 90) : '';
+      const tmpB = h.temp_c   != null ? band(h.temp_c, 70, 82)  : '';
+      return `<article class="hostcard" data-state="${esc(h.state || 'up')}">` +
+        `<div class="hostcard__top mono">` +
+          `<span class="hostcard__name"><span class="hostcard__dot"></span>${esc(h.name || '—')}</span>` +
+          (h.role ? `<span class="hostcard__role">${esc(h.role)}</span>` : '') +
+        `</div>` +
+        `<div class="hostcard__metrics">` +
+          cell(cpu, 'CPU', cpuB) + cell(mem, 'MEM', memB) + cell(temp, 'TEMP', tmpB) + cell(up, 'UP', '') +
+        `</div></article>`;
     };
 
-    const tickAge = () => {
-      if (!last){ if (ageEl) ageEl.textContent = '—'; return; }
-      const now = Math.floor(Date.now() / 1000);
-      const age = Math.max(0, now - Number(last.ts || now));
-      if (ageEl){
-        ageEl.textContent = age < 60 ? `${age}s ago`
-                          : age < 3600 ? `${Math.floor(age/60)}m ago`
-                          : `${Math.floor(age/3600)}h ago`;
-      }
-      root.dataset.state = age < 120 ? 'ok' : age < 900 ? 'stale' : 'dead';
+    const renderHosts = () => {
+      if (!hp) return;
+      const hosts = last && Array.isArray(last.hosts) ? last.hosts : null;
+      if (hosts && hosts.length && opsHostList) opsHostList.innerHTML = hosts.map(hostCard).join('');
+      hp.dataset.state = 'ok';
+      if (opsTag) opsTag.textContent = 'CMK · LIVE';
+      if (opsSrc) opsSrc.textContent = String(last.source || 'checkmk');
+      if (opsAge) opsAge.textContent = fmtAge();
+    };
+
+    const sample = () => {
+      if (ov){ ov.dataset.state='down'; if(ovTag)ovTag.textContent='CHECKMK · SAMPLE';
+        if(ovSrc)ovSrc.textContent='sample data'; if(ovAge)ovAge.textContent='awaiting probe'; }
+      if (hp){ hp.dataset.state='sample'; if(opsTag)opsTag.textContent='CMK · SAMPLE';
+        if(opsSrc)opsSrc.textContent='sample data'; if(opsAge)opsAge.textContent='awaiting probe'; }
     };
 
     const refresh = async () => {
       try {
-        const r = await fetch('/temps.json?t=' + Date.now(), { cache: 'no-store' });
+        const r = await fetch('/status.json?t=' + Date.now(), { cache: 'no-store' });
         if (!r.ok) throw new Error('http ' + r.status);
         last = await r.json();
-        render();
-        tickAge();
+        renderHeader();
+        renderHosts();
       } catch (e) {
-        root.dataset.state = 'down';
-        if (host) host.textContent = 'probe offline';
+        last = null;
+        sample();
       }
     };
 
+    const tickAge = () => {
+      if (!last) return;
+      if (ovAge)  ovAge.textContent  = fmtAge();
+      if (opsAge) opsAge.textContent = fmtAge();
+    };
+
+    sample();          // honest neutral state until the first response
     refresh();
-    setInterval(refresh, 20000);
+    setInterval(refresh, 30000);
     setInterval(tickAge, 1000);
   })();
 

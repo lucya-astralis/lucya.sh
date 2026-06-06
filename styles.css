@@ -87,30 +87,10 @@
 
   --grad-pride: linear-gradient(90deg,
     var(--pride-1), var(--pride-2), var(--pride-3),
-    var(--pride-4), var(--pride-5), var(--pride-6));
-
-  /* retint the site-wide accent gradients used by all the thin
-     divider bars, rules, KPI fills, stat bars, dividers, etc. */
-  --grad-accent: linear-gradient(90deg,
-    var(--pride-1), var(--pride-2), var(--pride-3),
-    var(--pride-4), var(--pride-5), var(--pride-6));
-  --grad-accent-fade: linear-gradient(90deg,
-    var(--pride-1), var(--pride-3) 35%, var(--pride-5) 70%, transparent);
-  --grad-accent-vert: linear-gradient(180deg,
-    var(--pride-1), var(--pride-2), var(--pride-3),
-    var(--pride-4), var(--pride-5), var(--pride-6));
+    var(--pride-4), var(--pride-5), var(--pride-6))
 }
 
 /* thin pastel rainbow line pinned to the very top edge */
-.pride-bar{
-  position:fixed;
-  top:0; left:0; right:0;
-  height:3px;
-  z-index:250;            /* above nav (200), below splash (9999) */
-  background:var(--grad-pride);
-  opacity:.9;
-  pointer-events:none;
-}
 
 /* small on-brand dossier tag */
 .pride-tag{
@@ -124,22 +104,7 @@
 }
 .pride-tag b{ color:var(--text) !important; }
 
-/* hero wordmark: full rainbow across the letters at once.
-   background-size 100% so all 6 colours fit; no horizontal pan
-   (the default 300% size + heroGradient pan only showed ~2 colours). */
-.hero__wordmark-layer--main,
-.hero__wordmark:hover .hero__wordmark-layer--main{
-  background:linear-gradient(95deg,
-    var(--pride-1) 2%,
-    var(--pride-2) 22%,
-    var(--pride-3) 40%,
-    var(--pride-4) 58%,
-    var(--pride-5) 76%,
-    var(--pride-6) 98%) !important;
-  background-size:100% 100% !important;
-  background-position:0 0 !important;
-  animation:heroGlitchMain 7s steps(1,end) infinite !important;
-}
+
 /* ================================================================
    PRIDE MONTH — end of block (delete from the start marker to here)
    ================================================================ */
@@ -866,11 +831,13 @@ section{
   .about     { order:2; }
   .interests { order:3; }
   .buttons   { order:4; }
-  .neofetch  { order:5; }
-  .services  { order:6; }
-  .spotify   { order:7; }
-  .photos    { order:8; }
-  .games     { order:9; }
+  .skills    { order:5; }
+  .ops  { order:6; }
+  .neofetch  { order:7; }
+  .services  { order:8; }
+  .spotify   { order:9; }
+  .photos    { order:10; }
+  .games     { order:11; }
 }
 
 @media (min-width: 1100px){
@@ -1083,7 +1050,7 @@ section{
   position:relative;
   background:
     linear-gradient(180deg, rgba(7, 7, 11, 0.747) 0%, rgba(7, 7, 11, 0.829) 60%, rgba(7, 7, 11, 0.877) 100%),
-    url(images/profile/astralia3.png) center/cover no-repeat;
+    url(images/wallpaper/jp1.jpg) center/cover no-repeat;
   border:1px solid var(--line-strong);
   border-radius:10px;
   overflow:hidden;
@@ -1794,6 +1761,177 @@ section{
   letter-spacing:.15em;
   margin-right:10px;
 }
+
+/* ================================================================
+   SKILLS / CAPABILITIES
+   ================================================================ */
+.skills__grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+}
+.skillgroup{
+  background:var(--surface);
+  padding:20px 20px 22px;
+  position:relative;
+  transition: background .25s;
+}
+.skillgroup:hover{ background:var(--surface-2); }
+.skillgroup__tag{
+  display:inline-block;
+  font-size:10px; letter-spacing:.22em;
+  color:var(--acc-cy);
+  margin-bottom:12px;
+}
+.skillgroup__jp{
+  position:absolute;
+  top:18px; right:20px;
+  font-family:"Noto Sans JP", sans-serif;
+  font-size:11px;
+  color:var(--text-ghost);
+  letter-spacing:.16em;
+}
+.skillgroup h4{
+  margin:0 0 14px;
+  font-size:17px;
+  font-weight:600;
+  color:var(--text);
+  letter-spacing:.01em;
+}
+.skillgroup__list{
+  list-style:none; padding:0; margin:0;
+  display:flex; flex-direction:column; gap:8px;
+}
+.skillgroup__list li{
+  position:relative;
+  padding-left:15px;
+  font-size:14px; line-height:1.45; color:#d2d4f0;
+}
+.skillgroup__list li::before{
+  content:"▸";
+  position:absolute; left:0; top:1px;
+  color:var(--acc-cy); font-size:10px;
+}
+.skillgroup__k{ font-weight:500; color:var(--text); }
+.skillgroup__d{
+  display:block;
+  font-family:"Proto Nerd Font Regular", monospace;
+  font-size:11px; letter-spacing:.03em;
+  color:var(--text-dim);
+  margin-top:2px;
+}
+
+.skills__foot{
+  display:grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+  border-top:none;
+}
+.skillgroup--lang .langs{
+  list-style:none; padding:0; margin:0;
+}
+.skillgroup--lang .langs li{
+  display:flex; align-items:baseline; justify-content:space-between;
+  gap:12px; padding:8px 0;
+  border-bottom:1px dashed var(--line);
+  font-size:14.5px; color:#d2d4f0;
+}
+.skillgroup--lang .langs li:last-child{ border-bottom:none; padding-bottom:0; }
+.lang__name{ color:var(--text); font-weight:500; }
+.lang__lvl{
+  font-family:"Proto Nerd Font Regular", monospace;
+  font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--acc-cy); white-space:nowrap;
+}
+.lang__lvl--native{ color:var(--acc-amb); }
+.lang__lvl--dim{ color:var(--text-ghost); }
+.skillgroup__note{
+  margin:0; font-size:14px; line-height:1.65; color:#d2d4f0;
+}
+
+/* ================================================================
+   OPS BOARD (CheckMK aggregate widget) — mirrors the thermal widget
+   ================================================================ */
+.opsbrd{
+  position:relative;
+  display:flex; flex-direction:column;
+  border:1px solid var(--line);
+  background:
+    linear-gradient(180deg, rgba(91,138,255,.04), transparent 30%),
+    radial-gradient(ellipse at 50% 0%, rgba(91,138,255,.06), transparent 60%),
+    rgba(5,5,10,0.78);
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.55), inset 0 0 1px rgba(91,138,255,0.18);
+  overflow:hidden;
+}
+.opsbrd::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.025) 0 1px, transparent 1px 3px);
+  mix-blend-mode: overlay;
+}
+.opsbrd__head{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:6px 10px; font-size:9px; letter-spacing:.2em; text-transform:uppercase;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(91,138,255,.08), transparent);
+}
+.opsbrd__title{ display:inline-flex; align-items:center; gap:8px; color:var(--text); }
+.opsbrd__tag{ color:var(--text-ghost); }
+/* per-host cards (selected hosts from status.json → hosts[]) */
+.opsbrd__hosts{
+  display:flex; flex-direction:column; gap:1px;
+  background:var(--line);
+}
+.hostcard{
+  background:rgba(7,7,11,.6);
+  padding:9px 11px 10px;
+  display:flex; flex-direction:column; gap:8px;
+}
+.hostcard__top{
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+}
+.hostcard__name{ display:inline-flex; align-items:center; gap:7px; color:var(--text); font-weight:600; }
+.hostcard__dot{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--acc-ok); box-shadow:0 0 6px var(--acc-ok); flex:0 0 auto;
+}
+.hostcard[data-state="down"]    .hostcard__dot{ background:var(--acc-red); box-shadow:0 0 6px var(--acc-red); }
+.hostcard[data-state="unreach"] .hostcard__dot,
+.hostcard[data-state="unknown"] .hostcard__dot{ background:var(--text-ghost); box-shadow:none; }
+.hostcard__role{ color:var(--text-ghost); letter-spacing:.1em; font-size:9px; }
+.hostcard__metrics{
+  display:grid; grid-template-columns:repeat(4, 1fr); gap:1px;
+  background:var(--line); border:1px solid var(--line);
+}
+.hostcard__m{
+  background:rgba(0,0,0,.32);
+  padding:6px 4px 5px;
+  display:flex; flex-direction:column; align-items:center; gap:2px;
+}
+.hostcard__mv{
+  font-family:"Proto Nerd Font Regular", monospace;
+  font-size:14px; line-height:1; color:var(--text);
+  text-shadow:0 0 8px rgba(91,138,255,.3);
+}
+.hostcard__ml{ font-size:7.5px; letter-spacing:.18em; color:var(--text-dim); }
+.hostcard__m[data-band="warn"] .hostcard__mv{ color:var(--acc-amb); text-shadow:0 0 8px rgba(255,181,71,.4); }
+.hostcard__m[data-band="crit"] .hostcard__mv{ color:var(--acc-red); text-shadow:0 0 8px rgba(255,103,103,.45); }
+.opsbrd__foot{
+  display:flex; align-items:center; gap:8px; padding:6px 10px;
+  font-size:8.5px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--text-ghost); border-top:1px solid var(--line); background:rgba(0,0,0,0.25);
+}
+.opsbrd__sep{ color:var(--line-strong); }
+/* probe lifecycle → head dot color */
+.opsbrd[data-state="ok"]     #opsDot{ background:var(--acc-ok);  box-shadow:0 0 8px var(--acc-ok); }
+.opsbrd[data-state="warn"]   #opsDot{ background:var(--acc-amb); box-shadow:0 0 8px var(--acc-amb); }
+.opsbrd[data-state="crit"]   #opsDot{ background:var(--acc-red); box-shadow:0 0 8px var(--acc-red); animation: thermBlink .9s steps(2) infinite; }
+.opsbrd[data-state="sample"] #opsDot,
+.opsbrd[data-state="down"]   #opsDot{ background:var(--text-ghost); box-shadow:none; animation: thermBlink 1.4s steps(2) infinite; }
 
 /* ================================================================
    88x31 BUTTONS
@@ -3456,6 +3594,10 @@ section{
   .funfacts{ padding-top:6px; }
   .funfacts__list{ font-size:13.5px; }
 
+  .skills__grid{ grid-template-columns:repeat(2, 1fr); }
+  .skills__foot{ grid-template-columns:1fr; }
+  .skillgroup h4{ font-size:16px; }
+
   .buttons__wall{ padding:12px; gap:5px; }
 
   .neofetch__tabs{ overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:thin; }
@@ -3515,6 +3657,7 @@ section{
   .pcard__socials a{ width:44px; height:30px; }
 
   .interests__grid{ grid-template-columns:1fr; }
+  .skills__grid{ grid-template-columns:1fr; }
   .tile{ padding:16px 14px 20px; }
 
   .buttons__wall{ padding:10px; gap:4px; }

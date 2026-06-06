@@ -77,9 +77,6 @@
 </head>
 <body>
 
-<!-- Pride Month — pastel rainbow accent (see .pride-bar in styles.css) -->
-<div class="pride-bar" role="presentation" aria-hidden="true"></div>
-
 <video class="wallpaper-video" autoplay muted loop playsinline>
   <source src="images/wallpaper/f.mp4" type="video/mp4">
 </video>
@@ -106,11 +103,10 @@
       <span class="tag tag--dim">ルシア・システム</span>
     </div>
     <div class="splash__corner splash__corner--bl">
-      <span class="tag tag--dim">ATLAS · CET · GEOFENCE DE-BY</span>
+      <span class="tag tag--dim">BAVARIA · CET</span>
     </div>
     <div class="splash__corner splash__corner--br">
       <span class="tag tag--warn">起動中 / BOOTING</span>
-      <span class="tag tag--dim">PRESS ANY KEY TO ABORT</span>
     </div>
   </div>
 
@@ -200,8 +196,9 @@
       <a href="#profile">PROFILE <em>/ 01</em></a>
       <a href="#about">ABOUT <em>/ 02</em></a>
       <a href="#interests">INTERESTS <em>/ 03</em></a>
-      <a href="#systems">SYSTEMS <em>/ 04</em></a>
-      <a href="#services">SERVICES <em>/ 05</em></a>
+      <a href="#skills">SKILLS <em>/ 04</em></a>
+      <a href="#systems">SYSTEMS <em>/ 05</em></a>
+      <a href="#services">WEBSERVICES <em>/ 06</em></a>
     </nav>
 
     <div class="nav__status">
@@ -224,7 +221,7 @@
       <!-- duplicated by JS for seamless loop -->
       <span class="ticker__item"><b>SYS</b> aoi.inter-astra.local · uptime 03d 23h 33m</span>
       <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>OPS</b> 10/10 services nominal · last incident 47d ago</span>
+      <span class="ticker__item"><b>OPS</b> 15/15 services up · self-hosted</span>
       <span class="ticker__sep">◇</span>
       <span class="ticker__item"><b>NET</b> uplink ATLAS · 802.11ac · 98% signal</span>
       <span class="ticker__sep">◇</span>
@@ -238,7 +235,7 @@
       <span class="ticker__sep">◇</span>
       <span class="ticker__item"><b>PRIDE</b> pride month active · 🏳️‍🌈 love is love · all systems welcome</span>
       <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>JP</b> 通信中・全システム稼働中・異常なし</span>
+      <span class="ticker__item"><b>JP</b> オンライン</span>
       <span class="ticker__sep">◇</span>
       <span class="ticker__item"><b>NOTE</b> coffee.dispenser offline since 09:14 · low priority</span>
       <span class="ticker__sep">◇</span>
@@ -256,7 +253,7 @@
 <!-- ============================================================= -->
 <div class="docstrip" role="presentation">
   <div class="docstrip__inner">
-    <span class="docstrip__cls">CLASSIFIED // INTERNAL</span>
+    <span class="docstrip__cls">PUBLIC RECORD</span>
     <span>DOC <b>0451-LUC</b></span>
     <span>FILE <b>PERSONNEL.DOSSIER</b></span>
     <span class="docstrip__rev">REV <b>2026.Q2</b></span>
@@ -276,7 +273,7 @@
     <div class="kpibar__main">
       <div class="kpibar__head mono">
         <span>LUCYA SYSTEMS<span class="reg">®</span> · KEY METRICS</span>
-        <span class="dim">FY26 · UNAUDITED · REALTIME DATA</span>
+        <span class="dim">SNAPSHOT · UPDATED LIVE</span>
       </div>
       <div class="kpibar__grid" id="kpiGrid">
         <!-- populated from data.json — fallback values below render if fetch fails -->
@@ -286,9 +283,9 @@
           <span class="kpi__sub mono">SINCE 2007 · CONTINUOUS</span>
         </div>
         <div class="kpi" data-kpi="services">
-          <span class="kpi__label mono">SERVICES</span>
+          <span class="kpi__label mono">WEBSERVICES</span>
           <span class="kpi__value" data-kpi-value>15 / 15</span>
-          <span class="kpi__sub mono kpi__sub--ok">NOMINAL · SLA 99.97%</span>
+          <span class="kpi__sub mono kpi__sub--ok">SELF-HOSTED · BEST EFFORT</span>
         </div>
         <div class="kpi" data-kpi="japan">
           <span class="kpi__label mono">JAPAN</span>
@@ -308,57 +305,52 @@
       </div>
     </div>
 
-    <!-- live telemetry from the webserver (Pi 4B) — fed by scripts/temps.sh -->
-    <section class="therm" id="thermal" data-state="boot" aria-label="thermal telemetry">
+    <!-- fleet overview — aggregate from CheckMK via status.json (counts only).
+         Reuses the .therm widget shell. Sample-labelled until the probe is live. -->
+    <section class="therm" id="thermal" data-state="sample" aria-label="fleet overview">
       <div class="therm__head mono">
         <span class="therm__title">
           <span class="dot dot--ok" id="thermDot"></span>
           SYSTEM STATUS
         </span>
-        <span class="therm__tag">T-01 · LIVE</span>
+        <span class="therm__tag" id="ovTag">CHECKMK · SAMPLE</span>
       </div>
 
       <div class="therm__body">
         <div class="therm__primary">
-          <span class="therm__label mono">CPU CORE</span>
-          <span class="therm__value">
-            <b id="thermCpu">—.—</b><em>°C</em>
-          </span>
+          <span class="therm__label mono">HOSTS UP</span>
+          <span class="therm__value"><b id="ovHosts">12 / 12</b></span>
           <div class="therm__bar" data-band="ok">
-            <div class="therm__bar-fill" id="thermCpuBar"></div>
-            <span class="therm__bar-tick" style="left:55%"></span>
-            <span class="therm__bar-tick" style="left:78%"></span>
+            <div class="therm__bar-fill" id="ovHostsBar" style="width:100%"></div>
           </div>
         </div>
 
         <div class="therm__grid">
           <div class="therm__cell">
-            <span class="therm__label mono">LOAD 1m</span>
-            <span class="therm__cell-val mono"><b id="thermLoad">—.——</b></span>
-            <span class="therm__cell-sub mono dim" id="thermLoadSub">—— · ——</span>
+            <span class="therm__label mono">WARNING</span>
+            <span class="therm__cell-val mono"><b id="ovWarn">1</b></span>
+            <span class="therm__cell-sub mono dim">SERVICES</span>
           </div>
           <div class="therm__cell">
-            <span class="therm__label mono">UPTIME</span>
-            <span class="therm__cell-val mono"><b id="thermUptime">—d —h</b></span>
-            <span class="therm__cell-sub mono dim">SINCE BOOT</span>
+            <span class="therm__label mono">CRITICAL</span>
+            <span class="therm__cell-val mono"><b id="ovCrit">0</b></span>
+            <span class="therm__cell-sub mono dim">SERVICES</span>
           </div>
         </div>
 
         <div class="therm__primary">
-          <span class="therm__label mono">MEMORY</span>
-          <span class="therm__value therm__value--sm">
-            <b id="thermRam">—.—</b><em>%</em>
-          </span>
-          <div class="therm__bar therm__bar--mem">
-            <div class="therm__bar-fill therm__bar-fill--mem" id="thermRamBar"></div>
+          <span class="therm__label mono">SERVICES OK</span>
+          <span class="therm__value therm__value--sm"><b id="ovSvc">44 / 45</b></span>
+          <div class="therm__bar" data-band="ok">
+            <div class="therm__bar-fill" id="ovSvcBar" style="width:97%"></div>
           </div>
         </div>
       </div>
 
       <div class="therm__foot mono">
-        <span id="thermHost">awaiting probe…</span>
+        <span id="ovSrc">sample data</span>
         <span class="therm__sep">·</span>
-        <span id="thermAge">—</span>
+        <span id="ovAge">awaiting probe</span>
       </div>
     </section>
   </div>
@@ -391,7 +383,7 @@
       <span class="jp">本人確認</span>
     </div>
     <div class="section__meta">
-      <span class="mono">DIV. IDENTITY · CLEARANCE C-3</span>
+      <span class="mono">DIV. IDENTITY</span>
       <span class="mono">FILE / PROFILE.DAT</span>
     </div>
   </div>
@@ -490,8 +482,8 @@
       </h1>
 
       <p class="hero__tagline">
-        Low entropy, high complexity.<br />
-        <span class="jp-line">低エントロピー、高複雑性</span>
+        IT apprentice &amp; sysadmin from Bavaria — building homelabs,
+        reviving retro hardware, and running more servers than one bedroom should hold.
       </p>
 
       <div class="hero__lower">
@@ -593,9 +585,7 @@
   <div class="section__doc">
     <span>DOC <b>02.PERSONNEL</b></span>
     <span>REV <b>2026.05</b></span>
-    <span class="stamp">REDACTED · 2 LINES</span>
     <span>FORM <b>P-02B</b></span>
-    <span>EYES ONLY</span>
   </div>
 
   <div class="section__head">
@@ -618,7 +608,9 @@
         Obsessed with tech, space, and everything that hums, blinks, or boots.
         Runs on Monster, curiosity, and good music.
       </p>
+    </div>
 
+    <div class="about__col">
       <h3 class="h-sub">WHAT I DO <em>仕事</em></h3>
       <p>
         Mostly building, breaking, and fixing systems, sometimes all at once.
@@ -628,30 +620,11 @@
       </p>
     </div>
 
-    <div class="about__col about__col--jp">
-      <h3 class="h-sub">プロフィール <em>PROFILE</em></h3>
-      <p class="jp-body">
-        バイエルン州在住、18歳のIT見習い兼システムいじり屋。
-        テクノロジーと宇宙、そして光って・鳴って・起動するもの全般に夢中。
-        モンスターエナジーと好奇心と良い音楽で稼働中。
-      </p>
-
-      <h3 class="h-sub">仕事 <em>WHAT I DO</em></h3>
-      <p class="jp-body">
-        基本的にはシステムを作り、壊し、直す——ときには全部同時に。
-        ホームラボやサーバーから創造的なウェブプロジェクトまで、
-        動かしてカッコよく見せるのが大好き。:3
-      </p>
-    </div>
-
     <div class="about__marginal">
       <div class="mono small dim">// NOTE 00A</div>
       <div class="mono small">
         Specimen is harmless unless<br />
         separated from caffeine source.
-      </div>
-      <div class="mono small jp dim" style="margin-top:8px">
-        被験体はカフェインを絶つと不安定になる。
       </div>
     </div>
   </div>
@@ -733,11 +706,123 @@
 
 
 <!-- ============================================================= -->
+<!-- SKILLS / CAPABILITIES                                          -->
+<!-- ============================================================= -->
+<section class="skills" id="skills">
+  <div class="section__doc">
+    <span>DOC <b>04.CAPABILITIES</b></span>
+    <span>REV <b>2026.05</b></span>
+    <span class="stamp stamp--ok">HANDS-ON</span>
+    <span>FORM <b>SKL-04</b></span>
+  </div>
+
+  <div class="section__head">
+    <div class="section__slug">
+      <span class="ix">// 04</span>
+      <span class="name">SKILLS</span>
+      <span class="jp">技術スタック</span>
+    </div>
+    <div class="section__meta">
+      <span class="mono">DIV. ENGINEERING · COMPETENCY INDEX</span>
+    </div>
+  </div>
+
+  <div class="skills__grid">
+
+    <article class="skillgroup">
+      <span class="skillgroup__tag mono">SKL · 01</span>
+      <span class="skillgroup__jp">仮想化・ストレージ</span>
+      <h4>Virtualization &amp; Storage</h4>
+      <ul class="skillgroup__list">
+        <li><span class="skillgroup__k">Proxmox VE</span><span class="skillgroup__d">VMs · LXC · Clusters</span></li>
+        <li><span class="skillgroup__k">ZFS</span><span class="skillgroup__d">pools · datasets · snapshots</span></li>
+      </ul>
+    </article>
+
+    <article class="skillgroup">
+      <span class="skillgroup__tag mono">SKL · 02</span>
+      <span class="skillgroup__jp">ネットワーク</span>
+      <h4>Networking &amp; Architecture</h4>
+      <ul class="skillgroup__list">
+        <li><span class="skillgroup__k">VLAN segmentation</span></li>
+        <li><span class="skillgroup__k">DMZ / LAN split</span></li>
+        <li><span class="skillgroup__k">Traefik</span><span class="skillgroup__d">middlewares · error pages · multi-provider</span></li>
+      </ul>
+    </article>
+
+    <article class="skillgroup">
+      <span class="skillgroup__tag mono">SKL · 03</span>
+      <span class="skillgroup__jp">監視・運用</span>
+      <h4>Monitoring &amp; Operations</h4>
+      <ul class="skillgroup__list">
+        <li><span class="skillgroup__k">CheckMK</span><span class="skillgroup__d">special &amp; Linux agents · custom checks</span></li>
+        <li><span class="skillgroup__k">Uptime Kuma</span></li>
+      </ul>
+    </article>
+
+    <article class="skillgroup">
+      <span class="skillgroup__tag mono">SKL · 04</span>
+      <span class="skillgroup__jp">Windows基盤</span>
+      <h4>Windows Infrastructure</h4>
+      <ul class="skillgroup__list">
+        <li><span class="skillgroup__k">Windows Server / AD</span></li>
+        <li><span class="skillgroup__k">DC migration</span></li>
+        <li><span class="skillgroup__k">DFSR / SYSVOL</span><span class="skillgroup__d">troubleshooting</span></li>
+      </ul>
+    </article>
+
+    <article class="skillgroup">
+      <span class="skillgroup__tag mono">SKL · 05</span>
+      <span class="skillgroup__jp">Linux・コンテナ</span>
+      <h4>Linux &amp; Containers</h4>
+      <ul class="skillgroup__list">
+        <li><span class="skillgroup__k">Debian / Arch</span></li>
+        <li><span class="skillgroup__k">Docker / Compose</span></li>
+        <li><span class="skillgroup__k">Shell tooling</span><span class="skillgroup__d">zsh</span></li>
+      </ul>
+    </article>
+
+    <article class="skillgroup">
+      <span class="skillgroup__tag mono">SKL · 06</span>
+      <span class="skillgroup__jp">セルフホスト</span>
+      <h4>Self-Hosted Services</h4>
+      <ul class="skillgroup__list">
+        <li><span class="skillgroup__k">Nextcloud · Jellyfin</span></li>
+        <li><span class="skillgroup__k">Guacamole · Docmost</span></li>
+        <li><span class="skillgroup__k">Navidrome · etc.</span></li>
+      </ul>
+    </article>
+
+  </div>
+
+  <div class="skills__foot">
+    <article class="skillgroup skillgroup--lang">
+      <span class="skillgroup__tag mono">SKL · 07</span>
+      <span class="skillgroup__jp">言語</span>
+      <h4>Languages</h4>
+      <ul class="langs">
+        <li><span class="lang__name">German</span><span class="lang__lvl lang__lvl--native">native</span></li>
+        <li><span class="lang__name">English</span><span class="lang__lvl">fluent</span></li>
+        <li><span class="lang__name">日本語 Japanese</span><span class="lang__lvl lang__lvl--dim">early beginner</span></li>
+      </ul>
+    </article>
+
+    <article class="skillgroup skillgroup--extra">
+      <span class="skillgroup__tag mono">SKL · 08</span>
+      <span class="skillgroup__jp">デザイン</span>
+      <h4>Also</h4>
+      <p class="skillgroup__note">Hobby designer — I like making things look as good as they run.</p>
+    </article>
+  </div>
+</section>
+
+
+<!-- ============================================================= -->
 <!-- NEOFETCH COLLECTION                                            -->
 <!-- ============================================================= -->
 <section class="neofetch" id="systems">
   <div class="section__doc">
-    <span>DOC <b>04.INFRA</b></span>
+    <span>DOC <b>05.INFRA</b></span>
     <span>REV <b>2026.05</b></span>
     <span class="stamp stamp--ok">PROD · OPERATIONAL</span>
     <span>FORM <b>SYS-04</b></span>
@@ -746,7 +831,7 @@
 
   <div class="section__head">
     <div class="section__slug">
-      <span class="ix">// 04</span>
+      <span class="ix">// 05</span>
       <span class="name">SYSTEMS</span>
       <span class="jp">システム一覧</span>
     </div>
@@ -764,21 +849,21 @@
 <!-- ============================================================= -->
 <section class="services" id="services">
   <div class="section__doc">
-    <span>DOC <b>05.ENDPOINTS</b></span>
+    <span>DOC <b>06.ENDPOINTS</b></span>
     <span>REV <b>LIVE</b></span>
-    <span class="stamp stamp--red">AUTH REQUIRED</span>
+    <span class="stamp stamp--ok">PUBLIC</span>
     <span>FORM <b>EXT-05</b></span>
     <span>SLA · BEST-EFFORT</span>
   </div>
 
   <div class="section__head">
     <div class="section__slug">
-      <span class="ix">// 05</span>
-      <span class="name">SERVICES</span>
-      <span class="jp">運用中サービス</span>
+      <span class="ix">// 06</span>
+      <span class="name">WEBSERVICES</span>
+      <span class="jp">ウェブサービス</span>
     </div>
     <div class="section__meta">
-      <span class="mono">EXTERNAL ENDPOINTS · AUTH REQUIRED</span>
+      <span class="mono">EXTERNAL ENDPOINTS · PUBLIC</span>
     </div>
   </div>
 
@@ -894,7 +979,7 @@
       <div class="manifest__doc">
         <span>DOC <b>05.A.MANIFEST</b></span>
         <span>REV <b>FULL ROSTER</b></span>
-        <span class="stamp">EYES ONLY</span>
+        <span class="stamp">APPENDIX</span>
         <button class="manifest__close" type="button" data-manifest-close aria-label="close manifest">
           <span aria-hidden="true">✕</span>
         </button>
@@ -1180,6 +1265,86 @@
   <div class="games__note mono small dim">// Currently in rotation · 現在プレイ中</div>
 </section>
 
+<!-- ============================================================= -->
+<!-- OPS BOARD — live monitoring (CheckMK aggregate via status.json) -->
+<!-- ============================================================= -->
+<section class="ops" id="opsboard">
+  <div class="section__doc">
+    <span>DOC <b>04.A.OPS</b></span>
+    <span>REV <b>LIVE</b></span>
+    <span class="stamp stamp--ok">MONITORED</span>
+    <span>FORM <b>OPS-04A</b></span>
+  </div>
+
+  <div class="section__head">
+    <div class="section__slug">
+      <span class="ix">// 04.A</span>
+      <span class="name">HOSTS</span>
+      <span class="jp">監視ホスト</span>
+    </div>
+    <div class="section__meta">
+      <span class="mono">CHECKMK · SELECTED HOSTS</span>
+    </div>
+  </div>
+
+  <!-- selected hosts from CheckMK — fed by a server-side puller into status.json
+       (status.json → hosts[]). Sample cards below until the probe is live. -->
+  <div class="opsbrd" id="opsBoard" data-state="sample" aria-label="selected hosts">
+    <div class="opsbrd__head mono">
+      <span class="opsbrd__title">
+        <span class="dot dot--ok" id="opsDot"></span>
+        SELECTED HOSTS
+      </span>
+      <span class="opsbrd__tag" id="opsTag">CMK · SAMPLE</span>
+    </div>
+
+    <div class="opsbrd__hosts" id="opsHostList">
+      <article class="hostcard" data-state="up">
+        <div class="hostcard__top mono">
+          <span class="hostcard__name"><span class="hostcard__dot"></span>lynx</span>
+          <span class="hostcard__role">hypervisor</span>
+        </div>
+        <div class="hostcard__metrics">
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">7%</span><span class="hostcard__ml mono">CPU</span></div>
+          <div class="hostcard__m" data-band="warn"><span class="hostcard__mv">74%</span><span class="hostcard__ml mono">MEM</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">67°</span><span class="hostcard__ml mono">TEMP</span></div>
+          <div class="hostcard__m"><span class="hostcard__mv">18h</span><span class="hostcard__ml mono">UP</span></div>
+        </div>
+      </article>
+      <article class="hostcard" data-state="up">
+        <div class="hostcard__top mono">
+          <span class="hostcard__name"><span class="hostcard__dot"></span>vanta</span>
+          <span class="hostcard__role">main system</span>
+        </div>
+        <div class="hostcard__metrics">
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">12%</span><span class="hostcard__ml mono">CPU</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">36%</span><span class="hostcard__ml mono">MEM</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">41°</span><span class="hostcard__ml mono">TEMP</span></div>
+          <div class="hostcard__m"><span class="hostcard__mv">3d</span><span class="hostcard__ml mono">UP</span></div>
+        </div>
+      </article>
+      <article class="hostcard" data-state="up">
+        <div class="hostcard__top mono">
+          <span class="hostcard__name"><span class="hostcard__dot"></span>esx-01</span>
+          <span class="hostcard__role">virt host</span>
+        </div>
+        <div class="hostcard__metrics">
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">23%</span><span class="hostcard__ml mono">CPU</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">47%</span><span class="hostcard__ml mono">MEM</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">52°</span><span class="hostcard__ml mono">TEMP</span></div>
+          <div class="hostcard__m"><span class="hostcard__mv">20d</span><span class="hostcard__ml mono">UP</span></div>
+        </div>
+      </article>
+    </div>
+
+    <div class="opsbrd__foot mono">
+      <span id="opsSrc">sample data</span>
+      <span class="opsbrd__sep">·</span>
+      <span id="opsAge">awaiting probe</span>
+    </div>
+  </div>
+</section>
+
 </div><!-- /layout__side -->
 </div><!-- /layout -->
 
@@ -1221,7 +1386,7 @@
     <div class="foot__rule"></div>
     <div class="foot__tiny mono">
       <span>© LUCYA SYSTEMS<span class="reg">®</span> <span id="thisYear">2026</span> · ALL RIGHTS RESERVED</span>
-      <span>DOC 0451-LUC · REV 2026.Q2 · CLASSIFIED // INTERNAL</span>
+      <span>DOC 0451-LUC · REV 2026.Q2 · PUBLIC RECORD</span>
       <span>// BUILD 2.6.1-STABLE · KERNEL 7.0.1</span>
     </div>
   </div>
