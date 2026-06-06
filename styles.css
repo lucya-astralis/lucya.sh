@@ -1796,6 +1796,97 @@ section{
 }
 
 /* ================================================================
+   SKILLS / CAPABILITIES
+   ================================================================ */
+.skills__grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+}
+.skillgroup{
+  background:var(--surface);
+  padding:20px 20px 22px;
+  position:relative;
+  transition: background .25s;
+}
+.skillgroup:hover{ background:var(--surface-2); }
+.skillgroup__tag{
+  display:inline-block;
+  font-size:10px; letter-spacing:.22em;
+  color:var(--acc-cy);
+  margin-bottom:12px;
+}
+.skillgroup__jp{
+  position:absolute;
+  top:18px; right:20px;
+  font-family:"Noto Sans JP", sans-serif;
+  font-size:11px;
+  color:var(--text-ghost);
+  letter-spacing:.16em;
+}
+.skillgroup h4{
+  margin:0 0 14px;
+  font-size:17px;
+  font-weight:600;
+  color:var(--text);
+  letter-spacing:.01em;
+}
+.skillgroup__list{
+  list-style:none; padding:0; margin:0;
+  display:flex; flex-direction:column; gap:8px;
+}
+.skillgroup__list li{
+  position:relative;
+  padding-left:15px;
+  font-size:14px; line-height:1.45; color:#d2d4f0;
+}
+.skillgroup__list li::before{
+  content:"▸";
+  position:absolute; left:0; top:1px;
+  color:var(--acc-cy); font-size:10px;
+}
+.skillgroup__k{ font-weight:500; color:var(--text); }
+.skillgroup__d{
+  display:block;
+  font-family:"Proto Nerd Font Regular", monospace;
+  font-size:11px; letter-spacing:.03em;
+  color:var(--text-dim);
+  margin-top:2px;
+}
+
+.skills__foot{
+  display:grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+  border-top:none;
+}
+.skillgroup--lang .langs{
+  list-style:none; padding:0; margin:0;
+}
+.skillgroup--lang .langs li{
+  display:flex; align-items:baseline; justify-content:space-between;
+  gap:12px; padding:8px 0;
+  border-bottom:1px dashed var(--line);
+  font-size:14.5px; color:#d2d4f0;
+}
+.skillgroup--lang .langs li:last-child{ border-bottom:none; padding-bottom:0; }
+.lang__name{ color:var(--text); font-weight:500; }
+.lang__lvl{
+  font-family:"Proto Nerd Font Regular", monospace;
+  font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--acc-cy); white-space:nowrap;
+}
+.lang__lvl--native{ color:var(--acc-amb); }
+.lang__lvl--dim{ color:var(--text-ghost); }
+.skillgroup__note{
+  margin:0; font-size:14px; line-height:1.65; color:#d2d4f0;
+}
+
+/* ================================================================
    88x31 BUTTONS
    ================================================================ */
 .buttons__wall{
@@ -3455,6 +3546,9 @@ section{
 
   .funfacts{ padding-top:6px; }
   .funfacts__list{ font-size:13.5px; }
+
+  .skills__foot{ grid-template-columns:1fr; }
+  .skillgroup h4{ font-size:16px; }
 
   .buttons__wall{ padding:12px; gap:5px; }
 

@@ -53,14 +53,14 @@
     const hex = () => Math.random().toString(16).slice(2, 8).toUpperCase();
     const lines = [
       ['OK',   'LUCYA-CORE // COLD BOOT'],
-      ['OK',   'MOUNTING /dev/sigil'],
+      ['OK',   'MOUNTING /dev/coffee'],
       ['OK',   'LOAD KERNEL 7.0.1'],
       ['WAIT', 'HANDSHAKE · ATLAS'],
       ['OK',   'AUTH KEYRING · LUCYA@CORE'],
       ['OK',   'NET · SECURE CHANNEL UP'],
-      ['OK',   'LOADING RITUAL ASSETS'],
-      ['WAIT', 'DECRYPT /var/soul'],
-      ['OK',   'GEOFENCE · DE-BY LOCKED'],
+      ['OK',   'LOADING FONTS · ICONS'],
+      ['WAIT', 'WARMING UP CRT TUBES'],
+      ['OK',   'LOCALE · DE-BY'],
       ['OK',   'CALIBRATING HUE BUFFER'],
       ['OK',   'SPAWN COMPOSITOR'],
       ['OK',   'READY · HANDOFF TO UI'],
@@ -77,7 +77,7 @@
   const logItems = logEl ? Array.from(logEl.children) : [];
 
   // ---------- REVEAL : mark below-fold blocks (observer starts post-splash) ----------
-  const revealSelectors = ['.about', '.interests', '.buttons', '.neofetch', '.services', '.spotify', '.photos', '.games', '.foot'];
+  const revealSelectors = ['.about', '.interests', '.skills', '.buttons', '.neofetch', '.services', '.spotify', '.photos', '.games', '.foot'];
   const revealTargets = revealSelectors.flatMap(sel => Array.from(document.querySelectorAll(sel)));
   revealTargets.forEach(el => el.classList.add('reveal-block'));
 
