@@ -39,7 +39,7 @@
     panels = [
       { main: pick(['profile']),            side: pick(['buttons', 'spotify']) },
       { main: pick(['about', 'interests']), side: pick(['games']) },
-      { main: pick(['skills']),             side: [] },
+      { main: pick(['skills']),             side: pick(['opsboard']) },
       { main: pick(['systems', 'services']),side: pick(['photos']) }
     ];
     // footer is no longer a panel — it's rendered as a slim persistent bar

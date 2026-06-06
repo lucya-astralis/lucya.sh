@@ -308,57 +308,52 @@
       </div>
     </div>
 
-    <!-- live telemetry from the webserver (Pi 4B) — fed by scripts/temps.sh -->
-    <section class="therm" id="thermal" data-state="boot" aria-label="thermal telemetry">
+    <!-- fleet overview — aggregate from CheckMK via status.json (counts only).
+         Reuses the .therm widget shell. Sample-labelled until the probe is live. -->
+    <section class="therm" id="thermal" data-state="sample" aria-label="fleet overview">
       <div class="therm__head mono">
         <span class="therm__title">
           <span class="dot dot--ok" id="thermDot"></span>
           SYSTEM STATUS
         </span>
-        <span class="therm__tag">T-01 · LIVE</span>
+        <span class="therm__tag" id="ovTag">CHECKMK · SAMPLE</span>
       </div>
 
       <div class="therm__body">
         <div class="therm__primary">
-          <span class="therm__label mono">CPU CORE</span>
-          <span class="therm__value">
-            <b id="thermCpu">—.—</b><em>°C</em>
-          </span>
+          <span class="therm__label mono">HOSTS UP</span>
+          <span class="therm__value"><b id="ovHosts">12 / 12</b></span>
           <div class="therm__bar" data-band="ok">
-            <div class="therm__bar-fill" id="thermCpuBar"></div>
-            <span class="therm__bar-tick" style="left:55%"></span>
-            <span class="therm__bar-tick" style="left:78%"></span>
+            <div class="therm__bar-fill" id="ovHostsBar" style="width:100%"></div>
           </div>
         </div>
 
         <div class="therm__grid">
           <div class="therm__cell">
-            <span class="therm__label mono">LOAD 1m</span>
-            <span class="therm__cell-val mono"><b id="thermLoad">—.——</b></span>
-            <span class="therm__cell-sub mono dim" id="thermLoadSub">—— · ——</span>
+            <span class="therm__label mono">WARNING</span>
+            <span class="therm__cell-val mono"><b id="ovWarn">1</b></span>
+            <span class="therm__cell-sub mono dim">SERVICES</span>
           </div>
           <div class="therm__cell">
-            <span class="therm__label mono">UPTIME</span>
-            <span class="therm__cell-val mono"><b id="thermUptime">—d —h</b></span>
-            <span class="therm__cell-sub mono dim">SINCE BOOT</span>
+            <span class="therm__label mono">CRITICAL</span>
+            <span class="therm__cell-val mono"><b id="ovCrit">0</b></span>
+            <span class="therm__cell-sub mono dim">SERVICES</span>
           </div>
         </div>
 
         <div class="therm__primary">
-          <span class="therm__label mono">MEMORY</span>
-          <span class="therm__value therm__value--sm">
-            <b id="thermRam">—.—</b><em>%</em>
-          </span>
-          <div class="therm__bar therm__bar--mem">
-            <div class="therm__bar-fill therm__bar-fill--mem" id="thermRamBar"></div>
+          <span class="therm__label mono">SERVICES OK</span>
+          <span class="therm__value therm__value--sm"><b id="ovSvc">44 / 45</b></span>
+          <div class="therm__bar" data-band="ok">
+            <div class="therm__bar-fill" id="ovSvcBar" style="width:97%"></div>
           </div>
         </div>
       </div>
 
       <div class="therm__foot mono">
-        <span id="thermHost">awaiting probe…</span>
+        <span id="ovSrc">sample data</span>
         <span class="therm__sep">·</span>
-        <span id="thermAge">—</span>
+        <span id="ovAge">awaiting probe</span>
       </div>
     </section>
   </div>
@@ -1271,6 +1266,86 @@
   </div>
 
   <div class="games__note mono small dim">// Currently in rotation · 現在プレイ中</div>
+</section>
+
+<!-- ============================================================= -->
+<!-- OPS BOARD — live monitoring (CheckMK aggregate via status.json) -->
+<!-- ============================================================= -->
+<section class="ops" id="opsboard">
+  <div class="section__doc">
+    <span>DOC <b>04.A.OPS</b></span>
+    <span>REV <b>LIVE</b></span>
+    <span class="stamp stamp--ok">MONITORED</span>
+    <span>FORM <b>OPS-04A</b></span>
+  </div>
+
+  <div class="section__head">
+    <div class="section__slug">
+      <span class="ix">// 04.A</span>
+      <span class="name">HOSTS</span>
+      <span class="jp">監視ホスト</span>
+    </div>
+    <div class="section__meta">
+      <span class="mono">CHECKMK · SELECTED HOSTS</span>
+    </div>
+  </div>
+
+  <!-- selected hosts from CheckMK — fed by a server-side puller into status.json
+       (status.json → hosts[]). Sample cards below until the probe is live. -->
+  <div class="opsbrd" id="opsBoard" data-state="sample" aria-label="selected hosts">
+    <div class="opsbrd__head mono">
+      <span class="opsbrd__title">
+        <span class="dot dot--ok" id="opsDot"></span>
+        SELECTED HOSTS
+      </span>
+      <span class="opsbrd__tag" id="opsTag">CMK · SAMPLE</span>
+    </div>
+
+    <div class="opsbrd__hosts" id="opsHostList">
+      <article class="hostcard" data-state="up">
+        <div class="hostcard__top mono">
+          <span class="hostcard__name"><span class="hostcard__dot"></span>lynx</span>
+          <span class="hostcard__role">hypervisor</span>
+        </div>
+        <div class="hostcard__metrics">
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">7%</span><span class="hostcard__ml mono">CPU</span></div>
+          <div class="hostcard__m" data-band="warn"><span class="hostcard__mv">74%</span><span class="hostcard__ml mono">MEM</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">67°</span><span class="hostcard__ml mono">TEMP</span></div>
+          <div class="hostcard__m"><span class="hostcard__mv">18h</span><span class="hostcard__ml mono">UP</span></div>
+        </div>
+      </article>
+      <article class="hostcard" data-state="up">
+        <div class="hostcard__top mono">
+          <span class="hostcard__name"><span class="hostcard__dot"></span>vanta</span>
+          <span class="hostcard__role">main system</span>
+        </div>
+        <div class="hostcard__metrics">
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">12%</span><span class="hostcard__ml mono">CPU</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">36%</span><span class="hostcard__ml mono">MEM</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">41°</span><span class="hostcard__ml mono">TEMP</span></div>
+          <div class="hostcard__m"><span class="hostcard__mv">3d</span><span class="hostcard__ml mono">UP</span></div>
+        </div>
+      </article>
+      <article class="hostcard" data-state="up">
+        <div class="hostcard__top mono">
+          <span class="hostcard__name"><span class="hostcard__dot"></span>esx-01</span>
+          <span class="hostcard__role">virt host</span>
+        </div>
+        <div class="hostcard__metrics">
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">23%</span><span class="hostcard__ml mono">CPU</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">47%</span><span class="hostcard__ml mono">MEM</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">52°</span><span class="hostcard__ml mono">TEMP</span></div>
+          <div class="hostcard__m"><span class="hostcard__mv">20d</span><span class="hostcard__ml mono">UP</span></div>
+        </div>
+      </article>
+    </div>
+
+    <div class="opsbrd__foot mono">
+      <span id="opsSrc">sample data</span>
+      <span class="opsbrd__sep">·</span>
+      <span id="opsAge">awaiting probe</span>
+    </div>
+  </div>
 </section>
 
 </div><!-- /layout__side -->
