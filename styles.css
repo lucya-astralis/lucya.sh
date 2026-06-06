@@ -866,11 +866,13 @@ section{
   .about     { order:2; }
   .interests { order:3; }
   .buttons   { order:4; }
-  .neofetch  { order:5; }
-  .services  { order:6; }
-  .spotify   { order:7; }
-  .photos    { order:8; }
-  .games     { order:9; }
+  .skills    { order:5; }
+  .ops  { order:6; }
+  .neofetch  { order:7; }
+  .services  { order:8; }
+  .spotify   { order:9; }
+  .photos    { order:10; }
+  .games     { order:11; }
 }
 
 @media (min-width: 1100px){
