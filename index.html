@@ -218,28 +218,25 @@
   </div>
   <div class="ticker__viewport">
     <div class="ticker__track" id="tickerTrack">
-      <!-- duplicated by JS for seamless loop -->
+      <!-- fallback only — data.json is the source of truth and overwrites
+           this list on load; duplicated by JS for the seamless loop -->
       <span class="ticker__item"><b>SYS</b> aoi.inter-astra.local · uptime 03d 23h 33m</span>
       <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>OPS</b> 15/15 services up · self-hosted</span>
+      <span class="ticker__item"><b>OPS</b> 15/15 services up · self-hosted · best effort</span>
       <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>NET</b> uplink ATLAS · 802.11ac · 98% signal</span>
+      <span class="ticker__item"><b>NET</b> uplink NODE-01 · 802.11ac · 98% signal</span>
       <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>NOW</b> rotation · H.E.R — Tearz</span>
+      <span class="ticker__item"><b>SYS</b> Try Michaelsoft Binbows · new release available</span>
       <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>BUILD</b> lucya.sh @ 2.6.1-stable · kernel 7.0.1</span>
+      <span class="ticker__item"><b>BUILD</b> astraOS @ 11-stable · kernel 6.8.0</span>
       <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>FUEL</b> monster reserves · 87% · resupply scheduled</span>
+      <span class="ticker__item"><b>FUEL</b> monster reserves · 67% · resupply scheduled</span>
       <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>BCN</b> astra.express · all flights nominal · CMDR 310217</span>
-      <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>PRIDE</b> pride month active · 🏳️‍🌈 love is love · all systems welcome</span>
+      <span class="ticker__item"><b>BCN</b> astral.express · all systems nominal · CMDR 310217</span>
       <span class="ticker__sep">◇</span>
       <span class="ticker__item"><b>JP</b> オンライン</span>
       <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>NOTE</b> coffee.dispenser offline since 09:14 · low priority</span>
-      <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>CAL</b> next event · あと <span id="tickerDays">114</span>日</span>
+      <span class="ticker__item"><b>CAL</b> JP trip · あと <span id="tickerDays">—</span>日</span>
       <span class="ticker__sep">◇</span>
     </div>
   </div>
@@ -290,11 +287,11 @@
         <div class="kpi" data-kpi="japan">
           <span class="kpi__label mono">JAPAN</span>
           <span class="kpi__value" data-kpi-value>— <em>d</em></span>
-          <span class="kpi__sub mono kpi__sub--ok">TRIP · 2026-08-10</span>
+          <span class="kpi__sub mono kpi__sub--ok">TRIP · 2026-08-09</span>
         </div>
         <div class="kpi" data-kpi="domains">
           <span class="kpi__label mono">DOMAINS OWNED</span>
-          <span class="kpi__value" data-kpi-value>17</span>
+          <span class="kpi__value" data-kpi-value>21</span>
           <span class="kpi__sub mono">REGISTERED · ACTIVE</span>
         </div>
       </div>
@@ -953,7 +950,7 @@
       <div class="spotify__label mono">
         <img src="images/profile/sociallinks/spotify_color.svg" alt="" />
         <span class="spotify__label-name">NOW SAMPLING · 最近のお気に入り</span>
-        <span class="spotify__counter mono" id="spotifyCounter">01 / 09</span>
+        <span class="spotify__counter mono" id="spotifyCounter">01 / 12</span>
       </div>
 
       <h3 class="spotify__track" id="spotifyTrack">—</h3>
@@ -992,7 +989,7 @@
           <span class="jp">トラック一覧</span>
         </div>
         <div class="section__meta">
-          <span class="mono"><span id="manifestCount">11</span> TRACKS · ROTATION</span>
+          <span class="mono"><span id="manifestCount">12</span> TRACKS · ROTATION</span>
         </div>
       </div>
 
@@ -1169,7 +1166,7 @@
       </div>
       <div class="game-card__cap">
         <span class="game-card__title">ELITE: DANGEROUS</span>
-        <span class="game-card__genre mono small dim">SPACE SIM · CMDR SEBASTAINM</span>
+        <span class="game-card__genre mono small dim">SPACE SIM · CMDR SEBASTIANM</span>
       </div>
     </article>
 

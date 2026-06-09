@@ -204,7 +204,6 @@
   }
 
   // ---- nav links jump to their set instead of anchor-scrolling ----
-  var navMap = {};
   function wireNav() {
     var links = document.querySelectorAll('.nav__links a[href^="#"]');
     for (var i = 0; i < links.length; i++) {
@@ -214,7 +213,6 @@
           return elementsForIds(p).indexOf(id) > -1;
         });
         if (idx < 0) return;
-        navMap[id] = idx;
         a.addEventListener('click', function (e) {
           if (!active) return;
           e.preventDefault();

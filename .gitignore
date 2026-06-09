@@ -1,0 +1,7 @@
+# OS junk
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# local Claude Code settings (machine-specific)
+.claude/settings.local.json

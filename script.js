@@ -4,46 +4,16 @@
 
 (() => {
 
-  // ---------- SPLASH : progress bar ------------------------------
-  // progress only starts once the whole splash UI has built in.
-  // UI reveal timing (CSS): corners 0.05-0.42s, log 0.55s, bottom 0.95s.
-  // Log lines stream in from ~1.25s onward; we kick progress just after.
-  const PROGRESS_START_DELAY = 1250;
-  const progressPct = document.getElementById('splashProgress');
-  const progressFill = document.getElementById('splashProgressFill');
-  if (progressPct && progressFill) {
-    let p = 0;
-    const revealLogs = () => {
-      if (!logItems.length) return;
-      const target = Math.min(logItems.length, Math.ceil(p * logItems.length / 100));
-      for (let j = 0; j < target; j++){
-        if (!logItems[j].classList.contains('is-in')) logItems[j].classList.add('is-in');
-      }
-    };
-    const tick = () => {
-      if (p >= 100) {
-        progressPct.textContent = '100%';
-        progressFill.style.width = '100%';
-        logItems.forEach(li => li.classList.add('is-in'));
-        const splashEl = document.getElementById('splash');
-        if (splashEl) splashEl.classList.add('is-complete');
-        return;
-      }
-      p += Math.round(2 + Math.random() * 9);
-      if (p > 100) p = 100;
-      progressPct.textContent = `${String(p).padStart(2, '0')}%`;
-      progressFill.style.width = p + '%';
-      revealLogs();
-      setTimeout(tick, 160 + Math.random() * 260);
-    };
-    setTimeout(tick, PROGRESS_START_DELAY);
-  }
+  // ---------- SHARED HELPERS --------------------------------------
+  const pad2 = n => String(n).padStart(2, '0');
+  const escHtml = (s) => String(s).replace(/[&<>"']/g, c => (
+    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
+  ));
 
   // ---------- SPLASH : session id + boot log ---------------------
   const sessionEl = document.getElementById('splashSession');
   if (sessionEl){
     const now = new Date();
-    const pad2 = n => String(n).padStart(2,'0');
     const stamp = `${now.getFullYear()}${pad2(now.getMonth()+1)}${pad2(now.getDate())}-${pad2(now.getHours())}${pad2(now.getMinutes())}`;
     sessionEl.textContent = `SESSION · ${stamp}`;
   }
@@ -75,6 +45,41 @@
     logEl.appendChild(frag);
   }
   const logItems = logEl ? Array.from(logEl.children) : [];
+
+  // ---------- SPLASH : progress bar ------------------------------
+  // progress only starts once the whole splash UI has built in.
+  // UI reveal timing (CSS): corners 0.05-0.42s, log 0.55s, bottom 0.95s.
+  // Log lines stream in from ~1.25s onward; we kick progress just after.
+  const PROGRESS_START_DELAY = 1250;
+  const progressPct = document.getElementById('splashProgress');
+  const progressFill = document.getElementById('splashProgressFill');
+  if (progressPct && progressFill) {
+    let p = 0;
+    const revealLogs = () => {
+      if (!logItems.length) return;
+      const target = Math.min(logItems.length, Math.ceil(p * logItems.length / 100));
+      for (let j = 0; j < target; j++){
+        if (!logItems[j].classList.contains('is-in')) logItems[j].classList.add('is-in');
+      }
+    };
+    const tick = () => {
+      if (p >= 100) {
+        progressPct.textContent = '100%';
+        progressFill.style.width = '100%';
+        logItems.forEach(li => li.classList.add('is-in'));
+        const splashEl = document.getElementById('splash');
+        if (splashEl) splashEl.classList.add('is-complete');
+        return;
+      }
+      p += Math.round(2 + Math.random() * 9);
+      if (p > 100) p = 100;
+      progressPct.textContent = `${pad2(p)}%`;
+      progressFill.style.width = p + '%';
+      revealLogs();
+      setTimeout(tick, 160 + Math.random() * 260);
+    };
+    setTimeout(tick, PROGRESS_START_DELAY);
+  }
 
   // ---------- REVEAL : mark below-fold blocks (observer starts post-splash) ----------
   const revealSelectors = ['.about', '.interests', '.skills', '.ops', '.buttons', '.neofetch', '.services', '.spotify', '.photos', '.games', '.foot'];
@@ -241,7 +246,6 @@
   // target text one char at a time. Used for section headers, hero stats,
   // and the spotify track title on rotation.
   const SCRAMBLE_CHARS = '!<>-_\\/[]{}=+*^?#$&%01ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿ';
-  const escScrambleChar = c => c === '<' ? '&lt;' : c === '>' ? '&gt;' : c === '&' ? '&amp;' : c;
   class TextScrambler {
     constructor(el){ this.el = el; this.queue = []; this.frame = 0; }
     setText(newText){
@@ -262,14 +266,14 @@
       let done = 0;
       for (let i = 0; i < this.queue.length; i++){
         const q = this.queue[i];
-        if (this.frame >= q.end){ done++; out += escScrambleChar(q.to); }
+        if (this.frame >= q.end){ done++; out += escHtml(q.to); }
         else if (this.frame >= q.start){
           if (!q.char || Math.random() < 0.28){
             q.char = SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
           }
-          out += `<span class="scramble-char">${escScrambleChar(q.char)}</span>`;
+          out += `<span class="scramble-char">${escHtml(q.char)}</span>`;
         } else {
-          out += escScrambleChar(q.from);
+          out += escHtml(q.from);
         }
       }
       this.el.innerHTML = out;
@@ -306,12 +310,11 @@
   };
 
   // ---------- CLOCK ----------------------------------------------
-  const pad = n => String(n).padStart(2, '0');
   const fmt12 = d => {
     let h = d.getHours(); const m = d.getMinutes();
     const am = h < 12 ? 'AM' : 'PM';
     h = h % 12 || 12;
-    return `${h}:${pad(m)} ${am}`;
+    return `${h}:${pad2(m)} ${am}`;
   };
   const navTime   = document.getElementById('navTime');
   const footTime  = document.getElementById('footTime');
@@ -320,7 +323,7 @@
 
   const updateClock = () => {
     const now = new Date();
-    const hms = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    const hms = `${pad2(now.getHours())}:${pad2(now.getMinutes())}:${pad2(now.getSeconds())}`;
     if (navTime)  navTime.textContent  = `${hms} CET`;
     if (footTime) footTime.textContent = `CET ${hms} · 通信中`;
     if (tzLocal)  tzLocal.textContent  = fmt12(now);
@@ -386,9 +389,10 @@
   if (wall) {
     const frag = document.createDocumentFragment();
     buttons.forEach(([file, name]) => {
+      // deliberately no href — these are collectibles, not links; a real
+      // href="#" would scroll-jump to the top on click.
       const a = document.createElement('a');
       a.className = 'b81';
-      a.href = '#';
       a.title = name;
       a.innerHTML =
         `<img src="images/88x31 buttons/${file}" alt="${name}" loading="lazy" />` +
@@ -400,9 +404,9 @@
 
   // ---------- DOMAINS --------------------------------------------
   const domains = [
-    ['lucya.sh',          'lucya_logo_text.svg',     'Personal homepage',    'PRIMARY', true, 'logo'],
-    ['images.lucya.sh',          'gallery.svg',     'Image gallery',    'ACTIVE', true, 'true'],
-    ['aizaku.com',         'aizaku.com.svg',          'Deffence industry',                   'ACTIVE',  true],
+    ['lucya.sh',           'lucya_logo_text.svg',     'Personal homepage',                   'PRIMARY', true, 'logo'],
+    ['images.lucya.sh',    'gallery.svg',             'Image gallery',                       'ACTIVE',  true],
+    ['aizaku.com',         'aizaku.com.svg',          'Defence industry',                    'ACTIVE',  true],
     ['astraos.app',        'astraos.app.svg',         'AstraOS · main product site',         'ACTIVE',  true],
     ['beta.astraos.app',   'beta.astraos.app.svg',    'AstraOS public beta portal',          'ACTIVE',  true],
     ['status.lucya.systems', 'status.lucya.systems.svg',  'System status · uptime monitor',      'ACTIVE',  true],
@@ -847,7 +851,6 @@
     const elapsedEl = document.getElementById('spotifyElapsed');
     const totalEl = document.getElementById('spotifyTotal');
 
-    const pad2 = n => String(n).padStart(2, '0');
     const fmtTime = sec => pad2(Math.floor(sec / 60)) + ':' + pad2(Math.floor(sec % 60));
 
     spotifyCard.style.setProperty('--spotify-interval', (INTERVAL_MS / 1000) + 's');
@@ -954,8 +957,8 @@
             '<span class="manifest__idx mono">' + pad2(i + 1) + '</span>' +
             '<span class="manifest__thumb"><img src="' + s.cover + '" alt="" loading="lazy" /></span>' +
             '<span class="manifest__txt">' +
-              '<span class="manifest__title">' + s.title.replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])) + '</span>' +
-              '<span class="manifest__artist">' + s.artist.replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])) + '</span>' +
+              '<span class="manifest__title">' + escHtml(s.title) + '</span>' +
+              '<span class="manifest__artist">' + escHtml(s.artist) + '</span>' +
             '</span>' +
             '<span class="manifest__status mono" aria-hidden="true"></span>' +
           '</button>';
@@ -1032,9 +1035,6 @@
   }
 
   // ---------- DATA.JSON : single source of truth -----------------
-  const escHtml = (s) => String(s).replace(/[&<>"']/g, c => (
-    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
-  ));
   const daysUntil = (target) => {
     const t = new Date(target);
     return Math.max(0, Math.ceil((t - new Date()) / 86400000));
@@ -1124,7 +1124,9 @@
     };
     document.querySelectorAll('.photo-card').forEach(card => {
       card.addEventListener('click', () => openLb(card));
-      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openLb(card); });
+      card.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLb(card); }
+      });
       card.setAttribute('tabindex','0');
       card.setAttribute('role','button');
     });
@@ -1134,15 +1136,9 @@
   }
 
   // ---------- UPTIME STAT ----------------------------------------
+  // same anchor date as the UPTIME kpi in data.json so both always agree
   const uptime = document.getElementById('uptimeStat');
-  if (uptime) {
-    const born = new Date(2007, 8, 26);
-    const now = new Date();
-    let years = now.getFullYear() - born.getFullYear();
-    let months = now.getMonth() - born.getMonth();
-    if (months < 0) { years--; months += 12; }
-    uptime.textContent = `${years}y ${String(months).padStart(2, '0')}m`;
-  }
+  if (uptime) uptime.textContent = yearsMonthsSince('2007-08-26');
 
   // ---------- CHECKMK STATUS : fleet overview + selected hosts ---
   // One poll of /status.json drives the header overview (aggregate counts)
@@ -1163,7 +1159,6 @@
 
     let last = null;
     const pct = (n, d) => d > 0 ? Math.min(100, Math.max(0, n / d * 100)) : 0;
-    const esc = (s) => String(s).replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
     const fmtAge = () => {
       if (!last) return 'awaiting probe';
       const a = Math.max(0, Math.floor(Date.now()/1000) - Number(last.ts || 0));
@@ -1210,10 +1205,10 @@
       const cpuB = h.cpu_pct  != null ? band(h.cpu_pct, 75, 90) : '';
       const memB = h.mem_pct  != null ? band(h.mem_pct, 75, 90) : '';
       const tmpB = h.temp_c   != null ? band(h.temp_c, 70, 82)  : '';
-      return `<article class="hostcard" data-state="${esc(h.state || 'up')}">` +
+      return `<article class="hostcard" data-state="${escHtml(h.state || 'up')}">` +
         `<div class="hostcard__top mono">` +
-          `<span class="hostcard__name"><span class="hostcard__dot"></span>${esc(h.name || '—')}</span>` +
-          (h.role ? `<span class="hostcard__role">${esc(h.role)}</span>` : '') +
+          `<span class="hostcard__name"><span class="hostcard__dot"></span>${escHtml(h.name || '—')}</span>` +
+          (h.role ? `<span class="hostcard__role">${escHtml(h.role)}</span>` : '') +
         `</div>` +
         `<div class="hostcard__metrics">` +
           cell(cpu, 'CPU', cpuB) + cell(mem, 'MEM', memB) + cell(temp, 'TEMP', tmpB) + cell(up, 'UP', '') +

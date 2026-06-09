@@ -877,7 +877,6 @@ section{
   .layout__side .photo-card__img-wrap{ aspect-ratio:16/9; }
   .layout__side .photo-card__cap{ padding:10px 12px 12px; gap:2px; }
   .layout__side .photo-card__title{ font-size:12px; }
-  .layout__side .photo-card__desc{ font-size:10.5px; }
 
   /* photos teaser in slim sidebar — keep 3 across so it stays compact */
   .layout__side .photos--teaser .photos__grid--teaser{ grid-template-columns:repeat(3,1fr); }
@@ -1132,28 +1131,6 @@ section{
   box-shadow:0 0 8px var(--acc-ok);
   z-index:4;
 }
-
-.pcard__status-chip{
-  position:absolute;
-  top:116px; left:138px;
-  display:inline-flex; align-items:center; gap:6px;
-  background:rgba(20,18,30,.92);
-  border:1px solid rgba(255,255,255,.18);
-  padding:5px 11px 5px 9px;
-  border-radius:999px;
-  font-size:12px;
-  z-index:3;
-  backdrop-filter:blur(6px);
-  box-shadow: 0 4px 14px -6px rgba(0,0,0,.8);
-}
-.pcard__status-chip b{ color:var(--acc-mag); font-weight:700; letter-spacing:.02em; margin:0 1px; }
-.pcard__status-flag{
-  font-size:14px;
-  line-height:1;
-  /* emoji rendering hint */
-  font-family: "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji", sans-serif;
-}
-.pcard__status-chip img{ height:16px; width:auto; }
 
 /* pokemon walking strip */
 .pcard__pokewalk{
@@ -1512,22 +1489,6 @@ section{
   background:var(--grad-accent-vert);
   box-shadow:0 0 10px rgba(91,138,255,.55);
 }
-.jp-line{
-  display:inline-block;
-  margin-top:7px;
-  color:var(--text-dim);
-  font-family:"Noto Sans JP", sans-serif;
-  font-size:13px;
-  letter-spacing:.16em;
-}
-.jp-line::before{
-  content:"// ";
-  color:var(--acc-cy);
-  opacity:.7;
-  font-family:"Proto Nerd Font Regular", monospace;
-  letter-spacing:0;
-}
-
 .hero__lower{
   display:grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
@@ -1613,15 +1574,6 @@ section{
   color:var(--text);
   letter-spacing:.04em;
 }
-.specsheet__foot{
-  padding:6px 12px;
-  font-size:9.5px;
-  letter-spacing:.2em;
-  text-transform:uppercase;
-  color:var(--text-ghost);
-  border-top:1px solid var(--line);
-  background:rgba(255,255,255,.02);
-}
 .stat{
   position:relative;
   background:var(--surface);
@@ -1683,7 +1635,6 @@ section{
 }
 .about__col{ max-width: 70ch; }
 .about__col p{ margin:0 0 18px; font-size:15.5px; line-height:1.7; color:#d8dafa; }
-.about__col--jp .jp-body{ font-family:"Noto Sans JP", sans-serif; color:#c8caf0; font-size:14px; line-height:1.85; }
 
 .about__marginal{
   position:sticky;
@@ -2128,11 +2079,6 @@ section{
   opacity: .85;
   text-shadow: 0 0 6px currentColor;
 }
-.sw{ display:inline-block; width:24px; height:12px; margin-right:2px; }
-.sw1{ background:#1f1f2a; } .sw2{ background:#ff5555; }
-.sw3{ background:#50fa7b; } .sw4{ background:#f1fa8c; }
-.sw5{ background:#bd93f9; } .sw6{ background:#ff79c6; }
-.sw7{ background:#8be9fd; } .sw8{ background:#f8f8f2; }
 
 /* ================================================================
    DOMAINS
@@ -2751,8 +2697,6 @@ section{
 }
 .photo-card__tag{ font-size:9px; letter-spacing:.22em; color:var(--text-ghost); text-transform:uppercase; }
 .photo-card__title{ font-size:13px; font-weight:600; letter-spacing:.06em; color:var(--text); }
-.photo-card__desc{ color:var(--text-dim); font-size:11px; }
-.photos__note{ margin-top:12px; }
 
 /* teaser variant — fewer / smaller tiles, gallery CTA underneath */
 .photos--teaser .photos__grid--teaser{
@@ -2946,46 +2890,6 @@ section{
 /* ================================================================
    SERVICES
    ================================================================ */
-.services__grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
-  gap:1px;
-  background:var(--line);
-  border:1px solid var(--line);
-}
-.svcard{
-  background:var(--surface);
-  padding:20px 22px;
-  display:flex; flex-direction:column; gap:10px;
-  transition: background .2s;
-  position:relative;
-}
-.svcard:hover{ background:#13131e; }
-.svcard__head{
-  display:flex; align-items:center; justify-content:space-between;
-  font-family:"Proto Nerd Font Regular", monospace;
-  font-size:10px; letter-spacing:.22em;
-  color:var(--text-ghost);
-  text-transform:uppercase;
-}
-.svcard__title{
-  font-family:"Proto Nerd Font Regular", monospace;
-  font-size:15px;
-  color:var(--text);
-  letter-spacing:.02em;
-}
-.svcard__desc{ font-size:12.5px; color:var(--text-dim); }
-.svcard__arrow{
-  position:absolute;
-  top:20px; right:20px;
-  color:var(--acc-cy);
-  font-family:"Proto Nerd Font Regular", monospace;
-  font-size:18px;
-  opacity:.4;
-  transition:all .2s;
-}
-.svcard:hover .svcard__arrow{ opacity:1; transform:translate(3px,-3px); }
-
 /* ================================================================
    FOOTER
    ================================================================ */
@@ -3258,16 +3162,6 @@ section{
   animation: thermCrit .8s steps(2) infinite;
 }
 @keyframes thermCrit{ 50%{ opacity:.55; } }
-.therm__bar-tick{
-  position:absolute;
-  top:-2px; bottom:-2px;
-  width:1px;
-  background:rgba(255,255,255,.18);
-}
-.therm__bar-fill--mem{
-  background:linear-gradient(90deg, var(--acc-mag), var(--acc-cy));
-  box-shadow: 0 0 8px rgba(165,148,255,.4);
-}
 .therm__grid{
   display:contents;
 }
@@ -3562,7 +3456,6 @@ section{
   .hero__title{ font-size:clamp(48px, 18vw, 84px); margin:18px 0 8px; }
   .hero__title-jp{ font-size:14px; letter-spacing:.24em; }
   .hero__tagline{ font-size:15.5px; line-height:1.55; margin:14px 0 24px; }
-  .jp-line{ font-size:13px; }
   .hero__lower{ grid-template-columns:1fr; gap:14px; }
   .hero__stats{ grid-template-columns:repeat(2,1fr); max-width:none; }
   .stat{ padding:14px 14px; }
@@ -3626,7 +3519,6 @@ section{
   section{ padding: 26px 14px 32px; }
 
   .nav__inner{ padding:0 12px; gap:10px; }
-  .nav__brand-text strong{ font-size:12px; }
   .nav__brand img{ height:22px; }
   .nav__status{ font-size:10.5px; padding-left:10px; gap:6px; }
 
