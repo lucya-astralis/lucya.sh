@@ -123,6 +123,7 @@
         <span>KERNEL 7.0.1</span>
         <span class="jp">システム起動中・・・</span>
       </div>
+      <div class="splash__skip" aria-hidden="true">PRESS ANY KEY · SKIP ▸</div>
     </div>
   </div>
 
@@ -207,6 +208,17 @@
     </div>
   </div>
 </header>
+
+<!-- mobile section nav — fixed bottom bar; visible only <=768px where
+     the header links are hidden. current section highlighted by JS. -->
+<nav class="mnav mono" aria-label="sections">
+  <a href="#profile">Profile</a>
+  <a href="#about">About</a>
+  <a href="#interests">Interests</a>
+  <a href="#skills">Skills</a>
+  <a href="#systems">Systems</a>
+  <a href="#services">Services</a>
+</nav>
 
 <!-- ============================================================= -->
 <!-- LIVE TICKER                                                    -->
@@ -720,7 +732,7 @@
       <span class="jp">技術スタック</span>
     </div>
     <div class="section__meta">
-      <span class="mono">DIV. ENGINEERING · COMPETENCY INDEX</span>
+      <span class="mono">DIV. ENGINEERING · MODULE REGISTRY</span>
     </div>
   </div>
 
@@ -731,8 +743,8 @@
       <span class="skillgroup__jp">仮想化・ストレージ</span>
       <h4>Virtualization &amp; Storage</h4>
       <ul class="skillgroup__list">
-        <li><span class="skillgroup__k">Proxmox VE</span><span class="skillgroup__d">VMs · LXC · Clusters</span></li>
-        <li><span class="skillgroup__k">ZFS</span><span class="skillgroup__d">pools · datasets · snapshots</span></li>
+        <li><span class="skillgroup__k">Proxmox VE</span><span class="dotlead" aria-hidden="true"></span><span class="chip chip--prod">prod</span><span class="skillgroup__d">VMs · LXC · Clusters</span></li>
+        <li><span class="skillgroup__k">ZFS</span><span class="dotlead" aria-hidden="true"></span><span class="chip chip--prod">prod</span><span class="skillgroup__d">pools · datasets · snapshots</span></li>
       </ul>
     </article>
 
@@ -741,9 +753,9 @@
       <span class="skillgroup__jp">ネットワーク</span>
       <h4>Networking &amp; Architecture</h4>
       <ul class="skillgroup__list">
-        <li><span class="skillgroup__k">VLAN segmentation</span></li>
-        <li><span class="skillgroup__k">DMZ / LAN split</span></li>
-        <li><span class="skillgroup__k">Traefik</span><span class="skillgroup__d">middlewares · error pages · multi-provider</span></li>
+        <li><span class="skillgroup__k">VLAN segmentation</span><span class="dotlead" aria-hidden="true"></span><span class="chip chip--prod">prod</span></li>
+        <li><span class="skillgroup__k">DMZ / LAN split</span><span class="dotlead" aria-hidden="true"></span><span class="chip chip--prod">prod</span></li>
+        <li><span class="skillgroup__k">Traefik</span><span class="dotlead" aria-hidden="true"></span><span class="chip chip--prod">prod</span><span class="skillgroup__d">middlewares · error pages · multi-provider</span></li>
       </ul>
     </article>
 
@@ -752,8 +764,8 @@
       <span class="skillgroup__jp">監視・運用</span>
       <h4>Monitoring &amp; Operations</h4>
       <ul class="skillgroup__list">
-        <li><span class="skillgroup__k">CheckMK</span><span class="skillgroup__d">special &amp; Linux agents · custom checks</span></li>
-        <li><span class="skillgroup__k">Uptime Kuma</span></li>
+        <li><span class="skillgroup__k">CheckMK</span><span class="dotlead" aria-hidden="true"></span><span class="chip chip--prod">prod</span><span class="skillgroup__d">special &amp; Linux agents · custom checks</span></li>
+        <li><span class="skillgroup__k">Uptime Kuma</span><span class="dotlead" aria-hidden="true"></span><span class="chip chip--prod">prod</span></li>
       </ul>
     </article>
 
@@ -762,9 +774,9 @@
       <span class="skillgroup__jp">Windows基盤</span>
       <h4>Windows Infrastructure</h4>
       <ul class="skillgroup__list">
-        <li><span class="skillgroup__k">Windows Server / AD</span></li>
-        <li><span class="skillgroup__k">DC migration</span></li>
-        <li><span class="skillgroup__k">DFSR / SYSVOL</span><span class="skillgroup__d">troubleshooting</span></li>
+        <li><span class="skillgroup__k">Windows Server / AD</span><span class="dotlead" aria-hidden="true"></span><span class="chip chip--work">work</span></li>
+        <li><span class="skillgroup__k">DC migration</span><span class="dotlead" aria-hidden="true"></span><span class="chip chip--work">work</span></li>
+        <li><span class="skillgroup__k">DFSR / SYSVOL</span><span class="dotlead" aria-hidden="true"></span><span class="chip chip--work">work</span><span class="skillgroup__d">troubleshooting</span></li>
       </ul>
     </article>
 
@@ -773,9 +785,9 @@
       <span class="skillgroup__jp">Linux・コンテナ</span>
       <h4>Linux &amp; Containers</h4>
       <ul class="skillgroup__list">
-        <li><span class="skillgroup__k">Debian / Arch</span></li>
-        <li><span class="skillgroup__k">Docker / Compose</span></li>
-        <li><span class="skillgroup__k">Shell tooling</span><span class="skillgroup__d">zsh</span></li>
+        <li><span class="skillgroup__k">Debian / Arch</span><span class="dotlead" aria-hidden="true"></span><span class="chip chip--daily">daily</span></li>
+        <li><span class="skillgroup__k">Docker / Compose</span><span class="dotlead" aria-hidden="true"></span><span class="chip chip--prod">prod</span></li>
+        <li><span class="skillgroup__k">Shell tooling</span><span class="dotlead" aria-hidden="true"></span><span class="chip chip--daily">daily</span><span class="skillgroup__d">zsh</span></li>
       </ul>
     </article>
 
@@ -784,9 +796,9 @@
       <span class="skillgroup__jp">セルフホスト</span>
       <h4>Self-Hosted Services</h4>
       <ul class="skillgroup__list">
-        <li><span class="skillgroup__k">Nextcloud · Jellyfin</span></li>
-        <li><span class="skillgroup__k">Guacamole · Docmost</span></li>
-        <li><span class="skillgroup__k">Navidrome · etc.</span></li>
+        <li><span class="skillgroup__k">Nextcloud · Jellyfin</span><span class="dotlead" aria-hidden="true"></span><span class="chip chip--prod">prod</span></li>
+        <li><span class="skillgroup__k">Guacamole · Docmost</span><span class="dotlead" aria-hidden="true"></span><span class="chip chip--prod">prod</span></li>
+        <li><span class="skillgroup__k">Navidrome · etc.</span><span class="dotlead" aria-hidden="true"></span><span class="chip chip--prod">prod</span></li>
       </ul>
     </article>
 
@@ -798,9 +810,9 @@
       <span class="skillgroup__jp">言語</span>
       <h4>Languages</h4>
       <ul class="langs">
-        <li><span class="lang__name">German</span><span class="lang__lvl lang__lvl--native">native</span></li>
-        <li><span class="lang__name">English</span><span class="lang__lvl">fluent</span></li>
-        <li><span class="lang__name">日本語 Japanese</span><span class="lang__lvl lang__lvl--dim">early beginner</span></li>
+        <li><span class="lang__name">German</span><span class="dotlead" aria-hidden="true"></span><span class="lang__lvl lang__lvl--native">native</span></li>
+        <li><span class="lang__name">English</span><span class="dotlead" aria-hidden="true"></span><span class="lang__lvl">fluent</span></li>
+        <li><span class="lang__name">日本語 Japanese</span><span class="dotlead" aria-hidden="true"></span><span class="lang__lvl lang__lvl--dim">early beginner</span></li>
       </ul>
     </article>
 
@@ -810,6 +822,13 @@
       <h4>Also</h4>
       <p class="skillgroup__note">Hobby designer — I like making things look as good as they run.</p>
     </article>
+  </div>
+
+  <div class="skills__legend mono">
+    <span>CONTEXT · WHERE IT RUNS ·</span>
+    <span class="chip chip--prod">prod</span><span>SELF-HOSTED PRODUCTION</span>
+    <span class="chip chip--work">work</span><span>ON THE JOB</span>
+    <span class="chip chip--daily">daily</span><span>DAILY DRIVER</span>
   </div>
 </section>
 
@@ -1302,10 +1321,10 @@
           <span class="hostcard__role">hypervisor</span>
         </div>
         <div class="hostcard__metrics">
-          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">7%</span><span class="hostcard__ml mono">CPU</span></div>
-          <div class="hostcard__m" data-band="warn"><span class="hostcard__mv">74%</span><span class="hostcard__ml mono">MEM</span></div>
-          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">67°</span><span class="hostcard__ml mono">TEMP</span></div>
-          <div class="hostcard__m"><span class="hostcard__mv">18h</span><span class="hostcard__ml mono">UP</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__ml mono">CPU</span><span class="hostcard__track"><i style="width:7%"></i></span><span class="hostcard__mv mono">7%</span></div>
+          <div class="hostcard__m" data-band="warn"><span class="hostcard__ml mono">MEM</span><span class="hostcard__track"><i style="width:74%"></i></span><span class="hostcard__mv mono">74%</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__ml mono">TMP</span><span class="hostcard__track"><i style="width:74%"></i></span><span class="hostcard__mv mono">67°</span></div>
+          <div class="hostcard__m hostcard__m--plain"><span class="hostcard__ml mono">UP</span><span class="hostcard__mv mono">18h</span></div>
         </div>
       </article>
       <article class="hostcard" data-state="up">
@@ -1314,10 +1333,10 @@
           <span class="hostcard__role">main system</span>
         </div>
         <div class="hostcard__metrics">
-          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">12%</span><span class="hostcard__ml mono">CPU</span></div>
-          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">36%</span><span class="hostcard__ml mono">MEM</span></div>
-          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">41°</span><span class="hostcard__ml mono">TEMP</span></div>
-          <div class="hostcard__m"><span class="hostcard__mv">3d</span><span class="hostcard__ml mono">UP</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__ml mono">CPU</span><span class="hostcard__track"><i style="width:12%"></i></span><span class="hostcard__mv mono">12%</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__ml mono">MEM</span><span class="hostcard__track"><i style="width:36%"></i></span><span class="hostcard__mv mono">36%</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__ml mono">TMP</span><span class="hostcard__track"><i style="width:46%"></i></span><span class="hostcard__mv mono">41°</span></div>
+          <div class="hostcard__m hostcard__m--plain"><span class="hostcard__ml mono">UP</span><span class="hostcard__mv mono">3d</span></div>
         </div>
       </article>
       <article class="hostcard" data-state="up">
@@ -1326,10 +1345,10 @@
           <span class="hostcard__role">virt host</span>
         </div>
         <div class="hostcard__metrics">
-          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">23%</span><span class="hostcard__ml mono">CPU</span></div>
-          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">47%</span><span class="hostcard__ml mono">MEM</span></div>
-          <div class="hostcard__m" data-band="ok"><span class="hostcard__mv">52°</span><span class="hostcard__ml mono">TEMP</span></div>
-          <div class="hostcard__m"><span class="hostcard__mv">20d</span><span class="hostcard__ml mono">UP</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__ml mono">CPU</span><span class="hostcard__track"><i style="width:23%"></i></span><span class="hostcard__mv mono">23%</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__ml mono">MEM</span><span class="hostcard__track"><i style="width:47%"></i></span><span class="hostcard__mv mono">47%</span></div>
+          <div class="hostcard__m" data-band="ok"><span class="hostcard__ml mono">TMP</span><span class="hostcard__track"><i style="width:58%"></i></span><span class="hostcard__mv mono">52°</span></div>
+          <div class="hostcard__m hostcard__m--plain"><span class="hostcard__ml mono">UP</span><span class="hostcard__mv mono">20d</span></div>
         </div>
       </article>
     </div>

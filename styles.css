@@ -361,7 +361,6 @@ img{ user-select:none; -webkit-user-drag:none; }
   background:#05050a;
   display:flex; align-items:center; justify-content:center;
   overflow:hidden;
-  animation: splashOut 0.6s ease 7.4s forwards;
 }
 .splash__video{
   position:absolute; inset:0;
@@ -370,7 +369,16 @@ img{ user-select:none; -webkit-user-drag:none; }
   z-index:0;
   pointer-events:none;
 }
-.splash.is-done{ pointer-events:none; }
+/* fade-out runs when JS adds .is-done — after the timed boot or on skip */
+.splash.is-done{
+  pointer-events:none;
+  animation: splashOut .6s ease forwards;
+}
+@media (prefers-reduced-motion: reduce){
+  /* the global animation:none kill-switch would leave the splash stuck —
+     hide it statically instead */
+  .splash.is-done{ opacity:0; visibility:hidden; }
+}
 
 .splash__bg{
   position:absolute; inset:0;
@@ -576,6 +584,20 @@ img{ user-select:none; -webkit-user-drag:none; }
   letter-spacing:.3em;
   text-transform:none;
 }
+.splash__skip{
+  margin-top:16px;
+  text-align:center;
+  font-family:"Proto Nerd Font Regular", monospace;
+  font-size:9.5px;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  color:var(--text-ghost);
+  opacity:0;
+  animation:
+    uiFadeNoBlur .3s steps(2) 1.6s forwards,
+    skipPulse 1.8s ease 1.9s infinite;
+}
+@keyframes skipPulse{ 50%{ color:var(--text-dim); } }
 .splash__label{
   margin-top:34px;
   display:flex;
@@ -1729,7 +1751,16 @@ section{
   position:relative;
   transition: background .25s;
 }
+.skillgroup::before{
+  content:"";
+  position:absolute; left:0; top:0; bottom:0;
+  width:2px;
+  background:var(--grad-accent-vert);
+  opacity:0;
+  transition:opacity .25s;
+}
 .skillgroup:hover{ background:var(--surface-2); }
+.skillgroup:hover::before{ opacity:.85; }
 .skillgroup__tag{
   display:inline-block;
   font-size:10px; letter-spacing:.22em;
@@ -1746,10 +1777,19 @@ section{
 }
 .skillgroup h4{
   margin:0 0 14px;
+  padding-bottom:10px;
   font-size:17px;
   font-weight:600;
   color:var(--text);
   letter-spacing:.01em;
+  border-bottom:1px solid var(--line);
+  position:relative;
+}
+.skillgroup h4::after{
+  content:"";
+  position:absolute; left:0; bottom:-1px;
+  width:42px; height:1px;
+  background:var(--grad-accent);
 }
 .skillgroup__list{
   list-style:none; padding:0; margin:0;
@@ -1759,6 +1799,8 @@ section{
   position:relative;
   padding-left:15px;
   font-size:14px; line-height:1.45; color:#d2d4f0;
+  display:flex; flex-wrap:wrap; align-items:baseline;
+  column-gap:10px;
 }
 .skillgroup__list li::before{
   content:"▸";
@@ -1767,12 +1809,49 @@ section{
 }
 .skillgroup__k{ font-weight:500; color:var(--text); }
 .skillgroup__d{
+  flex:1 1 100%;
   display:block;
   font-family:"Proto Nerd Font Regular", monospace;
   font-size:11px; letter-spacing:.03em;
   color:var(--text-dim);
   margin-top:2px;
 }
+
+/* dotted leader — fills the gap between a row's label and its right-side tag */
+.dotlead{
+  flex:1 1 auto;
+  min-width:18px;
+  border-bottom:1px dotted rgba(255,255,255,.18);
+  transform:translateY(-4px);
+}
+
+/* context chip — states where a module actually runs (no invented levels) */
+.chip{
+  flex:0 0 auto;
+  align-self:center;
+  font-family:"Proto Nerd Font Regular", monospace;
+  font-size:8.5px; letter-spacing:.16em;
+  line-height:1;
+  padding:3px 7px 2px;
+  text-transform:uppercase;
+  border:1px solid var(--line-strong);
+  color:var(--text-dim);
+  white-space:nowrap;
+}
+.chip--prod{     color:var(--acc-ok);  border-color:rgba(61,255,165,.35);  background:rgba(61,255,165,.05); }
+.chip--work{     color:var(--acc-cy);  border-color:rgba(91,138,255,.4);   background:rgba(91,138,255,.06); }
+.chip--daily{    color:var(--acc-mag); border-color:rgba(165,148,255,.35); background:rgba(165,148,255,.05); }
+.chip--lab{      color:var(--text-dim); }
+.chip--learning{ color:var(--acc-amb); border-color:rgba(255,181,71,.35);  background:rgba(255,181,71,.05); }
+
+.skills__legend{
+  display:flex; flex-wrap:wrap; align-items:center;
+  gap:8px 10px;
+  margin-top:12px;
+  font-size:10px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--text-ghost);
+}
+.skills__legend .chip{ transform:translateY(-1px); }
 
 .skills__foot{
   display:grid;
@@ -1786,7 +1865,7 @@ section{
   list-style:none; padding:0; margin:0;
 }
 .skillgroup--lang .langs li{
-  display:flex; align-items:baseline; justify-content:space-between;
+  display:flex; align-items:baseline;
   gap:12px; padding:8px 0;
   border-bottom:1px dashed var(--line);
   font-size:14.5px; color:#d2d4f0;
@@ -1854,21 +1933,38 @@ section{
 .hostcard[data-state="unreach"] .hostcard__dot,
 .hostcard[data-state="unknown"] .hostcard__dot{ background:var(--text-ghost); box-shadow:none; }
 .hostcard__role{ color:var(--text-ghost); letter-spacing:.1em; font-size:9px; }
+/* metric rows: label · meter track · value — console style, banded colors */
 .hostcard__metrics{
-  display:grid; grid-template-columns:repeat(4, 1fr); gap:1px;
-  background:var(--line); border:1px solid var(--line);
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:5px 14px;
 }
 .hostcard__m{
-  background:rgba(0,0,0,.32);
-  padding:6px 4px 5px;
-  display:flex; flex-direction:column; align-items:center; gap:2px;
+  display:grid; grid-template-columns:26px 1fr auto;
+  align-items:center; gap:7px;
+}
+.hostcard__m--plain{ grid-template-columns:26px 1fr; }
+.hostcard__m--plain .hostcard__mv{ justify-self:end; }
+.hostcard__ml{ font-size:8px; letter-spacing:.16em; color:var(--text-ghost); }
+.hostcard__track{
+  position:relative;
+  height:4px;
+  background:rgba(255,255,255,.07);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
+  overflow:hidden;
+}
+.hostcard__track i{
+  position:absolute; left:0; top:0; bottom:0;
+  background:linear-gradient(90deg, var(--acc-cy), #7da4ff);
+  box-shadow:0 0 6px rgba(91,138,255,.5);
 }
 .hostcard__mv{
   font-family:"Proto Nerd Font Regular", monospace;
-  font-size:14px; line-height:1; color:var(--text);
+  font-size:11px; line-height:1; color:var(--text);
+  min-width:32px; text-align:right;
   text-shadow:0 0 8px rgba(91,138,255,.3);
 }
-.hostcard__ml{ font-size:7.5px; letter-spacing:.18em; color:var(--text-dim); }
+.hostcard__m[data-band="warn"] .hostcard__track i{ background:var(--acc-amb); box-shadow:0 0 6px rgba(255,181,71,.5); }
+.hostcard__m[data-band="crit"] .hostcard__track i{ background:var(--acc-red); box-shadow:0 0 6px rgba(255,103,103,.55); }
 .hostcard__m[data-band="warn"] .hostcard__mv{ color:var(--acc-amb); text-shadow:0 0 8px rgba(255,181,71,.4); }
 .hostcard__m[data-band="crit"] .hostcard__mv{ color:var(--acc-red); text-shadow:0 0 8px rgba(255,103,103,.45); }
 .opsbrd__foot{
@@ -3648,6 +3744,53 @@ html.setmode .setbar{ display:flex; }
 .setbar__links a{ color:var(--text-dim); text-decoration:none; transition:color .2s; }
 .setbar__links a:hover{ color:var(--acc-cy); }
 .setbar__sep{ opacity:.5; }
+
+/* ================================================================
+   MOBILE SECTION NAV — fixed bottom bar, shown only where the
+   header .nav__links are hidden (<=768px). Setbar-styled.
+   ================================================================ */
+.mnav{
+  position:fixed; left:0; right:0; bottom:0;
+  z-index:150;
+  display:none;
+  align-items:stretch;
+  padding:0 6px;
+  padding-bottom:env(safe-area-inset-bottom);
+  background:rgba(7,7,11,.88);
+  -webkit-backdrop-filter:blur(7px);
+  backdrop-filter:blur(7px);
+  border-top:1px solid var(--line);
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.mnav::-webkit-scrollbar{ display:none; }
+.mnav a{
+  flex:1 0 auto;
+  position:relative;
+  display:flex; align-items:center; justify-content:center;
+  min-height:46px;
+  padding:0 12px;
+  font-size:9.5px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--text-dim);
+  text-decoration:none;
+  white-space:nowrap;
+  transition:color .2s;
+}
+.mnav a::after{
+  content:"";
+  position:absolute; left:12px; right:12px; bottom:7px;
+  height:1px;
+  background:var(--grad-accent);
+  opacity:0;
+  transition:opacity .2s;
+}
+.mnav a.is-current{ color:var(--acc-cy); }
+.mnav a.is-current::after{ opacity:.9; }
+@media (max-width: 768px){
+  .mnav{ display:flex; }
+  /* keep the fixed bar from covering the footer end (index only — legal.html has no bar) */
+  body:has(.mnav){ padding-bottom:calc(46px + env(safe-area-inset-bottom)); }
+}
 
 /* ----- exit glitch ----- */
 html.setmode .set-exit { animation: setOut .32s ease-in both; }

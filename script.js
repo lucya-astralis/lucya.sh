@@ -10,6 +10,16 @@
     {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
   ));
 
+  // ---------- SPLASH : boot mode -----------------------------------
+  // full cinematic boot on the first load of a session; every load after
+  // that gets a ~2s short boot. any key / tap skips straight to the page.
+  let bootSeen = false;
+  try {
+    bootSeen = sessionStorage.getItem('lucya-boot') === '1';
+    sessionStorage.setItem('lucya-boot', '1');
+  } catch (e) { /* storage blocked — always run the full boot */ }
+  const BOOT_READY_MS = bootSeen ? 1600 : 7400;
+
   // ---------- SPLASH : session id + boot log ---------------------
   const sessionEl = document.getElementById('splashSession');
   if (sessionEl){
@@ -50,7 +60,8 @@
   // progress only starts once the whole splash UI has built in.
   // UI reveal timing (CSS): corners 0.05-0.42s, log 0.55s, bottom 0.95s.
   // Log lines stream in from ~1.25s onward; we kick progress just after.
-  const PROGRESS_START_DELAY = 1250;
+  // short boot: start almost immediately and tick faster.
+  const PROGRESS_START_DELAY = bootSeen ? 250 : 1250;
   const progressPct = document.getElementById('splashProgress');
   const progressFill = document.getElementById('splashProgressFill');
   if (progressPct && progressFill) {
@@ -76,7 +87,7 @@
       progressPct.textContent = `${pad2(p)}%`;
       progressFill.style.width = p + '%';
       revealLogs();
-      setTimeout(tick, 160 + Math.random() * 260);
+      setTimeout(tick, bootSeen ? 60 + Math.random() * 90 : 160 + Math.random() * 260);
     };
     setTimeout(tick, PROGRESS_START_DELAY);
   }
@@ -86,43 +97,8 @@
   const revealTargets = revealSelectors.flatMap(sel => Array.from(document.querySelectorAll(sel)));
   revealTargets.forEach(el => el.classList.add('reveal-block'));
 
-  // splash lockdown + body scroll toggle
+  // splash lockdown — released by the boot handoff at the end of this file
   document.body.style.overflow = 'hidden';
-  // flip body -> ready slightly before the splash fade finishes,
-  // so nav/pcard/hero-side are flickering in as the splash fades away.
-  setTimeout(() => {
-    document.body.classList.add('is-ready');
-    // start observing below-fold blocks now — reveal as user scrolls past them
-    if ('IntersectionObserver' in window){
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting){
-            e.target.classList.add('is-visible');
-            io.unobserve(e.target);
-          }
-        });
-      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
-      // .about and .photos sit high enough to already be in view on load, so the
-      // observer would reveal them without any scroll. Gate them behind the first
-      // user scroll so they always play the reveal animation on scroll instead.
-      const scrollGated = revealTargets.filter(el => el.matches('.about, .photos'));
-      revealTargets.filter(el => !scrollGated.includes(el)).forEach(el => io.observe(el));
-      if (scrollGated.length){
-        // the page scrolls on <body> (overflow-y:auto), whose scroll events don't
-        // bubble to window — capture on document so we catch the first scroll.
-        document.addEventListener('scroll', () => {
-          scrollGated.forEach(el => io.observe(el));
-        }, { passive: true, once: true, capture: true });
-      }
-    } else {
-      revealTargets.forEach(el => el.classList.add('is-visible'));
-    }
-  }, 7400);
-  setTimeout(() => {
-    const splash = document.getElementById('splash');
-    if (splash) splash.classList.add('is-done');
-    document.body.style.overflow = '';
-  }, 8000);
 
   // ---------- SPLASH LOGO BUILD ----------------------------------
   (function splashLogoBuild(){
@@ -1192,10 +1168,19 @@
       if (ovAge) ovAge.textContent = fmtAge();
     };
 
-    const cell = (val, label, b) =>
-      `<div class="hostcard__m"${b ? ` data-band="${b}"` : ''}>` +
-      `<span class="hostcard__mv">${val}</span>` +
-      `<span class="hostcard__ml mono">${label}</span></div>`;
+    // metric row: label · meter track · value. pct drives the track width
+    // (temp is scaled against 90°C); UP has no sensible 0-100 scale → plain row.
+    const meter = (label, val, pctRaw, b) => {
+      const w = pctRaw == null ? 0 : Math.min(100, Math.max(0, pctRaw));
+      return `<div class="hostcard__m"${b ? ` data-band="${b}"` : ''}>` +
+        `<span class="hostcard__ml mono">${label}</span>` +
+        `<span class="hostcard__track"><i style="width:${w.toFixed(0)}%"></i></span>` +
+        `<span class="hostcard__mv mono">${val}</span></div>`;
+    };
+    const plainCell = (label, val) =>
+      `<div class="hostcard__m hostcard__m--plain">` +
+      `<span class="hostcard__ml mono">${label}</span>` +
+      `<span class="hostcard__mv mono">${val}</span></div>`;
 
     const hostCard = (h) => {
       const cpu  = h.cpu_pct  != null ? `${Math.round(h.cpu_pct)}%` : '—';
@@ -1211,7 +1196,10 @@
           (h.role ? `<span class="hostcard__role">${escHtml(h.role)}</span>` : '') +
         `</div>` +
         `<div class="hostcard__metrics">` +
-          cell(cpu, 'CPU', cpuB) + cell(mem, 'MEM', memB) + cell(temp, 'TEMP', tmpB) + cell(up, 'UP', '') +
+          meter('CPU', cpu, h.cpu_pct, cpuB) +
+          meter('MEM', mem, h.mem_pct, memB) +
+          meter('TMP', temp, h.temp_c != null ? h.temp_c / 90 * 100 : null, tmpB) +
+          plainCell('UP', up) +
         `</div></article>`;
     };
 
@@ -1257,13 +1245,70 @@
     setInterval(tickAge, 1000);
   })();
 
-  // ---------- ENABLE SCRAMBLE ON STATIC LABELS -------------------
-  // wait for splash to fade so the decoder reveal coincides with content reveal
-  setTimeout(() => {
-    scrambleOnView(Array.from(document.querySelectorAll('.section__slug .name')));
-    scrambleOnView(Array.from(document.querySelectorAll('.stat__value')));
-    scrambleOnView(Array.from(document.querySelectorAll('.section__doc b')));
-  }, 7600);
+  // ---------- SPLASH : handoff to page (timed boot or skip) -------
+  // flips body -> ready as the splash fade starts, so nav/pcard/hero-side
+  // flicker in while the splash fades away. runs once, from the boot timer
+  // or earlier via the skip listeners.
+  const splashEl = document.getElementById('splash');
+
+  let revealStarted = false;
+  const startReveal = () => {
+    if (revealStarted) return;
+    revealStarted = true;
+    // observe below-fold blocks — reveal as the user scrolls past them
+    if ('IntersectionObserver' in window){
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting){
+            e.target.classList.add('is-visible');
+            io.unobserve(e.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+      // .about and .photos sit high enough to already be in view on load, so the
+      // observer would reveal them without any scroll. Gate them behind the first
+      // user scroll so they always play the reveal animation on scroll instead.
+      const scrollGated = revealTargets.filter(el => el.matches('.about, .photos'));
+      revealTargets.filter(el => !scrollGated.includes(el)).forEach(el => io.observe(el));
+      if (scrollGated.length){
+        // the page scrolls on <body> (overflow-y:auto), whose scroll events don't
+        // bubble to window — capture on document so we catch the first scroll.
+        document.addEventListener('scroll', () => {
+          scrollGated.forEach(el => io.observe(el));
+        }, { passive: true, once: true, capture: true });
+      }
+    } else {
+      revealTargets.forEach(el => el.classList.add('is-visible'));
+    }
+    // decoder reveal on static labels, just after content flickers in
+    setTimeout(() => {
+      scrambleOnView(Array.from(document.querySelectorAll('.section__slug .name')));
+      scrambleOnView(Array.from(document.querySelectorAll('.stat__value')));
+      scrambleOnView(Array.from(document.querySelectorAll('.section__doc b')));
+    }, 200);
+  };
+
+  let splashFinished = false;
+  const finishSplash = () => {
+    if (splashFinished) return;
+    splashFinished = true;
+    clearTimeout(bootTimer);
+    window.removeEventListener('keydown', skipBoot);
+    if (splashEl){
+      splashEl.removeEventListener('pointerdown', skipBoot);
+      // is-complete snaps the progress UI to done, is-done starts the fade
+      splashEl.classList.add('is-complete', 'is-done');
+    }
+    document.body.classList.add('is-ready');
+    startReveal();
+    // unlock scroll once the .6s fade is over
+    setTimeout(() => { document.body.style.overflow = ''; }, 600);
+  };
+  const skipBoot = () => finishSplash();
+
+  const bootTimer = setTimeout(finishSplash, BOOT_READY_MS);
+  window.addEventListener('keydown', skipBoot);
+  if (splashEl) splashEl.addEventListener('pointerdown', skipBoot);
 
   // ---------- KPI BAR RELOCATION (mobile under profile) ----------
   const kpiBar = document.querySelector('.kpibar');
@@ -1284,6 +1329,25 @@
     };
     place();
     mq.addEventListener('change', place);
+  }
+
+  // ---------- MOBILE NAV : current-section highlight --------------
+  const mnav = document.querySelector('.mnav');
+  if (mnav && 'IntersectionObserver' in window){
+    const links = Array.from(mnav.querySelectorAll('a[href^="#"]'));
+    const linkById = {};
+    links.forEach(a => { linkById[a.getAttribute('href').slice(1)] = a; });
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const active = linkById[e.target.id];
+        if (active) links.forEach(l => l.classList.toggle('is-current', l === active));
+      });
+    }, { rootMargin: '-35% 0px -55% 0px' });
+    Object.keys(linkById).forEach(id => {
+      const sec = document.getElementById(id);
+      if (sec) spy.observe(sec);
+    });
   }
 
 })();
