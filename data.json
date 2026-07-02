@@ -3,12 +3,12 @@
 
   "ticker": [
     { "tag": "SYS",   "text": "aoi.inter-astra.local · uptime 03d 23h 33m" },
-    { "tag": "OPS",   "text": "15/15 services up · self-hosted · best effort" },
+    { "tag": "OPS",   "text": "15/15 services up · proudly self hosted in the EU" },
     { "tag": "NET",   "text": "uplink NODE-01 · 802.11ac · 98% signal" },
     { "tag": "SYS",   "text": "Try Michaelsoft Binbows · new release available" },
-    { "tag": "BUILD", "text": "astraOS @ 11-stable · kernel 6.8.0" },
+    { "tag": "BUILD", "text": "astraOS @ 11-stable · kernel 7.0.1" },
     { "tag": "FUEL",  "text": "monster reserves · 67% · resupply scheduled" },
-    { "tag": "BCN",   "text": "astral.express · all systems nominal · CMDR 310217" },
+    { "tag": "BCN",   "text": "lucya.systems · all systems nominal · CMDR 310217" },
     { "tag": "JP",    "text": "オンライン" },
     { "tag": "CAL",   "text": "JP trip · あと {japanDays}日" }
   ],

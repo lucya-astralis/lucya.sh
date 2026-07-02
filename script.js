@@ -806,6 +806,8 @@
       { title: "Rebirth", artist: "SHIMA", cover: "images/spotify_widget/rebirth.jpeg" },  
       { title: "Infohazard", artist: "Ninajirachi", cover: "images/spotify_widget/cover4.png" },
       { title: "Affection Addiction", artist: "VocaloKAT, Aku P", cover: "images/spotify_widget/affection.jpeg" },
+      { title: "Slide", artist: "MRJay", cover: "images/spotify_widget/slide.jpeg" },
+      { title: "one last thing", artist: "vinter", cover: "images/spotify_widget/vinter.jpg" },
       { title: "Heaven", artist: "Allison Wonderland, Ninajirachi", cover: "images/spotify_widget/cover1.png" },      
       { title: "Flesh without Blood", artist: "Grimes", cover: "images/spotify_widget/artangels.png" },      
       { title: "Delicate Weapon", artist: "Grimes", cover: "images/spotify_widget/CPv2.jpg" },
@@ -815,6 +817,7 @@
       { title: "Battery Death", artist: "Ninajirachi", cover: "images/spotify_widget/cover4.png" },
       { title: "Ghostlight", artist: "Skeler, Veela", cover: "images/spotify_widget/Ghostlight.jpeg" },
       { title: "THE BADDEST", artist: "K/DA", cover: "images/spotify_widget/the_baddest.jpg" }
+      
     ];
     const INTERVAL_MS = 5000;
     const coverWrap = document.getElementById('spotifyCover');
