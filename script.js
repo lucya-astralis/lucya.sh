@@ -10,15 +10,38 @@
     {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
   ));
 
+  // ---------- LITE MODE -------------------------------------------
+  // decided by the inline head script (auto-detect + manual override);
+  // here it gates everything that costs CPU/GPU/bandwidth at runtime.
+  const LITE = !!window.LUCYA_LITE;
+
   // ---------- SPLASH : boot mode -----------------------------------
   // full cinematic boot on the first load of a session; every load after
   // that gets a ~2s short boot. any key / tap skips straight to the page.
+  // lite mode always gets the short boot, without video.
   let bootSeen = false;
   try {
     bootSeen = sessionStorage.getItem('lucya-boot') === '1';
     sessionStorage.setItem('lucya-boot', '1');
   } catch (e) { /* storage blocked — always run the full boot */ }
-  const BOOT_READY_MS = bootSeen ? 1600 : 7400;
+  const BOOT_READY_MS = LITE ? 1100 : (bootSeen ? 1600 : 7400);
+
+  // ---------- WALLPAPER VIDEO : single-instance handoff ------------
+  // both <video> tags ship without src; the splash copy starts here,
+  // the wallpaper copy takes over in finishSplash. never both at once,
+  // and in lite mode neither ever loads a byte.
+  const splashVideo = document.querySelector('.splash__video');
+  const wallVideo = document.querySelector('.wallpaper-video');
+  if (!LITE && splashVideo && splashVideo.dataset.src){
+    splashVideo.src = splashVideo.dataset.src;
+    splashVideo.autoplay = true;
+    splashVideo.play?.().catch(() => {});
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (!wallVideo || !wallVideo.src) return;
+    if (document.hidden) wallVideo.pause();
+    else wallVideo.play().catch(() => {});
+  });
 
   // ---------- SPLASH : session id + boot log ---------------------
   const sessionEl = document.getElementById('splashSession');
@@ -87,9 +110,9 @@
       progressPct.textContent = `${pad2(p)}%`;
       progressFill.style.width = p + '%';
       revealLogs();
-      setTimeout(tick, bootSeen ? 60 + Math.random() * 90 : 160 + Math.random() * 260);
+      setTimeout(tick, (bootSeen || LITE) ? 60 + Math.random() * 90 : 160 + Math.random() * 260);
     };
-    setTimeout(tick, PROGRESS_START_DELAY);
+    setTimeout(tick, LITE ? 100 : PROGRESS_START_DELAY);
   }
 
   // ---------- REVEAL : mark below-fold blocks (observer starts post-splash) ----------
@@ -104,6 +127,14 @@
   (function splashLogoBuild(){
     const mainSvg = document.getElementById('splashLogoSvg');
     if (!mainSvg) return;
+    if (LITE){
+      // no draw-in, no shake/burst intervals — final state immediately
+      ['p0','p1','p2','p3','p4','p5'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('drawn', 'filled');
+      });
+      return;
+    }
     const rgbR = document.getElementById('rgbR');
     const rgbB = document.getElementById('rgbB');
     const order = [
@@ -260,6 +291,7 @@
   const scramblers = new WeakMap();
   const scrambleTo = (el, text) => {
     if (!el) return;
+    if (LITE){ el.textContent = String(text); return Promise.resolve(); }
     let s = scramblers.get(el);
     if (!s){ s = new TextScrambler(el); scramblers.set(el, s); }
     return s.setText(String(text));
@@ -335,7 +367,7 @@
   const pokeTrack = document.getElementById('pokewalkTrack');
   if (pokeTrack) {
     const mkRow = () => pokemon.map(f =>
-      `<img src="images/pokemon/${f}" alt="" loading="lazy" />`).join('');
+      `<img src="images/pokemon/${f}" alt="" loading="lazy" decoding="async" />`).join('');
     // two copies for seamless loop
     pokeTrack.innerHTML = mkRow() + mkRow();
   }
@@ -371,7 +403,7 @@
       a.className = 'b81';
       a.title = name;
       a.innerHTML =
-        `<img src="images/88x31 buttons/${file}" alt="${name}" loading="lazy" />` +
+        `<img src="images/88x31 buttons/${file}" alt="${name}" loading="lazy" decoding="async" />` +
         `<span class="b81__name">${name}</span>`;
       frag.appendChild(a);
     });
@@ -402,7 +434,7 @@
       card.target = '_blank';
       card.rel = 'noopener';
       card.innerHTML = `
-        <div class="dcard__logo"><img src="${path}" alt="${url}" loading="lazy" /></div>
+        <div class="dcard__logo"><img src="${path}" alt="${url}" loading="lazy" decoding="async" /></div>
         <div class="dcard__url">${url}</div>
         <div class="dcard__role">${role}</div>
         <div class="dcard__row">
@@ -804,17 +836,17 @@
   if (spotifyCard) {
     const songs = [
       { title: "Rebirth", artist: "SHIMA", cover: "images/spotify_widget/rebirth.jpeg" },  
-      { title: "Infohazard", artist: "Ninajirachi", cover: "images/spotify_widget/cover4.png" },
+      { title: "Infohazard", artist: "Ninajirachi", cover: "images/spotify_widget/cover4.webp" },
       { title: "Affection Addiction", artist: "VocaloKAT, Aku P", cover: "images/spotify_widget/affection.jpeg" },
       { title: "Slide", artist: "MRJay", cover: "images/spotify_widget/slide.jpeg" },
       { title: "one last thing", artist: "vinter", cover: "images/spotify_widget/vinter.jpg" },
-      { title: "Heaven", artist: "Allison Wonderland, Ninajirachi", cover: "images/spotify_widget/cover1.png" },      
-      { title: "Flesh without Blood", artist: "Grimes", cover: "images/spotify_widget/artangels.png" },      
+      { title: "Heaven", artist: "Allison Wonderland, Ninajirachi", cover: "images/spotify_widget/cover1.webp" },
+      { title: "Flesh without Blood", artist: "Grimes", cover: "images/spotify_widget/artangels.webp" },
       { title: "Delicate Weapon", artist: "Grimes", cover: "images/spotify_widget/CPv2.jpg" },
       { title: "FORTUNE", artist: "SAKUREYE", cover: "images/spotify_widget/fortune.jpg" },
       { title: "Darling Game Over Love", artist: "MAIKI P", cover: "images/spotify_widget/maikip.jpg" },
       { title: "Elevate", artist: "Sub Focus", cover: "images/spotify_widget/cover3.jpeg" },
-      { title: "Battery Death", artist: "Ninajirachi", cover: "images/spotify_widget/cover4.png" },
+      { title: "Battery Death", artist: "Ninajirachi", cover: "images/spotify_widget/cover4.webp" },
       { title: "Ghostlight", artist: "Skeler, Veela", cover: "images/spotify_widget/Ghostlight.jpeg" },
       { title: "THE BADDEST", artist: "K/DA", cover: "images/spotify_widget/the_baddest.jpg" }
       
@@ -847,7 +879,12 @@
     dotsEl.appendChild(dotFrag);
     const dotEls = Array.from(dotsEl.children);
 
-    songs.forEach(s => { const i = new Image(); i.src = s.cover; });
+    // preload only the upcoming cover instead of all of them at once —
+    // saves a burst of ~14 requests on page load
+    const preloadNext = () => {
+      const i = new Image();
+      i.src = songs[(idx + 1) % songs.length].cover;
+    };
 
     let idx = 0;
     let tickStart = 0;
@@ -891,6 +928,7 @@
         coverWrap.classList.remove('is-swap');
         meta.classList.remove('is-swap');
         startElapsed();
+        preloadNext();
         if (onAfterRender) onAfterRender();
       }, 300);
     };
@@ -934,7 +972,7 @@
         li.innerHTML =
           '<button type="button" class="manifest__row" data-idx="' + i + '">' +
             '<span class="manifest__idx mono">' + pad2(i + 1) + '</span>' +
-            '<span class="manifest__thumb"><img src="' + s.cover + '" alt="" loading="lazy" /></span>' +
+            '<span class="manifest__thumb"><img src="' + s.cover + '" alt="" loading="lazy" decoding="async" /></span>' +
             '<span class="manifest__txt">' +
               '<span class="manifest__title">' + escHtml(s.title) + '</span>' +
               '<span class="manifest__artist">' + escHtml(s.artist) + '</span>' +
@@ -994,8 +1032,24 @@
       onAfterRender = () => { if (!manifest.hidden) markActive(); };
     }
 
+    // rotation + per-frame elapsed timer only run while the card is
+    // actually on screen and the tab is visible — otherwise this widget
+    // burns CPU forever in the background
+    let cardInView = true;
+    const updateRunState = () => {
+      const run = cardInView && !document.hidden;
+      if (run){ schedule(); startElapsed(); }
+      else { clearInterval(timer); stopElapsed(); }
+    };
     render();
-    schedule();
+    updateRunState();
+    if ('IntersectionObserver' in window){
+      new IntersectionObserver((ents) => {
+        cardInView = ents[0].isIntersecting;
+        updateRunState();
+      }, { threshold: 0.05 }).observe(spotifyCard);
+    }
+    document.addEventListener('visibilitychange', updateRunState);
   }
 
   // ---------- TICKER : seamless loop (fallback duplication) -------
@@ -1303,6 +1357,19 @@
       splashEl.classList.add('is-complete', 'is-done');
     }
     document.body.classList.add('is-ready');
+    // video handoff: wallpaper copy starts, splash copy is torn down after
+    // the fade so only one instance ever decodes
+    if (!LITE && wallVideo && wallVideo.dataset.src && !wallVideo.src){
+      wallVideo.src = wallVideo.dataset.src;
+      wallVideo.play?.().catch(() => {});
+    }
+    setTimeout(() => {
+      if (splashVideo){
+        splashVideo.pause?.();
+        splashVideo.removeAttribute('src');
+        splashVideo.load?.();
+      }
+    }, 700);
     startReveal();
     // unlock scroll once the .6s fade is over
     setTimeout(() => { document.body.style.overflow = ''; }, 600);
@@ -1333,6 +1400,26 @@
     place();
     mq.addEventListener('change', place);
   }
+
+  // ---------- LITE TOGGLE : manual override, persists ------------
+  // small fixed chip; switching reloads so every load-time decision
+  // (video, splash, fonts already cached) is applied consistently.
+  (() => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.id = 'liteToggle';
+    btn.className = 'lite-toggle mono';
+    btn.innerHTML = `LITE · <b>${LITE ? 'ON' : 'OFF'}</b>`;
+    btn.title = LITE
+      ? 'lite mode: animations/video off for weak devices — click for the full experience'
+      : 'click to switch to lite mode (less CPU/GPU/data)';
+    btn.setAttribute('aria-pressed', String(LITE));
+    btn.addEventListener('click', () => {
+      try { localStorage.setItem('lucya-lite', LITE ? '0' : '1'); } catch (e) {}
+      location.reload();
+    });
+    document.body.appendChild(btn);
+  })();
 
   // ---------- MOBILE NAV : current-section highlight --------------
   const mnav = document.querySelector('.mnav');

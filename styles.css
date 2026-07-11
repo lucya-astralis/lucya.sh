@@ -112,7 +112,7 @@
 @font-face {
   font-family: 'Space Grotesk';
   src: local('Space Grotesk'),
-       url('./fonts/SpaceGrotesk-VariableFont_wght.ttf') format('truetype-variations');
+       url('./fonts/SpaceGrotesk-VariableFont_wght.woff2') format('woff2');
   font-weight: 300 700;
   font-style: normal;
   font-display: swap;
@@ -121,7 +121,7 @@
 @font-face {
   font-family: 'Noto Sans JP';
   src: local('Noto Sans JP'),
-       url('./fonts/NotoSansJP-VariableFont_wght.ttf') format('truetype-variations');
+       url('./fonts/NotoSansJP-subset.woff2') format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -130,7 +130,7 @@
 @font-face {
   font-family: 'JetBrains Mono';
   src: local('JetBrains Mono'),
-       url('./fonts/JetBrainsMono-VariableFont_wght.ttf') format('truetype-variations');
+       url('./fonts/JetBrainsMono-VariableFont_wght.woff2') format('woff2');
   font-weight: 100 800;
   font-style: normal;
   font-display: swap;
@@ -138,7 +138,7 @@
 @font-face {
   font-family: 'JetBrains Mono';
   src: local('JetBrains Mono Italic'),
-       url('./fonts/JetBrainsMono-Italic-VariableFont_wght.ttf') format('truetype-variations');
+       url('./fonts/JetBrainsMono-Italic-VariableFont_wght.woff2') format('woff2');
   font-weight: 100 800;
   font-style: italic;
   font-display: swap;
@@ -147,7 +147,7 @@
 @font-face {
   font-family: 'Zen Dots';
   src: local('Zen Dots'),
-       url('./fonts/ZenDots-Regular.ttf') format('truetype');
+       url('./fonts/ZenDots-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -156,7 +156,7 @@
 @font-face {
   font-family: 'Ethnocentric';
   src: local('Ethnocentric'),
-       url('./fonts/Ethnocentric-Regular.otf') format('opentype');
+       url('./fonts/Ethnocentric-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -165,7 +165,7 @@
 @font-face {
   font-family: 'Chakra Petch';
   src: local('Chakra Petch Light'),
-       url('./fonts/ChakraPetch-Light.ttf') format('truetype');
+       url('./fonts/ChakraPetch-Light.woff2') format('woff2');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -173,7 +173,7 @@
 @font-face {
   font-family: 'Chakra Petch';
   src: local('Chakra Petch'),
-       url('./fonts/ChakraPetch-Regular.ttf') format('truetype');
+       url('./fonts/ChakraPetch-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -181,7 +181,7 @@
 @font-face {
   font-family: 'Chakra Petch';
   src: local('Chakra Petch Medium'),
-       url('./fonts/ChakraPetch-Medium.ttf') format('truetype');
+       url('./fonts/ChakraPetch-Medium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -189,7 +189,7 @@
 @font-face {
   font-family: 'Chakra Petch';
   src: local('Chakra Petch SemiBold'),
-       url('./fonts/ChakraPetch-SemiBold.ttf') format('truetype');
+       url('./fonts/ChakraPetch-SemiBold.woff2') format('woff2');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -197,7 +197,7 @@
 @font-face {
   font-family: 'Chakra Petch';
   src: local('Chakra Petch Bold'),
-       url('./fonts/ChakraPetch-Bold.ttf') format('truetype');
+       url('./fonts/ChakraPetch-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -206,7 +206,7 @@
 @font-face {
   font-family: 'Proto Nerd Font';
   src: local('0xProto Nerd Font'),
-       url('./fonts/0xProtoNerdFont-Regular.ttf') format('truetype');
+       url('./fonts/0xProtoNerdFont-subset.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -215,7 +215,7 @@
 @font-face {
   font-family: 'Cascadia Mono';
   src: local('Cascadia Mono'),
-       url('./fonts/CascadiaMono-Regular.ttf') format('truetype');
+       url('./fonts/CascadiaMono-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -224,7 +224,7 @@
 @font-face {
   font-family: 'Whitney';
   src: local('Whitney Book'),
-       url('./fonts/whitney/whitneybook.otf') format('opentype');
+       url('./fonts/whitney/whitneybook.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -232,7 +232,7 @@
 @font-face {
   font-family: 'Whitney';
   src: local('Whitney Medium'),
-       url('./fonts/whitney/whitneymedium.otf') format('opentype');
+       url('./fonts/whitney/whitneymedium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -240,7 +240,7 @@
 @font-face {
   font-family: 'Whitney';
   src: local('Whitney Semibold'),
-       url('./fonts/whitney/whitneysemibold.otf') format('opentype');
+       url('./fonts/whitney/whitneysemibold.woff2') format('woff2');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -248,7 +248,7 @@
 @font-face {
   font-family: 'Whitney';
   src: local('Whitney Bold'),
-       url('./fonts/whitney/whitneybold.otf') format('opentype');
+       url('./fonts/whitney/whitneybold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -258,7 +258,7 @@
 @font-face {
   font-family: 'Chakra Petch Bold';
   src: local('Chakra Petch Bold'),
-       url('./fonts/ChakraPetch-Bold.ttf') format('truetype');
+       url('./fonts/ChakraPetch-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -266,7 +266,7 @@
 @font-face {
   font-family: 'Proto Nerd Font Regular';
   src: local('0xProto Nerd Font'),
-       url('./fonts/0xProtoNerdFont-Regular.ttf') format('truetype');
+       url('./fonts/0xProtoNerdFont-subset.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -3896,4 +3896,96 @@ html.setmode .sethint{ display:flex; }
 /* a11y */
 @media (prefers-reduced-motion: reduce){
   *{ animation:none !important; transition:none !important; }
+  /* animation-driven reveals (opacity:0 base + keyframes with fill:both)
+     never reach their visible end state once animations are off — force it */
+  .reveal-block.is-visible{ opacity:1; }
+  .splash__corner,
+  .splash__log,
+  .splash__log li.is-in,
+  .splash__bottom,
+  .splash__skip{ opacity:1; }
+}
+
+/* ================================================================
+   RENDER BUDGET — skip layout/paint for offscreen sections in the
+   normal scroll layout (set-mode manages its own visibility).
+   `auto` intrinsic sizes self-correct after first paint.
+   ================================================================ */
+html:not(.setmode) .about,
+html:not(.setmode) .interests,
+html:not(.setmode) .skills,
+html:not(.setmode) .ops,
+html:not(.setmode) .buttons,
+html:not(.setmode) .neofetch,
+html:not(.setmode) .services,
+html:not(.setmode) .spotify,
+html:not(.setmode) .photos,
+html:not(.setmode) .games,
+html:not(.setmode) .foot{
+  content-visibility:auto;
+  contain-intrinsic-size:auto 620px;
+}
+
+/* ================================================================
+   LITE MODE — html.lite (weak devices / data-saver / manual toggle,
+   decided by the inline head script). Kills every animation, every
+   blur and every fullscreen composite layer; the wallpaper video is
+   replaced by a static still. The page stays fully functional.
+   ================================================================ */
+html.lite *,
+html.lite *::before,
+html.lite *::after{
+  animation:none !important;
+  transition:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+/* the animation kill-switch would leave the splash stuck — hide statically
+   (same trick as the reduced-motion rule above) */
+html.lite .splash.is-done{ opacity:0; visibility:hidden; }
+/* animation-driven reveals need their end state forced (see reduced-motion) */
+html.lite .reveal-block.is-visible{ opacity:1; }
+html.lite .splash__corner,
+html.lite .splash__log,
+html.lite .splash__log li.is-in,
+html.lite .splash__bottom,
+html.lite .splash__skip{ opacity:1; }
+html.lite .ticker__track{ padding-left:14px; }
+/* fullscreen overlays: animated scanlines + blend modes cost a composited
+   pass over the whole viewport on every frame — drop them */
+html.lite body::before,
+html.lite body::after,
+html.lite .splash__scanlines,
+html.lite .splash__vignette{ display:none; }
+/* no video — static wallpaper still under the usual overlay gradients */
+html.lite .wallpaper-video,
+html.lite .splash__video{ display:none; }
+html.lite .wallpaper-overlay{
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.03) 1px, transparent 1px),
+    radial-gradient(ellipse at 22% 52%, rgba(40,90,220,0.18) 0%, transparent 45%),
+    radial-gradient(ellipse at 80% 50%, rgba(120,60,220,0.10) 0%, transparent 50%),
+    linear-gradient(rgba(6,8,14,0.74), rgba(4,5,10,0.88)),
+    url(images/wallpaper/jp1.jpg);
+  background-size: 32px 32px, 32px 32px, auto, auto, auto, cover;
+  background-position: 0 0, 0 0, 22% 52%, 80% 50%, 0 0, center;
+  background-repeat: repeat, repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+}
+
+/* ----- lite toggle chip (created by script.js) ----- */
+.lite-toggle{
+  position:fixed; left:10px; bottom:10px; z-index:170;
+  font-size:10px; letter-spacing:.14em;
+  color:var(--text-dim);
+  background:rgba(5,6,12,.82);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:3px;
+  padding:5px 9px;
+}
+.lite-toggle b{ color:var(--acc-cy); font-weight:600; }
+.lite-toggle:hover{ color:var(--text); border-color:rgba(255,255,255,.3); }
+html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
+@media (max-width: 768px){
+  .lite-toggle{ bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }
 }

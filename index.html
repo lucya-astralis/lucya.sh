@@ -25,7 +25,7 @@
 <meta property="og:title" content="LUCYA // LUCYA.SH" />
 <meta property="og:description" content="Personal site of lucya, a sysadmin, Homelabs, servers, retro tech, space, anime and creative web projects." />
 <meta property="og:url" content="https://lucya.sh/" />
-<meta property="og:image" content="https://lucya.sh/images/card.png" />
+<meta property="og:image" content="https://lucya.sh/images/card.jpg" />
 <meta property="og:image:alt" content="lucya - personal website" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:locale:alternate" content="ja_JP" />
@@ -35,13 +35,37 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="LUCYA // LUCYA.SH" />
 <meta name="twitter:description" content="Personal site of lucya, a sysadmin, Homelabs, servers, retro tech, space, anime and creative web projects." />
-<meta name="twitter:image" content="https://lucya.sh/images/card.png" />
+<meta name="twitter:image" content="https://lucya.sh/images/card.jpg" />
 <meta name="twitter:image:alt" content="lucya - personal website" />
 
 <!-- Resource hints -->
 <link rel="preload" href="styles.css" as="style" />
 <link rel="preload" href="data.json" as="fetch" crossorigin="anonymous" />
 <link rel="stylesheet" href="styles.css" />
+
+<!-- LITE MODE: decide before first paint so html.lite styles apply everywhere.
+     auto-on for weak hardware / data-saver / reduced-motion; manual override
+     via the LITE toggle (localStorage) wins in both directions. -->
+<script>
+(function(){
+  var lite = null;
+  try {
+    var s = localStorage.getItem('lucya-lite');
+    if (s === '1') lite = true; else if (s === '0') lite = false;
+  } catch(e){}
+  if (lite === null){
+    var n = navigator;
+    var mem = n.deviceMemory || 8;
+    var cores = n.hardwareConcurrency || 8;
+    var save = !!(n.connection && n.connection.saveData);
+    var reduced = false;
+    try { reduced = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e){}
+    lite = mem <= 4 || cores <= 4 || save || reduced;
+  }
+  window.LUCYA_LITE = lite;
+  if (lite) document.documentElement.classList.add('lite');
+})();
+</script>
 
 <!-- Structured data: Person + WebSite -->
 <script type="application/ld+json">
@@ -54,7 +78,7 @@
       "name": "lucya",
       "alternateName": "ルシア",
       "url": "https://lucya.sh/",
-      "image": "https://lucya.sh/images/profile/pfp/pfp.png",
+      "image": "https://lucya.sh/images/profile/pfp/regra.webp",
       "jobTitle": " / Sysadmin",
       "address": {
         "@type": "PostalAddress",
@@ -77,18 +101,16 @@
 </head>
 <body>
 
-<video class="wallpaper-video" autoplay muted loop playsinline>
-  <source src="images/wallpaper/f.mp4" type="video/mp4">
-</video>
+<!-- src is attached by script.js after the splash hands off, so only one
+     copy of the video is ever decoding; in lite mode it never loads at all -->
+<video class="wallpaper-video" muted loop playsinline preload="none" aria-hidden="true" data-src="images/wallpaper/f.mp4"></video>
 <div class="wallpaper-overlay" aria-hidden="true"></div>
 
 <!-- ============================================================= -->
 <!-- SPLASH SCREEN                                                  -->
 <!-- ============================================================= -->
 <div id="splash" class="splash" aria-hidden="true">
-  <video class="splash__video" autoplay muted loop playsinline>
-    <source src="images/wallpaper/f.mp4" type="video/mp4">
-  </video>
+  <video class="splash__video" muted loop playsinline preload="none" aria-hidden="true" data-src="images/wallpaper/f.mp4"></video>
   <div class="splash__bg"></div>
   <div class="splash__scanlines"></div>
   <div class="splash__vignette"></div>
@@ -402,7 +424,7 @@
     <!-- profile card -->
     <aside class="pcard">
       <div class="pcard__banner">
-        <img src="images/profile/profilebanner.gif" alt="" />
+        <img src="images/profile/profilebanner.webp" alt="" width="426" height="240" loading="lazy" decoding="async" />
         <div class="pcard__countdown">
           <span>あと</span><span id="countdownDays">114</span><span>日</span>
         </div>
@@ -410,8 +432,8 @@
 
       <div class="pcard__pfp">
         <div class="pcard__pfp-ring">
-          <img class="pcard__pfp-img" src="images/profile/pfp/regra.png" alt="" />
-          <img class="pcard__pfp-frame" src="images/profile/pfp/pfprahmen.png" alt="" />
+          <img class="pcard__pfp-img" src="images/profile/pfp/regra.webp" alt="" />
+          <img class="pcard__pfp-frame" src="images/profile/pfp/pfprahmen.webp" alt="" />
         </div>
         <span class="pcard__status-dot" title="online"></span>
       </div>
@@ -428,7 +450,7 @@
           <img src="images/profile/badges/homelab.png" alt="homelab" title="homelab" />
           <img src="images/profile/badges/ia.svg" alt="ia" title="inter-astra" />
           <img src="images/profile/badges/my_computer.png" alt="my computer" title="my computer" />
-          <img src="images/profile/badges/siegel.png" alt="siegel" title="certified" />
+          <img src="images/profile/badges/siegel.webp" alt="siegel" title="certified" />
           <img src="images/profile/badges/flag-bavaria.png" alt="bavaria" title="bavaria" />
         </div>
 
@@ -1047,7 +1069,7 @@
   <div class="photos__grid photos__grid--teaser">
     <figure class="photo-card" data-src="images/photos/datacenter.jpeg" data-caption="DATACENTER // Complete homelab setup">
       <div class="photo-card__img-wrap">
-        <img src="images/photos/datacenter.jpeg" alt="Complete homelab — full datacenter setup" loading="lazy" />
+        <img src="images/photos/datacenter.jpeg" alt="Complete homelab — full datacenter setup" loading="lazy" decoding="async" />
         <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
       </div>
       <figcaption class="photo-card__cap">
@@ -1058,7 +1080,7 @@
 
     <figure class="photo-card" data-src="images/photos/server.jpeg" data-caption="SERVER + CRT // Rack server being set up">
       <div class="photo-card__img-wrap">
-        <img src="images/photos/server.jpeg" alt="Rack server and CRT monitor on a bed — being set up" loading="lazy" />
+        <img src="images/photos/server.jpeg" alt="Rack server and CRT monitor on a bed — being set up" loading="lazy" decoding="async" />
         <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
       </div>
       <figcaption class="photo-card__cap">
@@ -1069,7 +1091,7 @@
 
     <figure class="photo-card" data-src="images/photos/wald.jpeg" data-caption="LAN-PARTY // LAN party in the woods">
       <div class="photo-card__img-wrap">
-        <img src="images/photos/wald.jpeg" alt="LAN party in the woods" loading="lazy" />
+        <img src="images/photos/wald.jpeg" alt="LAN party in the woods" loading="lazy" decoding="async" />
         <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
       </div>
       <figcaption class="photo-card__cap">
@@ -1080,7 +1102,7 @@
 
     <figure class="photo-card" data-src="images/photos/wallserver.jpeg" data-caption="WALL SERVER // Server as wall decoration">
       <div class="photo-card__img-wrap">
-        <img src="images/photos/wallserver.jpeg" alt="Server rack mounted as wall decoration" loading="lazy" />
+        <img src="images/photos/wallserver.jpeg" alt="Server rack mounted as wall decoration" loading="lazy" decoding="async" />
         <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
       </div>
       <figcaption class="photo-card__cap">
@@ -1091,7 +1113,7 @@
 
     <figure class="photo-card" data-src="images/photos/iphone-crt.jpeg" data-caption="iPHONE + CRT // iPhone 17 on a CRT">
       <div class="photo-card__img-wrap">
-        <img src="images/photos/iphone-crt.jpeg" alt="iPhone 17 connected to a CRT monitor" loading="lazy" />
+        <img src="images/photos/iphone-crt.jpeg" alt="iPhone 17 connected to a CRT monitor" loading="lazy" decoding="async" />
         <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
       </div>
       <figcaption class="photo-card__cap">
@@ -1102,7 +1124,7 @@
 
     <figure class="photo-card" data-src="images/photos/iphones.jpeg" data-caption="iPHONE COLLECTION // Part of the collection">
       <div class="photo-card__img-wrap">
-        <img src="images/photos/iphones.jpeg" alt="Part of the iPhone collection" loading="lazy" />
+        <img src="images/photos/iphones.jpeg" alt="Part of the iPhone collection" loading="lazy" decoding="async" />
         <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
       </div>
       <figcaption class="photo-card__cap">
@@ -1113,7 +1135,7 @@
 
     <figure class="photo-card" data-src="images/photos/server-macbook.jpeg" data-caption="SERVER MACBOOK // MacBook running as a server">
       <div class="photo-card__img-wrap">
-        <img src="images/photos/server-macbook.jpeg" alt="MacBook repurposed as a server" loading="lazy" />
+        <img src="images/photos/server-macbook.jpeg" alt="MacBook repurposed as a server" loading="lazy" decoding="async" />
         <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
       </div>
       <figcaption class="photo-card__cap">
@@ -1124,7 +1146,7 @@
 
     <figure class="photo-card" data-src="images/photos/lain.jpeg" data-caption="LAIN // A tribute to the virtual world">
       <div class="photo-card__img-wrap">
-        <img src="images/photos/lain.jpeg" alt="Lain, the protagonist of the anime 'Serial Experiments Lain'" loading="lazy" />
+        <img src="images/photos/lain.jpeg" alt="Lain, the protagonist of the anime 'Serial Experiments Lain'" loading="lazy" decoding="async" />
         <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
       </div>
       <figcaption class="photo-card__cap">
@@ -1135,7 +1157,7 @@
 
     <figure class="photo-card" data-src="images/photos/blahaj.jpeg" data-caption="BLAHAJ // A cute plushie companion">
       <div class="photo-card__img-wrap">
-        <img src="images/photos/blahaj.jpeg" alt="BLAHAJ, the cute plushie" loading="lazy" />
+        <img src="images/photos/blahaj.jpeg" alt="BLAHAJ, the cute plushie" loading="lazy" decoding="async" />
         <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
       </div>
       <figcaption class="photo-card__cap">
@@ -1180,7 +1202,7 @@
   <div class="games__grid">
     <article class="game-card">
       <div class="game-card__img-wrap">
-        <img src="images/game_images/ED.webp" alt="Elite: Dangerous" loading="lazy" />
+        <img src="images/game_images/ED.webp" alt="Elite: Dangerous" loading="lazy" decoding="async" />
         <span class="game-card__tag mono">G · 01</span>
       </div>
       <div class="game-card__cap">
@@ -1191,7 +1213,7 @@
 
     <article class="game-card">
       <div class="game-card__img-wrap">
-        <img src="images/game_images/starcitizen.webp" alt="Star Citizen" loading="lazy" />
+        <img src="images/game_images/starcitizen.webp" alt="Star Citizen" loading="lazy" decoding="async" />
         <span class="game-card__tag mono">G · 02</span>
       </div>
       <div class="game-card__cap">
@@ -1202,7 +1224,7 @@
 
     <article class="game-card">
       <div class="game-card__img-wrap">
-        <img src="images/game_images/cyberpunk.webp" alt="Cyberpunk 2077" loading="lazy" />
+        <img src="images/game_images/cyberpunk.webp" alt="Cyberpunk 2077" loading="lazy" decoding="async" />
         <span class="game-card__tag mono">G · 03</span>
       </div>
       <div class="game-card__cap">
@@ -1213,7 +1235,7 @@
 
     <article class="game-card">
       <div class="game-card__img-wrap">
-        <img src="images/game_images/ghost.webp" alt="Ghost of Tsushima" loading="lazy" />
+        <img src="images/game_images/ghost.webp" alt="Ghost of Tsushima" loading="lazy" decoding="async" />
         <span class="game-card__tag mono">G · 04</span>
       </div>
       <div class="game-card__cap">
@@ -1224,7 +1246,7 @@
 
     <article class="game-card">
       <div class="game-card__img-wrap">
-        <img src="images/game_images/forzahorizon6.webp" alt="Forza Horizon 6" loading="lazy" />
+        <img src="images/game_images/forzahorizon6.webp" alt="Forza Horizon 6" loading="lazy" decoding="async" />
         <span class="game-card__tag mono">G · 05</span>
       </div>
       <div class="game-card__cap">
@@ -1235,7 +1257,7 @@
 
     <article class="game-card">
       <div class="game-card__img-wrap">
-        <img src="images/game_images/hsr.webp" alt="Honkai: Star Rail" loading="lazy" />
+        <img src="images/game_images/hsr.webp" alt="Honkai: Star Rail" loading="lazy" decoding="async" />
         <span class="game-card__tag mono">G · 06</span>
       </div>
       <div class="game-card__cap">
@@ -1246,7 +1268,7 @@
 
     <article class="game-card">
       <div class="game-card__img-wrap">
-        <img src="images/game_images/endfield.webp" alt="Arknights: Endfield" loading="lazy" />
+        <img src="images/game_images/endfield.webp" alt="Arknights: Endfield" loading="lazy" decoding="async" />
         <span class="game-card__tag mono">G · 07</span>
       </div>
       <div class="game-card__cap">
@@ -1257,7 +1279,7 @@
 
     <article class="game-card">
       <div class="game-card__img-wrap">
-        <img src="images/game_images/ftl.webp" alt="FTL: Faster Than Light" loading="lazy" />
+        <img src="images/game_images/ftl.webp" alt="FTL: Faster Than Light" loading="lazy" decoding="async" />
         <span class="game-card__tag mono">G · 08</span>
       </div>
       <div class="game-card__cap">
@@ -1268,7 +1290,7 @@
 
     <article class="game-card">
       <div class="game-card__img-wrap">
-        <img src="images/game_images/worldbox.webp" alt="WorldBox" loading="lazy" />
+        <img src="images/game_images/worldbox.webp" alt="WorldBox" loading="lazy" decoding="async" />
         <span class="game-card__tag mono">G · 09</span>
       </div>
       <div class="game-card__cap">

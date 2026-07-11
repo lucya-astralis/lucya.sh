@@ -20,6 +20,29 @@
 
     <link rel="stylesheet" href="styles.css" />
 
+    <!-- LITE MODE: same detection as index.html so html.lite styles from
+         styles.css (no video, no blur, no animations) apply here too -->
+    <script>
+    (function(){
+      var lite = null;
+      try {
+        var s = localStorage.getItem('lucya-lite');
+        if (s === '1') lite = true; else if (s === '0') lite = false;
+      } catch(e){}
+      if (lite === null){
+        var n = navigator;
+        var mem = n.deviceMemory || 8;
+        var cores = n.hardwareConcurrency || 8;
+        var save = !!(n.connection && n.connection.saveData);
+        var reduced = false;
+        try { reduced = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e){}
+        lite = mem <= 4 || cores <= 4 || save || reduced;
+      }
+      window.LUCYA_LITE = lite;
+      if (lite) document.documentElement.classList.add('lite');
+    })();
+    </script>
+
     <style>
         /* ================================================================
            LEGAL — page-local styles. Inherits fonts/cursor/scanlines/wallpaper
@@ -461,9 +484,21 @@
 </head>
 <body data-lang="en">
 
-    <video class="wallpaper-video" autoplay muted loop playsinline>
-        <source src="images/wallpaper/f.mp4" type="video/mp4">
-    </video>
+    <video class="wallpaper-video" muted loop playsinline preload="none" aria-hidden="true" data-src="images/wallpaper/f.mp4"></video>
+    <script>
+    (function(){
+      var v = document.querySelector('.wallpaper-video');
+      if (v && !window.LUCYA_LITE && v.dataset.src){
+        v.src = v.dataset.src;
+        v.autoplay = true;
+        if (v.play) v.play().catch(function(){});
+      }
+      document.addEventListener('visibilitychange', function(){
+        if (!v || !v.src) return;
+        if (document.hidden) v.pause(); else v.play().catch(function(){});
+      });
+    })();
+    </script>
     <div class="wallpaper-overlay" aria-hidden="true"></div>
 
     <div class="legal-corners">
