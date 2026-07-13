@@ -45,27 +45,9 @@
 
 <!-- LITE MODE: decide before first paint so html.lite styles apply everywhere.
      auto-on for weak hardware / data-saver / reduced-motion; manual override
-     via the LITE toggle (localStorage) wins in both directions. -->
-<script>
-(function(){
-  var lite = null;
-  try {
-    var s = localStorage.getItem('lucya-lite');
-    if (s === '1') lite = true; else if (s === '0') lite = false;
-  } catch(e){}
-  if (lite === null){
-    var n = navigator;
-    var mem = n.deviceMemory || 8;
-    var cores = n.hardwareConcurrency || 8;
-    var save = !!(n.connection && n.connection.saveData);
-    var reduced = false;
-    try { reduced = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e){}
-    lite = mem <= 4 || cores <= 4 || save || reduced;
-  }
-  window.LUCYA_LITE = lite;
-  if (lite) document.documentElement.classList.add('lite');
-})();
-</script>
+     via the LITE toggle (localStorage) wins in both directions.
+     Shared logic lives in lite.js — must stay render-blocking (no defer/async). -->
+<script src="lite.js"></script>
 
 <!-- Structured data: Person + WebSite -->
 <script type="application/ld+json">
@@ -479,7 +461,7 @@
           <a href="https://x.com/lucya_systems" title="x"><img src="images/profile/sociallinks/x.svg" alt="x" /></a>
           <a href="https://www.reddit.com/user/inter-astra/" title="reddit"><img src="images/profile/sociallinks/reddit.svg" alt="reddit" /></a>
           <a href="https://open.spotify.com/user/gadlps6tcin47iedm8uicp28t" title="spotify"><img src="images/profile/sociallinks/spotify.svg" alt="spotify" /></a>
-          <a href="https://steamcommunity.com/id/inter-astra/" title="steam"><img src="images/profile/sociallinks/steam.svg" alt="steam" /></a>
+          <a href="https://steamcommunity.com/id/lucya_systems/" title="steam"><img src="images/profile/sociallinks/steam.svg" alt="steam" /></a>
           <a href="https://inara.cz/elite/cmdr/310217/" title="inara"><img src="images/profile/sociallinks/inara.svg" alt="inara" /></a>
         </div>
       </div>

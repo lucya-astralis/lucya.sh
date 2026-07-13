@@ -11,7 +11,7 @@
   ));
 
   // ---------- LITE MODE -------------------------------------------
-  // decided by the inline head script (auto-detect + manual override);
+  // decided by the head script lite.js (auto-detect + manual override);
   // here it gates everything that costs CPU/GPU/bandwidth at runtime.
   const LITE = !!window.LUCYA_LITE;
 

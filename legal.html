@@ -20,28 +20,10 @@
 
     <link rel="stylesheet" href="styles.css" />
 
-    <!-- LITE MODE: same detection as index.html so html.lite styles from
-         styles.css (no video, no blur, no animations) apply here too -->
-    <script>
-    (function(){
-      var lite = null;
-      try {
-        var s = localStorage.getItem('lucya-lite');
-        if (s === '1') lite = true; else if (s === '0') lite = false;
-      } catch(e){}
-      if (lite === null){
-        var n = navigator;
-        var mem = n.deviceMemory || 8;
-        var cores = n.hardwareConcurrency || 8;
-        var save = !!(n.connection && n.connection.saveData);
-        var reduced = false;
-        try { reduced = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e){}
-        lite = mem <= 4 || cores <= 4 || save || reduced;
-      }
-      window.LUCYA_LITE = lite;
-      if (lite) document.documentElement.classList.add('lite');
-    })();
-    </script>
+    <!-- LITE MODE: shared with index.html via lite.js — same detection so the
+         html.lite styles from styles.css (no video, no blur, no animations)
+         apply here too. Must stay render-blocking (no defer/async). -->
+    <script src="lite.js"></script>
 
     <style>
         /* ================================================================
