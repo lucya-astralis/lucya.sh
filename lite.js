@@ -5,9 +5,14 @@
    <script src="lite.js"></script> in <head> (no defer / no async) — otherwise
    the heavy version flashes for a frame before html.lite is applied.
 
-   Auto-on for weak hardware / data-saver / reduced-motion; a manual override in
-   localStorage('lucya-lite') wins in both directions (toggled by the LITE chip
-   built in script.js). Exposes window.LUCYA_LITE and sets <html class="lite">.
+   Auto-on ONLY for genuinely weak hardware (<= 2 GB RAM or <= 2 cores) or
+   data-saver; a manual override in localStorage('lucya-lite') wins in both
+   directions (toggled by the LITE chip built in script.js). Exposes
+   window.LUCYA_LITE and sets <html class="lite">.
+
+   NOTE: prefers-reduced-motion does NOT force lite here — reduced motion is
+   handled independently by a dedicated @media block in styles.css that kills
+   animations/transitions. Lite stays reserved for weak hardware / data-saver.
    ============================================================================ */
 (function () {
   var lite = null;
@@ -20,9 +25,7 @@
     var mem = n.deviceMemory || 8;
     var cores = n.hardwareConcurrency || 8;
     var save = !!(n.connection && n.connection.saveData);
-    var reduced = false;
-    try { reduced = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-    lite = mem <= 4 || cores <= 4 || save || reduced;
+    lite = mem <= 2 || cores <= 2 || save;
   }
   window.LUCYA_LITE = lite;
   if (lite) document.documentElement.classList.add('lite');
