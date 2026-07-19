@@ -1519,23 +1519,48 @@ section{
   margin-top:8px;
 }
 .hero__stats{
+  position:relative;
   display:grid;
   grid-template-columns: repeat(2, 1fr);
   gap:1px;
   background:var(--line);
-  border:1px solid var(--line);
+  border:1px solid var(--line-strong);
   max-width:none;
   align-self:start;
+  transition:border-color .25s ease, box-shadow .25s ease;
 }
+.hero__stats::before{
+  content:"";
+  position:absolute; left:-1px; right:-1px; top:-1px;
+  height:2px;
+  background:var(--grad-accent-fade);
+  opacity:.6;
+  z-index:1;
+}
+.hero__stats:hover{
+  border-color:rgba(91,138,255,.4);
+  box-shadow:0 0 0 1px rgba(91,138,255,.08), 0 10px 32px rgba(0,0,0,.4);
+}
+.hero__stats-head{
+  grid-column:1 / -1;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:6px 12px;
+  background:var(--surface-2);
+  font-size:10.5px;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:var(--acc-cy);
+}
+.hero__stats-cls{ color:var(--text-dim); letter-spacing:.18em; }
+.hero__stats-cls b{ color:var(--text); font-weight:400; letter-spacing:.14em; }
 
 /* SPEC SHEET — datasheet panel beside hero stats */
 .specsheet{
   position:relative;
   border:1px solid var(--line-strong);
   background:
-    repeating-linear-gradient(180deg,
-      rgba(255,255,255,.02) 0 28px,
-      transparent 28px 56px),
     linear-gradient(180deg, rgba(91,138,255,.03), transparent 60%),
     var(--surface);
   font-family:"Proto Nerd Font Regular", monospace;
@@ -1552,12 +1577,11 @@ section{
   border-color:rgba(91,138,255,.4);
   box-shadow:0 0 0 1px rgba(91,138,255,.08), 0 10px 32px rgba(0,0,0,.4);
 }
-.specsheet:hover .specsheet__row dd{ color:var(--text); }
 .specsheet__head{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:8px 12px;
+  padding:6px 12px;
   border-bottom:1px solid var(--line-strong);
   background:rgba(255,255,255,.04);
   font-size:10.5px;
@@ -1572,17 +1596,22 @@ section{
   padding:0;
   font-size:11.5px;
   letter-spacing:.06em;
-  line-height:1.5;
+  line-height:1.45;
 }
 .specsheet__row{
   display:grid;
   grid-template-columns: 110px 1fr;
   gap:10px;
-  padding:6px 12px;
+  padding:5px 12px;
   border-bottom:1px dashed var(--line);
+  transition:background .15s ease;
 }
 .specsheet__row:last-child{ border-bottom:0; }
-.specsheet__row:nth-child(odd){ background:rgba(255,255,255,.012); }
+/* zebra sits on the rows themselves so the banding always matches
+   the real row heights */
+.specsheet__row:nth-child(even){ background:rgba(255,255,255,.025); }
+.specsheet__row:hover{ background:rgba(91,138,255,.06); }
+.specsheet__row:hover dt{ color:var(--text-dim); }
 .specsheet__list dt{
   color:var(--text-ghost);
   font-size:10px;
@@ -1596,11 +1625,23 @@ section{
   color:var(--text);
   letter-spacing:.04em;
 }
+.specsheet__foot{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:6px 12px;
+  border-top:1px solid var(--line-strong);
+  background:rgba(255,255,255,.02);
+  font-size:9px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--text-ghost);
+}
 .stat{
   position:relative;
   background:var(--surface);
-  padding:18px 20px;
-  display:flex; flex-direction:column; gap:5px;
+  padding:12px 14px;
+  display:flex; flex-direction:column; gap:4px;
   overflow:hidden;
   transition:background .25s ease;
 }
@@ -1624,7 +1665,7 @@ section{
 .stat__value{
   font-family:"Space Grotesk", sans-serif;
   font-weight:600;
-  font-size:20px;
+  font-size:18px;
   letter-spacing:.02em;
   color:var(--text);
   transition:color .25s ease, text-shadow .25s ease;
@@ -1634,6 +1675,22 @@ section{
   font-size:11px;
   color:var(--acc-cy);
 }
+.stat__ix{
+  position:absolute; top:12px; right:14px;
+  font-size:9px;
+  letter-spacing:.18em;
+  color:var(--text-ghost);
+}
+.stat__sub{
+  margin-top:auto;
+  padding-top:6px;
+  border-top:1px dashed var(--line);
+  font-size:8.5px;
+  letter-spacing:.18em;
+  color:var(--text-ghost);
+  text-transform:uppercase;
+}
+.stat__sub--ok{ color:var(--acc-ok); }
 
 .hero__corner-brackets{ position:absolute; inset:0; pointer-events:none; }
 .hero__corner-brackets span{
@@ -3554,10 +3611,13 @@ section{
   .hero__tagline{ font-size:15.5px; line-height:1.55; margin:14px 0 24px; }
   .hero__lower{ grid-template-columns:1fr; gap:14px; }
   .hero__stats{ grid-template-columns:repeat(2,1fr); max-width:none; }
-  .stat{ padding:14px 14px; }
+  .hero__stats-head{ font-size:10px; padding:6px 10px; }
+  .stat{ padding:12px 12px; }
   .stat__value{ font-size:17px; }
   .stat__label{ font-size:9.5px; }
-  .specsheet__row{ grid-template-columns: 100px 1fr; padding:5px 10px; }
+  .stat__ix{ top:12px; right:12px; font-size:8.5px; }
+  .stat__sub{ font-size:8px; padding-top:6px; }
+  .specsheet__row{ grid-template-columns: 100px 1fr; padding:4px 10px; }
   .specsheet__list dt{ font-size:9.5px; }
   .specsheet__list{ font-size:11px; }
 
@@ -3631,9 +3691,10 @@ section{
   .hero__title{ font-size:clamp(44px, 18vw, 72px); }
   .hero__tagline{ font-size:14.5px; }
   .hero__kicker{ font-size:10px; padding:4px 8px; letter-spacing:.2em; }
-  .stat{ padding:12px 12px; }
+  .stat{ padding:10px 10px; }
   .stat__value{ font-size:15.5px; }
   .stat__jp{ font-size:10px; }
+  .stat__ix{ top:10px; right:10px; }
 
   .pcard__banner{ height:130px; }
   .pcard__pfp{ width:84px; height:84px; top:82px; left:12px; }

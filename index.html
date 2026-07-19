@@ -500,81 +500,86 @@
       </p>
 
       <div class="hero__lower">
-        <div class="hero__stats">
+        <div class="hero__stats" aria-label="unit status">
+          <div class="hero__stats-head mono">
+            <span>UNIT STATUS</span>
+            <span class="hero__stats-cls">FORM <b>US-01</b></span>
+          </div>
           <div class="stat">
             <span class="stat__label">DIVISION</span>
+            <span class="stat__ix mono" aria-hidden="true">01</span>
             <span class="stat__value">SYS / OPS</span>
             <span class="stat__jp">システム運用</span>
+            <span class="stat__sub mono">HOMELAB · RETRO</span>
           </div>
           <div class="stat">
             <span class="stat__label">LOCATION</span>
+            <span class="stat__ix mono" aria-hidden="true">02</span>
             <span class="stat__value">DE · BY</span>
             <span class="stat__jp">ババリア</span>
+            <span class="stat__sub mono">GRID 48N · 12E</span>
           </div>
           <div class="stat">
             <span class="stat__label">UPTIME</span>
+            <span class="stat__ix mono" aria-hidden="true">03</span>
             <span class="stat__value" id="uptimeStat">18y 00m</span>
             <span class="stat__jp">稼働時間</span>
+            <span class="stat__sub mono">SINCE 2007-08-26</span>
           </div>
           <div class="stat">
             <span class="stat__label">FUEL</span>
+            <span class="stat__ix mono" aria-hidden="true">04</span>
             <span class="stat__value">MONSTER</span>
             <span class="stat__jp">エナジー</span>
+            <span class="stat__sub mono stat__sub--ok">RESERVES · 67%</span>
           </div>
         </div>
 
-        <!-- SPEC SHEET PANEL — datasheet for the specimen -->
-        <div class="specsheet" aria-label="specimen profile">
+        <!-- SPEC SHEET PANEL — datasheet for the specimen.
+             Fallback rows mirror data.json (spec[]) — keep both in sync. -->
+        <div class="specsheet" aria-label="datasheet">
           <div class="specsheet__head mono">
-            <span>SPECIMEN PROFILE</span>
-            <span class="specsheet__cls">FORM <b>SP-01</b></span>
+            <span>DATASHEET</span>
+            <span class="specsheet__cls">FORM <b>DS-01</b></span>
           </div>
           <dl class="specsheet__list mono">
             <div class="specsheet__row">
               <dt>DESIGNATION</dt>
-              <dd>LUC-0451</dd>
-            </div>
-            <div class="specsheet__row">
-              <dt>GENERATION</dt>
-              <dd>18 cycles</dd>
+              <dd>LUC-Y4</dd>
             </div>
             <div class="specsheet__row">
               <dt>OPERATING SYS</dt>
-              <dd>POSIX · multi</dd>
+              <dd>MacOS / Linux</dd>
             </div>
             <div class="specsheet__row">
               <dt>PRIMARY LANG</dt>
-              <dd>DE / EN / JP*</dd>
+              <dd>DE / EN</dd>
             </div>
             <div class="specsheet__row">
               <dt>DISTRO PREFS</dt>
-              <dd>Arch · Debian</dd>
+              <dd>Arch · Debian · Fedora</dd>
             </div>
             <div class="specsheet__row">
               <dt>SHELL</dt>
-              <dd>zsh / bash</dd>
+              <dd>zsh / fish</dd>
             </div>
             <div class="specsheet__row">
               <dt>EDITOR</dt>
-              <dd>neovim</dd>
+              <dd>nano / VIM</dd>
             </div>
             <div class="specsheet__row">
               <dt>KEYBOARD</dt>
-              <dd>ANSI · 65%</dd>
+              <dd>ISO · 65%</dd>
             </div>
             <div class="specsheet__row">
-              <dt>HABITAT</dt>
-              <dd>homelab · 22°C</dd>
-            </div>
-            <div class="specsheet__row">
-              <dt>FAILURE MODES</dt>
-              <dd>caffeine deprivation<br/>silence &gt; 30s</dd>
-            </div>
-            <div class="specsheet__row">
-              <dt>INSTANCES</dt>
-              <dd>1 of 1</dd>
+              <dt>FAV ANIME</dt>
+              <dd>Evangelion / Frieren</dd>
             </div>
           </dl>
+          <div class="specsheet__foot mono">
+            <span>// END OF RECORD</span>
+            <span>1 OF 1</span>
+          </div>
         </div>
       </div>
 
