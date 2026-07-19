@@ -547,6 +547,32 @@
                                          <span style="color: #A277FF;">Locale:</span><span style="color: #EDECEE;"> de_DE.UTF-8</span>`
     },
     {
+      id: 'chimera',
+      tab: 'chimera',
+      title: 'chimera.inter-astra.local // homelab hypervisor',
+      width: 850,
+      content: `<span style="color: #e7e7e7;">         .://:'              '://:.</span>             <span style="color: #E57000;">root</span><span style="color: #e7e7e7;">@</span><span style="color: #E57000;">chimera</span>
+<span style="color: #e7e7e7;">       'hMMMMMMd/          /dMMMMMMh'</span>           <span style="color: #E57000;">------------</span>
+<span style="color: #e7e7e7;">        'sMMMMMMMd:      :mMMMMMMMs'</span>            <span style="color: #e7e7e7;">OS: Proxmox VE 9.2.4 x86_64</span>
+<span style="color: #E57000;">'-/+oo+/:</span><span style="color: #e7e7e7;">'.yMMMMMMMh-  -hMMMMMMMy.'</span><span style="color: #E57000;">:/+oo+/-'    </span><span style="color: #e7e7e7;">Host: SYS-5018D-FN4T (0123456789)</span>
+<span style="color: #E57000;">':oooooooo/</span><span style="color: #e7e7e7;">'-hMMMMMMMyyMMMMMMMh-'</span><span style="color: #E57000;">/oooooooo:'    </span><span style="color: #e7e7e7;">Kernel: Linux 7.0.14-5-pve</span>
+<span style="color: #E57000;">  '/oooooooo:</span><span style="color: #e7e7e7;">':mMMMMMMMMMMMMm:'</span><span style="color: #E57000;">:oooooooo/'      </span><span style="color: #e7e7e7;">Uptime: 17 hours, 29 mins</span>
+<span style="color: #E57000;">    ./ooooooo+-</span><span style="color: #e7e7e7;"> +NMMMMMMMMN+ </span><span style="color: #E57000;">-+ooooooo/.        </span><span style="color: #e7e7e7;">Packages: 753 (dpkg)</span>
+<span style="color: #E57000;">      .+ooooooo+-</span><span style="color: #e7e7e7;">'oNMMMMNo'</span><span style="color: #E57000;">-+ooooooo+.          </span><span style="color: #e7e7e7;">Shell: bash 5.2.37</span>
+<span style="color: #E57000;">        -+ooooooo/.</span><span style="color: #e7e7e7;">'sMMs'</span><span style="color: #E57000;">./ooooooo+-            </span><span style="color: #e7e7e7;">Display (VGA-1): 1024x768 @ 60 Hz</span>
+<span style="color: #E57000;">          :oooooooo/</span><span style="color: #e7e7e7;">'..'</span><span style="color: #E57000;">/oooooooo:              </span><span style="color: #e7e7e7;">Terminal: termproxy</span>
+<span style="color: #E57000;">          :oooooooo/'</span><span style="color: #e7e7e7;">..</span><span style="color: #E57000;">'/oooooooo:              </span><span style="color: #e7e7e7;">CPU: Intel(R) Xeon(R) D-1541 (16) @ 2.70 GHz</span>
+<span style="color: #E57000;">        -+ooooooo/.'</span><span style="color: #e7e7e7;">sMMs</span><span style="color: #E57000;">'./ooooooo+-            </span><span style="color: #e7e7e7;">GPU 1: ASPEED Technology, Inc. ASPEED Graphics Family</span>
+<span style="color: #E57000;">      .+ooooooo+-'</span><span style="color: #e7e7e7;">oNMMMMNo</span><span style="color: #E57000;">'-+ooooooo+.          </span><span style="color: #e7e7e7;">GPU 2: NVIDIA Quadro M2000 [Discrete]</span>
+<span style="color: #E57000;">    ./ooooooo+- </span><span style="color: #e7e7e7;">+NMMMMMMMMN+ </span><span style="color: #E57000;">-+ooooooo/.        </span><span style="color: #e7e7e7;">Memory: 31.92 GiB / 62.69 GiB (</span><span style="color: #06e236;">51%</span><span style="color: #e7e7e7;">)</span>
+<span style="color: #E57000;">  '/oooooooo:'</span><span style="color: #e7e7e7;">:mMMMMMMMMMMMMm:</span><span style="color: #E57000;">':oooooooo/'      </span><span style="color: #e7e7e7;">Swap: Disabled</span>
+<span style="color: #E57000;">':oooooooo/'</span><span style="color: #e7e7e7;">-hMMMMMMMyyMMMMMMMh-</span><span style="color: #E57000;">'/oooooooo:'    </span><span style="color: #e7e7e7;">Disk (/): 3.13 GiB / 430.18 GiB (</span><span style="color: #06e236;">1%</span><span style="color: #e7e7e7;">) - zfs</span>
+<span style="color: #E57000;">'-/+oo+/:'</span><span style="color: #e7e7e7;">.yMMMMMMMh-  -hMMMMMMMy.</span><span style="color: #E57000;">':/+oo+/-'    </span><span style="color: #e7e7e7;">Disk (/rpool): 128.00 KiB / 427.05 GiB (</span><span style="color: #06e236;">0%</span><span style="color: #e7e7e7;">) - zfs</span>
+<span style="color: #e7e7e7;">        'sMMMMMMMm:      :dMMMMMMMs'</span>            <span style="color: #e7e7e7;">Local IP (vmbr0): 192.168.178.242/24</span>
+<span style="color: #e7e7e7;">       'hMMMMMMd/          /dMMMMMMh'</span>           <span style="color: #e7e7e7;">Locale: en_US.UTF-8</span>
+<span style="color: #e7e7e7;">         '://:'              '://:'</span>`
+    },
+    {
       id: 'lynx',
       tab: 'lynx',
       title: 'lynx.inter-astra.local // homelab core hypervisor',
@@ -707,36 +733,6 @@
                                     <span style="color:#F9F1A5;">Local IP (WLAN):</span> <span style="color:#F2F2F2;">192.168.178.54/24</span>
                                     <span style="color:#F9F1A5;">Battery (SR Real Battery):</span> <span style="color:#F2F2F2;">77% (3 hours, 56 mins remaining) [Discharging]</span>
                                     <span style="color:#F9F1A5;">Locale:</span> <span style="color:#F2F2F2;">de-DE</span>`
-    },
-    {
-      id: 'dc-01',
-      tab: 'dc-01',
-      title: "dc-01.inter-astra.local // domain controller (yes, it's a surface)",
-      width: 900,
-      content: `<span style="color:#3B78FF;">      ##%%%%%%%%%  %%%%%%%%%##</span>          <span style="color:#61D6D6;">Administrator</span>@<span style="color:#61D6D6;">DC-01</span>
-<span style="color:#3B78FF;">    ###%%%%%%%%%%  %%%%%%%%%%###</span>        <span style="color:#CCCCCC;">--------------------</span>
-<span style="color:#3B78FF;">  ####%%%%%%%%%%%  %%%%%%%%%%%####</span>      <span style="color:#F9F1A5;">OS:</span> <span style="color:#CCCCCC;">Windows Server 2025 Standard Evaluation x86_64</span>
-<span style="color:#3B78FF;"> ##%%%%%%%%%%%%%%  %%%%%%%%%%%%%%##</span>     <span style="color:#F9F1A5;">Host:</span> <span style="color:#CCCCCC;">Surface Pro</span>
-<span style="color:#3B78FF;">#%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%#</span>    <span style="color:#F9F1A5;">Kernel:</span> <span style="color:#CCCCCC;">WIN32_NT 10.0.26100.3476 (24H2)</span>
-<span style="color:#3B78FF;">%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%</span>    <span style="color:#F9F1A5;">Uptime:</span> <span style="color:#CCCCCC;">7 hour, 34 mins</span>
-<span style="color:#3B78FF;">%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%</span>    <span style="color:#F9F1A5;">Packages:</span> <span style="color:#CCCCCC;">1 (scoop)</span>
-<span style="color:#3B78FF;">%%%%%%%%%%%%%%%%%  #%%%%%%%%%%%%%%%%</span>    <span style="color:#F9F1A5;">Shell:</span> <span style="color:#CCCCCC;">CMD 10.0.26100.3323</span>
-                                        <span style="color:#F9F1A5;">Display (LGD0555):</span> <span style="color:#CCCCCC;">2736x1824 @ 60 Hz (as 1563x1042) in 12" [Built-in]</span>
-<span style="color:#3B78FF;">%%%%%%%%%%%%%%%%%  #%%%%%%%%%%%%%%%%</span>    <span style="color:#F9F1A5;">DE:</span> <span style="color:#CCCCCC;">Fluent</span>
-<span style="color:#3B78FF;">%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%</span>    <span style="color:#F9F1A5;">WM:</span> <span style="color:#CCCCCC;">Desktop Window Manager 10.0.26100.3323</span>
-<span style="color:#3B78FF;">%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%%</span>    <span style="color:#F9F1A5;">WM Theme:</span> <span style="color:#CCCCCC;">Dark - Blue (System: Dark, Apps: Dark)</span>
-<span style="color:#3B78FF;">%%%%%%%%%%%%%%%%%  %%%%%%%%%%%%%%%%#</span>    <span style="color:#F9F1A5;">Font:</span> <span style="color:#CCCCCC;">Segoe UI (12pt) [Caption / Menu / Message / Status]</span>
-<span style="color:#3B78FF;"> ###%%%%%%%%%%%%%  %%%%%%%%%%%%%%%##</span>    <span style="color:#F9F1A5;">Cursor:</span> <span style="color:#CCCCCC;">Windows Default (32px)</span>
-<span style="color:#3B78FF;">  ####%%%%%%%%%%%  %%%%%%%%%%%#%####</span>    <span style="color:#F9F1A5;">Terminal:</span> <span style="color:#CCCCCC;">Windows Console 10.0.26100.3323</span>
-<span style="color:#3B78FF;">    ##%#%%%%%%%%%  %%%%%%%%%%%######</span>    <span style="color:#F9F1A5;">Terminal Font:</span> <span style="color:#CCCCCC;">Consolas (16pt)</span>
-<span style="color:#3B78FF;">      ##%%%%%%%%%  %%%%%%%%%########</span>    <span style="color:#F9F1A5;">CPU:</span> <span style="color:#CCCCCC;">Intel(R) Core(TM) i5-7300U (4) @ 3,50 GHz</span>
-                                        <span style="color:#F9F1A5;">GPU:</span> <span style="color:#CCCCCC;">Intel(R) HD Graphics 620 (128,00 MiB) [Integrated]</span>
-                                        <span style="color:#F9F1A5;">Memory:</span> <span style="color:#CCCCCC;">3,03 GiB / 3,92 GiB</span> (<span style="color:#13A10E;">77%</span>)
-                                        <span style="color:#F9F1A5;">Swap:</span> <span style="color:#CCCCCC;">0 B / 5,00 GiB</span> (<span style="color:#13A10E;">0%</span>)
-                                        <span style="color:#F9F1A5;">Disk (C:\\):</span> <span style="color:#CCCCCC;">26,48 GiB / 166,41 GiB</span> (<span style="color:#13A10E;">16%</span>) - <span style="color:#CCCCCC;">NTFS</span>
-                                        <span style="color:#F9F1A5;">Local IP (Ethernet 4):</span> <span style="color:#CCCCCC;">192.168.178.3/24</span>
-                                        <span style="color:#F9F1A5;">Battery:</span> <span style="color:#CCCCCC;">100% [Discharging]</span>
-                                        <span style="color:#F9F1A5;">Locale:</span> <span style="color:#CCCCCC;">de-DE</span>`
     },
     {
       id: 'orcus',
