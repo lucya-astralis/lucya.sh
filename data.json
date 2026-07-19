@@ -1,5 +1,5 @@
 {
-  "_": "Edit this file to update ticker / kpis / spec. Reload = applied. UPTIME and JAPAN are computed live from anchor dates.",
+  "_": "Edit this file to update ticker / kpis / spec. Reload = applied. UPTIME and JAPAN are computed live from anchor dates. JAPAN has 3 phases: countdown to `target`, then days left in Japan (until `end`, sub switches to subIn), then done (total days + subAfter). Ticker items may set textIn / textAfter for the same phases.",
 
   "ticker": [
     { "tag": "SYS",   "text": "aoi.inter-astra.local · uptime 03d 23h 33m" },
@@ -10,7 +10,7 @@
     { "tag": "FUEL",  "text": "monster reserves · 67% · resupply scheduled" },
     { "tag": "BCN",   "text": "lucya.systems · all systems nominal · CMDR 310217" },
     { "tag": "JP",    "text": "オンライン" },
-    { "tag": "CAL",   "text": "JP trip · あと {japanDays}日" }
+    { "tag": "CAL",   "text": "JP trip · あと {japanDays}日", "textIn": "in JP · あと {japanDays}日", "textAfter": "JP trip · complete" }
   ],
 
   "kpis": [
@@ -31,8 +31,11 @@
       "key":      "japan",
       "label":    "JAPAN",
       "target":   "2026-08-09",
+      "end":      "2027-01-02",
       "unit":     "d",
       "sub":      "TRIP · 2026-08-09",
+      "subIn":    "IN JAPAN · BACK 2027-01-02",
+      "subAfter": "TRIP COMPLETE",
       "subClass": "ok"
     },
     {

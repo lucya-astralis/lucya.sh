@@ -340,16 +340,28 @@
   updateClock();
   setInterval(updateClock, 1000);
 
-  // ---------- COUNTDOWN : "noch XX Tage" / "あとXX日" -------------
-  // anchor the target so the count decreases over time
-  const countdownTarget = new Date('2026-08-09T00:00:00');
-  const updateCountdown = () => {
+  // ---------- JP TRIP COUNTDOWN : あとXX日 ------------------------
+  // three phases, same anchor dates as the JAPAN kpi in data.json:
+  //   pre  — days until departure
+  //   in   — days left in Japan (counts down to the return flight)
+  //   post — trip over: the badge disappears
+  const JP_START = new Date('2026-08-09T00:00:00');
+  const JP_END   = new Date('2027-01-02T00:00:00');
+  const jpTrip = () => {
     const now = new Date();
-    const diff = Math.max(0, Math.ceil((countdownTarget - now) / 86400000));
+    const left = t => Math.ceil((t - now) / 86400000);
+    if (left(JP_START) > 0) return { phase: 'pre',  days: left(JP_START) };
+    if (left(JP_END)   > 0) return { phase: 'in',   days: left(JP_END) };
+    return { phase: 'post', days: 0 };
+  };
+  const updateCountdown = () => {
+    const s = jpTrip();
     const a = document.getElementById('countdownDays');
     const b = document.getElementById('pcardCountdown');
-    if (a) a.textContent = diff;
-    if (b) b.textContent = diff;
+    if (a) a.textContent = s.days;
+    if (b) b.textContent = s.days;
+    const badge = a && a.closest('.pcard__countdown');
+    if (badge) badge.style.display = s.phase === 'post' ? 'none' : '';
   };
   updateCountdown();
   setInterval(updateCountdown, 60_000);
@@ -1098,7 +1110,18 @@
           if (kpi.since) {
             valEl.textContent = yearsMonthsSince(kpi.since);
           } else if (kpi.target) {
-            const d = daysUntil(kpi.target);
+            // JP trip: counts down to `target`, then — while there — down
+            // to `end`; afterwards shows the total stay + subAfter.
+            const toStart = daysUntil(kpi.target);
+            const toEnd   = kpi.end ? daysUntil(kpi.end) : 0;
+            let d = toStart;
+            if (kpi.end && toStart <= 0) {
+              d = toEnd > 0
+                ? toEnd
+                : Math.round((new Date(kpi.end) - new Date(kpi.target)) / 86400000);
+              const phaseSub = toEnd > 0 ? kpi.subIn : kpi.subAfter;
+              if (phaseSub && subEl) subEl.textContent = phaseSub;
+            }
             valEl.innerHTML = `${d} <em>${escHtml(kpi.unit || 'd')}</em>`;
           } else if (kpi.value !== undefined) {
             if (kpi.unit) {
@@ -1113,9 +1136,19 @@
       // -- TICKER --
       if (tickerTrack && Array.isArray(data.ticker)) {
         const japanKpi = (data.kpis || []).find(k => k && k.target);
-        const japanDays = japanKpi ? daysUntil(japanKpi.target) : '';
+        let japanPhase = 'pre', japanDays = '';
+        if (japanKpi) {
+          const toStart = daysUntil(japanKpi.target);
+          const toEnd   = japanKpi.end ? daysUntil(japanKpi.end) : 0;
+          japanPhase = toStart > 0 ? 'pre' : (toEnd > 0 ? 'in' : 'post');
+          japanDays  = toStart > 0 ? toStart : toEnd;
+        }
         const items = data.ticker.map(t => {
-          const text = (t.text || '').replaceAll('{japanDays}', japanDays);
+          // items may carry phase variants for the JP trip (textIn / textAfter)
+          const base = (japanPhase === 'in' && t.textIn) ? t.textIn
+                     : (japanPhase === 'post' && t.textAfter) ? t.textAfter
+                     : (t.text || '');
+          const text = base.replaceAll('{japanDays}', japanDays);
           const tag = t.tag ? `<b>${escHtml(t.tag)}</b> ` : '';
           return `<span class="ticker__item">${tag}${escHtml(text)}</span><span class="ticker__sep">◇</span>`;
         }).join('');
