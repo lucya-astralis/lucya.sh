@@ -3863,23 +3863,14 @@ html.setmode .set-exit { animation: setOut .32s ease-in both; }
    set 1 entrance the rest of the page is modelled on. */
 html.setmode .layout__main > section.set-in{
   animation: slideInL .6s cubic-bezier(.2,.8,.2,1) both,
-             flickerIn .5s steps(1,end) both,
-             chromaShift .5s ease-out both;
+             flickerIn .5s steps(1,end) both;
   animation-delay: var(--set-delay, 0ms);
 }
 html.setmode .layout__side > section.set-in{
   animation: slideInR .6s cubic-bezier(.2,.8,.2,1) both,
-             flickerIn .5s steps(1,end) both,
-             chromaShift .5s ease-out both;
+             flickerIn .5s steps(1,end) both;
   animation-delay: var(--set-delay, 0ms);
 }
-/* subtle RGB shift (chromatic aberration) — red/blue channel split, no hue tint */
-@keyframes chromaShift{
-  0%  { filter: drop-shadow(-2.5px 0 0 rgba(255,42,82,.55)) drop-shadow(2.5px 0 0 rgba(58,150,255,.55)); }
-  55% { filter: drop-shadow(-1px 0 0 rgba(255,42,82,.30))   drop-shadow(1px 0 0 rgba(58,150,255,.30)); }
-  100%{ filter: none; }
-}
-
 /* text builds up: text lines/blocks rise + de-blur, staggered after the card.
    setnav.js adds .txt-build with a per-line animation-delay. */
 html.setmode .txt-build{ animation: textBuild .38s ease-out both; }
