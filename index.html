@@ -1033,12 +1033,14 @@
 
 <!-- ============================================================= -->
 <!-- PHOTOS — teaser (full gallery now lives on images.lucya.sh)    -->
+<!-- pulled live from the gallery API; the static cards below are    -->
+<!-- the fallback for no-JS / offline / empty album.                 -->
 <!-- ============================================================= -->
 <section class="photos photos--teaser" id="photos">
   <div class="section__doc">
     <span>DOC <b>04.A.VISUAL</b></span>
     <span>REV <b>2026.05</b></span>
-    <span class="stamp stamp--ok">9 ASSETS · INDEXED</span>
+    <span class="stamp stamp--ok" id="photosCount">9 ASSETS · INDEXED</span>
     <span>FORM <b>VIS-04A</b></span>
   </div>
 
@@ -1049,11 +1051,12 @@
       <span class="jp">写真</span>
     </div>
     <div class="section__meta">
-      <span class="mono">SAMPLE · FULL ARCHIVE EXTERNAL</span>
+      <span class="mono" id="photosMeta">SAMPLE · FULL ARCHIVE EXTERNAL</span>
     </div>
   </div>
 
-  <div class="photos__grid photos__grid--teaser">
+  <div class="photos__grid photos__grid--teaser" id="photosGrid"
+       data-api="https://images.lucya.sh" data-album="japan_2026" data-limit="9">
     <figure class="photo-card" data-src="images/photos/datacenter.jpeg" data-caption="DATACENTER // Complete homelab setup">
       <div class="photo-card__img-wrap">
         <img src="images/photos/datacenter.jpeg" alt="Complete homelab — full datacenter setup" loading="lazy" decoding="async" />
