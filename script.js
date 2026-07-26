@@ -1542,16 +1542,44 @@
   })();
 
   // ---------- MOBILE NAV : current-section highlight --------------
+  // the bar carries more links than fit on a phone, so it scrolls sideways.
+  // when the spy moves the highlight onto a link that sits outside the
+  // visible strip, pull that link into the middle. a manual swipe wins for
+  // a moment so the bar isn't yanked out from under a thumb.
   const mnav = document.querySelector('.mnav');
   if (mnav && 'IntersectionObserver' in window){
     const links = Array.from(mnav.querySelectorAll('a[href^="#"]'));
     const linkById = {};
     links.forEach(a => { linkById[a.getAttribute('href').slice(1)] = a; });
+
+    const MANUAL_HOLD_MS = 1500;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let lastManual = 0;
+    ['pointerdown', 'touchstart', 'wheel'].forEach(ev => {
+      mnav.addEventListener(ev, () => { lastManual = Date.now(); }, { passive: true });
+    });
+
+    const keepInView = (link) => {
+      // also covers desktop, where the bar is display:none (both widths 0)
+      if (mnav.scrollWidth <= mnav.clientWidth + 1) return;
+      if (Date.now() - lastManual < MANUAL_HOLD_MS) return;
+      const left = link.offsetLeft;
+      const right = left + link.offsetWidth;
+      const viewLeft = mnav.scrollLeft;
+      if (left >= viewLeft && right <= viewLeft + mnav.clientWidth) return;
+      mnav.scrollTo({
+        left: left - (mnav.clientWidth - link.offsetWidth) / 2,
+        behavior: reduceMotion.matches ? 'auto' : 'smooth'
+      });
+    };
+
     const spy = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (!e.isIntersecting) return;
         const active = linkById[e.target.id];
-        if (active) links.forEach(l => l.classList.toggle('is-current', l === active));
+        if (!active || active.classList.contains('is-current')) return;
+        links.forEach(l => l.classList.toggle('is-current', l === active));
+        keepInView(active);
       });
     }, { rootMargin: '-35% 0px -55% 0px' });
     Object.keys(linkById).forEach(id => {
