@@ -466,21 +466,8 @@
 </head>
 <body data-lang="en">
 
+    <!-- src/playback handled in legal.js (skipped entirely in lite mode) -->
     <video class="wallpaper-video" muted loop playsinline preload="none" aria-hidden="true" data-src="images/wallpaper/f.mp4"></video>
-    <script>
-    (function(){
-      var v = document.querySelector('.wallpaper-video');
-      if (v && !window.LUCYA_LITE && v.dataset.src){
-        v.src = v.dataset.src;
-        v.autoplay = true;
-        if (v.play) v.play().catch(function(){});
-      }
-      document.addEventListener('visibilitychange', function(){
-        if (!v || !v.src) return;
-        if (document.hidden) v.pause(); else v.play().catch(function(){});
-      });
-    })();
-    </script>
     <div class="wallpaper-overlay" aria-hidden="true"></div>
 
     <div class="legal-corners">
