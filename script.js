@@ -846,6 +846,7 @@
       { title: "Rebirth", artist: "SHIMA", cover: "images/spotify_widget/rebirth.jpeg" },  
       { title: "Infohazard", artist: "Ninajirachi", cover: "images/spotify_widget/cover4.webp" },
       { title: "Affection Addiction", artist: "VocaloKAT, Aku P", cover: "images/spotify_widget/affection.jpeg" },
+      { title: "Evergreen Misery", artist: "MOTHICA", cover: "images/spotify_widget/mothica.jpeg" },
       { title: "Slide", artist: "MRJay", cover: "images/spotify_widget/slide.jpeg" },
       { title: "one last thing", artist: "vinter", cover: "images/spotify_widget/vinter.jpg" },
       { title: "Heaven", artist: "Allison Wonderland, Ninajirachi", cover: "images/spotify_widget/cover1.webp" },
