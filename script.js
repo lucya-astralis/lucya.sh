@@ -296,26 +296,6 @@
     if (!s){ s = new TextScrambler(el); scramblers.set(el, s); }
     return s.setText(String(text));
   };
-  const scrambleOnView = (els) => {
-    const list = els.filter(el => el && !el.dataset.scrambleSetup);
-    list.forEach(el => {
-      el.dataset.scrambleSetup = '1';
-      el.dataset.scrambleTarget = el.textContent.trim();
-    });
-    if (!('IntersectionObserver' in window)){
-      list.forEach(el => scrambleTo(el, el.dataset.scrambleTarget));
-      return;
-    }
-    const io = new IntersectionObserver((ents, obs) => {
-      ents.forEach(e => {
-        if (e.isIntersecting){
-          scrambleTo(e.target, e.target.dataset.scrambleTarget);
-          obs.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.35, rootMargin: '0px 0px -10% 0px' });
-    list.forEach(el => io.observe(el));
-  };
 
   // ---------- CLOCK ----------------------------------------------
   const fmt12 = d => {
@@ -1458,12 +1438,11 @@
     } else {
       revealTargets.forEach(el => el.classList.add('is-visible'));
     }
-    // decoder reveal on static labels, just after content flickers in
-    setTimeout(() => {
-      scrambleOnView(Array.from(document.querySelectorAll('.section__slug .name')));
-      scrambleOnView(Array.from(document.querySelectorAll('.stat__value')));
-      scrambleOnView(Array.from(document.querySelectorAll('.section__doc b')));
-    }, 200);
+    // Static labels used to run a decoder reveal here (scrambleOnView on
+    // section titles, stat values and doc-bar values). It fired on scroll and
+    // painted magenta .scramble-char glyphs over half the page — removed.
+    // scrambleTo() itself stays: the Spotify track title still decodes, but
+    // only when the track actually changes.
   };
 
   let splashFinished = false;

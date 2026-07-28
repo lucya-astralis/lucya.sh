@@ -14,8 +14,17 @@
   /* surfaces */
   --bg:         #07070b;
   --bg-2:       #0a0a10;
-  --surface:    #0b0b11;
-  --surface-2:  #0f0f16;
+  /* Surfaces are tinted panes, not solid fills — the fixed wallpaper sits
+     behind them and the blur that sells the glass is applied per panel via
+     --glass (see "GLASS PANES"). html.lite strips backdrop-filter globally,
+     so the alpha alone has to stay dark enough to read against. */
+  --surface:    rgba(12, 13, 20, 0.74);
+  --surface-2:  rgba(22, 24, 35, 0.82);
+  /* Milky but dark: the wide blur does the milk (it smears the backdrop
+     into a wash rather than just softening it), so the lift only has to
+     be enough to separate the pane from the page — not to brighten it. */
+  --glass:      blur(30px) saturate(120%) brightness(1.15);
+  --glass-edge: inset 0 1px 0 rgba(255,255,255,.07);
   --line:       rgba(255,255,255,0.08);
   --line-strong:rgba(255,255,255,0.18);
 
@@ -822,6 +831,62 @@ section{
 }
 
 /* ================================================================
+   GLASS PANES
+   ----------------------------------------------------------------
+   One blur layer per panel, never per card. The grids below hold
+   dozens of tiles; a backdrop-filter on each would be a scroll
+   killer. The tiles' own fills are translucent (--surface), so the
+   parent's blurred backdrop reads straight through them.
+
+   Everything listed here must have a see-through background of its
+   own — an opaque fill would make the blur invisible. Deliberately
+   NOT in this list: .pcard and .nterm, which carry their own artwork
+   / CRT fill and are meant to read as solid objects.
+   ================================================================ */
+.hero__stats,
+.specsheet,
+.interests__grid,
+.skills__grid,
+.domains__grid,
+.photos__grid,
+.games__grid,
+.skills__foot,
+.buttons__wall,
+.neofetch__tabs,
+.spotify__card,
+.services__hv,
+.about__marginal,
+.photos__cta,
+.kpibar__grid,
+.therm__body,
+.opsbrd,
+.manifest__sheet{
+  -webkit-backdrop-filter: var(--glass);
+          backdrop-filter: var(--glass);
+}
+
+/* top edge highlight — the second glass cue. Kept in its own rule so a
+   panel that declares its own box-shadow later simply opts out. */
+.hero__stats,
+.specsheet,
+.interests__grid,
+.skills__grid,
+.domains__grid,
+.photos__grid,
+.games__grid,
+.buttons__wall,
+.spotify__card,
+.services__hv,
+.about__marginal,
+.photos__cta,
+.kpibar__grid{
+  box-shadow: var(--glass-edge);
+}
+/* .skills__foot is deliberately absent: it sits flush under .skills__grid
+   with no top border, so a top highlight would draw a seam through what
+   reads as one panel. It still gets the blur above. */
+
+/* ================================================================
    2-COLUMN LAYOUT (desktop 80/20)
    on mobile/tablet: columns flatten and sections interleave by `order`
    ================================================================ */
@@ -1142,7 +1207,9 @@ section{
   position:relative;
   width:100%; height:100%;
   border-radius:50%;
-  background:var(--surface);
+  /* solid, not --surface: this ring sits on the card's own artwork, so a
+     translucent fill would let the banner bleed through the avatar edge */
+  background:#0b0b11;
   padding:4px;
 }
 .pcard__pfp-img{
@@ -3606,21 +3673,25 @@ html.setmode .layout__side > section.reveal-block.is-visible:not(.set-in):not(.s
   opacity:1;
 }
 
+/* No `filter` in either keyframe, on purpose. These used to carry a
+   red/blue drop-shadow split (setOut) and hue-rotate swings (setIn) —
+   that was the red glitch on every scroll-driven set change. The motion
+   (slice, skew, clip) stays; only the colour separation is gone.
+   Filters here also fought the glass: a `filter` on the section resets
+   the backdrop root, so the panes' blur flickered mid-transition. */
 @keyframes setOut{
-  0%  { opacity:1; transform:translate(0,0);                 clip-path:inset(0 0 0 0);   filter:none; }
-  18% { opacity:1; transform:translate(-7px,0) skewX(2deg);  clip-path:inset(0 0 62% 0);
-        filter: drop-shadow(-3px 0 0 rgba(255,42,82,.6))  drop-shadow(3px 0 0 rgba(58,150,255,.6)); }
-  38% { opacity:.9; transform:translate(9px,0);              clip-path:inset(56% 0 0 0);
-        filter: drop-shadow(3px 0 0 rgba(255,42,82,.5))   drop-shadow(-3px 0 0 rgba(58,150,255,.5)); }
-  60% { opacity:.7; transform:translate(-4px,0) skewX(-1deg); clip-path:inset(22% 0 34% 0); filter:none; }
-  100%{ opacity:0; transform:translate(0,14px) scale(.985);  clip-path:inset(0 0 0 0);   filter:brightness(1.12); }
+  0%  { opacity:1;  transform:translate(0,0);                 clip-path:inset(0 0 0 0); }
+  18% { opacity:1;  transform:translate(-7px,0) skewX(2deg);  clip-path:inset(0 0 62% 0); }
+  38% { opacity:.9; transform:translate(9px,0);               clip-path:inset(56% 0 0 0); }
+  60% { opacity:.7; transform:translate(-4px,0) skewX(-1deg); clip-path:inset(22% 0 34% 0); }
+  100%{ opacity:0;  transform:translate(0,14px) scale(.985);  clip-path:inset(0 0 0 0); }
 }
 @keyframes setIn{
-  0%  { opacity:0; transform:translate(0,-16px) scale(1.012); filter:saturate(1.7) brightness(1.35); clip-path:inset(0 0 72% 0); }
-  16% { opacity:1; transform:translate(8px,0) skewX(-2deg);   filter:hue-rotate(-35deg);             clip-path:inset(46% 0 0 0); }
-  34% { opacity:1; transform:translate(-7px,0) skewX(1deg);   filter:hue-rotate(40deg);              clip-path:inset(12% 0 42% 0); }
-  58% { opacity:1; transform:translate(3px,0);                filter:none;                           clip-path:inset(0 0 0 0); }
-  100%{ opacity:1; transform:translate(0,0);                  filter:none;                           clip-path:inset(0 0 0 0); }
+  0%  { opacity:0; transform:translate(0,-16px) scale(1.012); clip-path:inset(0 0 72% 0); }
+  16% { opacity:1; transform:translate(8px,0) skewX(-2deg);   clip-path:inset(46% 0 0 0); }
+  34% { opacity:1; transform:translate(-7px,0) skewX(1deg);   clip-path:inset(12% 0 42% 0); }
+  58% { opacity:1; transform:translate(3px,0);                clip-path:inset(0 0 0 0); }
+  100%{ opacity:1; transform:translate(0,0);                  clip-path:inset(0 0 0 0); }
 }
 
 /* ----- pager dots ----- */
@@ -3709,6 +3780,14 @@ html.lite *::after{
   transition:none !important;
   backdrop-filter:none !important;
   -webkit-backdrop-filter:none !important;
+}
+/* With the blur gone the glass panes have nothing to separate them from
+   the static wallpaper still behind them — text would sit straight on a
+   photo. Push the surfaces back to near-opaque and drop the edge cue. */
+html.lite{
+  --surface:    rgba(11, 11, 17, 0.94);
+  --surface-2:  rgba(22, 22, 34, 0.96);
+  --glass-edge: none;
 }
 /* the animation kill-switch would leave the splash stuck — hide statically
    (same trick as the reduced-motion rule above) */
