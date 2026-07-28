@@ -13,9 +13,9 @@
 :root{
   /* surfaces */
   --bg:         #07070b;
-  --bg-2:       #0d0d14;
-  --surface:    #11111a;
-  --surface-2:  #15151f;
+  --bg-2:       #0a0a10;
+  --surface:    #0b0b11;
+  --surface-2:  #0f0f16;
   --line:       rgba(255,255,255,0.08);
   --line-strong:rgba(255,255,255,0.18);
 
@@ -841,8 +841,12 @@ section{
 }
 
 /* below the 2-col breakpoint: flatten columns and interleave sections.
-   visual order: hero → kpibar → about → interests → buttons → systems → services → spotify → photos
-   (identity → narrative → personal cluster → technical → lighter/visual content) */
+   visual order: hero → kpibar → about → spotify → interests → buttons →
+                 skills → ops → systems → services → photos → games
+   (identity → narrative → what I'm listening to → personal cluster →
+    technical → lighter/visual content)
+   spotify sits high on purpose: it's the one live-updating panel, so it
+   should be reachable without scrolling past the whole technical block. */
 @media (max-width: 1099.98px){
   .layout{ display:flex; flex-direction:column; gap:0; }
   .layout__main,
@@ -851,13 +855,13 @@ section{
   .hero      { order:1; }
   .kpibar    { order:1; } /* JS relocates kpibar after .hero in DOM; tied order → renders right after */
   .about     { order:2; }
-  .interests { order:3; }
-  .buttons   { order:4; }
-  .skills    { order:5; }
-  .ops  { order:6; }
-  .neofetch  { order:7; }
-  .services  { order:8; }
-  .spotify   { order:9; }
+  .spotify   { order:3; }
+  .interests { order:4; }
+  .buttons   { order:5; }
+  .skills    { order:6; }
+  .ops       { order:7; }
+  .neofetch  { order:8; }
+  .services  { order:9; }
   .photos    { order:10; }
   .games     { order:11; }
 }
@@ -1058,10 +1062,17 @@ section{
 /* ================================================================
    HERO / PROFILE
    ================================================================ */
-.hero{ padding-top:36px; }
+/* The hero sits in two very different boxes: the full-width flattened
+   page (<1100px) and the narrow main column of the 2-col layout. Viewport
+   width says nothing useful about which — so the hero measures itself and
+   the breakpoints live in @container rules (see RESPONSIVE). */
+.hero{
+  padding-top:36px;
+  container: hero / inline-size;
+}
 .hero__grid{
   display:grid;
-  grid-template-columns: minmax(300px, 360px) 1fr;
+  grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
   gap:28px;
   align-items:start;
 }
@@ -1069,6 +1080,9 @@ section{
 /* --- profile card ------------------------------------------------ */
 .pcard{
   position:relative;
+  /* hard ceiling: the card is a document plate, not a stretchy panel.
+     Binds only when the hero is stacked — the 2-col track caps at 360px. */
+  max-width:380px;
   background:
     linear-gradient(180deg, rgba(7, 7, 11, 0.747) 0%, rgba(7, 7, 11, 0.829) 60%, rgba(7, 7, 11, 0.877) 100%),
     url(images/wallpaper/jp1.jpg) center/cover no-repeat;
@@ -1310,6 +1324,9 @@ section{
 .hero__side{
   position:relative;
   padding:0;
+  /* second container: the copy column is ~570px next to the card but
+     full hero width once stacked — the stats/spec split keys off that. */
+  container: hero-side / inline-size;
 }
 .hero__kicker{
   display:inline-flex; align-items:center; gap:8px;
@@ -1497,7 +1514,7 @@ section{
   position:relative;
   font-size:19px;
   line-height:1.6;
-  max-width:600px;
+  max-width:660px;
   color:#e7e9ff;
   margin:22px 0 38px;
   padding-left:20px;
@@ -2790,15 +2807,7 @@ section{
 }
 .manifest__foot b{ color:var(--text-dim); font-weight:400; letter-spacing:.14em; }
 
-@media (max-width: 640px){
-  .manifest{ padding:14px; }
-  .manifest__sheet{ padding:16px 14px 14px; }
-  .manifest__row{ grid-template-columns: 28px 36px 1fr auto; gap:10px; padding:8px 10px; }
-  .manifest__thumb{ width:34px; height:34px; }
-  .manifest__title{ font-size:13px; }
-  .manifest__artist{ font-size:11px; }
-  .manifest__status{ font-size:9px; min-width:auto; }
-}
+/* responsive: see RESPONSIVE section (SM tier) */
 
 /* ================================================================
    PHOTOS
@@ -2898,27 +2907,7 @@ section{
   font-size:10px; letter-spacing:.06em;
 }
 
-@media(max-width:860px){
-  .photos__grid{ grid-template-columns:repeat(2,1fr); }
-  .photos--teaser .photos__grid--teaser{ grid-template-columns:repeat(3,1fr); }
-}
-@media(max-width:560px){
-  .photos__grid{ grid-template-columns:1fr; }
-  .photos--teaser .photos__grid--teaser{ grid-template-columns:repeat(2,1fr); }
-  .photos--teaser .photo-card__img-wrap{ aspect-ratio:4/3; }
-  .photos--teaser .photo-card__title{ font-size:11px; letter-spacing:.05em; }
-  .photos--teaser .photo-card__tag{ font-size:8.5px; }
-  .photos__cta{
-    grid-template-columns:1fr;
-    grid-template-areas:
-      "label"
-      "url"
-      "sub";
-    gap:4px;
-    padding:12px 14px;
-  }
-  .photos__cta-url{ font-size:14px; }
-}
+/* responsive: see RESPONSIVE section (MD / SM tiers) */
 
 /* ================================================================
    GAMES — favourites panel (sidebar)
@@ -2983,21 +2972,7 @@ section{
 }
 .games__note{ margin-top:12px; }
 
-/* tablet/wide-phone: keep 3 cols but a touch more breathing room */
-@media(max-width:860px){
-  .games__grid{ grid-template-columns:repeat(3,1fr); }
-  .game-card__title{ font-size:10px; }
-  .game-card__genre{ font-size:9px; }
-}
-/* phone: 3 cols still fits — covers stay readable thumbnail-style */
-@media(max-width:560px){
-  .games__grid{ grid-template-columns:repeat(3,1fr); }
-  .game-card__img-wrap{ aspect-ratio:3/4; }
-  .game-card__cap{ padding:5px 6px 6px; }
-  .game-card__title{ font-size:9px; letter-spacing:.03em; }
-  .game-card__genre{ font-size:8px; letter-spacing:.06em; }
-  .game-card__tag{ font-size:7px; padding:1px 4px; top:3px; left:3px; }
-}
+/* responsive: see RESPONSIVE section (MD / SM tiers) */
 
 /* lightbox */
 .lightbox{
@@ -3125,9 +3100,7 @@ section{
   align-items:start;
 }
 .kpibar__main{ min-width:0; display:flex; flex-direction:column; }
-@media (max-width: 1024px){
-  .kpibar__inner{ grid-template-columns: 1fr; gap:10px; }
-}
+/* responsive: see RESPONSIVE section (LG tier) */
 .kpibar__head{
   display:flex;
   justify-content:space-between;
@@ -3358,16 +3331,7 @@ section{
 .therm[data-state="down"]  #thermDot{ background:var(--text-ghost); box-shadow:none; animation: thermBlink 1s steps(2) infinite; }
 @keyframes thermBlink{ 50%{ opacity:.25; } }
 
-@media (max-width: 1100px){
-  .kpibar__grid{ grid-template-columns:repeat(2, 1fr); }
-  .therm__body{ grid-template-columns:1fr 1fr; }
-}
-@media (max-width: 640px){
-  .kpibar__inner{ padding:8px 14px 10px; }
-  .kpibar__grid{ grid-template-columns:repeat(2, 1fr); }
-  .kpi__value{ font-size:16px; }
-  .kpibar__head{ font-size:8.5px; letter-spacing:.16em; }
-}
+/* responsive: see RESPONSIVE section (LG / SM tiers) */
 
 /* live ticker — sits below docstrip, scrolls right-to-left */
 .ticker{
@@ -3491,248 +3455,6 @@ section{
   flex-wrap:wrap; gap:10px;
 }
 
-/* ================================================================
-   RESPONSIVE
-   ================================================================ */
-@media (max-width: 1100px){
-  .splash__log{ display:none; }
-}
-
-/* narrow 2-col layout: main column gets cramped — stack the inner 2-cols */
-@media (min-width: 1100px) and (max-width: 1499.98px){
-  .hero__grid{ grid-template-columns:1fr; gap:24px; }
-  .hero__lower{ grid-template-columns:1fr; gap:16px; }
-  .hero__stats{ grid-template-columns:repeat(4,1fr); }
-  .about__grid{ grid-template-columns: 1fr 1fr; gap:24px; }
-  .about__marginal{ grid-column:1 / -1; position:static; max-width:none; }
-  .interests__grid{ grid-template-columns:repeat(2,1fr); }
-
-  .layout__side .spotify__card{
-    grid-template-columns: 120px 1fr;
-    gap:14px;
-    padding:10px 12px;
-  }
-  .layout__side .spotify__cover{ max-width:none; width:100%; }
-  .layout__side .spotify__track{ font-size:16px; }
-  .layout__side .spotify__artist{ font-size:11.5px; }
-  .layout__side .spotify__label{ font-size:8.5px; letter-spacing:.14em; }
-  .layout__side .spotify__label img{ height:11px; width:11px; }
-  .layout__side .spotify__counter{ font-size:8px; padding:1px 4px; letter-spacing:.14em; }
-  .layout__side .spotify__time{ font-size:8px; min-width:28px; letter-spacing:.1em; }
-  .layout__side .spotify__foot{ font-size:8.5px; gap:6px; letter-spacing:.12em; }
-  .layout__side .spotify__pill{ font-size:8px; padding:1px 5px; }
-  .layout__side .spotify__hint{ font-size:8px; letter-spacing:.14em; }
-  .layout__side .spotify__card::before{ font-size:8px; padding:1px 6px; right:8px; }
-}
-
-/* tablets / small laptops */
-@media (max-width: 1024px){
-  section{ padding: 36px 24px 44px; }
-  .docstrip__inner{ padding:6px 24px; gap:10px; }
-
-  .hero__grid{ grid-template-columns:1fr; gap:28px; }
-  .hero__lower{ grid-template-columns:1fr; gap:18px; }
-  .hero__stats{ grid-template-columns:repeat(4,1fr); max-width:none; }
-
-  .about__grid{ grid-template-columns:1fr; gap:28px; }
-  .about__marginal{ position:static; }
-
-  .funfacts__list{ columns:1; }
-
-  .spotify__card{ grid-template-columns:1fr; }
-  .spotify__cover{ max-width:240px; margin:0 auto; }
-
-  .foot__cols{ grid-template-columns:repeat(2, 1fr); gap:28px; }
-}
-
-/* phones (landscape) / large phones */
-@media (max-width: 768px){
-  section{ padding: 28px 18px 36px; }
-
-  /* docstrip: hide completely on mobile */
-  .docstrip{ display:none; }
-
-  /* ticker: drop the FEED · #01 tag, shrink label */
-  .ticker{ height:26px; font-size:10.5px; letter-spacing:.08em; }
-  .ticker__label{ padding:0 10px; font-size:9.5px; letter-spacing:.18em; gap:6px; }
-  .ticker__tag{ display:none; }
-  .ticker__viewport{ -webkit-mask-image: linear-gradient(to right, transparent 0, #000 18px, #000 calc(100% - 14px), transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 18px, #000 calc(100% - 14px), transparent 100%); }
-  .ticker__item b{ padding:1px 5px; font-size:9.5px; }
-
-  /* kpi bar: tighter padding, compress footer */
-  .kpibar__inner{ padding:8px 12px 10px; }
-  .kpibar__head{ font-size:8.5px; letter-spacing:.16em; padding-bottom:6px; margin-bottom:8px; }
-  .kpi{ padding:8px 9px; gap:3px; }
-  .kpi__label{ font-size:8px; letter-spacing:.18em; }
-  .kpi__value{ font-size:16px; }
-  .kpi__sub{ font-size:8px; letter-spacing:.14em; }
-  .kpibar__foot{ font-size:7.5px; letter-spacing:.14em; margin-top:6px; gap:5px; }
-
-  /* section doc-bar: keep just DOC name + stamp on mobile so it fits one row */
-  .section__doc{ font-size:9.5px; letter-spacing:.12em; flex-wrap:nowrap; overflow:hidden; }
-  .section__doc > span{ padding:4px 8px; }
-  .section__doc > span:nth-child(2),
-  .section__doc > span:nth-child(n+4){ display:none; }
-  .section__doc > span:nth-child(3){ margin-left:auto; }
-  .section__doc > span:last-child{ margin-left:0; }
-
-  /* neofetch: smaller font on mobile, fade-edge hint for horizontal scroll */
-  .nterm__body{ font-size:11px; padding:14px 16px 18px; }
-  .nterm{ position:relative; }
-  .nterm::after{
-    content:"";
-    position:absolute; right:0; top:38px; bottom:0;
-    width:24px;
-    background:linear-gradient(to right, transparent, #000 80%);
-    pointer-events:none;
-  }
-  .ntab{ padding:9px 14px; font-size:11px; }
-
-  /* spotify: compact label, JP text wraps gracefully */
-  .spotify__label{ font-size:10px; gap:6px; flex-wrap:wrap; }
-  .spotify__label > span:nth-child(2){ flex:1 1 auto; min-width:0; }
-  .spotify__counter{ font-size:9px; padding:1px 6px; }
-
-  .nav__inner{ padding:0 14px; gap:12px; justify-content:space-between; }
-  .nav__links{ display:none; }
-  .nav__status{ flex:0 0 auto; padding-left:10px; font-size:10.5px; border-left:none; }
-  .nav__brand img{ height:22px; }
-
-  .section__head{ margin-bottom:24px; gap:12px; padding-bottom:12px; }
-  .section__slug{ gap:10px; flex-wrap:wrap; }
-  .section__slug .name{ font-size:clamp(18px, 5.2vw, 24px); }
-  .section__slug .ix{ font-size:11px; }
-  .section__slug .jp{ font-size:11px; }
-  .section__meta{ font-size:10px; gap:12px; }
-
-  .hero{ padding-top:32px; }
-  .hero__title{ font-size:clamp(48px, 18vw, 84px); margin:18px 0 8px; }
-  .hero__title-jp{ font-size:14px; letter-spacing:.24em; }
-  .hero__tagline{ font-size:15.5px; line-height:1.55; margin:14px 0 24px; }
-  .hero__lower{ grid-template-columns:1fr; gap:14px; }
-  .hero__stats{ grid-template-columns:repeat(2,1fr); max-width:none; }
-  .hero__stats-head{ font-size:10px; padding:6px 10px; }
-  .stat{ padding:12px 12px; }
-  .stat__value{ font-size:17px; }
-  .stat__label{ font-size:9.5px; }
-  .stat__ix{ top:12px; right:12px; font-size:8.5px; }
-  .stat__sub{ font-size:8px; padding-top:6px; }
-  .specsheet__row{ grid-template-columns: 100px 1fr; padding:4px 10px; }
-  .specsheet__list dt{ font-size:9.5px; }
-  .specsheet__list{ font-size:11px; }
-
-  .pcard__banner{ height:160px; }
-  .pcard__pfp{ width:96px; height:96px; top:100px; left:14px; }
-  .pcard__pfp-frame{ inset:-5px; width:calc(100% + 10px); height:calc(100% + 10px); }
-  .pcard__status-dot{ width:22px; height:22px; bottom:4px; right:4px; }
-  .pcard__body{ padding:54px 14px 16px; }
-  .pcard__name{ font-size:22px; }
-  .pcard__handle{ font-size:12px; word-break:break-word; }
-  .pcard__bio{ font-size:13px; padding:9px 11px; }
-  .pcard__url{ word-break:break-all; }
-  .pcard__socials{ gap:8px; padding-top:12px; margin-top:14px; }
-  .pcard__socials a{ width:48px; height:32px; }
-  .pcard__footer{ padding:9px 14px; font-size:9.5px; }
-
-  .interests__grid{ grid-template-columns:repeat(2, 1fr); }
-  .tile{ padding:18px 16px 22px; }
-  .tile h4{ font-size:16.5px; }
-  .tile p{ font-size:13px; }
-  .tile__jp{ top:18px; right:16px; font-size:10px; }
-
-  .funfacts{ padding-top:6px; }
-  .funfacts__list{ font-size:13.5px; }
-
-  .skills__grid{ grid-template-columns:repeat(2, 1fr); }
-  .skills__foot{ grid-template-columns:1fr; }
-  .skillgroup h4{ font-size:16px; }
-
-  .buttons__wall{ padding:12px; gap:5px; }
-
-  .neofetch__tabs{ overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:thin; }
-  .ntab{ padding:9px 14px; font-size:11px; letter-spacing:.1em; }
-  .nterm__body{ padding:14px 14px 18px; font-size:11.5px; }
-
-  .domains__grid{ grid-template-columns:repeat(2, 1fr); }
-  .dcard{ padding:16px 14px; min-height:130px; }
-  .dcard__logo{ height:30px; margin-bottom:12px; }
-  .dcard__url{ font-size:12px; }
-  .dcard__role{ font-size:12px; }
-
-  .spotify__card{ padding:16px; gap:18px; }
-  .spotify__cover{ max-width:200px; }
-  .spotify__track{ font-size:22px; }
-
-  .foot{ margin-top:56px; }
-  .foot__inner{ padding:44px 18px 24px; }
-  .foot__logo img{ height:46px; }
-  .foot__cols{ grid-template-columns:1fr; gap:22px; margin:28px 0 18px; }
-  .foot__tiny{ flex-direction:column; gap:6px; align-items:flex-start; }
-}
-
-/* small phones */
-@media (max-width: 480px){
-  section{ padding: 26px 14px 32px; }
-
-  .nav__inner{ padding:0 12px; gap:10px; }
-  .nav__brand img{ height:22px; }
-  .nav__status{ font-size:10.5px; padding-left:10px; gap:6px; }
-
-  .section__head{
-    flex-direction:column;
-    align-items:flex-start;
-    margin-bottom:22px;
-  }
-  .section__meta{ justify-content:flex-start; font-size:9.5px; gap:10px; }
-  .section__slug .name{ font-size:clamp(16px, 5.6vw, 22px); }
-  .section__slug .ix{ font-size:10px; }
-  .section__slug .jp{ font-size:10px; letter-spacing:.14em; }
-
-  .hero__title{ font-size:clamp(44px, 18vw, 72px); }
-  .hero__tagline{ font-size:14.5px; }
-  .hero__kicker{ font-size:10px; padding:4px 8px; letter-spacing:.2em; }
-  .stat{ padding:10px 10px; }
-  .stat__value{ font-size:15.5px; }
-  .stat__jp{ font-size:10px; }
-  .stat__ix{ top:10px; right:10px; }
-
-  .pcard__banner{ height:130px; }
-  .pcard__pfp{ width:84px; height:84px; top:82px; left:12px; }
-  .pcard__body{ padding:48px 12px 14px; }
-  .pcard__name{ font-size:20px; }
-  .pcard__badges{ gap:4px; margin:10px 0; }
-  .pcard__badges img{ height:20px; }
-  .pcard__tz{ font-size:11px; gap:4px; }
-  .pcard__socials a{ width:44px; height:30px; }
-
-  .interests__grid{ grid-template-columns:1fr; }
-  .skills__grid{ grid-template-columns:1fr; }
-  .tile{ padding:16px 14px 20px; }
-
-  .buttons__wall{ padding:10px; gap:4px; }
-
-  .ntab{ padding:8px 11px; font-size:10.5px; letter-spacing:.06em; }
-  .nterm__body{ font-size:11px; padding:12px; }
-
-  .domains__grid{ grid-template-columns:1fr; }
-
-  .spotify__card{ padding:14px; gap:14px; }
-  .spotify__cover{ max-width:170px; }
-  .spotify__track{ font-size:20px; }
-  .spotify__artist{ font-size:13px; }
-
-  .foot__inner{ padding:32px 14px 20px; }
-  .foot__logo img{ height:38px; }
-
-  .splash__grid{ padding:12px 14px; }
-  .tag{ font-size:9px; padding:2px 6px; letter-spacing:.12em; }
-  .splash__bottom{ width:min(360px, 84vw); bottom:56px; }
-  .splash__progress-head{ font-size:9.5px; letter-spacing:.18em; }
-  .splash__progress-foot{ font-size:9px; letter-spacing:.16em; }
-  .splash__progress-bar{ height:14px; }
-  .splash__label{ font-size:15px; margin-top:22px; letter-spacing:.18em; }
-  .splash__label .jp{ font-size:10px; letter-spacing:.28em; }
-}
 
 /* ============================================================= */
 /* SET-NAV — show one main+side panel-set at a time, glitch swap  */
@@ -3847,11 +3569,7 @@ html.setmode .setbar{ display:flex; }
 }
 .mnav a.is-current{ color:var(--acc-cy); }
 .mnav a.is-current::after{ opacity:.9; }
-@media (max-width: 768px){
-  .mnav{ display:flex; }
-  /* keep the fixed bar from covering the footer end (index only — legal.html has no bar) */
-  body:has(.mnav){ padding-bottom:calc(46px + env(safe-area-inset-bottom)); }
-}
+/* responsive: see RESPONSIVE section (MD tier) */
 
 /* ----- exit glitch ----- */
 html.setmode .set-exit { animation: setOut .32s ease-in both; }
@@ -4038,6 +3756,341 @@ html.lite .wallpaper-overlay{
 .lite-toggle b{ color:var(--acc-cy); font-weight:600; }
 .lite-toggle:hover{ color:var(--text); border-color:rgba(255,255,255,.3); }
 html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
-@media (max-width: 768px){
+/* responsive: see RESPONSIVE section (MD tier) */
+
+/* ================================================================
+   RESPONSIVE
+   ----------------------------------------------------------------
+   One scale for the whole site. Every @media rule lives in this
+   section; the only exception is the column/order switch in
+   "2-COLUMN LAYOUT", which is structure rather than scaling.
+
+   This block is last in the file on purpose: it has to be able to
+   override late components (.mnav, .lite-toggle) without specificity
+   hacks. Keep it at the bottom when adding new sections.
+
+     ≥ 1500px        XL   2-col page, roomy main column
+     1100–1499.98px  LG   2-col page, narrow main column
+     ≤ 1099.98px     MD   page flattens to one column
+     ≤  767.98px     SM   phones — mobile nav takes over
+     ≤  639.98px     S    narrow phones
+     ≤  479.98px     XS   small phones
+
+   Tiers are written largest → smallest and each one only states what
+   changes from the tier above it.
+
+   The hero is the exception on purpose: it is styled by @container,
+   because it is wide at MD (full-width page) and narrow at LG (main
+   column) — a viewport breakpoint cannot tell those two apart.
+   ================================================================ */
+
+/* ---- hero, measured against its own box ------------------------ */
+@container hero (max-width: 899px){
+  /* still side by side, but the card track now scales with the hero
+     instead of holding 360px — stacking here would leave a dead column */
+  .hero__grid{ grid-template-columns: minmax(300px, 38%) minmax(0, 1fr); gap:22px; }
+}
+@container hero (max-width: 659px){
+  /* the card is at its 300px floor and the copy is down to ~340px —
+     any narrower and both lose. Stack, and let the card use the row. */
+  .hero__grid{ grid-template-columns:1fr; gap:24px; }
+  .pcard{ max-width:520px; }
+}
+@container hero-side (max-width: 699px){
+  /* stats + spec sheet stack; stats take the full width as 4 cells */
+  .hero__lower{ grid-template-columns:1fr; gap:16px; }
+  .hero__stats{ grid-template-columns:repeat(4,1fr); max-width:none; }
+}
+@container hero-side (max-width: 519px){
+  .hero__stats{ grid-template-columns:repeat(2,1fr); }
+}
+
+/* ---- LG: 2-col page, narrow main column ------------------------ */
+@media (min-width: 1100px) and (max-width: 1499.98px){
+  .about__grid{ grid-template-columns: 1fr 1fr; gap:24px; }
+  .about__marginal{ grid-column:1 / -1; position:static; max-width:none; }
+  .interests__grid{ grid-template-columns:repeat(2,1fr); }
+
+  .layout__side .spotify__card{
+    grid-template-columns: 120px 1fr;
+    gap:14px;
+    padding:10px 12px;
+  }
+  .layout__side .spotify__cover{ max-width:none; width:100%; }
+  .layout__side .spotify__track{ font-size:16px; }
+  .layout__side .spotify__artist{ font-size:11.5px; }
+  .layout__side .spotify__label{ font-size:8.5px; letter-spacing:.14em; }
+  .layout__side .spotify__label img{ height:11px; width:11px; }
+  .layout__side .spotify__counter{ font-size:8px; padding:1px 4px; letter-spacing:.14em; }
+  .layout__side .spotify__time{ font-size:8px; min-width:28px; letter-spacing:.1em; }
+  .layout__side .spotify__foot{ font-size:8.5px; gap:6px; letter-spacing:.12em; }
+  .layout__side .spotify__pill{ font-size:8px; padding:1px 5px; }
+  .layout__side .spotify__hint{ font-size:8px; letter-spacing:.14em; }
+  .layout__side .spotify__card::before{ font-size:8px; padding:1px 6px; right:8px; }
+}
+
+/* ---- MD: page flattens to one column --------------------------- */
+/* The sidebar is gone, so every section now spans the full page and
+   the hero gets its 2-col treatment back via @container. */
+@media (max-width: 1099.98px){
+  section{ padding: 36px 24px 44px; }
+  .docstrip__inner{ padding:6px 24px; gap:10px; }
+
+  /* top nav: the full link row no longer fits — drop the "/ 0N" indices
+     and tighten, otherwise it pushes the page into horizontal scroll */
+  .nav__inner{ gap:18px; }
+  .nav__links{ gap:16px; font-size:11px; letter-spacing:.1em; }
+  .nav__links a em{ display:none; }
+  .nav__status{ padding-left:14px; font-size:11px; }
+
+  .about__grid{ grid-template-columns:1fr; gap:28px; }
+  .about__marginal{ position:static; }
+
+  .funfacts__list{ columns:1; }
+
+  .kpibar__inner{ grid-template-columns:1fr; gap:10px; }
+  .kpibar__grid{ grid-template-columns:repeat(2, 1fr); }
+  .therm__body{ grid-template-columns:1fr 1fr; }
+
+  .foot__cols{ grid-template-columns:repeat(2, 1fr); gap:28px; }
+
+  .splash__log{ display:none; }
+}
+
+/* ---- SM: phones ------------------------------------------------ */
+@media (max-width: 767.98px){
+  section{ padding: 28px 18px 36px; }
+
+  /* docstrip: hide completely on mobile */
+  .docstrip{ display:none; }
+
+  /* ticker: drop the FEED · #01 tag, shrink label */
+  .ticker{ height:26px; font-size:10.5px; letter-spacing:.08em; }
+  .ticker__label{ padding:0 10px; font-size:9.5px; letter-spacing:.18em; gap:6px; }
+  .ticker__tag{ display:none; }
+  .ticker__viewport{ -webkit-mask-image: linear-gradient(to right, transparent 0, #000 18px, #000 calc(100% - 14px), transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 18px, #000 calc(100% - 14px), transparent 100%); }
+  .ticker__item b{ padding:1px 5px; font-size:9.5px; }
+
+  /* kpi bar: tighter padding, compress footer */
+  .kpibar__inner{ padding:8px 12px 10px; }
+  .kpibar__head{ font-size:8.5px; letter-spacing:.16em; padding-bottom:6px; margin-bottom:8px; }
+  .kpi{ padding:8px 9px; gap:3px; }
+  .kpi__label{ font-size:8px; letter-spacing:.18em; }
+  .kpi__value{ font-size:16px; }
+  .kpi__sub{ font-size:8px; letter-spacing:.14em; }
+  .kpibar__foot{ font-size:7.5px; letter-spacing:.14em; margin-top:6px; gap:5px; }
+
+  /* section doc-bar: keep just DOC name + stamp on mobile so it fits one row */
+  .section__doc{ font-size:9.5px; letter-spacing:.12em; flex-wrap:nowrap; overflow:hidden; }
+  .section__doc > span{ padding:4px 8px; }
+  .section__doc > span:nth-child(2),
+  .section__doc > span:nth-child(n+4){ display:none; }
+  .section__doc > span:nth-child(3){ margin-left:auto; }
+  .section__doc > span:last-child{ margin-left:0; }
+
+  /* neofetch: smaller font on mobile, fade-edge hint for horizontal scroll */
+  .nterm__body{ font-size:11px; padding:14px 16px 18px; }
+  .nterm{ position:relative; }
+  .nterm::after{
+    content:"";
+    position:absolute; right:0; top:38px; bottom:0;
+    width:24px;
+    background:linear-gradient(to right, transparent, #000 80%);
+    pointer-events:none;
+  }
+  .ntab{ padding:9px 14px; font-size:11px; }
+
+  /* spotify: compact label, JP text wraps gracefully */
+  .spotify__label{ font-size:10px; gap:6px; flex-wrap:wrap; }
+  .spotify__label > span:nth-child(2){ flex:1 1 auto; min-width:0; }
+  .spotify__counter{ font-size:9px; padding:1px 6px; }
+
+  .nav__inner{ padding:0 14px; gap:12px; justify-content:space-between; }
+  .nav__links{ display:none; }
+  .nav__status{ flex:0 0 auto; padding-left:10px; font-size:10.5px; border-left:none; }
+  .nav__brand img{ height:22px; }
+
+  .section__head{ margin-bottom:24px; gap:12px; padding-bottom:12px; }
+  .section__slug{ gap:10px; flex-wrap:wrap; }
+  .section__slug .name{ font-size:clamp(18px, 5.2vw, 24px); }
+  .section__slug .ix{ font-size:11px; }
+  .section__slug .jp{ font-size:11px; }
+  .section__meta{ font-size:10px; gap:12px; }
+
+  .hero{ padding-top:32px; }
+  .hero__title{ font-size:clamp(48px, 18vw, 84px); margin:18px 0 8px; }
+  .hero__title-jp{ font-size:14px; letter-spacing:.24em; }
+  .hero__tagline{ font-size:15.5px; line-height:1.55; margin:14px 0 24px; }
+  .hero__stats-head{ font-size:10px; padding:6px 10px; }
+  .stat{ padding:12px 12px; }
+  .stat__value{ font-size:17px; }
+  .stat__label{ font-size:9.5px; }
+  .stat__ix{ top:12px; right:12px; font-size:8.5px; }
+  .stat__sub{ font-size:8px; padding-top:6px; }
+  .specsheet__row{ grid-template-columns: 100px 1fr; padding:4px 10px; }
+  .specsheet__list dt{ font-size:9.5px; }
+  .specsheet__list{ font-size:11px; }
+
+  .pcard__banner{ height:160px; }
+  .pcard__pfp{ width:96px; height:96px; top:100px; left:14px; }
+  .pcard__pfp-frame{ inset:-5px; width:calc(100% + 10px); height:calc(100% + 10px); }
+  .pcard__status-dot{ width:22px; height:22px; bottom:4px; right:4px; }
+  .pcard__body{ padding:54px 14px 16px; }
+  .pcard__name{ font-size:22px; }
+  .pcard__handle{ font-size:12px; word-break:break-word; }
+  .pcard__bio{ font-size:13px; padding:9px 11px; }
+  .pcard__url{ word-break:break-all; }
+  .pcard__socials{ gap:8px; padding-top:12px; margin-top:14px; }
+  .pcard__socials a{ width:48px; height:32px; }
+  .pcard__footer{ padding:9px 14px; font-size:9.5px; }
+
+  .interests__grid{ grid-template-columns:repeat(2, 1fr); }
+  .tile{ padding:18px 16px 22px; }
+  .tile h4{ font-size:16.5px; }
+  .tile p{ font-size:13px; }
+  .tile__jp{ top:18px; right:16px; font-size:10px; }
+
+  .funfacts{ padding-top:6px; }
+  .funfacts__list{ font-size:13.5px; }
+
+  .skills__grid{ grid-template-columns:repeat(2, 1fr); }
+  .skills__foot{ grid-template-columns:1fr; }
+  .skillgroup h4{ font-size:16px; }
+
+  .buttons__wall{ padding:12px; gap:5px; }
+
+  .neofetch__tabs{ overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:thin; }
+  .ntab{ padding:9px 14px; font-size:11px; letter-spacing:.1em; }
+  .nterm__body{ padding:14px 14px 18px; font-size:11.5px; }
+
+  /* .domains__grid is auto-fill/minmax — it reflows on its own */
+  .dcard{ padding:16px 14px; min-height:130px; }
+  .dcard__logo{ height:30px; margin-bottom:12px; }
+  .dcard__url{ font-size:12px; }
+  .dcard__role{ font-size:12px; }
+
+  /* spotify: cover on top, big enough to read the art */
+  .spotify__card{ grid-template-columns:1fr; padding:16px; gap:18px; }
+  .spotify__cover{ max-width:200px; margin:0 auto; }
+  .spotify__track{ font-size:22px; }
+
+  .photos__grid{ grid-template-columns:repeat(2,1fr); }
+  .photos--teaser .photos__grid--teaser{ grid-template-columns:repeat(3,1fr); }
+
+  .games__grid{ grid-template-columns:repeat(3,1fr); }
+  .game-card__title{ font-size:10px; }
+  .game-card__genre{ font-size:9px; }
+
+  /* mobile nav bar replaces the top links */
+  .mnav{ display:flex; }
+  /* keep the fixed bar from covering the footer end (index only — legal.html has no bar) */
+  body:has(.mnav){ padding-bottom:calc(46px + env(safe-area-inset-bottom)); }
   .lite-toggle{ bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }
+
+  .foot{ margin-top:56px; }
+  .foot__inner{ padding:44px 18px 24px; }
+  .foot__logo img{ height:46px; }
+  .foot__cols{ grid-template-columns:1fr; gap:22px; margin:28px 0 18px; }
+  .foot__tiny{ flex-direction:column; gap:6px; align-items:flex-start; }
+}
+
+/* ---- S: narrow phones ------------------------------------------ */
+@media (max-width: 639.98px){
+  .kpibar__inner{ padding:8px 14px 10px; }
+  .kpibar__head{ font-size:8.5px; letter-spacing:.16em; }
+  .kpi__value{ font-size:16px; }
+
+  /* photos: one big frame reads better than two cramped ones */
+  .photos__grid{ grid-template-columns:1fr; }
+  .photos--teaser .photos__grid--teaser{ grid-template-columns:repeat(2,1fr); }
+  .photos--teaser .photo-card__img-wrap{ aspect-ratio:4/3; }
+  .photos--teaser .photo-card__title{ font-size:11px; letter-spacing:.05em; }
+  .photos--teaser .photo-card__tag{ font-size:8.5px; }
+  .photos__cta{
+    grid-template-columns:1fr;
+    grid-template-areas:
+      "label"
+      "url"
+      "sub";
+    gap:4px;
+    padding:12px 14px;
+  }
+  .photos__cta-url{ font-size:14px; }
+
+  /* now-playing manifest overlay */
+  .manifest{ padding:14px; }
+  .manifest__sheet{ padding:16px 14px 14px; }
+  .manifest__row{ grid-template-columns: 28px 36px 1fr auto; gap:10px; padding:8px 10px; }
+  .manifest__thumb{ width:34px; height:34px; }
+  .manifest__title{ font-size:13px; }
+  .manifest__artist{ font-size:11px; }
+  .manifest__status{ font-size:9px; min-width:auto; }
+}
+
+/* ---- XS: small phones ------------------------------------------ */
+@media (max-width: 479.98px){
+  section{ padding: 26px 14px 32px; }
+
+  .nav__inner{ padding:0 12px; gap:10px; }
+  .nav__brand img{ height:22px; }
+  .nav__status{ font-size:10.5px; padding-left:10px; gap:6px; }
+
+  .section__head{
+    flex-direction:column;
+    align-items:flex-start;
+    margin-bottom:22px;
+  }
+  .section__meta{ justify-content:flex-start; font-size:9.5px; gap:10px; }
+  .section__slug .name{ font-size:clamp(16px, 5.6vw, 22px); }
+  .section__slug .ix{ font-size:10px; }
+  .section__slug .jp{ font-size:10px; letter-spacing:.14em; }
+
+  .hero__title{ font-size:clamp(44px, 18vw, 72px); }
+  .hero__tagline{ font-size:14.5px; }
+  .hero__kicker{ font-size:10px; padding:4px 8px; letter-spacing:.2em; }
+  .stat{ padding:10px 10px; }
+  .stat__value{ font-size:15.5px; }
+  .stat__jp{ font-size:10px; }
+  .stat__ix{ top:10px; right:10px; }
+
+  .pcard__banner{ height:130px; }
+  .pcard__pfp{ width:84px; height:84px; top:82px; left:12px; }
+  .pcard__body{ padding:48px 12px 14px; }
+  .pcard__name{ font-size:20px; }
+  .pcard__badges{ gap:4px; margin:10px 0; }
+  .pcard__badges img{ height:20px; }
+  .pcard__tz{ font-size:11px; gap:4px; }
+  .pcard__socials a{ width:44px; height:30px; }
+
+  .skills__grid{ grid-template-columns:1fr; }
+  .tile{ padding:16px 14px 20px; }
+
+  /* games: covers stay thumbnail-sized, 3 across */
+  .game-card__img-wrap{ aspect-ratio:3/4; }
+  .game-card__cap{ padding:5px 6px 6px; }
+  .game-card__title{ font-size:9px; letter-spacing:.03em; }
+  .game-card__genre{ font-size:8px; letter-spacing:.06em; }
+  .game-card__tag{ font-size:7px; padding:1px 4px; top:3px; left:3px; }
+
+  .buttons__wall{ padding:10px; gap:4px; }
+
+  .ntab{ padding:8px 11px; font-size:10.5px; letter-spacing:.06em; }
+  .nterm__body{ font-size:11px; padding:12px; }
+
+  .spotify__card{ padding:14px; gap:14px; }
+  .spotify__cover{ max-width:170px; }
+  .spotify__track{ font-size:20px; }
+  .spotify__artist{ font-size:13px; }
+
+  .foot__inner{ padding:32px 14px 20px; }
+  .foot__logo img{ height:38px; }
+
+  .splash__grid{ padding:12px 14px; }
+  .tag{ font-size:9px; padding:2px 6px; letter-spacing:.12em; }
+  .splash__bottom{ width:min(360px, 84vw); bottom:56px; }
+  .splash__progress-head{ font-size:9.5px; letter-spacing:.18em; }
+  .splash__progress-foot{ font-size:9px; letter-spacing:.16em; }
+  .splash__progress-bar{ height:14px; }
+  .splash__label{ font-size:15px; margin-top:22px; letter-spacing:.18em; }
+  .splash__label .jp{ font-size:10px; letter-spacing:.28em; }
 }
