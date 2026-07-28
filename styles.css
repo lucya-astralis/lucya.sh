@@ -737,9 +737,15 @@ body.is-ready .hero__side{
   from{ transform:translateX(18px); }
   to  { transform:translateX(0); }
 }
+/* Transform only — no `filter` here, on purpose. A filter on the section
+   makes it a Backdrop Root, so every glass pane inside has nothing left to
+   sample and renders as a bare translucent fill for the whole reveal; the
+   blur then snapped back in the moment the animation ended. `both` fill
+   made it permanent too, since even blur(0) counts as a filter. The rise
+   stays, and flickerIn (opacity only) still does the flicker. */
 @keyframes sectionUp{
-  from{ transform:translateY(24px); filter:blur(3px); }
-  to  { transform:translateY(0);    filter:blur(0); }
+  from{ transform:translateY(24px); }
+  to  { transform:translateY(0); }
 }
 @keyframes flickerIn{
   0%  { opacity:0; }
