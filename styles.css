@@ -4078,6 +4078,24 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
   .kpibar__head{ font-size:8.5px; letter-spacing:.16em; }
   .kpi__value{ font-size:16px; }
 
+  /* the CRT vignette is a centred ellipse: on a pane this narrow its dark
+     end lands right on the left and right edges and paints a black curtain
+     down the ASCII art. Widen the ellipse past the pane so only the corners
+     pick up shadow, the way it reads on a desktop-width terminal. */
+  .nterm::after{
+    background: radial-gradient(165% 105% at 50% 50%,
+      transparent 58%, rgba(0,0,0,0.45) 100%);
+  }
+
+  /* endpoints two-up: the cards are mostly label + url, and one per row
+     turns the section into a very long scroll */
+  .domains__grid{ grid-template-columns:repeat(2, 1fr); }
+  .dcard{ padding:12px 11px 14px; min-height:0; }
+  .dcard__logo{ height:24px; margin-bottom:9px; }
+  /* long hostnames have to break mid-word in a 160px column */
+  .dcard__url{ font-size:11px; overflow-wrap:anywhere; }
+  .dcard__role{ font-size:11px; line-height:1.4; }
+
   /* photos: one big frame reads better than two cramped ones */
   .photos__grid{ grid-template-columns:1fr; }
   .photos--teaser .photos__grid--teaser{ grid-template-columns:repeat(2,1fr); }
@@ -4108,6 +4126,12 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
 /* ---- XS: small phones ------------------------------------------ */
 @media (max-width: 479.98px){
   section{ padding: 26px 14px 32px; }
+
+  /* two-up endpoint cards: a notch smaller keeps the longest hostnames on
+     one line instead of breaking them mid-word */
+  .dcard{ padding:11px 9px 12px; }
+  .dcard__url{ font-size:10.5px; }
+  .dcard__role{ font-size:10.5px; }
 
   .nav__inner{ padding:0 12px; gap:10px; }
   .nav__brand img{ height:22px; }
