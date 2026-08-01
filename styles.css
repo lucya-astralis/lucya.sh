@@ -903,12 +903,13 @@ section{
 }
 
 /* below the 2-col breakpoint: flatten columns and interleave sections.
-   visual order: hero → kpibar → about → spotify → interests → buttons →
-                 rack → systems → services → photos
-   (identity → narrative → what I'm listening to → personal cluster →
-    technical → lighter/visual content)
+   visual order: hero → kpibar → about → spotify → photos → interests →
+                 buttons → rack → systems → services
+   (identity → narrative → what I'm listening to → what I shot →
+    personal cluster → technical)
    spotify sits high on purpose: it's the one live-updating panel, so it
-   should be reachable without scrolling past the whole technical block. */
+   should be reachable without scrolling past the whole technical block,
+   and the photo teaser rides directly under it. */
 @media (max-width: 1099.98px){
   .layout{ display:flex; flex-direction:column; gap:0; }
   .layout__main,
@@ -918,12 +919,12 @@ section{
   .kpibar    { order:1; } /* JS relocates kpibar after .hero in DOM; tied order → renders right after */
   .about     { order:2; }
   .spotify   { order:3; }
-  .interests { order:4; }
-  .buttons   { order:5; }
-  .rack      { order:6; }
-  .neofetch  { order:7; }
-  .services  { order:8; }
-  .photos    { order:9; }
+  .photos    { order:4; }
+  .interests { order:5; }
+  .buttons   { order:6; }
+  .rack      { order:7; }
+  .neofetch  { order:8; }
+  .services  { order:9; }
 }
 
 @media (min-width: 1100px){
@@ -3888,8 +3889,33 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
   .ticker__item b{ padding:1px 5px; font-size:9.5px; }
 
   /* kpi bar: tighter padding, compress footer */
-  .kpibar__inner{ padding:8px 12px 10px; }
+  /* relocated under the hero by script.js at this width, so it now sits
+     inside .layout and already carries the page padding — its own inset
+     would push the metrics narrower than every section around it */
+  .kpibar__inner{ padding:8px 0 10px; }
   .kpibar__head{ font-size:8.5px; letter-spacing:.16em; padding-bottom:6px; margin-bottom:8px; }
+
+  /* the bar's own tinted band is the only panel-wide fill left at this width
+     and it cuts a differently-shaded stripe across the page, with the header
+     type sitting on the wallpaper that shows through it. The tiles below
+     carry their own fill, so the band itself can go — the block then reads
+     like every other section. */
+  .kpibar{ background:none; border-bottom:0; }
+
+  /* No pane blur at this size either: the wallpaper is scaled way up on a
+     phone, so the blurred backdrop turns into large soft blotches that fight
+     the metric type sitting on it. The tiles carry a near-opaque fill of
+     their own instead — same trade html.lite makes when it drops
+     backdrop-filter. */
+  .kpibar__grid,
+  .therm__body{
+    -webkit-backdrop-filter:none;
+            backdrop-filter:none;
+  }
+  .kpi,
+  .therm__primary,
+  .therm__cell{ background:rgba(9,9,14,.94); }
+
   .kpi{ padding:8px 9px; gap:3px; }
   .kpi__label{ font-size:8px; letter-spacing:.18em; }
   .kpi__value{ font-size:16px; }
@@ -4074,7 +4100,7 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
 
 /* ---- S: narrow phones ------------------------------------------ */
 @media (max-width: 639.98px){
-  .kpibar__inner{ padding:8px 14px 10px; }
+  .kpibar__inner{ padding:8px 0 10px; }
   .kpibar__head{ font-size:8.5px; letter-spacing:.16em; }
   .kpi__value{ font-size:16px; }
 
