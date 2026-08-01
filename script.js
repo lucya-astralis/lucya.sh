@@ -455,7 +455,7 @@
     {
       id: 'aoi',
       tab: 'aoi',
-      title: 'aoi.inter-astra.local // mobile workstation',
+      title: 'aoi.lucya.intra // mobile workstation',
       width: 890,
       content: `<span style="color: #50FA7B;">                                  astra</span><span style="color: #BFBFBF;">@</span><span style="color: #50FA7B;">aoi</span>
 <span style="color: #BFBFBF;">                                  ---------</span>
@@ -489,7 +489,7 @@
     {
       id: 'vanta',
       tab: 'vanta',
-      title: 'vanta.inter-astra.local // main system',
+      title: 'vanta.lucya.intra // main system',
       width: 680,
       content: `<span style="color:#F14F21;"> lllllllllllllll</span>   <span style="color:#7EB900;">lllllllllllllll</span>  <span style="color:#F9F1A5;">astra@vanta</span>
 <span style="color:#F14F21;"> lllllllllllllll</span>   <span style="color:#7EB900;">lllllllllllllll</span>  <span style="color:#767676;">-----------</span>
@@ -515,7 +515,7 @@
     {
       id: 'delta',
       tab: 'delta',
-      title: 'delta.inter-astra.local // main system',
+      title: 'delta.lucya.intra // main system',
       width: 680,
       content: `<span style="color: #61FFCA;">                  -'                     </span><span style="color: #EDECEE;">astra</span><span style="color: #A277FF;">@</span><span style="color: #EDECEE;">delta</span>
 <span style="color: #61FFCA;">                 .o+'                    </span><span style="color: #A277FF;">-------------</span>
@@ -546,7 +546,7 @@
     {
       id: 'chimera',
       tab: 'chimera',
-      title: 'chimera.inter-astra.local // homelab hypervisor',
+      title: 'chimera.lucya.intra // homelab hypervisor',
       width: 850,
       content: `<span style="color: #e7e7e7;">         .://:'              '://:.</span>             <span style="color: #E57000;">root</span><span style="color: #e7e7e7;">@</span><span style="color: #E57000;">chimera</span>
 <span style="color: #e7e7e7;">       'hMMMMMMd/          /dMMMMMMh'</span>           <span style="color: #E57000;">------------</span>
@@ -572,7 +572,7 @@
     {
       id: 'lynx',
       tab: 'lynx',
-      title: 'lynx.inter-astra.local // homelab core hypervisor',
+      title: 'lynx.lucya.intra // homelab core hypervisor',
       width: 800,
       content: `<span style="color: #e7e7e7;">         .://:'              '://:.<span/>             <span style="color: #E57000;">root<span/><span style="color: #e7e7e7;">@<span/><span style="color: #E57000;">lynx</span>
 <span style="color: #e7e7e7;">       'hMMMMMMd/          /dMMMMMMh'<span/>           <span style="color: #E57000;">---------<span/>
@@ -598,7 +598,7 @@
     {
       id: 'rubicon',
       tab: 'rubicon',
-      title: 'rubicon.inter-astra.local // linux macbook',
+      title: 'rubicon.lucya.intra // linux macbook',
       width: 820,
       content: `<span style="color: #EDAECA;">                                           </span><span style="color: #D26BA4;">astra</span><span style="color: #EDAECA;">@</span><span style="color: #D26BA4;">Rubicon</span>
 <span style="color: #D26BA4;">           ..:/ossyyyysso/:.</span>               <span style="color: #EDAECA;">-------------</span>
@@ -625,7 +625,7 @@
     {
       id: 'esx-01',
       tab: 'esx-01',
-      title: 'esx-01.inter-astra.local // homelab virtualization host #01',
+      title: 'esx-01.lucya.intra // homelab virtualization host #01',
       width: 750,
       content: `<span style="color:#8dc242;">          ---------===========++  </span>  <span style="color:#56b6c2;">root@esx-01</span>
 <span style="color:#8dc242;">         --------============+++  </span>  <span style="color:#56b6c2;">--------------------</span>
@@ -648,7 +648,7 @@
     {
       id: 'esx-02',
       tab: 'esx-02',
-      title: 'esx-02.inter-astra.local // homelab virtualization host #02',
+      title: 'esx-02.lucya.intra // homelab virtualization host #02',
       width: 750,
       content: `<span style="color:#FFB3BA;">          ---------===========++  </span>  <span style="color:#56b6c2;">root@esx-02</span>
 <span style="color:#FFCCB3;">         --------============+++  </span>  <span style="color:#56b6c2;">--------------------</span>
@@ -671,7 +671,7 @@
     {
       id: 'kolibri',
       tab: 'kolibri',
-      title: 'kolibri.inter-astra.local // main laptop / tablet',
+      title: 'kolibri.lucya.intra // main laptop / tablet',
       width: 1000,
       content: `<span style="color:#08a1f7;">/////////////////</span>  <span style="color:#09e0fe;">/////////////////</span>    <span style="color:#56b6c2;">Astra@kolibri</span>
 <span style="color:#08a1f7;">/////////////////</span>  <span style="color:#09e0fe;">/////////////////</span>    <span style="color:#56b6c2;">--------------</span>
@@ -704,7 +704,7 @@
     {
       id: 'motte',
       tab: 'motte',
-      title: 'motte.inter-astra.local // garbage 1st gen lenovo yogabook',
+      title: 'motte.lucya.intra // garbage 1st gen lenovo yogabook',
       width: 950,
       content: `<span style="color:#E2232A;"> lllllllllllllll</span>   <span style="color:#E2232A;">lllllllllllllll</span>  <span style="color:#F9F1A5;">Astra@motte</span>
 <span style="color:#E2232A;"> lllllllllllllll</span>   <span style="color:#E2232A;">lllllllllllllll</span>  <span style="color:#767676;">--------------</span>
@@ -734,7 +734,7 @@
     {
       id: 'orcus',
       tab: 'orcus',
-      title: 'orcus.inter-astra.local // imac mid 2011 21.5 inch',
+      title: 'orcus.lucya.intra // imac mid 2011 21.5 inch',
       width: 730,
       content: `<span style="color:#61BB46;">                     ..'</span>          <span style="color: #33cc33;">astra@Orcus</span>
 <span style="color:#61BB46;">                 ,xNMM.</span>           <span style="color: #33cc33;">-----------</span>
@@ -764,7 +764,7 @@
     {
       id: 'backup-01',
       tab: 'backup-01',
-      title: 'backup-01.inter-astra.local // thinkstation c20x / old backup pc',
+      title: 'backup-01.lucya.intra // thinkstation c20x / old backup pc',
       width: 1020,
       content: `<span style="color:#ee0303;">        ,.=:!!t3Z3z.,</span>                   <span style="color:#08e008;">astra@backup-01</span>
 <span style="color:#ee0303;">       :tt:::tt333EE3</span>                   <span style="color:#08e008;">---------------</span>
