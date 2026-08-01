@@ -16,6 +16,7 @@
   var wheelLock = false;
   var active = false;       // set-mode currently engaged
   var pager, hint;
+  var initialPlayed = false;
 
   var EXIT_MS = 320;
   var ENTER_MS = 620;       // matches the slide-in duration
@@ -38,9 +39,10 @@
   function buildPanels() {
     panels = [
       { main: pick(['profile']),            side: pick(['buttons', 'spotify']) },
-      { main: pick(['about', 'interests']), side: pick(['games']) },
-      { main: pick(['skills']),             side: pick(['opsboard']) },
-      { main: pick(['systems', 'services']),side: pick(['photos']) }
+      { main: pick(['about', 'interests']), side: pick(['photos']) },
+      // the rack sits beside the systems/services pair and only needs a
+      // narrow strip, so this set runs an extra-slim side column
+      { main: pick(['systems', 'services']),side: pick(['rack']), slim: true }
     ];
     // footer is no longer a panel — it's rendered as a slim persistent bar
   }
@@ -52,6 +54,43 @@
   var TXT_DUR = 380;        // textBuild duration
   var TXT_SEL = '.section__doc, .section__slug, .section__meta,' +
                 'h1,h2,h3,h4,h5,h6, p, li, dt, dd, figcaption, blockquote';
+
+  // Widget panels are built from grids of tiles rather than running text, so
+  // the line-by-line build above finds almost nothing in them and they used
+  // to just appear whole. These are the tiles: they get the same treatment,
+  // which is what gives the side column a visible entrance of its own.
+  var ITEM_OFFSET = 110;
+  var ITEM_STEP = 24;
+  var ITEM_CAP = 12;
+  var ITEM_DUR = 340;
+  var ITEM_SEL = '.racklegend > *, .rackframe__ext > *, .rackframe__units > *,' +
+                 '.rackinfo, .photo-card, .buttons__wall > *, .spotify__card,' +
+                 '.interests__grid > *, .domains__grid > *, .services__hv,' +
+                 '.neofetch__tabs, .neofetch__panes, .stat, .specsheet__row';
+
+  // Tiles build in DOM order, except inside a [data-stagger="up"] box: those
+  // run bottom-to-top, so the rack fills the way you'd actually rack it —
+  // from the floor of the cabinet upwards. Consecutive matches sharing that
+  // box form one run and get reversed together.
+  function orderItems(list) {
+    var items = Array.prototype.slice.call(list);
+    var out = [];
+    var i = 0;
+    while (i < items.length) {
+      var box = items[i].closest ? items[i].closest('[data-stagger="up"]') : null;
+      var run = [items[i]];
+      var k = i + 1;
+      while (k < items.length &&
+             (items[k].closest ? items[k].closest('[data-stagger="up"]') : null) === box) {
+        run.push(items[k]);
+        k++;
+      }
+      if (box) run.reverse();
+      out = out.concat(run);
+      i = k;
+    }
+    return out;
+  }
 
   // staggered slide+flicker entrance for a set's sections, plus a per-line
   // "text builds up" reveal. returns the ms until all animations finish.
@@ -70,6 +109,14 @@
         nodes[i].classList.add('txt-build');
         if (d + TXT_DUR > maxEnd) maxEnd = d + TXT_DUR;
       }
+
+      var items = orderItems(el.querySelectorAll(ITEM_SEL));
+      for (var j = 0; j < items.length; j++) {
+        var di = cardDelay + ITEM_OFFSET + Math.min(j, ITEM_CAP) * ITEM_STEP;
+        items[j].style.animationDelay = di + 'ms';
+        items[j].classList.add('item-build');
+        if (di + ITEM_DUR > maxEnd) maxEnd = di + ITEM_DUR;
+      }
     });
     return maxEnd;
   }
@@ -77,9 +124,9 @@
     els.forEach(function (el) {
       el.classList.remove('set-in');
       el.style.removeProperty('--set-delay');
-      var nodes = el.querySelectorAll('.txt-build');
+      var nodes = el.querySelectorAll('.txt-build, .item-build');
       for (var i = 0; i < nodes.length; i++) {
-        nodes[i].classList.remove('txt-build');
+        nodes[i].classList.remove('txt-build', 'item-build');
         nodes[i].style.animationDelay = '';
       }
     });
@@ -102,6 +149,7 @@
   function applyColumnMode(i) {
     var p = panels[i];
     layout.classList.toggle('is-solo', !!(p && p.main && p.main.length && (!p.side || !p.side.length) && !p.footer));
+    layout.classList.toggle('is-slimside', !!(p && p.slim && p.side && p.side.length));
   }
 
   function resetColumns() {
@@ -122,6 +170,7 @@
   function show(target, dir) {
     target = Math.max(0, Math.min(panels.length - 1, target));
     if (target === current || transitioning) return;
+    initialPlayed = true;   // the first-load entrance is moot from here on
 
     transitioning = true;
     var outEls = elementsFor(current);
@@ -324,7 +373,7 @@
     if (!active) return;
     active = false;
     root.classList.remove('setmode');
-    layout.classList.remove('is-solo');
+    layout.classList.remove('is-solo', 'is-slimside');
     main.classList.remove('is-swapping');
     // clear all panel state so normal scrolling layout returns
     document.querySelectorAll('.is-set-active, .set-enter, .set-exit').forEach(function (el) {
@@ -357,5 +406,23 @@
     else if (MQ.addListener) MQ.addListener(syncMode);
 
     syncMode();
+
+    // First load gets the same staggered build-in as every later set change.
+    // It has to wait for the splash to hand off (script.js fires lucya:ready),
+    // otherwise the whole entrance plays behind the boot screen.
+    if (document.body.classList.contains('is-ready')) playInitial();
+    else window.addEventListener('lucya:ready', playInitial);
   });
+
+  function playInitial() {
+    window.removeEventListener('lucya:ready', playInitial);
+    if (!active || initialPlayed) return;
+    initialPlayed = true;
+    // a beat after the handoff, so it builds in as the splash clears
+    setTimeout(function () {
+      var els = elementsFor(current);
+      var total = playEntrance(els);
+      setTimeout(function () { clearEntrance(els); }, total);
+    }, 150);
+  }
 })();

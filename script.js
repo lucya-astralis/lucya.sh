@@ -116,7 +116,7 @@
   }
 
   // ---------- REVEAL : mark below-fold blocks (observer starts post-splash) ----------
-  const revealSelectors = ['.about', '.interests', '.skills', '.ops', '.buttons', '.neofetch', '.services', '.spotify', '.photos', '.games', '.foot'];
+  const revealSelectors = ['.about', '.interests', '.rack', '.buttons', '.neofetch', '.services', '.spotify', '.photos', '.foot'];
   const revealTargets = revealSelectors.flatMap(sel => Array.from(document.querySelectorAll(sel)));
   revealTargets.forEach(el => el.classList.add('reveal-block'));
 
@@ -819,6 +819,213 @@
     });
   }
 
+  // switch the neofetch collection to a given host. The rack sits next to
+  // this section in the same set, so selecting a unit there just retunes
+  // the terminal — no navigation, no scrolling.
+  const showNeofetch = (tabId) => {
+    const btn = nTabs && nTabs.querySelector(`.ntab[data-tab="${tabId}"]`);
+    if (btn) btn.click();
+  };
+
+  // ---------- RACK : interactive front elevation ------------------
+  // One entry per physical unit, top to bottom. `u` is the height in rack
+  // units; `ext: true` marks the boxes that sit on top of the cabinet —
+  // those aren't rack-mounted, so `u` there is only how tall they're drawn
+  // and no U figure is shown. `state` drives the colour (on / standby /
+  // off) and `neofetch` links a unit to its tab in section 05. Specs come
+  // from the neofetch dumps above — anything not measured stays empty and
+  // renders as a dash rather than an invented value.
+  const rackData = [
+    {
+      id: 'lynx', ext: true, u: 2, state: 'on',
+      role: 'core hypervisor', chassis: 'Apple Mac mini (Macmini6,2)',
+      os: 'Proxmox VE 9.x', cpu: 'Intel Core i7-3615QM (8) @ 3.30 GHz',
+      mem: '15.53 GiB', ip: '192.168.178.252/24', neofetch: 'lynx',
+      note: 'Sits on top of the cabinet. Runs the always-on core services, which is why it is the one machine that never gets powered down.'
+    },
+    {
+      id: 'vega', ext: true, u: 3, state: 'on',
+      role: 'nas', chassis: 'Synology NAS',
+      note: 'Sits on top of the cabinet next to lynx. Model and disk layout pending.'
+    },
+    {
+      id: 'chimera', u: 1, state: 'on',
+      role: 'hypervisor', chassis: 'Supermicro SYS-5018D-FN4T',
+      os: 'Proxmox VE 9.2.4', cpu: 'Intel Xeon D-1541 (16) @ 2.70 GHz',
+      mem: '62.69 GiB', ip: '192.168.178.242/24', neofetch: 'chimera',
+      note: 'Short-depth 1U board in a low-power SoC chassis — quiet enough to run around the clock.'
+    },
+    {
+      id: 'backup-01', u: 3, state: 'off',
+      role: 'cold backup', chassis: 'Lenovo ThinkStation C20x (4269A55)',
+      os: 'Windows 7 Professional', cpu: 'Intel Xeon X5690 (12) @ 3.47 GHz',
+      mem: '23.99 GiB', ip: '10.174.110.143/24', neofetch: 'backup-01',
+      note: 'Powered off by default. Comes up only for backup runs.'
+    },
+    {
+      id: 'unnamed-01', u: 1, state: 'off',
+      role: 'unassigned', note: 'Not named, not in service. Data sheet pending.'
+    },
+    {
+      id: 'esxi-02', u: 2, state: 'off',
+      role: 'virtualization host', chassis: 'IBM System x3650 M5',
+      os: 'VMware ESXi 8.0U3e', cpu: '2 x Intel Xeon E5-2640 v3 (16) @ 2.60 GHz',
+      mem: '335.31 GiB', ip: '10.0.3.2/8', neofetch: 'esx-02',
+      note: 'Second vSphere host. Off unless the lab needs the capacity — the power draw is not worth it idle.'
+    },
+    {
+      id: 'sw-01', u: 1, state: 'on',
+      role: 'switch', note: 'Rack switch — everything in the cabinet hangs off it, so it stays up with lynx.'
+    },
+    {
+      id: 'esxi-01', u: 2, state: 'standby',
+      role: 'virtualization host', chassis: 'Dell PowerEdge R720',
+      os: 'VMware ESXi 8.0U3e', cpu: '2 x Intel Xeon E5-2670 (32) @ 3.60 GHz',
+      mem: '863.94 GiB', ip: '10.0.3.1/8', neofetch: 'esx-01',
+      note: 'Booted on demand for lab work, then shut down again.'
+    },
+    {
+      id: 'unnamed-02', u: 4, state: 'off',
+      role: 'unassigned', note: 'Not named, not in service. Data sheet pending.'
+    },
+    {
+      id: 'esxi-03', u: 2, state: 'off',
+      role: 'virtualization host', note: 'Powered off. Data sheet pending.'
+    }
+  ];
+
+  const rackUnitsEl = document.getElementById('rackUnits');
+  const rackExtEl   = document.getElementById('rackExt');
+  const rackInfoEl  = document.getElementById('rackInfo');
+  const rackLegend  = document.getElementById('rackLegend');
+
+  if (rackUnitsEl && rackExtEl && rackInfoEl) {
+    const STATE_LABEL = { on: 'online', standby: 'on demand', off: 'offline' };
+
+    const unitButton = (unit) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'ru' + (unit.ext ? ' ru--ext' : '');
+      b.dataset.unit = unit.id;
+      b.dataset.state = unit.state;
+      b.style.setProperty('--ru-h', unit.u);
+      b.setAttribute('aria-pressed', 'false');
+      // the sheet below is deliberately tiny, so the longer note rides along
+      // as the unit's tooltip instead
+      if (unit.note) b.title = unit.note;
+      b.innerHTML =
+        `<span class="ru__name"><span class="ru__led"></span>${escHtml(unit.id)}</span>` +
+        `<span class="ru__u">${unit.ext ? '' : unit.u + 'U · '}${escHtml(STATE_LABEL[unit.state])}</span>`;
+      return b;
+    };
+
+    rackData.forEach(unit => {
+      (unit.ext ? rackExtEl : rackUnitsEl).appendChild(unitButton(unit));
+    });
+
+    const unitEls = Array.from(document.querySelectorAll('#rackExt .ru, #rackUnits .ru'));
+
+    const countEl = document.getElementById('rackCount');
+    if (countEl) {
+      const inRack = rackData.filter(u => !u.ext);
+      countEl.textContent =
+        `${inRack.length} UNITS · ${inRack.reduce((s, u) => s + u.u, 0)}U`;
+    }
+
+    // ---- data sheet ----
+    // Kept to two lines on purpose: selecting a unit retunes the neofetch
+    // terminal next door, which is where the full system info lives. A
+    // taller sheet here would only push the elevation around on every click.
+    const renderInfo = (unit) => {
+      rackInfoEl.dataset.state = unit.state;
+      rackInfoEl.innerHTML = `
+        <div class="rackinfo__head">
+          <div class="rackinfo__name" id="rackInfoName"></div>
+          <span class="rackinfo__badge"><span class="ru__led"></span>${escHtml(STATE_LABEL[unit.state])}</span>
+        </div>
+        <div class="rackinfo__role">${escHtml(unit.role)} · ${unit.ext ? 'not racked' : unit.u + 'U'} · ${escHtml(unit.chassis || 'spec pending')}</div>
+      `;
+      // plain text first: the scramble runs on rAF, which is paused while
+      // the tab is in the background — the name must never render empty
+      const nameEl = rackInfoEl.querySelector('#rackInfoName');
+      nameEl.textContent = unit.id;
+      scrambleTo(nameEl, unit.id);
+    };
+
+    let currentId = null;
+    // opts.focus follows keyboard stepping and opts.sync retunes the neofetch
+    // terminal next door. The initial selection passes neither, so the page
+    // still opens on its own tab. Nothing here scrolls: the sheet is small
+    // enough to stay put, so a click never moves the elevation.
+    const select = (id, opts) => {
+      const o = opts || {};
+      const unit = rackData.find(u => u.id === id);
+      if (!unit || id === currentId) return;
+      currentId = id;
+      unitEls.forEach(el => {
+        const on = el.dataset.unit === id;
+        el.classList.toggle('is-active', on);
+        el.setAttribute('aria-pressed', on ? 'true' : 'false');
+        if (on && o.focus) el.focus();
+      });
+      renderInfo(unit);
+      if (o.sync && unit.neofetch) showNeofetch(unit.neofetch);
+    };
+
+    document.querySelectorAll('#rackExt, #rackUnits').forEach(host => {
+      host.addEventListener('click', (e) => {
+        const btn = e.target.closest('.ru');
+        if (btn) select(btn.dataset.unit, { sync: true });
+      });
+    });
+
+    // arrow keys step through the elevation. stopPropagation keeps set-nav
+    // (window-level keydown) from swapping panels while we're in here.
+    document.getElementById('rackView')?.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+      if (!e.target.closest('.ru')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const step = e.key === 'ArrowDown' ? 1 : -1;
+      let i = unitEls.findIndex(el => el.dataset.unit === currentId);
+      // walk past units the legend filter has dimmed out
+      for (let n = i + step; n >= 0 && n < unitEls.length; n += step) {
+        if (!unitEls[n].classList.contains('is-dim')) { i = n; break; }
+      }
+      select(unitEls[i].dataset.unit, { focus: true, sync: true });
+    });
+
+    // ---- legend doubles as a state filter ----
+    if (rackLegend) {
+      const active = new Set(['on', 'standby', 'off']);
+      ['on', 'standby', 'off'].forEach(state => {
+        const n = rackData.filter(u => u.state === state).length;
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'rackchip';
+        chip.dataset.state = state;
+        chip.setAttribute('aria-pressed', 'true');
+        chip.innerHTML = `<span class="rackchip__led"></span>${STATE_LABEL[state]} <b>${n}</b>`;
+        rackLegend.appendChild(chip);
+      });
+      rackLegend.addEventListener('click', (e) => {
+        const chip = e.target.closest('.rackchip');
+        if (!chip) return;
+        const state = chip.dataset.state;
+        if (active.has(state)) active.delete(state); else active.add(state);
+        if (!active.size) ['on', 'standby', 'off'].forEach(s => active.add(s));
+        rackLegend.querySelectorAll('.rackchip').forEach(c => {
+          const on = active.has(c.dataset.state);
+          c.classList.toggle('is-off', !on);
+          c.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+        unitEls.forEach(el => el.classList.toggle('is-dim', !active.has(el.dataset.state)));
+      });
+    }
+
+    select(rackData.find(u => !u.ext).id);
+  }
+
   // ---------- SPOTIFY TOP SONGS ROTATION -------------------------
   const spotifyCard = document.getElementById('spotifyCard');
   if (spotifyCard) {
@@ -1274,22 +1481,19 @@
   const uptime = document.getElementById('uptimeStat');
   if (uptime) uptime.textContent = yearsMonthsSince('2007-08-26');
 
-  // ---------- CHECKMK STATUS : fleet overview + selected hosts ---
-  // One poll of /status.json drives the header overview (aggregate counts)
-  // and the SKILLS sidebar (selected hosts). A server-side puller writes it.
-  // Counts/metrics only — no host/IP details leak. Shows a clearly-labelled
-  // "sample" until live data arrives; never fakes "live".
+  // ---------- CHECKMK STATUS : fleet overview -------------------
+  // One poll of /status.json drives the header overview (aggregate counts).
+  // A server-side puller writes it. Counts only — no host/IP details leak.
+  // Shows a clearly-labelled "sample" until live data arrives; never fakes
+  // "live".
   (() => {
     const ov = document.getElementById('thermal');   // header fleet overview (therm shell)
-    const hp = document.getElementById('opsBoard');   // sidebar host panel (opsbrd shell)
-    if (!ov && !hp) return;
+    if (!ov) return;
     const $ = (id) => document.getElementById(id);
 
     const ovTag=$('ovTag'), ovHosts=$('ovHosts'), ovHostsBar=$('ovHostsBar'),
           ovWarn=$('ovWarn'), ovCrit=$('ovCrit'), ovSvc=$('ovSvc'),
           ovSvcBar=$('ovSvcBar'), ovSrc=$('ovSrc'), ovAge=$('ovAge');
-    const opsTag=$('opsTag'), opsSrc=$('opsSrc'), opsAge=$('opsAge'),
-          opsHostList=$('opsHostList');
 
     let last = null;
     const pct = (n, d) => d > 0 ? Math.min(100, Math.max(0, n / d * 100)) : 0;
@@ -1299,13 +1503,6 @@
       return a < 60 ? `${a}s ago` : a < 3600 ? `${Math.floor(a/60)}m ago`
            : a < 86400 ? `${Math.floor(a/3600)}h ago` : `${Math.floor(a/86400)}d ago`;
     };
-    const fmtUp = (s) => {
-      s = Number(s) || 0;
-      const d = Math.floor(s/86400), h = Math.floor(s%86400/3600), m = Math.floor(s%3600/60);
-      return d >= 1 ? `${d}d` : h >= 1 ? `${h}h` : `${m}m`;
-    };
-    const band = (v, w, c) => v >= c ? 'crit' : v >= w ? 'warn' : 'ok';
-
     const renderHeader = () => {
       if (!ov || !last) return;
       const s = last.summary || last;
@@ -1326,56 +1523,9 @@
       if (ovAge) ovAge.textContent = fmtAge();
     };
 
-    // metric row: label · meter track · value. pct drives the track width
-    // (temp is scaled against 90°C); UP has no sensible 0-100 scale → plain row.
-    const meter = (label, val, pctRaw, b) => {
-      const w = pctRaw == null ? 0 : Math.min(100, Math.max(0, pctRaw));
-      return `<div class="hostcard__m"${b ? ` data-band="${b}"` : ''}>` +
-        `<span class="hostcard__ml mono">${label}</span>` +
-        `<span class="hostcard__track"><i style="width:${w.toFixed(0)}%"></i></span>` +
-        `<span class="hostcard__mv mono">${val}</span></div>`;
-    };
-    const plainCell = (label, val) =>
-      `<div class="hostcard__m hostcard__m--plain">` +
-      `<span class="hostcard__ml mono">${label}</span>` +
-      `<span class="hostcard__mv mono">${val}</span></div>`;
-
-    const hostCard = (h) => {
-      const cpu  = h.cpu_pct  != null ? `${Math.round(h.cpu_pct)}%` : '—';
-      const mem  = h.mem_pct  != null ? `${Math.round(h.mem_pct)}%` : '—';
-      const temp = h.temp_c   != null ? `${Math.round(h.temp_c)}°`  : '—';
-      const up   = h.uptime_s != null ? fmtUp(h.uptime_s)           : '—';
-      const cpuB = h.cpu_pct  != null ? band(h.cpu_pct, 75, 90) : '';
-      const memB = h.mem_pct  != null ? band(h.mem_pct, 75, 90) : '';
-      const tmpB = h.temp_c   != null ? band(h.temp_c, 70, 82)  : '';
-      return `<article class="hostcard" data-state="${escHtml(h.state || 'up')}">` +
-        `<div class="hostcard__top mono">` +
-          `<span class="hostcard__name"><span class="hostcard__dot"></span>${escHtml(h.name || '—')}</span>` +
-          (h.role ? `<span class="hostcard__role">${escHtml(h.role)}</span>` : '') +
-        `</div>` +
-        `<div class="hostcard__metrics">` +
-          meter('CPU', cpu, h.cpu_pct, cpuB) +
-          meter('MEM', mem, h.mem_pct, memB) +
-          meter('TMP', temp, h.temp_c != null ? h.temp_c / 90 * 100 : null, tmpB) +
-          plainCell('UP', up) +
-        `</div></article>`;
-    };
-
-    const renderHosts = () => {
-      if (!hp) return;
-      const hosts = last && Array.isArray(last.hosts) ? last.hosts : null;
-      if (hosts && hosts.length && opsHostList) opsHostList.innerHTML = hosts.map(hostCard).join('');
-      hp.dataset.state = 'ok';
-      if (opsTag) opsTag.textContent = 'CMK · LIVE';
-      if (opsSrc) opsSrc.textContent = String(last.source || 'checkmk');
-      if (opsAge) opsAge.textContent = fmtAge();
-    };
-
     const sample = () => {
       if (ov){ ov.dataset.state='down'; if(ovTag)ovTag.textContent='CHECKMK · SAMPLE';
         if(ovSrc)ovSrc.textContent='sample data'; if(ovAge)ovAge.textContent='awaiting probe'; }
-      if (hp){ hp.dataset.state='sample'; if(opsTag)opsTag.textContent='CMK · SAMPLE';
-        if(opsSrc)opsSrc.textContent='sample data'; if(opsAge)opsAge.textContent='awaiting probe'; }
     };
 
     const refresh = async () => {
@@ -1384,7 +1534,6 @@
         if (!r.ok) throw new Error('http ' + r.status);
         last = await r.json();
         renderHeader();
-        renderHosts();
       } catch (e) {
         last = null;
         sample();
@@ -1393,8 +1542,7 @@
 
     const tickAge = () => {
       if (!last) return;
-      if (ovAge)  ovAge.textContent  = fmtAge();
-      if (opsAge) opsAge.textContent = fmtAge();
+      if (ovAge) ovAge.textContent = fmtAge();
     };
 
     sample();          // honest neutral state until the first response
@@ -1457,6 +1605,9 @@
       splashEl.classList.add('is-complete', 'is-done');
     }
     document.body.classList.add('is-ready');
+    // set-nav waits for this to play the first panel's entrance — running it
+    // at DOM-ready would hide the whole animation behind the splash
+    window.dispatchEvent(new CustomEvent('lucya:ready'));
     // video handoff: wallpaper copy starts, splash copy is torn down after
     // the fade so only one instance ever decodes
     if (!LITE && wallVideo && wallVideo.dataset.src && !wallVideo.src){
