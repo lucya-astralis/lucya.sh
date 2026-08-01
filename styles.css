@@ -1260,7 +1260,10 @@ section{
           animation: pokeWalk 14s linear infinite;
   -webkit-transform: translate3d(0,0,0);
           transform: translate3d(0,0,0);
-  will-change:transform;
+  /* No will-change here on purpose. The running transform animation already
+     promotes this to its own layer; the extra hint makes WebKit treat the
+     layer as static and stop pushing new frames into it — which is what
+     freezes the GIFs mid-walk and makes the strip crawl. */
 }
 .pcard__pokewalk-track img{
   height:30px;
@@ -1272,6 +1275,18 @@ section{
   -webkit-filter: drop-shadow(0 2px 0 rgba(0,0,0,.35));
           filter: drop-shadow(0 2px 0 rgba(0,0,0,.35));
 }
+/* Safari only — `-webkit-named-image` exists in no other engine. Re-filtering
+   18 animated GIFs every frame, inside a masked layer that is itself being
+   transform-animated, is more per-frame work than WebKit keeps up with: the
+   strip drops frames (reads as "too slow") and the sprites stall on a single
+   GIF frame. The shadow is the cheapest part of that to give up. */
+@supports (background: -webkit-named-image(i)){
+  .pcard__pokewalk-track img{
+    -webkit-filter:none;
+            filter:none;
+  }
+}
+
 @-webkit-keyframes pokeWalk{
   from{ -webkit-transform: translate3d(0,0,0); transform: translate3d(0,0,0); }
   to  { -webkit-transform: translate3d(-50%,0,0); transform: translate3d(-50%,0,0); }

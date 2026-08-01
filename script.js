@@ -358,8 +358,13 @@
   ];
   const pokeTrack = document.getElementById('pokewalkTrack');
   if (pokeTrack) {
+    // width/height: every sprite is 50x50, and the track is width:max-content
+    // animated by -50% — so its width has to be right before the bytes land,
+    // or the first cycles run short and the walk looks like it's crawling.
+    // Not lazy for the same reason: these sit in the profile card, above the
+    // fold, and a late load changes the distance mid-animation.
     const mkRow = () => pokemon.map(f =>
-      `<img src="images/pokemon/${f}" alt="" loading="lazy" decoding="async" />`).join('');
+      `<img src="images/pokemon/${f}" alt="" width="50" height="50" decoding="async" />`).join('');
     // two copies for seamless loop
     pokeTrack.innerHTML = mkRow() + mkRow();
   }
