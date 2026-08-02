@@ -223,8 +223,13 @@
     return false;
   }
 
+  // a modal (audio manifest, …) locks the page: it sets html.is-scrolllock.
+  // set-mode must not page the panels behind it — and must not preventDefault
+  // either, or the overlay's own lists could not scroll.
+  function modalOpen() { return root.classList.contains('is-scrolllock'); }
+
   function onWheel(e) {
-    if (!active) return;
+    if (!active || modalOpen()) return;
     var dir = e.deltaY > 0 ? 1 : -1;
     if (innerCanScroll(e.target, dir)) return; // let the panel scroll internally
     e.preventDefault();
@@ -235,7 +240,7 @@
   }
 
   function onKey(e) {
-    if (!active) return;
+    if (!active || modalOpen()) return;
     var t = e.target;
     if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
     switch (e.key) {

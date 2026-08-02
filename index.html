@@ -898,18 +898,50 @@
         <div class="section__slug">
           <span class="ix">// 05.A</span>
           <span class="name">AUDIO MANIFEST</span>
-          <span class="jp">トラック一覧</span>
+          <span class="jp" id="manifestJp">お気に入り一覧</span>
         </div>
         <div class="section__meta">
-          <span class="mono"><span id="manifestCount">12</span> TRACKS · ROTATION</span>
+          <span class="mono" id="manifestMeta">TRACKS · ALBUMS · ARTISTS</span>
         </div>
       </div>
 
-      <ul class="manifest__list" id="manifestList"></ul>
+      <!-- bento: the track list carries the height, the covers carry the
+           weight — three different densities instead of three columns -->
+      <div class="manifest__bento">
+        <div class="mbox mbox--tracks">
+          <h3 class="mbox__head mono">
+            <span class="mbox__ix">01</span>
+            <span class="mbox__name">TRACKS</span>
+            <span class="mbox__jp">トラック</span>
+            <b data-col-count="songs">0</b>
+          </h3>
+          <ul class="manifest__list" id="manifestList"></ul>
+        </div>
+
+        <div class="mbox mbox--albums">
+          <h3 class="mbox__head mono">
+            <span class="mbox__ix">02</span>
+            <span class="mbox__name">ALBUMS</span>
+            <span class="mbox__jp">アルバム</span>
+            <b data-col-count="albums">0</b>
+          </h3>
+          <ul class="mtiles" id="manifestAlbums"></ul>
+        </div>
+
+        <div class="mbox mbox--artists">
+          <h3 class="mbox__head mono">
+            <span class="mbox__ix">03</span>
+            <span class="mbox__name">ARTISTS</span>
+            <span class="mbox__jp">アーティスト</span>
+            <b data-col-count="artists">0</b>
+          </h3>
+          <ul class="mfaces" id="manifestArtists"></ul>
+        </div>
+      </div>
 
       <div class="manifest__foot mono small">
         <span class="dim">SRC <b>SPOTIFY · ROTATION</b></span>
-        <span class="dim">CLICK TO JUMP · ESC TO CLOSE</span>
+        <span class="dim">CLICK A TRACK TO JUMP · ESC TO CLOSE</span>
       </div>
     </div>
   </div>

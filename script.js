@@ -1034,23 +1034,48 @@
   // ---------- SPOTIFY TOP SONGS ROTATION -------------------------
   const spotifyCard = document.getElementById('spotifyCard');
   if (spotifyCard) {
+    const SONG_DIR = 'images/spotify_widget/songs/';
+    const ALBUM_DIR = 'images/spotify_widget/albums/';
+    const ARTIST_DIR = 'images/spotify_widget/artists/';
+
     const songs = [
-      { title: "Rebirth", artist: "SHIMA", cover: "images/spotify_widget/rebirth.jpeg" },  
-      { title: "Infohazard", artist: "Ninajirachi", cover: "images/spotify_widget/cover4.webp" },
-      { title: "Affection Addiction", artist: "VocaloKAT, Aku P", cover: "images/spotify_widget/affection.jpeg" },
-      { title: "Evergreen Misery", artist: "MOTHICA", cover: "images/spotify_widget/mothica.jpeg" },
-      { title: "Slide", artist: "MRJay", cover: "images/spotify_widget/slide.jpeg" },
-      { title: "one last thing", artist: "vinter", cover: "images/spotify_widget/vinter.jpg" },
-      { title: "Heaven", artist: "Allison Wonderland, Ninajirachi", cover: "images/spotify_widget/cover1.webp" },
-      { title: "Flesh without Blood", artist: "Grimes", cover: "images/spotify_widget/artangels.webp" },
-      { title: "Delicate Weapon", artist: "Grimes", cover: "images/spotify_widget/CPv2.jpg" },
-      { title: "FORTUNE", artist: "SAKUREYE", cover: "images/spotify_widget/fortune.jpg" },
-      { title: "Darling Game Over Love", artist: "MAIKI P", cover: "images/spotify_widget/maikip.jpg" },
-      { title: "Elevate", artist: "Sub Focus", cover: "images/spotify_widget/cover3.jpeg" },
-      { title: "Battery Death", artist: "Ninajirachi", cover: "images/spotify_widget/cover4.webp" },
-      { title: "Ghostlight", artist: "Skeler, Veela", cover: "images/spotify_widget/Ghostlight.jpeg" },
-      { title: "THE BADDEST", artist: "K/DA", cover: "images/spotify_widget/the_baddest.jpg" }
-      
+      { title: "Rebirth", artist: "SHIMA", cover: SONG_DIR + "rebirth.jpeg" },
+      { title: "Infohazard", artist: "Ninajirachi", cover: SONG_DIR + "cover4.webp" },
+      { title: "Affection Addiction", artist: "VocaloKAT, Aku P", cover: SONG_DIR + "affection.jpeg" },
+      { title: "Evergreen Misery", artist: "MOTHICA", cover: SONG_DIR + "mothica.jpeg" },
+      { title: "Slide", artist: "MRJay", cover: SONG_DIR + "slide.jpeg" },
+      { title: "one last thing", artist: "vinter", cover: SONG_DIR + "vinter.jpg" },
+      { title: "Heaven", artist: "Allison Wonderland, Ninajirachi", cover: SONG_DIR + "cover1.webp" },
+      { title: "Flesh without Blood", artist: "Grimes", cover: SONG_DIR + "artangels.webp" },
+      { title: "Delicate Weapon", artist: "Grimes", cover: SONG_DIR + "CPv2.jpg" },
+      { title: "FORTUNE", artist: "SAKUREYE", cover: SONG_DIR + "fortune.jpg" },
+      { title: "Darling Game Over Love", artist: "MAIKI P", cover: SONG_DIR + "maikip.jpg" },
+      { title: "Elevate", artist: "Sub Focus", cover: SONG_DIR + "cover3.jpeg" },
+      { title: "Battery Death", artist: "Ninajirachi", cover: SONG_DIR + "cover4.webp" },
+      { title: "Ghostlight", artist: "Skeler, Veela", cover: SONG_DIR + "Ghostlight.jpeg" },
+      { title: "THE BADDEST", artist: "K/DA", cover: SONG_DIR + "the_baddest.jpg" }
+    ];
+
+    // fav albums + artists — `note` is the year badge on the album tiles.
+    // genre lines are the descriptions the artists/their labels use; see the
+    // sources noted in the commit rather than guessing new ones.
+    const albums = [
+      { title: "I Love My Computer", artist: "Ninajirachi", note: "2025", cover: ALBUM_DIR + "i_love_my_computer.webp" },
+      { title: "Escape Cycle", artist: "Darci", note: "2023", cover: ALBUM_DIR + "escapecycle.jpeg" },
+      { title: "Call for Help", artist: "Pearly Drops", note: "2020", cover: ALBUM_DIR + "callforhelp.jpeg" },
+      { title: "Miss Anthropocene", artist: "Grimes", note: "2020", cover: ALBUM_DIR + "missantropocene.jpeg" },
+      { title: "Art Angels", artist: "Grimes", note: "2015", cover: ALBUM_DIR + "artangels.webp" },
+      { title: "Hysteria", artist: "Def Leppard", note: "1987", cover: ALBUM_DIR + "hysteriy.jpeg" }
+    ];
+    const artists = [
+      { title: "Ninajirachi", artist: "girl edm · electro house", cover: ARTIST_DIR + "ninajirachi.jpeg" },
+      { title: "Grimes", artist: "art pop · synth-pop", cover: ARTIST_DIR + "grimes.jpeg" },
+      { title: "REZZ", artist: "midtempo bass", cover: ARTIST_DIR + "rezz.jpeg" },
+      { title: "Skeler", artist: "hardwave · wave", cover: ARTIST_DIR + "skeler.jpeg" },
+      { title: "Reol", artist: "j-pop · electropop", cover: ARTIST_DIR + "reol.jpeg" },
+      { title: "Exyl", artist: "electro house · glitch hop", cover: ARTIST_DIR + "exyl.jpeg" },
+      { title: "TheFatRat", artist: "glitch hop", cover: ARTIST_DIR + "thefatrat.jpeg" },
+      { title: "DARCI", artist: "wave · trap soul", cover: ARTIST_DIR + "darci.jpeg" }
     ];
     const INTERVAL_MS = 5000;
     const coverWrap = document.getElementById('spotifyCover');
@@ -1156,19 +1181,27 @@
       jumpTo(parseInt(t.dataset.idx, 10));
     });
 
-    // ---------- MANIFEST : full track list overlay ----------------
+    // ---------- MANIFEST : tracks / albums / artists overlay -------
     const manifest = document.getElementById('spotifyManifest');
     const manifestList = document.getElementById('manifestList');
-    const manifestCount = document.getElementById('manifestCount');
     let lastFocus = null;
 
     if (manifest && manifestList) {
       // portal to body so position:fixed isn't broken by transformed ancestors
       if (manifest.parentElement !== document.body) document.body.appendChild(manifest);
-      manifestCount.textContent = songs.length;
-      const listFrag = document.createDocumentFragment();
+
+      const albumList = document.getElementById('manifestAlbums');
+      const artistList = document.getElementById('manifestArtists');
+      const metaEl = document.getElementById('manifestMeta');
+
+      // --i drives the staggered entry; lite mode / reduced motion kill the
+      // animation and the items just render in place
+      const stagger = (el, i) => { el.style.setProperty('--i', i); return el; };
+
+      // tracks — dense list, the only interactive one (jumps the rotation)
+      const trackFrag = document.createDocumentFragment();
       songs.forEach((s, i) => {
-        const li = document.createElement('li');
+        const li = stagger(document.createElement('li'), i);
         li.className = 'manifest__item';
         li.innerHTML =
           '<button type="button" class="manifest__row" data-idx="' + i + '">' +
@@ -1180,9 +1213,56 @@
             '</span>' +
             '<span class="manifest__status mono" aria-hidden="true"></span>' +
           '</button>';
-        listFrag.appendChild(li);
+        trackFrag.appendChild(li);
       });
-      manifestList.appendChild(listFrag);
+      manifestList.appendChild(trackFrag);
+
+      // albums — the artwork is the point, so it gets the room
+      if (albumList) {
+        const frag = document.createDocumentFragment();
+        albums.forEach((a, i) => {
+          const li = stagger(document.createElement('li'), i);
+          li.className = 'mtile';
+          li.innerHTML =
+            '<span class="mtile__art">' +
+              '<img src="' + a.cover + '" alt="" loading="lazy" decoding="async" />' +
+              '<span class="mtile__corner" aria-hidden="true"></span>' +
+              (a.note ? '<span class="mtile__year mono">' + escHtml(a.note) + '</span>' : '') +
+              '<span class="mtile__txt">' +
+                '<span class="mtile__title">' + escHtml(a.title) + '</span>' +
+                '<span class="mtile__artist">' + escHtml(a.artist) + '</span>' +
+              '</span>' +
+            '</span>';
+          frag.appendChild(li);
+        });
+        albumList.appendChild(frag);
+      }
+
+      // artists — avatar pills that wrap, so the block reflows with the sheet
+      if (artistList) {
+        const frag = document.createDocumentFragment();
+        artists.forEach((a, i) => {
+          const li = stagger(document.createElement('li'), i);
+          li.className = 'mface';
+          li.innerHTML =
+            '<span class="mface__img"><img src="' + a.cover + '" alt="" loading="lazy" decoding="async" /></span>' +
+            '<span class="mface__txt">' +
+              '<span class="mface__name">' + escHtml(a.title) + '</span>' +
+              '<span class="mface__tag">' + escHtml(a.artist) + '</span>' +
+            '</span>';
+          frag.appendChild(li);
+        });
+        artistList.appendChild(frag);
+      }
+
+      const COUNTS = { songs: songs.length, albums: albums.length, artists: artists.length };
+      manifest.querySelectorAll('[data-col-count]').forEach((el) => {
+        const n = COUNTS[el.dataset.colCount];
+        if (n != null) el.textContent = n;
+      });
+      if (metaEl) {
+        metaEl.textContent = COUNTS.songs + ' TRACKS · ' + COUNTS.albums + ' ALBUMS · ' + COUNTS.artists + ' ARTISTS';
+      }
 
       const markActive = () => {
         manifestList.querySelectorAll('.manifest__row').forEach((r, i) => {
@@ -1192,19 +1272,48 @@
         });
       };
 
+      const root = document.documentElement;
+      const lockScroll = () => {
+        // reserve the scrollbar's width so hiding it doesn't jump the page
+        const sbw = window.innerWidth - root.clientWidth;
+        root.style.setProperty('--scrollbar-w', (sbw > 0 ? sbw : 0) + 'px');
+        root.classList.add('is-scrolllock');
+      };
+      const unlockScroll = () => {
+        root.classList.remove('is-scrolllock');
+        root.style.removeProperty('--scrollbar-w');
+      };
+
+      // is-closing runs the exit keyframes; CLOSE_MS must outlast the longest
+      // of them (.17s sheet / .16s backdrop) so nothing snaps mid-flight
+      const CLOSE_MS = 200;
+      let closeTimer = 0;
+
       const openManifest = () => {
         lastFocus = document.activeElement;
+        clearTimeout(closeTimer);
+        manifest.classList.remove('is-closing');
         manifest.hidden = false;
-        requestAnimationFrame(() => manifest.classList.add('is-open'));
-        document.body.style.overflow = 'hidden';
+        // flush the un-hidden state synchronously instead of waiting a frame:
+        // a throttled rAF would leave the overlay open but fully transparent
+        void manifest.offsetWidth;
+        manifest.classList.add('is-open');
+        lockScroll();
         markActive();
+        manifestList.scrollTop = 0;
         const first = manifestList.querySelector('.manifest__row.is-active') || manifestList.querySelector('.manifest__row');
         if (first) first.focus({ preventScroll: true });
       };
       const closeManifest = () => {
+        if (manifest.hidden) return;
+        manifest.classList.add('is-closing');
         manifest.classList.remove('is-open');
-        document.body.style.overflow = '';
-        setTimeout(() => { manifest.hidden = true; }, 200);
+        unlockScroll();
+        clearTimeout(closeTimer);
+        closeTimer = setTimeout(() => {
+          manifest.hidden = true;
+          manifest.classList.remove('is-closing');
+        }, CLOSE_MS);
         if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus({ preventScroll: true });
       };
 
@@ -1221,7 +1330,7 @@
 
       manifest.addEventListener('click', (e) => {
         if (e.target.closest('[data-manifest-close]')) { closeManifest(); return; }
-        const row = e.target.closest('.manifest__row');
+        const row = e.target.closest('.manifest__row[data-idx]');
         if (row) { jumpTo(parseInt(row.dataset.idx, 10)); closeManifest(); }
       });
 

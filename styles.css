@@ -2660,21 +2660,34 @@ section{
 /* ================================================================
    AUDIO MANIFEST — full track list overlay
    ================================================================ */
+/* scroll lock: on <html>, because body{overflow:hidden} alone leaves
+   touch scrolling and some keyboard paging alive. --scrollbar-w is set
+   by the opener so removing the scrollbar doesn't shift the page. */
+html.is-scrolllock{
+  overflow:hidden;
+  padding-right:var(--scrollbar-w, 0px);
+}
+html.is-scrolllock body{ overflow:hidden; }
+
 .manifest{
   position:fixed; inset:0;
   z-index:9999;
+  overscroll-behavior:contain;
   display:flex;
   align-items:center;
   justify-content:center;
   padding:24px;
   opacity:0;
-  transition: opacity .2s ease;
+  /* backdrop eases in with the sheet and snaps out ahead of it */
+  transition: opacity .26s cubic-bezier(.16,.84,.34,1);
 }
 .manifest.is-open{ opacity:1; }
+.manifest.is-closing{ opacity:0; transition-duration:.16s; transition-timing-function:ease-in; }
 .manifest[hidden]{ display:none; }
 
 .manifest__backdrop{
   position:absolute; inset:0;
+  touch-action:none;
   background:rgba(7,7,11,.78);
   backdrop-filter:blur(6px);
   -webkit-backdrop-filter:blur(6px);
@@ -2682,8 +2695,10 @@ section{
 
 .manifest__sheet{
   position:relative;
-  width:min(720px, 100%);
-  max-height:calc(100vh - 48px);
+  width:min(1240px, 100%);
+  /* fixed height, not max-height: the columns can only claim the free
+     space if the sheet commits to a height first (their lists scroll) */
+  height:min(calc(100vh - 48px), 920px);
   display:flex;
   flex-direction:column;
   background:
@@ -2691,19 +2706,32 @@ section{
     var(--surface);
   border:1px solid var(--line-strong);
   border-left:2px solid var(--acc-cy);
-  padding:22px 24px 18px;
+  padding:18px 20px 14px;
   box-shadow: 0 30px 80px -20px rgba(0,0,0,.75);
-  transform: translateY(8px) scale(.99);
-  transition: transform .22s ease;
 }
-.manifest.is-open .manifest__sheet{ transform: translateY(0) scale(1); }
+/* enter and exit are separate curves on purpose: the sheet rises into place
+   with an overshoot-free ease-out, and drops away twice as fast */
+@keyframes manifest-sheet-in{
+  from{ opacity:0; transform:translateY(18px) scale(.985); }
+  to  { opacity:1; transform:none; }
+}
+@keyframes manifest-sheet-out{
+  from{ opacity:1; transform:none; }
+  to  { opacity:0; transform:translateY(10px) scale(.992); }
+}
+.manifest.is-open .manifest__sheet{
+  animation:manifest-sheet-in .34s cubic-bezier(.16,.84,.34,1) both;
+}
+.manifest.is-closing .manifest__sheet{
+  animation:manifest-sheet-out .17s cubic-bezier(.4,0,.9,.5) both;
+}
 
 .manifest__doc{
   display:flex;
   flex-wrap:wrap;
   align-items:center;
   gap:0;
-  margin-bottom:14px;
+  margin-bottom:12px;
   border:1px solid var(--line);
   border-left:2px solid var(--acc-cy);
   background:linear-gradient(180deg, rgba(255,255,255,.018), transparent);
@@ -2742,27 +2770,281 @@ section{
 }
 .manifest__close:hover{ color:var(--acc-red); background:rgba(255,103,103,.06); }
 .manifest__close:focus-visible{ outline:1px solid var(--acc-cy); outline-offset:-2px; }
+.manifest__close span{
+  display:inline-block;
+  transition:transform .28s cubic-bezier(.2,.8,.3,1);
+}
+.manifest__close:hover span,
+.manifest__close:focus-visible span{ transform:rotate(90deg) scale(1.12); }
+.manifest__close:active span{ transform:rotate(90deg) scale(.86); }
 
 .manifest__head{
   display:flex;
   justify-content:space-between;
   align-items:flex-end;
   gap:16px;
-  padding-bottom:12px;
-  margin-bottom:14px;
+  padding-bottom:10px;
+  margin-bottom:12px;
   border-bottom:1px solid var(--line);
   flex-wrap:wrap;
 }
 .manifest__head .section__slug{ gap:14px; }
 .manifest__head .section__slug .name{ font-size:clamp(20px, 2.2vw, 26px); }
 
+/* ---- bento : one track list, one cover wall, one avatar block ----
+   deliberately not three equal columns — each set gets the treatment
+   that suits it, and the sheet reads as a layout instead of a table. */
+.manifest__bento{
+  display:grid;
+  grid-template-columns: minmax(0,1.4fr) minmax(0,1fr);
+  /* the artist block gets a real share of the height, not just the
+     leftovers — the cover wall scales its tiles to whatever it keeps */
+  grid-template-rows: minmax(0,1.2fr) minmax(0,0.85fr);
+  grid-template-areas:
+    "tracks albums"
+    "tracks artists";
+  gap:14px 16px;
+  flex:1 1 auto;
+  min-height:0;
+}
+.mbox{
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+}
+.mbox--tracks { grid-area:tracks; }
+.mbox--albums { grid-area:albums; }
+.mbox--artists{ grid-area:artists; }
+
+.mbox__head{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:0 0 8px;
+  padding-bottom:6px;
+  border-bottom:1px solid var(--line);
+  font-size:10.5px;
+  font-weight:400;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+}
+.mbox__ix{
+  color:var(--acc-cy);
+  padding-right:8px;
+  border-right:1px solid var(--line);
+}
+.mbox__name{ color:var(--text); }
+.mbox__jp{
+  font-family:"Noto Sans JP", sans-serif;
+  font-size:9.5px;
+  letter-spacing:.08em;
+  color:var(--text-ghost);
+}
+.mbox__head b{
+  margin-left:auto;
+  font-weight:400;
+  color:var(--acc-cy);
+  font-variant-numeric:tabular-nums;
+}
+
+/* ---- album tiles ------------------------------------------------ */
+.mtiles{
+  list-style:none;
+  margin:0; padding:0;
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0,1fr));
+  /* rows share the block's height instead of being driven by tile width:
+     the covers shrink when the artists below need the room, and adding
+     albums costs tile size instead of breaking the layout */
+  grid-template-rows:repeat(2, minmax(0,1fr));
+  grid-auto-rows:minmax(0,1fr);
+  justify-items:center;
+  gap:10px;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color: rgba(91,138,255,.3) transparent;
+}
+.mtile{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  min-height:0;
+  width:100%;
+}
+.mtile__art{
+  position:relative;
+  display:block;
+  aspect-ratio:1 / 1;
+  height:100%;
+  width:auto;
+  max-width:100%;
+  margin-inline:auto;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:rgba(7,7,11,.6);
+}
+.mtile__art img{
+  width:100%; height:100%;
+  object-fit:cover;
+  display:block;
+  transition:transform .35s ease, filter .35s ease;
+}
+.mtile__art::after{
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(200deg, rgba(91,138,255,.16), transparent 45%);
+  opacity:0;
+  transition:opacity .3s ease;
+}
+/* one corner tick per tile — same language as the widget's cover frame */
+.mtile__corner{
+  position:absolute; left:0; top:0;
+  width:14px; height:14px;
+  border-left:1px solid var(--acc-cy);
+  border-top:1px solid var(--acc-cy);
+  opacity:.55;
+  transition:width .3s cubic-bezier(.2,.8,.3,1), height .3s cubic-bezier(.2,.8,.3,1), opacity .3s;
+}
+.mtile:hover .mtile__corner{ width:26px; height:26px; opacity:1; }
+.mtile__year{
+  position:absolute; top:0; right:0;
+  padding:2px 6px;
+  background:rgba(7,7,11,.82);
+  border-left:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  font-size:9px;
+  letter-spacing:.16em;
+  color:var(--text-dim);
+  font-variant-numeric:tabular-nums;
+}
+.mtile:hover .mtile__art img{ transform:scale(1.05); filter:brightness(1.08); }
+.mtile:hover .mtile__art::after{ opacity:1; }
+.mtile:hover .mtile__art{ border-color:rgba(91,138,255,.5); }
+
+/* caption rides on the artwork: no text column under the grid, which is
+   what lets all four covers stay visible on a laptop screen */
+.mtile__txt{
+  position:absolute;
+  left:0; right:0; bottom:0;
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  padding:18px 8px 6px;
+  background:linear-gradient(to top, rgba(6,6,10,.96), rgba(6,6,10,.72) 46%, transparent);
+}
+.mtile__title{
+  font-family:"Space Grotesk", sans-serif;
+  font-size:12.5px;
+  font-weight:600;
+  line-height:1.3;
+  color:#fff;
+  text-shadow:0 1px 6px rgba(0,0,0,.8);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.mtile__artist{
+  font-size:10.5px;
+  line-height:1.3;
+  color:var(--acc-mag);
+  letter-spacing:.04em;
+  text-shadow:0 1px 6px rgba(0,0,0,.8);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+
+/* ---- artist pills ----------------------------------------------- */
+.mfaces{
+  list-style:none;
+  margin:0; padding:0;
+  /* auto-fill instead of flex-wrap: a lone card in the last row keeps its
+     column width instead of stretching across the block */
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(104px, 1fr));
+  align-content:start;
+  gap:8px;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color: rgba(91,138,255,.3) transparent;
+}
+.mface{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:5px;
+  min-width:0;
+  padding:9px 8px;
+  border:1px solid var(--line);
+  background:
+    linear-gradient(180deg, rgba(91,138,255,.05), transparent 55%),
+    rgba(7,7,11,.45);
+  text-align:center;
+  transition:border-color .2s, background .2s, transform .2s;
+}
+.mface:hover{
+  border-color:rgba(91,138,255,.45);
+  background:rgba(91,138,255,.08);
+  transform:translateY(-2px);
+}
+.mface__img{
+  position:relative;
+  width:clamp(36px, 3.8vw, 48px);
+  aspect-ratio:1 / 1;
+  flex:0 0 auto;
+  border-radius:50%;
+  overflow:hidden;
+  border:1px solid var(--line-strong);
+  box-shadow:0 0 0 3px rgba(7,7,11,.6), 0 6px 18px -8px rgba(0,0,0,.9);
+  transition:border-color .2s, box-shadow .2s;
+}
+.mface:hover .mface__img{
+  border-color:var(--acc-cy);
+  box-shadow:0 0 0 3px rgba(7,7,11,.6), 0 0 16px -2px rgba(91,138,255,.5);
+}
+.mface__img img{ width:100%; height:100%; object-fit:cover; display:block; }
+.mface__txt{ display:flex; flex-direction:column; gap:1px; min-width:0; width:100%; }
+.mface__name{
+  font-family:"Space Grotesk", sans-serif;
+  font-size:12.5px;
+  font-weight:600;
+  line-height:1.25;
+  color:var(--text);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.mface__tag{
+  font-size:9.5px;
+  line-height:1.3;
+  letter-spacing:.06em;
+  color:var(--acc-mag);
+  /* genre lines wrap rather than truncate — a clipped "electro house · gl…"
+     tells the reader nothing */
+  overflow-wrap:anywhere;
+}
+
+/* ---- staggered entry -------------------------------------------- */
+@keyframes manifest-in{
+  from{ opacity:0; transform:translateY(7px); }
+  to  { opacity:1; transform:none; }
+}
+.manifest.is-open .manifest__item,
+.manifest.is-open .mtile,
+.manifest.is-open .mface{
+  animation:manifest-in .32s cubic-bezier(.2,.7,.3,1) both;
+  animation-delay:calc(var(--i, 0) * 22ms);
+}
+
 .manifest__list{
   list-style:none;
   margin:0; padding:0;
   display:grid;
   grid-template-columns:1fr;
-  gap:4px;
+  align-content:start;
+  /* no gap — the dashed row borders are the separator, and the saved
+     pixels are what let all 15 tracks fit without scrolling */
+  gap:0;
   overflow-y:auto;
+  overscroll-behavior:contain;
   flex:1 1 auto;
   border:1px solid var(--line);
   background:rgba(7,7,11,.4);
@@ -2775,11 +3057,11 @@ section{
 .manifest__item{ margin:0; }
 .manifest__row{
   display:grid;
-  grid-template-columns: 36px 44px 1fr auto;
+  grid-template-columns: 30px 38px minmax(0,1fr) auto;
   align-items:center;
-  gap:14px;
+  gap:10px;
   width:100%;
-  padding:8px 14px;
+  padding:4px 10px;
   background:transparent;
   border:0;
   border-bottom:1px dashed var(--line);
@@ -2792,7 +3074,7 @@ section{
 .manifest__item:last-child .manifest__row{ border-bottom:0; }
 .manifest__row:hover{
   background:rgba(91,138,255,.06);
-  padding-left:18px;
+  padding-left:14px;
 }
 .manifest__row:focus-visible{
   outline:1px solid var(--acc-cy);
@@ -2809,10 +3091,14 @@ section{
   font-variant-numeric: tabular-nums;
 }
 .manifest__row.is-active .manifest__idx{ color:var(--acc-cy); }
+.manifest__row:hover .manifest__idx{ color:var(--acc-mag); }
+.manifest__row.is-active .manifest__status{
+  animation:spotifyPulse 1.8s ease-in-out infinite;
+}
 
 .manifest__thumb{
   position:relative;
-  width:40px; height:40px;
+  width:34px; height:34px;
   flex-shrink:0;
   overflow:hidden;
   border:1px solid var(--line);
@@ -2826,13 +3112,13 @@ section{
 .manifest__txt{
   display:flex;
   flex-direction:column;
-  gap:2px;
   min-width:0;
 }
 .manifest__title{
   font-family:"Space Grotesk", sans-serif;
-  font-size:14.5px;
+  font-size:13.5px;
   font-weight:600;
+  line-height:1.3;
   color:var(--text);
   letter-spacing:.01em;
   overflow:hidden;
@@ -2840,7 +3126,8 @@ section{
   white-space:nowrap;
 }
 .manifest__artist{
-  font-size:11.5px;
+  font-size:11px;
+  line-height:1.3;
   color:var(--acc-mag);
   letter-spacing:.04em;
   overflow:hidden;
@@ -2852,7 +3139,7 @@ section{
   letter-spacing:.2em;
   color:var(--acc-cy);
   text-shadow: 0 0 8px rgba(91,138,255,.5);
-  min-width:60px;
+  min-width:56px;
   text-align:right;
 }
 
@@ -4106,6 +4393,36 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
   body:has(.mnav){ padding-bottom:calc(46px + env(safe-area-inset-bottom)); }
   .lite-toggle{ bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }
 
+  /* manifest: the doc strip has to stay one row — wrapping pushed the
+     close button onto a second line and left a dead band under it */
+  .manifest__doc{ flex-wrap:nowrap; }
+  .manifest__doc > span{ min-width:0; overflow:hidden; text-overflow:ellipsis; }
+  .manifest__doc > span:nth-child(2){ display:none; }
+  .manifest__close{ flex:0 0 auto; }
+
+  /* manifest: the bento stacks and the sheet body becomes the scroller,
+     so the three blocks read as one continuous sheet */
+  .manifest__bento{
+    display:flex;
+    flex-direction:column;
+    grid-template-columns:none;
+    grid-template-areas:none;
+    gap:18px;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+  }
+  /* each block keeps its natural height — the bento is the scroller now */
+  .mbox{ flex:0 0 auto; }
+  .manifest__list,
+  .mtiles,
+  .mfaces{ overflow:visible; flex:0 0 auto; }
+  /* stacked: the tiles are width-driven again, no row height to scale to */
+  .mtiles{
+    grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-rows:none;
+  }
+  .mtile__art{ height:auto; width:100%; }
+
   .foot{ margin-top:56px; }
   .foot__inner{ padding:44px 18px 24px; }
   .foot__logo img{ height:46px; }
@@ -4157,11 +4474,21 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
   /* now-playing manifest overlay */
   .manifest{ padding:14px; }
   .manifest__sheet{ padding:16px 14px 14px; }
-  .manifest__row{ grid-template-columns: 28px 36px 1fr auto; gap:10px; padding:8px 10px; }
+  .manifest__row{ grid-template-columns: 28px 36px minmax(0,1fr) auto; gap:10px; padding:8px 10px; }
   .manifest__thumb{ width:34px; height:34px; }
   .manifest__title{ font-size:13px; }
   .manifest__artist{ font-size:11px; }
   .manifest__status{ font-size:9px; min-width:auto; }
+}
+
+/* ---- short viewports: the manifest is a fixed-height overlay, so its
+   artist grid is the one block that has to answer to height, not width */
+@media (max-height: 880px){
+  .mfaces{ grid-template-columns:repeat(auto-fill, minmax(88px, 1fr)); }
+  .mface{ padding:7px 6px; gap:4px; }
+  .mface__img{ width:clamp(30px, 3vw, 40px); }
+  .mface__name{ font-size:11.5px; }
+  .mface__tag{ font-size:9px; letter-spacing:.04em; }
 }
 
 /* ---- XS: small phones ------------------------------------------ */
