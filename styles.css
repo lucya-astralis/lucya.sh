@@ -3022,16 +3022,25 @@ html.is-scrolllock body{ overflow:hidden; }
   overflow-wrap:anywhere;
 }
 
-/* ---- staggered entry -------------------------------------------- */
+/* ---- staggered entry --------------------------------------------
+   The sheet fills box by box in reading order — rows top to bottom,
+   left to right within a row. Which boxes share a row only follows
+   from the layout, so the delay can't be static: JS measures on open
+   and writes --d per element (see layoutSweep in script.js).
+   Same 7px rise for every box, so it reads as one move. */
 @keyframes manifest-in{
   from{ opacity:0; transform:translateY(7px); }
   to  { opacity:1; transform:none; }
 }
+.manifest.is-open .manifest__doc,
+.manifest.is-open .manifest__head,
+.manifest.is-open .mbox__head,
 .manifest.is-open .manifest__item,
 .manifest.is-open .mtile,
-.manifest.is-open .mface{
-  animation:manifest-in .32s cubic-bezier(.2,.7,.3,1) both;
-  animation-delay:calc(var(--i, 0) * 22ms);
+.manifest.is-open .mface,
+.manifest.is-open .manifest__foot{
+  animation:manifest-in .36s cubic-bezier(.2,.7,.3,1) both;
+  animation-delay:var(--d, 0ms);
 }
 
 .manifest__list{

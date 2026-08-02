@@ -1194,14 +1194,10 @@
       const artistList = document.getElementById('manifestArtists');
       const metaEl = document.getElementById('manifestMeta');
 
-      // --i drives the staggered entry; lite mode / reduced motion kill the
-      // animation and the items just render in place
-      const stagger = (el, i) => { el.style.setProperty('--i', i); return el; };
-
       // tracks — dense list, the only interactive one (jumps the rotation)
       const trackFrag = document.createDocumentFragment();
       songs.forEach((s, i) => {
-        const li = stagger(document.createElement('li'), i);
+        const li = document.createElement('li');
         li.className = 'manifest__item';
         li.innerHTML =
           '<button type="button" class="manifest__row" data-idx="' + i + '">' +
@@ -1220,8 +1216,8 @@
       // albums — the artwork is the point, so it gets the room
       if (albumList) {
         const frag = document.createDocumentFragment();
-        albums.forEach((a, i) => {
-          const li = stagger(document.createElement('li'), i);
+        albums.forEach((a) => {
+          const li = document.createElement('li');
           li.className = 'mtile';
           li.innerHTML =
             '<span class="mtile__art">' +
@@ -1241,8 +1237,8 @@
       // artists — avatar pills that wrap, so the block reflows with the sheet
       if (artistList) {
         const frag = document.createDocumentFragment();
-        artists.forEach((a, i) => {
-          const li = stagger(document.createElement('li'), i);
+        artists.forEach((a) => {
+          const li = document.createElement('li');
           li.className = 'mface';
           li.innerHTML =
             '<span class="mface__img"><img src="' + a.cover + '" alt="" loading="lazy" decoding="async" /></span>' +
@@ -1272,6 +1268,33 @@
         });
       };
 
+      // Entry order follows the layout, not the DOM: reading order. The row
+      // an element sits in decides its beat (y quantised into bands, so a
+      // 1px offset can't desync a row), and its horizontal position adds a
+      // left-to-right lead within that row.
+      const SWEEP_SELECTOR = '.manifest__doc, .manifest__head, .mbox__head, .manifest__item, .mtile, .mface, .manifest__foot';
+      const SWEEP_BAND  = 18;   // px per row band — what counts as "same row"
+      const SWEEP_STEP  = 26;   // ms between two boxes
+      const SWEEP_TOTAL = 900;  // ms budget; the step tightens if items are added
+      const sheetEl = manifest.querySelector('.manifest__sheet');
+
+      const layoutSweep = () => {
+        if (!sheetEl) return;
+        const sheet = sheetEl.getBoundingClientRect();
+        const boxes = Array.from(manifest.querySelectorAll(SWEEP_SELECTOR)).map((el) => {
+          const b = el.getBoundingClientRect();
+          return {
+            el: el,
+            row: Math.max(0, Math.round((b.top - sheet.top) / SWEEP_BAND)),
+            col: b.left - sheet.left
+          };
+        });
+        // reading order: rows top to bottom, boxes left to right within a row
+        boxes.sort((a, b) => (a.row - b.row) || (a.col - b.col));
+        const step = Math.min(SWEEP_STEP, SWEEP_TOTAL / Math.max(1, boxes.length));
+        boxes.forEach((o, i) => o.el.style.setProperty('--d', Math.round(i * step) + 'ms'));
+      };
+
       const root = document.documentElement;
       const lockScroll = () => {
         // reserve the scrollbar's width so hiding it doesn't jump the page
@@ -1294,13 +1317,17 @@
         clearTimeout(closeTimer);
         manifest.classList.remove('is-closing');
         manifest.hidden = false;
+        // reset the scrollers first — the sweep measures where things sit
+        manifestList.scrollTop = 0;
+        const bento = manifest.querySelector('.manifest__bento');
+        if (bento) bento.scrollTop = 0;
         // flush the un-hidden state synchronously instead of waiting a frame:
         // a throttled rAF would leave the overlay open but fully transparent
         void manifest.offsetWidth;
+        layoutSweep();
         manifest.classList.add('is-open');
         lockScroll();
         markActive();
-        manifestList.scrollTop = 0;
         const first = manifestList.querySelector('.manifest__row.is-active') || manifestList.querySelector('.manifest__row');
         if (first) first.focus({ preventScroll: true });
       };
