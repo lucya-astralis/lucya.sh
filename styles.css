@@ -64,7 +64,19 @@
   --dur-panel:  .42s;   /* sections, nav, hero columns */
   --dur-sheet:  .34s;   /* overlays */
   --dur-build:  .34s;   /* lines and tiles inside a panel */
-  --dur-exit:   .18s;
+  --dur-exit:   .15s;   /* keep in sync with EXIT_MS in setnav.js */
+  /* Opacity ramp for a SET SWITCH only, and much shorter than the movement
+     on purpose. A switch replaces something: the outgoing card is gone the
+     moment its exit ends, so if the incoming card is still fading up at that
+     point the column is briefly empty and the whole switch reads as a blink.
+     The new set therefore reaches full opacity early and keeps gliding after,
+     which is exactly what the old flicker did (it hit full opacity a tenth of
+     the way in) minus the strobing. Reveals that appear from nothing don't
+     get this — see the linear ramp in CONTENT REVEAL. */
+  --dur-setfade: .2s;
+  /* the slice the old glitch had, kept as a continuous skew instead of
+     clip-path bands — character without a single hard frame */
+  --skew-set:   1.2deg;
   /* how far a panel drifts in from its column's outer edge — see the
      CONTENT REVEAL block. Global, so every entrance drifts by the same
      amount whether it was triggered by scroll, by boot or by a set change.
@@ -3969,25 +3981,40 @@ html.setmode .setbar{ display:flex; }
 .mnav a.is-current::after{ opacity:.9; }
 /* responsive: see RESPONSIVE section (MD tier) */
 
-/* ----- exit ----- */
-html.setmode .set-exit { animation: setOut var(--dur-exit) var(--ease-exit) both; }
+/* ----- exit -----
+   A card leaves toward its own side of the layout, the way it came in, with a
+   slight skew as it goes. That skew is what is left of the old glitch: the
+   original sliced the card into clip-path bands and jumped it left and right
+   in four discrete stops. The direction and the shear survive, the discrete
+   stops don't — this interpolates, so there is never a frame that reads as a
+   break. Opacity falls once, monotonically; it can't strobe. */
+html.setmode .set-exit{
+  animation: setOut  var(--dur-exit) var(--ease-exit) both,
+             fadeOut var(--dur-exit) var(--ease-exit) both;
+}
+html.setmode .layout__main > section.set-exit{ animation-name: setOutL, fadeOut; }
+html.setmode .layout__side > section.set-exit{ animation-name: setOutR, fadeOut; }
 
 /* ----- staggered entrance (every set) -----
    Cards don't appear all at once: each active section slides + flickers in,
    with a per-card delay applied inline by setnav.js (--set-delay). Main-column
    cards slide from the left, side-column cards from the right — mirroring the
    set 1 entrance the rest of the page is modelled on. */
-/* movement eased, opacity linear — same split as the scroll reveal, and for
-   the same reason: on one curve the card is fully opaque before it has
-   finished moving, so the drift reads as a blink instead of a drift */
+/* Movement and opacity are split here too, but NOT the way the scroll reveal
+   splits them. There the danger is a pop, so opacity is stretched linear over
+   the full glide. Here the danger is the opposite: the outgoing card is
+   already gone, so a slow ramp leaves the column empty and the switch blinks.
+   So opacity finishes early (--dur-setfade) while the card keeps gliding and
+   un-skewing for the full --dur-panel. The set is present immediately; the
+   motion is what you watch settle. */
 html.setmode .layout__main > section.set-in{
-  animation: slideInL var(--dur-panel) var(--ease-enter) both,
-             fadeIn   var(--dur-panel) linear            both;
+  animation: setInL     var(--dur-panel)   var(--ease-enter) both,
+             setFadeIn  var(--dur-setfade) var(--ease-enter) both;
   animation-delay: var(--set-delay, 0ms);
 }
 html.setmode .layout__side > section.set-in{
-  animation: slideInR var(--dur-panel) var(--ease-enter) both,
-             fadeIn   var(--dur-panel) linear            both;
+  animation: setInR     var(--dur-panel)   var(--ease-enter) both,
+             setFadeIn  var(--dur-setfade) var(--ease-enter) both;
   animation-delay: var(--set-delay, 0ms);
 }
 /* text builds up: lines rise into place, staggered after their card.
@@ -4020,18 +4047,49 @@ html.setmode .layout__side > section.reveal-block.is-visible:not(.set-in):not(.s
   opacity:1;
 }
 
-/* The old exit was a four-stop glitch: skew, horizontal slices and clip-path
-   bands that tore the card apart before it left. It had to go once the
-   entrance stopped flickering — a card that shreds on the way out and then
-   glides on the way in reads as two different sites. This is the manifest's
-   exit, one for one: the same drop-and-shrink, over before you read it, so
-   the incoming set is what holds your eye.
+/* The set-switch movement keyframes. The old glitch's vocabulary — leave to
+   your own side, shear slightly, come back from that side and straighten — is
+   all still here; what's gone is that it used to happen in four discrete
+   clip-path stops. These interpolate, so the same gesture reads as motion
+   instead of as damage.
    No `filter` and no `clip-path`. Both are repaint-only, and a `filter` on
    the section also resets the backdrop root, which flickered the panes'
-   blur mid-transition. */
+   blur mid-transition. No `scale` either — it re-samples the glass at a
+   changing ratio every frame. */
+@keyframes fadeOut{
+  from{ opacity:1; }
+  to  { opacity:0; }
+}
+/* Starts at .14, not 0, and only for set switches. The handoff is a single
+   instant: setnav.js hides the outgoing card and starts the incoming one in
+   the same task, so if the incoming began at zero there would be exactly one
+   frame with nothing in the column — a black frame, which is precisely what
+   a blink is. Beginning a shade above zero means the column is never empty:
+   the new set is already faintly there on the frame the old one leaves, and
+   ramps up from there. */
+@keyframes setFadeIn{
+  from{ opacity:.18; }
+  to  { opacity:1; }
+}
 @keyframes setOut{
-  from{ opacity:1; transform:none; }
-  to  { opacity:0; transform:translateY(10px) scale(.992); }
+  from{ transform:none; }
+  to  { transform:translateY(10px); }
+}
+@keyframes setOutL{
+  from{ transform:none; }
+  to  { transform:translateX(calc(var(--slip) * -1)) skewX(calc(var(--skew-set) * -1)); }
+}
+@keyframes setOutR{
+  from{ transform:none; }
+  to  { transform:translateX(var(--slip)) skewX(var(--skew-set)); }
+}
+@keyframes setInL{
+  from{ transform:translateX(calc(var(--slip) * -1)) skewX(calc(var(--skew-set) * -1)); }
+  to  { transform:none; }
+}
+@keyframes setInR{
+  from{ transform:translateX(var(--slip)) skewX(var(--skew-set)); }
+  to  { transform:none; }
 }
 
 /* ----- pager dots ----- */

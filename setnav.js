@@ -21,7 +21,7 @@
   // These mirror the CSS durations (--dur-exit / --dur-panel in styles.css).
   // If a curve or duration changes there, it changes here too — the JS is what
   // decides when a card is "done" and when the next input is allowed.
-  var EXIT_MS = 180;        // matches --dur-exit
+  var EXIT_MS = 150;        // matches --dur-exit
   var ENTER_MS = 440;       // matches --dur-panel (+ a frame of slack)
   var COOLDOWN = 200;       // extra lock after enter finishes
   var STAGGER = 90;         // per-card delay so they don't appear all at once
