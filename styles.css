@@ -4566,3 +4566,83 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
   .splash__label{ font-size:15px; margin-top:22px; letter-spacing:.18em; }
   .splash__label .jp{ font-size:10px; letter-spacing:.28em; }
 }
+
+/* ================================================================
+   MOBILE COMPOSITING TIER  (<= 767.98px)
+   ----------------------------------------------------------------
+   Not a look change — a compositing change. html.lite already fixes
+   all of this, but lite only auto-arms on <=2GB / <=2 cores, so a
+   current phone gets served the full desktop compositing stack and
+   chokes on it. This block takes the cheap half of what lite does
+   and applies it by viewport instead of by device class, so the
+   animations, transitions and reveals all stay — they just get a
+   compositor that isn't already saturated.
+
+   The stack that has to go on a phone:
+     fixed <video>  ->  fixed mix-blend-mode:overlay layer animating
+     background-position at 60fps  ->  ~14 panes at blur(30px).
+   Each of those three multiplies the one under it. The blend layer
+   and the video keep the backdrop permanently dirty, so every glass
+   pane re-blurs at a 30px radius (90 device px at DPR3) on every
+   single frame, forever — scrolling or not. That is the frame budget
+   gone before any of the page's own animation has run.
+
+   Keeping the video: it is only expensive because things blend and
+   blur over it. With the blend layer gone and the panes unblurred it
+   composites on its own GPU layer for free, so the wallpaper stays.
+   ================================================================ */
+@media (max-width: 767.98px){
+  /* the single worst offender: fullscreen, fixed, mix-blend-mode:overlay,
+     animating a non-compositable property (background-position) forever.
+     Forces a full-viewport repaint AND re-blends the whole page beneath it
+     every frame. lite kills this outright — so does a phone. */
+  body::after{ display:none; }
+
+  /* No pane blur at this width. The kpi bar and thermals already made this
+     trade above for legibility reasons; the rest of the panes make it here
+     for frame-rate reasons — same fix, same fallback (near-opaque fills). */
+  .hero__stats,
+  .specsheet,
+  .interests__grid,
+  .domains__grid,
+  .photos__grid,
+  .buttons__wall,
+  .neofetch__tabs,
+  .spotify__card,
+  .services__hv,
+  .about__marginal,
+  .photos__cta,
+  .rackview,
+  .manifest__sheet,
+  /* small local blurs — each one is its own backdrop re-sample, and the
+     equaliser's is the worst of them: five children animating inside a
+     backdrop-filter re-blurs that region 60x a second while a track plays */
+  .spotify__bars,
+  .pcard__countdown,
+  .manifest__backdrop,
+  .lightbox{
+    -webkit-backdrop-filter:none;
+            backdrop-filter:none;
+  }
+  /* with the blur gone the panes need their own body, same as html.lite */
+  :root{
+    --surface:    rgba(11, 11, 17, 0.94);
+    --surface-2:  rgba(22, 22, 34, 0.96);
+  }
+  .spotify__bars{ background:rgba(7,7,11,.88); }
+  .manifest__backdrop{ background:rgba(7,7,11,.92); }
+
+  /* filter + clip-path are repaint-only properties: these run infinitely and
+     each keyframe invalidates the element's tile. The glitch reads as a
+     desktop-hover flourish anyway — the phone keeps the gradient sweep. */
+  .hero__wordmark-layer--r,
+  .hero__wordmark-layer--b,
+  .hero__title .word::before,
+  .hero__title .word::after{ animation:none; opacity:0; }
+  .hero__wordmark-layer--main{ animation: heroGradient 8s linear infinite; }
+  /* .nterm flickers via animated filter:brightness (repaints the whole CRT
+     panel); its ::before drifts scanlines via background-position under a
+     mix-blend-mode. Both stay visible, they just stop moving. */
+  .nterm{ animation:none; }
+  .nterm::before{ animation:none; }
+}

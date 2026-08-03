@@ -253,6 +253,13 @@
   // target text one char at a time. Used for section headers, hero stats,
   // and the spotify track title on rotation.
   const SCRAMBLE_CHARS = '!<>-_\\/[]{}=+*^?#$&%01ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿ';
+  // per-char start/end below are authored in 60fps frame units, but they are
+  // read against elapsed wall-clock time, not against a frame counter. A
+  // frame-counted reveal has no fixed duration — it stretches by exactly the
+  // factor the frame rate drops by, so the same ~0.6s decode that reads as a
+  // flicker on desktop crawls for several seconds on a busy phone. Timing it
+  // off the clock makes a dropped frame skip glyphs instead of adding time.
+  const SCRAMBLE_FPS = 60;
   class TextScrambler {
     constructor(el){ this.el = el; this.queue = []; this.frame = 0; }
     setText(newText){
@@ -266,9 +273,14 @@
       }
       cancelAnimationFrame(this.rafId);
       this.frame = 0;
-      return new Promise(res => { this.resolve = res; this._tick(); });
+      this.startedAt = 0;
+      // first frame still paints synchronously (it renders the outgoing text,
+      // so the element is never briefly empty); rAF drives everything after.
+      return new Promise(res => { this.resolve = res; this._tick(performance.now()); });
     }
-    _tick = () => {
+    _tick = (now) => {
+      if (!this.startedAt) this.startedAt = now;
+      this.frame = (now - this.startedAt) / (1000 / SCRAMBLE_FPS);
       let out = '';
       let done = 0;
       for (let i = 0; i < this.queue.length; i++){
@@ -285,7 +297,7 @@
       }
       this.el.innerHTML = out;
       if (done === this.queue.length){ this.resolve(); }
-      else { this.rafId = requestAnimationFrame(this._tick); this.frame++; }
+      else { this.rafId = requestAnimationFrame(this._tick); }
     };
   }
   const scramblers = new WeakMap();
@@ -1121,9 +1133,16 @@
       stopElapsed();
       tickStart = performance.now();
       const total = INTERVAL_MS / 1000;
+      // the readout is mm:ss, so ~59 of every 60 frames used to write back a
+      // string identical to the one already there. Each of those writes dirties
+      // a node inside the card, and a dirty card means its backdrop-filter pane
+      // re-blurs — for the entire length of every track, scrolling or not.
+      // Write only on a real change; the rAF itself is free without the write.
+      let shown = '';
       const step = () => {
         const e = Math.min(total, (performance.now() - tickStart) / 1000);
-        if (elapsedEl) elapsedEl.textContent = fmtTime(e);
+        const t = fmtTime(e);
+        if (t !== shown){ shown = t; if (elapsedEl) elapsedEl.textContent = t; }
         if (e < total) elapsedRaf = requestAnimationFrame(step);
       };
       elapsedRaf = requestAnimationFrame(step);
