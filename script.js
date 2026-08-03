@@ -24,7 +24,15 @@
   // it's on screen from 1.6s, and any key or tap takes it.
   // lite mode still gets the short boot — that's a device budget, not a
   // guess about whether you've been here before.
-  const BOOT_READY_MS = LITE ? 1100 : 7400;
+  //
+  // 5.4s, down from 7.4s. The tail is deliberate, not slack:
+  //   ~2.9s  logo build ends, wordmark settled, idle pulse starts breathing
+  //   ~3.4s  progress bar reaches 100%
+  //   ~4.5s  the .is-complete blink across the boot chrome finishes
+  //   ~5.4s  a full second of settled logo, then the handoff
+  // Nothing was cut from the sequence — only the dead time that used to sit
+  // between the build finishing and the old 7.4s timer.
+  const BOOT_READY_MS = LITE ? 1100 : 5400;
 
   // ---------- WALLPAPER VIDEO : single-instance handoff ------------
   // both <video> tags ship without src; the splash copy starts here,
@@ -81,9 +89,9 @@
 
   // ---------- SPLASH : progress bar ------------------------------
   // progress only starts once the whole splash UI has built in.
-  // UI reveal timing (CSS): corners 0.05-0.42s, log 0.55s, bottom 0.95s.
-  // Log lines stream in from ~1.25s onward; we kick progress just after.
-  const PROGRESS_START_DELAY = 1250;
+  // UI reveal timing (CSS): corners 0.05-0.42s, log 0.55s, bottom 0.7s.
+  // Log lines stream in with progress, so this also sets when they start.
+  const PROGRESS_START_DELAY = 900;
   const progressPct = document.getElementById('splashProgress');
   const progressFill = document.getElementById('splashProgressFill');
   if (progressPct && progressFill) {
@@ -104,12 +112,17 @@
         if (splashEl) splashEl.classList.add('is-complete');
         return;
       }
-      p += Math.round(2 + Math.random() * 9);
+      // Bigger steps on a shorter interval. The jitter is what makes it read
+      // as work being done rather than a timer, but the old spread (2-11% per
+      // tick every 160-420ms) put the finish anywhere between 2s and 6s — far
+      // too loose once the whole boot is 4.2s. Tighter on both axes: ~12.5
+      // ticks at ~195ms lands the bar at ~3.4s, still visibly uneven.
+      p += Math.round(4 + Math.random() * 8);
       if (p > 100) p = 100;
       progressPct.textContent = `${pad2(p)}%`;
       progressFill.style.width = p + '%';
       revealLogs();
-      setTimeout(tick, LITE ? 60 + Math.random() * 90 : 160 + Math.random() * 260);
+      setTimeout(tick, LITE ? 60 + Math.random() * 90 : 110 + Math.random() * 170);
     };
     setTimeout(tick, LITE ? 100 : PROGRESS_START_DELAY);
   }
@@ -126,7 +139,13 @@
   (function splashLogoBuild(){
     const mainSvg = document.getElementById('splashLogoSvg');
     if (!mainSvg) return;
-    if (LITE){
+    const glitchLogo = document.getElementById('glitchLogo');
+    const label = document.querySelector('.splash__label');
+    // reduced-motion gets the same treatment as lite: the CSS kill-switch
+    // can't touch inline styles, so a shake driven from JS would run straight
+    // through it. Land on the finished logo instead.
+    const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (LITE || REDUCED){
       // no draw-in, no shake/burst intervals — final state immediately
       ['p0','p1','p2','p3','p4','p5'].forEach(id => {
         const el = document.getElementById(id);
@@ -136,13 +155,16 @@
     }
     const rgbR = document.getElementById('rgbR');
     const rgbB = document.getElementById('rgbB');
+    // Stroke durations, shortened along with the rest of the boot. Each piece
+    // still finishes drawing before the next one is halfway, which is what
+    // makes it read as an assembly rather than six things happening at once.
     const order = [
-      { id: 'p2', dur: 1.0 },
-      { id: 'p5', dur: 0.85 },
-      { id: 'p3', dur: 0.85 },
-      { id: 'p0', dur: 0.6 },
-      { id: 'p4', dur: 0.4 },
-      { id: 'p1', dur: 0.4 },
+      { id: 'p2', dur: 0.75 },
+      { id: 'p5', dur: 0.62 },
+      { id: 'p3', dur: 0.62 },
+      { id: 'p0', dur: 0.45 },
+      { id: 'p4', dur: 0.3 },
+      { id: 'p1', dur: 0.3 },
     ];
     const wait = ms => new Promise(r => setTimeout(r, ms));
     const rgbSplit = dx => {
@@ -169,6 +191,71 @@
       }, 45);
     });
 
+    // CRT signal drop: the tube blooms, cuts to black, comes back weak, then
+    // settles. Used once, as the hinge between the outline and the fill —
+    // the logo doesn't just start filling, the signal drops and it comes back
+    // solid. Runs on the wrapper so the RGB layers bloom with it; that also
+    // means the wrapper's drop-shadow glow dies during the cut, which is
+    // exactly right for a dropout.
+    const signalLoss = (el, duration) => new Promise(res => {
+      el.style.filter = 'brightness(2.4) contrast(.55)';
+      el.style.transform = `skewX(${(Math.random()-.5)*4}deg)`;
+      rgbSplit(8 + Math.random()*6);
+      setTimeout(() => {
+        el.style.filter = 'brightness(0)';
+        el.style.transform = '';
+        rgbClear();
+      }, duration * 0.3);
+      setTimeout(() => { el.style.filter = 'brightness(.6) contrast(1.2)'; }, duration * 0.6);
+      setTimeout(() => { el.style.filter = ''; el.style.transform = ''; res(); }, duration);
+    });
+
+    // hard on/off flicker — the last unstable moment before the wordmark
+    const flicker = (el, times) => new Promise(res => {
+      let i = 0;
+      const iv = setInterval(() => {
+        el.style.opacity = i % 2 === 0 ? '0' : '1';
+        if (++i >= times){ clearInterval(iv); el.style.opacity=''; res(); }
+      }, 42 + Math.random()*26);
+    });
+
+    // The wordmark resolves instead of fading: it lands wide and overshoots
+    // its tracking a few times before settling on the CSS value (.22em). Read
+    // as type being locked in by the same system that just drew the mark.
+    const nameGlitchIn = async (el) => {
+      if (!el) return;
+      el.style.opacity = '1';
+      const frames = [
+        { ls: '1.05em', x:  9, skew:  3 },
+        { ls: '.10em',  x: -6, skew: -2.4 },
+        { ls: '.46em',  x:  4, skew:  1.6 },
+        { ls: '.15em',  x: -2, skew: -0.8 },
+        { ls: '.22em',  x:  0, skew:  0 },
+      ];
+      for (let i = 0; i < frames.length; i++){
+        const f = frames[i];
+        el.style.letterSpacing = f.ls;
+        el.style.transform = `translateX(${f.x}px) skewX(${f.skew}deg)`;
+        if (i < frames.length - 1) rgbSplit(2 + Math.abs(f.x)*0.5); else rgbClear();
+        // ~125ms per frame instead of ~73ms: at the old pace the tracking
+        // overshoots were over before the eye could follow one, so it read as
+        // a single smear rather than as type being searched for and found.
+        await wait(100 + Math.random()*45);
+      }
+      // hand tracking back to the stylesheet so the responsive tier still wins
+      el.style.transform = 'none';
+      el.style.letterSpacing = '';
+    };
+
+    // Skipping the boot has to stop the build, not just hide it. The sequence
+    // is a chain of awaited timers; without this it keeps shaking, splitting
+    // and re-rendering a logo nobody can see, and it does it while the page's
+    // own entrance animations are running — the one moment the compositor is
+    // busiest. Checked between phases, which is granular enough to stop
+    // within ~100ms of the skip.
+    const splashEl = document.getElementById('splash');
+    const aborted = () => !!splashEl && splashEl.classList.contains('is-done');
+
     (async () => {
       order.forEach(p => {
         const el = document.getElementById(p.id);
@@ -179,22 +266,40 @@
           el.style.setProperty('--dur', p.dur + 's');
         } catch(e){}
       });
-      await wait(300);
+      // the wordmark is held back and glitched in at the end (phase 3)
+      if (label) label.style.opacity = '0';
+
+      // --- phase 1: draw the outline ---
+      await wait(200);
       for (let i = 0; i < order.length; i++){
+        if (aborted()) return;
         const el = document.getElementById(order[i].id);
         if (el) el.classList.add('drawn');
         if (i === 1 || i === 3) await shake(mainSvg, 3, 3);
-        await wait(160);
+        await wait(105);
       }
-      await wait(350);
-      await burst(mainSvg, 10, 16);
+      await wait(150);
+      if (aborted()) return;
+
+      // --- phase 2: signal drops, logo comes back solid ---
+      await signalLoss(glitchLogo || mainSvg, 260);
+      await burst(mainSvg, 6, 15);
       for (let i = 0; i < order.length; i++){
+        if (aborted()) return;
         const el = document.getElementById(order[i].id);
         if (el) el.classList.add('filled');
-        if (i % 2 === 0){ rgbSplit(2 + Math.random()*3); await wait(25); rgbClear(); }
-        await wait(40);
+        if (i % 2 === 0){ rgbSplit(2 + Math.random()*3); await wait(22); rgbClear(); }
+        await wait(30);
       }
-      await burst(mainSvg, 8, 12);
+      // tail trimmed so the wordmark gets going sooner — the burst and the
+      // flicker are the run-up, not the event, and at 5/4 rounds they were
+      // holding the payoff back by about a sixth of a second
+      await burst(mainSvg, 3, 12);
+      if (aborted()) return;
+
+      // --- phase 3: the wordmark locks in ---
+      await flicker(glitchLogo || mainSvg, 3);
+      await nameGlitchIn(label);
 
       // --- permanent baseline RGB-split after build (hero-style) ---
       const baseline = () => {

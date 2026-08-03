@@ -528,7 +528,10 @@ img{ user-select:none; -webkit-user-drag:none; }
   position:relative;
   text-align:center;
   z-index:3;
-  animation: splashLogoReveal 3s var(--ease-enter) forwards;
+  /* 1.4s, was 3s. This is only the container easing in underneath the build;
+     at 3s it was still de-blurring while the pieces were already being
+     filled, which softened the one moment that should be sharpest. */
+  animation: splashLogoReveal 1.4s var(--ease-enter) forwards;
 }
 
 /* boot log (top-left, below corner tags) */
@@ -580,7 +583,7 @@ img{ user-select:none; -webkit-user-drag:none; }
   z-index:3;
   pointer-events:none;
   opacity:0;
-  animation: uiFadeNoBlur .32s var(--ease-enter) 0.95s forwards;
+  animation: uiFadeNoBlur .32s var(--ease-enter) 0.7s forwards;
 }
 @keyframes uiFadeNoBlur{
   from{ opacity:0; }
@@ -654,8 +657,8 @@ img{ user-select:none; -webkit-user-drag:none; }
   color:var(--text-ghost);
   opacity:0;
   animation:
-    uiFadeNoBlur .34s var(--ease-enter) 1.6s forwards,
-    skipPulse 1.8s ease 1.9s infinite;
+    uiFadeNoBlur .34s var(--ease-enter) 1.1s forwards,
+    skipPulse 1.8s ease 1.4s infinite;
 }
 .splash__skip:hover{ color:var(--acc-cy); }
 .splash__skip:focus-visible{
@@ -672,10 +675,14 @@ img{ user-select:none; -webkit-user-drag:none; }
   gap:10px;
   font-family:"Ethnocentric", "Space Grotesk", sans-serif;
   font-size:22px;
+  /* the glitch-in overshoots around this value and hands it back — see
+     nameGlitchIn in script.js. Keep it here, not inline, so the responsive
+     tier below can still override it. */
   letter-spacing:.22em;
   color:var(--text);
   text-transform:uppercase;
   position:relative;
+  text-shadow:0 0 20px rgba(91,138,255,.3);
 }
 .splash__label .jp{
   font-family:"Noto Sans JP", sans-serif;
@@ -692,7 +699,26 @@ img{ user-select:none; -webkit-user-drag:none; }
   aspect-ratio: 1337 / 815;
   margin:0 auto;
   filter:drop-shadow(0 0 36px rgba(91,138,255,.35));
+  /* Breathing glow once the build is done. It is deliberately slower than
+     anything else on the splash so it reads as the mark sitting there
+     powered-up, not as another event. signalLoss writes an inline `filter`
+     during the dropout, which wins over this for those 260ms — the glow
+     dying mid-cut is the point. */
+  /* 7s, and the delay is set to land on the end of the logo build (~2.9s) so
+     the first breath starts the moment the wordmark stops moving rather than
+     cutting across it. */
+  animation: splashIdlePulse 7s ease-in-out 2.9s infinite;
 }
+@keyframes splashIdlePulse{
+  0%, 100%{ filter:drop-shadow(0 0 20px rgba(91,138,255,.22)); }
+  50%     { filter:drop-shadow(0 0 42px rgba(91,138,255,.42))
+                   drop-shadow(0 0 70px rgba(165,148,255,.16)); }
+}
+/* visibility:hidden does not stop an animation — without this the pulse keeps
+   animating a drop-shadow on a 620px element for the rest of the session,
+   behind a splash nobody can see. Same reason the JS idle glitch interval
+   clears itself on .is-done. */
+.splash.is-done .glitch-logo{ animation:none; }
 .glitch-logo__svg{
   position:absolute; inset:0;
   width:100%; height:100%;
