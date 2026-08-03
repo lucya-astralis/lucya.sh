@@ -16,15 +16,15 @@
   const LITE = !!window.LUCYA_LITE;
 
   // ---------- SPLASH : boot mode -----------------------------------
-  // full cinematic boot on the first load of a session; every load after
-  // that gets a ~2s short boot. any key / tap skips straight to the page.
-  // lite mode always gets the short boot, without video.
-  let bootSeen = false;
-  try {
-    bootSeen = sessionStorage.getItem('lucya-boot') === '1';
-    sessionStorage.setItem('lucya-boot', '1');
-  } catch (e) { /* storage blocked — always run the full boot */ }
-  const BOOT_READY_MS = LITE ? 1100 : (bootSeen ? 1600 : 7400);
+  // The full boot runs on every load. It used to shorten itself to ~1.6s
+  // once a sessionStorage flag said you'd seen it, which meant the same URL
+  // opened differently depending on invisible state — the second visit felt
+  // broken rather than fast, and it was impossible to actually watch the boot
+  // again without clearing storage. The skip control carries that job now:
+  // it's on screen from 1.6s, and any key or tap takes it.
+  // lite mode still gets the short boot — that's a device budget, not a
+  // guess about whether you've been here before.
+  const BOOT_READY_MS = LITE ? 1100 : 7400;
 
   // ---------- WALLPAPER VIDEO : single-instance handoff ------------
   // both <video> tags ship without src; the splash copy starts here,
@@ -83,8 +83,7 @@
   // progress only starts once the whole splash UI has built in.
   // UI reveal timing (CSS): corners 0.05-0.42s, log 0.55s, bottom 0.95s.
   // Log lines stream in from ~1.25s onward; we kick progress just after.
-  // short boot: start almost immediately and tick faster.
-  const PROGRESS_START_DELAY = bootSeen ? 250 : 1250;
+  const PROGRESS_START_DELAY = 1250;
   const progressPct = document.getElementById('splashProgress');
   const progressFill = document.getElementById('splashProgressFill');
   if (progressPct && progressFill) {
@@ -110,7 +109,7 @@
       progressPct.textContent = `${pad2(p)}%`;
       progressFill.style.width = p + '%';
       revealLogs();
-      setTimeout(tick, (bootSeen || LITE) ? 60 + Math.random() * 90 : 160 + Math.random() * 260);
+      setTimeout(tick, LITE ? 60 + Math.random() * 90 : 160 + Math.random() * 260);
     };
     setTimeout(tick, LITE ? 100 : PROGRESS_START_DELAY);
   }
@@ -1790,6 +1789,11 @@
   const bootTimer = setTimeout(finishSplash, BOOT_READY_MS);
   window.addEventListener('keydown', skipBoot);
   if (splashEl) splashEl.addEventListener('pointerdown', skipBoot);
+  // The boot no longer shortens itself on a repeat visit, so skipping has to
+  // be a real control and not just a hint: focusable, and reachable by anyone
+  // who navigates by keyboard or screen reader rather than "any key".
+  const splashSkipBtn = document.getElementById('splashSkip');
+  if (splashSkipBtn) splashSkipBtn.addEventListener('click', skipBoot);
 
   // ---------- KPI BAR RELOCATION (mobile under profile) ----------
   const kpiBar = document.querySelector('.kpibar');

@@ -18,10 +18,13 @@
   var pager, hint;
   var initialPlayed = false;
 
-  var EXIT_MS = 320;
-  var ENTER_MS = 620;       // matches the slide-in duration
+  // These mirror the CSS durations (--dur-exit / --dur-panel in styles.css).
+  // If a curve or duration changes there, it changes here too — the JS is what
+  // decides when a card is "done" and when the next input is allowed.
+  var EXIT_MS = 180;        // matches --dur-exit
+  var ENTER_MS = 440;       // matches --dur-panel (+ a frame of slack)
   var COOLDOWN = 200;       // extra lock after enter finishes
-  var STAGGER = 110;        // per-card delay so they don't appear all at once
+  var STAGGER = 90;         // per-card delay so they don't appear all at once
 
   function ready(fn) {
     if (document.readyState === 'loading') {
@@ -47,11 +50,11 @@
     // footer is no longer a panel — it's rendered as a slim persistent bar
   }
 
-  var SLIDE_MS = 600;       // .set-in slide duration
+  var SLIDE_MS = 420;       // .set-in slide duration — matches --dur-panel
   var TXT_OFFSET = 80;      // text starts shortly after its card
-  var TXT_STEP = 26;        // per-line stagger
-  var TXT_CAP = 14;         // cap stagger so long cards don't drag
-  var TXT_DUR = 380;        // textBuild duration
+  var TXT_STEP = 26;        // per-line stagger — same beat as the manifest sweep
+  var TXT_BUDGET = 620;     // ms the whole line sweep may span (see stepFor)
+  var TXT_DUR = 340;        // textBuild duration — matches --dur-build
   var TXT_SEL = '.section__doc, .section__slug, .section__meta,' +
                 'h1,h2,h3,h4,h5,h6, p, li, dt, dd, figcaption, blockquote';
 
@@ -60,9 +63,9 @@
   // to just appear whole. These are the tiles: they get the same treatment,
   // which is what gives the side column a visible entrance of its own.
   var ITEM_OFFSET = 110;
-  var ITEM_STEP = 24;
-  var ITEM_CAP = 12;
-  var ITEM_DUR = 340;
+  var ITEM_STEP = 26;       // same beat as the text lines and the manifest sweep
+  var ITEM_BUDGET = 700;    // ms the whole tile sweep may span (see stepFor)
+  var ITEM_DUR = 340;       // matches --dur-build
   var ITEM_SEL = '.racklegend > *, .rackframe__ext > *, .rackframe__units > *,' +
                  '.rackinfo, .photo-card, .buttons__wall > *, .spotify__card,' +
                  '.interests__grid > *, .domains__grid > *, .services__hv,' +
@@ -92,8 +95,22 @@
     return out;
   }
 
-  // staggered slide+flicker entrance for a set's sections, plus a per-line
-  // "text builds up" reveal. returns the ms until all animations finish.
+  // Per-element stagger, tightened to fit a budget — the same rule the audio
+  // manifest sweeps its boxes with (layoutSweep in script.js).
+  //
+  // This replaces a hard index cap (Math.min(i, CAP) * STEP). The cap kept the
+  // sweep short, but everything past the cap shared one delay and arrived in a
+  // single clump: on the buttons wall the first ~2 rows stepped in properly and
+  // the whole remainder snapped in together. Scaling the step keeps every
+  // element on its own beat no matter how many there are — a long run just
+  // sweeps faster, which is what "the rest comes quicker" should actually look
+  // like, instead of not sweeping at all.
+  function stepFor(count, step, budget) {
+    return Math.min(step, budget / Math.max(1, count - 1));
+  }
+
+  // staggered entrance for a set's sections, plus a per-line "text builds up"
+  // reveal. returns the ms until all animations finish.
   function playEntrance(els) {
     var maxEnd = 0;
     els.forEach(function (el, idx) {
@@ -103,16 +120,18 @@
       maxEnd = Math.max(maxEnd, cardDelay + SLIDE_MS);
 
       var nodes = el.querySelectorAll(TXT_SEL);
+      var txtStep = stepFor(nodes.length, TXT_STEP, TXT_BUDGET);
       for (var i = 0; i < nodes.length; i++) {
-        var d = cardDelay + TXT_OFFSET + Math.min(i, TXT_CAP) * TXT_STEP;
+        var d = cardDelay + TXT_OFFSET + Math.round(i * txtStep);
         nodes[i].style.animationDelay = d + 'ms';
         nodes[i].classList.add('txt-build');
         if (d + TXT_DUR > maxEnd) maxEnd = d + TXT_DUR;
       }
 
       var items = orderItems(el.querySelectorAll(ITEM_SEL));
+      var itemStep = stepFor(items.length, ITEM_STEP, ITEM_BUDGET);
       for (var j = 0; j < items.length; j++) {
-        var di = cardDelay + ITEM_OFFSET + Math.min(j, ITEM_CAP) * ITEM_STEP;
+        var di = cardDelay + ITEM_OFFSET + Math.round(j * itemStep);
         items[j].style.animationDelay = di + 'ms';
         items[j].classList.add('item-build');
         if (di + ITEM_DUR > maxEnd) maxEnd = di + ITEM_DUR;

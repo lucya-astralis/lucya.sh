@@ -48,6 +48,31 @@
   --radius:     2px;
   --nav-h:      56px;
 
+  /* motion — one entrance language, taken from the audio manifest overlay.
+     Everything that enters the page uses these: a short opacity fade plus a
+     small translate on a decelerating curve. No steps(), no flicker, no
+     blur — those read as a glitch, not as a reveal, and blur on a reveal
+     also breaks every glass pane underneath (see sectionUp's note).
+       --ease-enter  panels and overlays settling into place
+       --ease-build  the small boxes/lines inside them (a touch snappier)
+       --ease-exit   anything leaving — fast, no deceleration to wait out
+     Durations are paired with the curves so a card and the text inside it
+     land within one beat of each other. */
+  --ease-enter: cubic-bezier(.16,.84,.34,1);
+  --ease-build: cubic-bezier(.2,.7,.3,1);
+  --ease-exit:  cubic-bezier(.4,0,.9,.5);
+  --dur-panel:  .42s;   /* sections, nav, hero columns */
+  --dur-sheet:  .34s;   /* overlays */
+  --dur-build:  .34s;   /* lines and tiles inside a panel */
+  --dur-exit:   .18s;
+  /* how far a panel drifts in from its column's outer edge — see the
+     CONTENT REVEAL block. Global, so every entrance drifts by the same
+     amount whether it was triggered by scroll, by boot or by a set change.
+     Kept deliberately slight: enough to say which side the panel belongs
+     to, not enough to read as a slide across the page. */
+  --slip:       8px;
+  --rise:       16px;   /* the vertical half of the same movement */
+
   --grid: 8px;
   --page-pad: clamp(20px, 2.6vw, 56px);
   --page-max: 2000px;
@@ -432,19 +457,22 @@ img{ user-select:none; -webkit-user-drag:none; }
 .splash__corner{
   display:flex; flex-direction:column; gap:4px; align-self:start;
   opacity:0;
-  animation: uiReveal .18s steps(2) forwards;
+  animation: uiReveal .3s var(--ease-enter) forwards;
 }
 .splash__corner--tl{ animation-delay: 0.05s; }
 .splash__corner--tr{ animation-delay: 0.18s; }
 .splash__corner--bl{ animation-delay: 0.30s; }
 .splash__corner--br{ animation-delay: 0.42s; }
+/* The boot chrome used to snap in on steps(2) — two hard frames per element.
+   It now rides the same fade+rise as everything else; the terminal look is
+   carried by the type and the scanlines, not by a stuttering opacity. */
 @keyframes uiReveal{
-  from{ opacity:0; transform:translateY(-4px); filter:blur(2px); }
-  to  { opacity:1; transform:translateY(0);    filter:blur(0); }
+  from{ opacity:0; transform:translateY(-5px); }
+  to  { opacity:1; transform:translateY(0); }
 }
 @keyframes uiFade{
-  from{ opacity:0; filter:blur(2px); }
-  to  { opacity:1; filter:blur(0); }
+  from{ opacity:0; }
+  to  { opacity:1; }
 }
 @keyframes uiBlink{
   0%, 100% { opacity:1; }
@@ -488,7 +516,7 @@ img{ user-select:none; -webkit-user-drag:none; }
   position:relative;
   text-align:center;
   z-index:3;
-  animation: splashLogoReveal 3s cubic-bezier(.2,.8,.2,1) forwards;
+  animation: splashLogoReveal 3s var(--ease-enter) forwards;
 }
 
 /* boot log (top-left, below corner tags) */
@@ -509,7 +537,7 @@ img{ user-select:none; -webkit-user-drag:none; }
   max-width:360px;
   text-transform:uppercase;
   opacity:0;
-  animation: uiFade .2s steps(2) 0.55s forwards;
+  animation: uiFade .3s var(--ease-enter) 0.55s forwards;
 }
 .splash__log li{
   display:flex; justify-content:space-between; gap:10px;
@@ -520,7 +548,7 @@ img{ user-select:none; -webkit-user-drag:none; }
   white-space:nowrap;
 }
 .splash__log li.is-in{
-  animation: logIn .18s steps(2) forwards;
+  animation: logIn .28s var(--ease-build) forwards;
 }
 .splash__log .lv{ color:var(--acc-ok); letter-spacing:.16em; }
 .splash__log .lv--wait{ color:var(--acc-amb); }
@@ -540,7 +568,7 @@ img{ user-select:none; -webkit-user-drag:none; }
   z-index:3;
   pointer-events:none;
   opacity:0;
-  animation: uiFadeNoBlur .22s steps(2) 0.95s forwards;
+  animation: uiFadeNoBlur .32s var(--ease-enter) 0.95s forwards;
 }
 @keyframes uiFadeNoBlur{
   from{ opacity:0; }
@@ -593,8 +621,19 @@ img{ user-select:none; -webkit-user-drag:none; }
   letter-spacing:.3em;
   text-transform:none;
 }
+/* A real <button>, not a hint: the boot always runs full length now, so this
+   is the way out and it has to be clickable and focusable. Its container
+   (.splash__bottom) is pointer-events:none so the rest of the boot chrome
+   can't swallow the tap-anywhere skip — this one element opts back in. */
 .splash__skip{
+  display:block;
+  width:100%;
   margin-top:16px;
+  padding:4px 0;
+  background:transparent;
+  border:0;
+  cursor:pointer;
+  pointer-events:auto;
   text-align:center;
   font-family:"Proto Nerd Font Regular", monospace;
   font-size:9.5px;
@@ -603,8 +642,14 @@ img{ user-select:none; -webkit-user-drag:none; }
   color:var(--text-ghost);
   opacity:0;
   animation:
-    uiFadeNoBlur .3s steps(2) 1.6s forwards,
+    uiFadeNoBlur .34s var(--ease-enter) 1.6s forwards,
     skipPulse 1.8s ease 1.9s infinite;
+}
+.splash__skip:hover{ color:var(--acc-cy); }
+.splash__skip:focus-visible{
+  outline:1px solid var(--acc-cy);
+  outline-offset:2px;
+  color:var(--acc-cy);
 }
 @keyframes skipPulse{ 50%{ color:var(--text-dim); } }
 .splash__label{
@@ -673,7 +718,7 @@ img{ user-select:none; -webkit-user-drag:none; }
   stroke-miterlimit: 2;
   stroke-dasharray: var(--len);
   stroke-dashoffset: var(--len);
-  transition: fill .08s steps(2), stroke .3s ease;
+  transition: fill .18s var(--ease-build), stroke .3s ease;
 }
 .piece.drawn{
   stroke-dashoffset: 0;
@@ -683,7 +728,7 @@ img{ user-select:none; -webkit-user-drag:none; }
   fill: rgba(255,255,255,1);
   stroke: rgba(210,230,255,.2);
   stroke-width: .6;
-  transition: fill .08s steps(2), stroke .3s ease;
+  transition: fill .18s var(--ease-build), stroke .3s ease;
 }
 
 /* eagle head sits inside a matrix(4.6, 1.9, -3.4, 8.3, …) parent
@@ -695,6 +740,8 @@ img{ user-select:none; -webkit-user-drag:none; }
   from{ opacity:0; transform:scale(.94); filter:blur(4px); }
   to  { opacity:1; transform:scale(1);   filter:blur(0); }
 }
+/* the one place a reveal blur is still worth it: a single element on a
+   black splash, nothing glass underneath it to break */
 
 /* ================================================================
    CONTENT REVEAL  (fires when body gets .is-ready)
@@ -706,59 +753,91 @@ body:not(.is-ready) .hero__side{
 }
 body:not(.is-ready) .nav{ transform:translateY(-100%); }
 
-.reveal-block{ opacity:0; }
-.reveal-block.is-visible{
-  animation: sectionUp .7s cubic-bezier(.2,.8,.2,1) both,
-             flickerIn .55s steps(1,end) both;
-}
+/* MOVEMENT AND OPACITY ARE TWO ANIMATIONS, ON TWO DIFFERENT CURVES.
+   This is what stops a reveal from reading as a blink.
 
-body.is-ready .nav{
-  animation: navDrop .5s cubic-bezier(.2,.8,.2,1) both,
-             flickerIn .65s steps(1,end) both;
-}
-body.is-ready .pcard{
-  animation: slideInL .7s cubic-bezier(.2,.8,.2,1) .2s both,
-             flickerIn .7s steps(1,end) .2s both;
-}
-body.is-ready .hero__side{
-  animation: slideInR .7s cubic-bezier(.2,.8,.2,1) .35s both,
-             flickerIn .7s steps(1,end) .35s both;
-}
+   --ease-enter is steeply front-loaded — by a quarter of the way through it
+   is already ~74% done. That is right for movement: the panel shoots to
+   near-final position and settles. It is wrong for opacity, because 0 -> 74%
+   opaque in ~100ms is not a fade, it is a flash, and the element has finished
+   appearing before it has finished moving. The drift you were meant to see
+   had already happened invisibly; what was left was a pop.
 
+   So opacity gets its own keyframe on a linear ramp over the same duration.
+   It comes up evenly while the transform eases out, and the panel is visibly
+   in motion for the whole time it is arriving.
+
+   No `filter` in any of these, on purpose. A filter on a section makes it a
+   Backdrop Root, so every glass pane inside has nothing left to sample and
+   renders as a bare translucent fill for the whole reveal; the blur then
+   snapped back the moment the animation ended, and `both` fill made it
+   permanent since even blur(0) counts as a filter. No `scale` either — on a
+   section full of glass it re-samples the backdrop at a changing ratio every
+   frame, which is its own kind of shimmer.
+
+   The sideways give is the site's signature and it is global: anything
+   entering a column drifts in from that column's own outer edge, main from
+   the left, side from the right. --slip is that distance, in one place so it
+   stays consistent everywhere. */
+@keyframes fadeIn{
+  from{ opacity:0; }
+  to  { opacity:1; }
+}
 @keyframes navDrop{
   from{ transform:translateY(-100%); }
   to  { transform:translateY(0); }
 }
 @keyframes slideInL{
-  from{ transform:translateX(-18px); }
+  from{ transform:translateX(calc(var(--slip) * -1)); }
   to  { transform:translateX(0); }
 }
 @keyframes slideInR{
-  from{ transform:translateX(18px); }
+  from{ transform:translateX(var(--slip)); }
   to  { transform:translateX(0); }
 }
-/* Transform only — no `filter` here, on purpose. A filter on the section
-   makes it a Backdrop Root, so every glass pane inside has nothing left to
-   sample and renders as a bare translucent fill for the whole reveal; the
-   blur then snapped back in the moment the animation ended. `both` fill
-   made it permanent too, since even blur(0) counts as a filter. The rise
-   stays, and flickerIn (opacity only) still does the flicker. */
-@keyframes sectionUp{
-  from{ transform:translateY(24px); }
-  to  { transform:translateY(0); }
+/* the scroll reveal carries both: the rise that says "arriving" and the drift
+   that says which side of the layout it belongs to */
+@keyframes revealL{
+  from{ transform:translate(calc(var(--slip) * -1), var(--rise)); }
+  to  { transform:none; }
 }
-@keyframes flickerIn{
-  0%  { opacity:0; }
-  10% { opacity:1; }
-  14% { opacity:0; }
-  20% { opacity:1; }
-  28% { opacity:.35; }
-  34% { opacity:1; }
-  48% { opacity:.7; }
-  56% { opacity:1; }
-  72% { opacity:.4; }
-  80% { opacity:1; }
-  100%{ opacity:1; }
+@keyframes revealR{
+  from{ transform:translate(var(--slip), var(--rise)); }
+  to  { transform:none; }
+}
+/* for blocks outside either column (the footer): no side to drift from */
+@keyframes sectionUp{
+  from{ transform:translateY(var(--rise)); }
+  to  { transform:none; }
+}
+
+/* In every pair below the first animation is the movement (eased) and the
+   second is the opacity (linear). Rules that only swap the direction override
+   animation-name alone — the list is positional, so the timing functions and
+   delays set here still line up with the right animation. */
+.reveal-block{ opacity:0; }
+.reveal-block.is-visible{
+  animation: sectionUp var(--dur-panel) var(--ease-enter) both,
+             fadeIn    var(--dur-panel) linear            both;
+}
+.layout__main > .reveal-block.is-visible{
+  animation-name: revealL, fadeIn;
+}
+.layout__side > .reveal-block.is-visible{
+  animation-name: revealR, fadeIn;
+}
+
+body.is-ready .nav{
+  animation: navDrop var(--dur-panel) var(--ease-enter) both,
+             fadeIn  var(--dur-panel) linear            both;
+}
+body.is-ready .pcard{
+  animation: slideInL var(--dur-panel) var(--ease-enter) .12s both,
+             fadeIn   var(--dur-panel) linear            .12s both;
+}
+body.is-ready .hero__side{
+  animation: slideInR var(--dur-panel) var(--ease-enter) .22s both,
+             fadeIn   var(--dur-panel) linear            .22s both;
 }
 @keyframes splashOut{
   to{ opacity:0; visibility:hidden; }
@@ -2679,10 +2758,10 @@ html.is-scrolllock body{ overflow:hidden; }
   padding:24px;
   opacity:0;
   /* backdrop eases in with the sheet and snaps out ahead of it */
-  transition: opacity .26s cubic-bezier(.16,.84,.34,1);
+  transition: opacity .26s var(--ease-enter);
 }
 .manifest.is-open{ opacity:1; }
-.manifest.is-closing{ opacity:0; transition-duration:.16s; transition-timing-function:ease-in; }
+.manifest.is-closing{ opacity:0; transition-duration:.16s; transition-timing-function:var(--ease-exit); }
 .manifest[hidden]{ display:none; }
 
 .manifest__backdrop{
@@ -2710,7 +2789,9 @@ html.is-scrolllock body{ overflow:hidden; }
   box-shadow: 0 30px 80px -20px rgba(0,0,0,.75);
 }
 /* enter and exit are separate curves on purpose: the sheet rises into place
-   with an overshoot-free ease-out, and drops away twice as fast */
+   with an overshoot-free ease-out, and drops away twice as fast. This pair is
+   the reference the rest of the site's entrances are built from — the curves
+   and durations live in :root as --ease-enter / --ease-exit. */
 @keyframes manifest-sheet-in{
   from{ opacity:0; transform:translateY(18px) scale(.985); }
   to  { opacity:1; transform:none; }
@@ -2720,10 +2801,10 @@ html.is-scrolllock body{ overflow:hidden; }
   to  { opacity:0; transform:translateY(10px) scale(.992); }
 }
 .manifest.is-open .manifest__sheet{
-  animation:manifest-sheet-in .34s cubic-bezier(.16,.84,.34,1) both;
+  animation:manifest-sheet-in var(--dur-sheet) var(--ease-enter) both;
 }
 .manifest.is-closing .manifest__sheet{
-  animation:manifest-sheet-out .17s cubic-bezier(.4,0,.9,.5) both;
+  animation:manifest-sheet-out .17s var(--ease-exit) both;
 }
 
 .manifest__doc{
@@ -3039,7 +3120,7 @@ html.is-scrolllock body{ overflow:hidden; }
 .manifest.is-open .mtile,
 .manifest.is-open .mface,
 .manifest.is-open .manifest__foot{
-  animation:manifest-in .36s cubic-bezier(.2,.7,.3,1) both;
+  animation:manifest-in var(--dur-build) var(--ease-build) both;
   animation-delay:var(--d, 0ms);
 }
 
@@ -3278,13 +3359,22 @@ html.is-scrolllock body{ overflow:hidden; }
   backdrop-filter:blur(6px);
   align-items:center; justify-content:center;
 }
+/* the other overlay on the page, so it opens the way the manifest does:
+   backdrop fades, the content rises into it a beat behind */
 .lightbox.is-open{
   display:flex;
-  animation:lbFadeIn .18s ease;
+  animation:lbFadeIn .26s var(--ease-enter);
+}
+.lightbox.is-open .lightbox__inner{
+  animation:lbRise var(--dur-sheet) var(--ease-enter) both;
 }
 @keyframes lbFadeIn{
   from{ opacity:0; }
   to  { opacity:1; }
+}
+@keyframes lbRise{
+  from{ opacity:0; transform:translateY(18px) scale(.985); }
+  to  { opacity:1; transform:none; }
 }
 .lightbox__close{
   position:absolute; top:20px; right:24px;
@@ -3879,41 +3969,47 @@ html.setmode .setbar{ display:flex; }
 .mnav a.is-current::after{ opacity:.9; }
 /* responsive: see RESPONSIVE section (MD tier) */
 
-/* ----- exit glitch ----- */
-html.setmode .set-exit { animation: setOut .32s ease-in both; }
+/* ----- exit ----- */
+html.setmode .set-exit { animation: setOut var(--dur-exit) var(--ease-exit) both; }
 
 /* ----- staggered entrance (every set) -----
    Cards don't appear all at once: each active section slides + flickers in,
    with a per-card delay applied inline by setnav.js (--set-delay). Main-column
    cards slide from the left, side-column cards from the right — mirroring the
    set 1 entrance the rest of the page is modelled on. */
+/* movement eased, opacity linear — same split as the scroll reveal, and for
+   the same reason: on one curve the card is fully opaque before it has
+   finished moving, so the drift reads as a blink instead of a drift */
 html.setmode .layout__main > section.set-in{
-  animation: slideInL .6s cubic-bezier(.2,.8,.2,1) both,
-             flickerIn .5s steps(1,end) both;
+  animation: slideInL var(--dur-panel) var(--ease-enter) both,
+             fadeIn   var(--dur-panel) linear            both;
   animation-delay: var(--set-delay, 0ms);
 }
 html.setmode .layout__side > section.set-in{
-  animation: slideInR .6s cubic-bezier(.2,.8,.2,1) both,
-             flickerIn .5s steps(1,end) both;
+  animation: slideInR var(--dur-panel) var(--ease-enter) both,
+             fadeIn   var(--dur-panel) linear            both;
   animation-delay: var(--set-delay, 0ms);
 }
-/* text builds up: text lines/blocks rise + de-blur, staggered after the card.
-   setnav.js adds .txt-build with a per-line animation-delay. */
-html.setmode .txt-build{ animation: textBuild .38s ease-out both; }
+/* text builds up: lines rise into place, staggered after their card.
+   setnav.js adds .txt-build with a per-line animation-delay. Same 7px rise
+   and same curve as the manifest's boxes — a set change and the overlay
+   should fill in the same handwriting. The de-blur that used to be here is
+   gone: a filter per line is a compositing layer per line, and on a set of
+   two full cards that is dozens of them arriving at once. */
+html.setmode .txt-build{ animation: textBuild var(--dur-build) var(--ease-build) both; }
 @keyframes textBuild{
-  0%  { opacity:0; transform:translateY(7px); filter:blur(2px); }
-  60% { opacity:1; }
-  100%{ opacity:1; transform:none; filter:blur(0); }
+  from{ opacity:0; transform:translateY(7px); }
+  to  { opacity:1; transform:none; }
 }
 /* same idea for tiles (rack units, photo cards, buttons, stats) — those
    panels are grids, not prose, so the line build above never reached them.
    No blur here: these run in the dozens and the filter would cost a layer
    each. Both kill-switches (html.lite, prefers-reduced-motion) drop the
    animation entirely, which leaves the tiles at their natural opacity. */
-html.setmode .item-build{ animation: itemBuild .34s ease-out both; }
+html.setmode .item-build{ animation: itemBuild var(--dur-build) var(--ease-build) both; }
 @keyframes itemBuild{
-  0%  { opacity:0; transform:translateY(6px); }
-  100%{ opacity:1; transform:none; }
+  from{ opacity:0; transform:translateY(7px); }
+  to  { opacity:1; transform:none; }
 }
 /* The sections themselves are .reveal-block; their base reveal animation must
    not fire in set-mode (the .set-in entrance owns it). The :not(.set-in) guard
@@ -3924,25 +4020,18 @@ html.setmode .layout__side > section.reveal-block.is-visible:not(.set-in):not(.s
   opacity:1;
 }
 
-/* No `filter` in either keyframe, on purpose. These used to carry a
-   red/blue drop-shadow split (setOut) and hue-rotate swings (setIn) —
-   that was the red glitch on every scroll-driven set change. The motion
-   (slice, skew, clip) stays; only the colour separation is gone.
-   Filters here also fought the glass: a `filter` on the section resets
-   the backdrop root, so the panes' blur flickered mid-transition. */
+/* The old exit was a four-stop glitch: skew, horizontal slices and clip-path
+   bands that tore the card apart before it left. It had to go once the
+   entrance stopped flickering — a card that shreds on the way out and then
+   glides on the way in reads as two different sites. This is the manifest's
+   exit, one for one: the same drop-and-shrink, over before you read it, so
+   the incoming set is what holds your eye.
+   No `filter` and no `clip-path`. Both are repaint-only, and a `filter` on
+   the section also resets the backdrop root, which flickered the panes'
+   blur mid-transition. */
 @keyframes setOut{
-  0%  { opacity:1;  transform:translate(0,0);                 clip-path:inset(0 0 0 0); }
-  18% { opacity:1;  transform:translate(-7px,0) skewX(2deg);  clip-path:inset(0 0 62% 0); }
-  38% { opacity:.9; transform:translate(9px,0);               clip-path:inset(56% 0 0 0); }
-  60% { opacity:.7; transform:translate(-4px,0) skewX(-1deg); clip-path:inset(22% 0 34% 0); }
-  100%{ opacity:0;  transform:translate(0,14px) scale(.985);  clip-path:inset(0 0 0 0); }
-}
-@keyframes setIn{
-  0%  { opacity:0; transform:translate(0,-16px) scale(1.012); clip-path:inset(0 0 72% 0); }
-  16% { opacity:1; transform:translate(8px,0) skewX(-2deg);   clip-path:inset(46% 0 0 0); }
-  34% { opacity:1; transform:translate(-7px,0) skewX(1deg);   clip-path:inset(12% 0 42% 0); }
-  58% { opacity:1; transform:translate(3px,0);                clip-path:inset(0 0 0 0); }
-  100%{ opacity:1; transform:translate(0,0);                  clip-path:inset(0 0 0 0); }
+  from{ opacity:1; transform:none; }
+  to  { opacity:0; transform:translateY(10px) scale(.992); }
 }
 
 /* ----- pager dots ----- */
