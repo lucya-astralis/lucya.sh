@@ -562,9 +562,47 @@
 
 
 
+  // ---------- STATUS FEED : one poll, many consumers --------------
+  // /status.json is written server-side by a CheckMK puller. Both the
+  // fleet overview in the header and the live lines in the neofetch
+  // sheets read it, so it is polled once here and fanned out — two
+  // independent 30s pollers for the same file would be wasteful and
+  // could disagree with each other for a tick.
+  // null is a valid payload: it means "no probe", and every consumer
+  // has to fall back to its honest offline state.
+  const statusFeed = (() => {
+    const subs = [];
+    let last = null;
+    const emit = () => subs.forEach(fn => { try { fn(last); } catch (_) {} });
+    const refresh = async () => {
+      try {
+        const r = await fetch('/status.json?t=' + Date.now(), { cache: 'no-store' });
+        if (!r.ok) throw new Error('http ' + r.status);
+        last = await r.json();
+      } catch (_) {
+        last = null;
+      }
+      emit();
+    };
+    refresh();
+    setInterval(refresh, 30000);
+    return {
+      subscribe(fn){ subs.push(fn); fn(last); },
+      host(name){
+        const hs = (last && Array.isArray(last.hosts)) ? last.hosts : [];
+        return hs.find(h => h && h.name === name) || null;
+      },
+      get ts(){ return last ? Number(last.ts || 0) : 0; }
+    };
+  })();
+
   // ---------- NEOFETCH : real systems ----------------------------
   // raw content uses inline <span style="color:..."> and occasionally
   // malformed <span/> as closers — we sanitize on inject.
+  // Sheets are hand-transcribed snapshots. Entries with a `live` id get
+  // their volatile figures (uptime, memory, cpu, temperature) rewritten
+  // from status.json; those spans carry .nlive so the dotted underline
+  // says which numbers are current and which are from the dump.
   const sanitize = s => s.replace(/<span\/>/g, '</span>');
 
   const neofetchData = [
@@ -574,23 +612,25 @@
       group: 'server',
       title: 'lynx.lucya.intra // homelab core hypervisor',
       width: 800,
+      live: 'lynx',        // host name in status.json
+      memTotal: 15.53,     // GiB — fallback for feeds that only know the percentage
       content: `<span style="color: #e7e7e7;">         .://:'              '://:.<span/>             <span style="color: #E57000;">root<span/><span style="color: #e7e7e7;">@<span/><span style="color: #E57000;">lynx</span>
 <span style="color: #e7e7e7;">       'hMMMMMMd/          /dMMMMMMh'<span/>           <span style="color: #E57000;">---------<span/>
 <span style="color: #e7e7e7;">        'sMMMMMMMd:      :mMMMMMMMs'<span/>            <span style="color: #e7e7e7;">OS: Proxmox VE 9.x.x x86_64<span/>
 <span style="color: #E57000;">'-/+oo+/:<span/><span style="color: #e7e7e7;">'.yMMMMMMMh-  -hMMMMMMMy.'<span/><span style="color: #E57000;">:/+oo+/-'    <span/><span style="color: #e7e7e7;">Host: Macmini6,2 (1.0)<span/>
 <span style="color: #E57000;">':oooooooo/<span/><span style="color: #e7e7e7;">'-hMMMMMMMyyMMMMMMMh-'<span/><span style="color: #E57000;">/oooooooo:'    <span/><span style="color: #e7e7e7;">Kernel: Linux 6.17.4-2-pve<span/>
-<span style="color: #E57000;">  '/oooooooo:<span/><span style="color: #e7e7e7;">':mMMMMMMMMMMMMm:'<span/><span style="color: #E57000;">:oooooooo/'      <span/><span style="color: #e7e7e7;">Uptime: 23 days, 22 hours, 54 mins<span/>
+<span style="color: #E57000;">  '/oooooooo:<span/><span style="color: #e7e7e7;">':mMMMMMMMMMMMMm:'<span/><span style="color: #E57000;">:oooooooo/'      <span/><span style="color: #e7e7e7;">Uptime: <span class="nlive" data-live="uptime">23 days, 22 hours, 54 mins</span><span/>
 <span style="color: #E57000;">    ./ooooooo+-<span/><span style="color: #e7e7e7;"> +NMMMMMMMMN+ <span/><span style="color: #E57000;">-+ooooooo/.        <span/><span style="color: #e7e7e7;">Packages: 738 (dpkg)<span/>
 <span style="color: #E57000;">      .+ooooooo+-<span/><span style="color: #e7e7e7;">'oNMMMMNo'<span/><span style="color: #E57000;">-+ooooooo+.          <span/><span style="color: #e7e7e7;">Shell: bash 5.2.37<span/>
 <span style="color: #E57000;">        -+ooooooo/.<span/><span style="color: #e7e7e7;">'sMMs'<span/><span style="color: #E57000;">./ooooooo+-            <span/><span style="color: #e7e7e7;">Terminal: termproxy<span/>
-<span style="color: #E57000;">          :oooooooo/<span/><span style="color: #e7e7e7;">'..'<span/><span style="color: #E57000;">/oooooooo:              <span/><span style="color: #e7e7e7;">CPU: Intel(R) Core(TM) i7-3615QM (8) @ 3.30 GHz<span/>
-<span style="color: #E57000;">          :oooooooo/'<span/><span style="color: #e7e7e7;">..<span/><span style="color: #E57000;">'/oooooooo:              <span/><span style="color: #e7e7e7;">GPU: Intel 3rd Gen Core processor Graphics Controller<span/>
-<span style="color: #E57000;">        -+ooooooo/.'<span/><span style="color: #e7e7e7;">sMMs<span/><span style="color: #E57000;">'./ooooooo+-            <span/><span style="color: #e7e7e7;">Memory: 12.66 GiB / 15.53 GiB (<span/><span style="color: #da0a0a;">82%<span/><span style="color: #e7e7e7;">)<span/>
-<span style="color: #E57000;">      .+ooooooo+-'<span/><span style="color: #e7e7e7;">oNMMMMNo<span/><span style="color: #E57000;">'-+ooooooo+.          <span/><span style="color: #e7e7e7;">Swap: 124.55 MiB / 8.00 GiB (<span/><span style="color: #06e236;">2%<span/><span style="color: #e7e7e7;">)<span/>
-<span style="color: #E57000;">    ./ooooooo+- <span/><span style="color: #e7e7e7;">+NMMMMMMMMN+ <span/><span style="color: #E57000;">-+ooooooo/.        <span/><span style="color: #e7e7e7;">Disk (/): 21.41 GiB / 93.93 GiB (<span/><span style="color: #06e236;">23%<span/><span style="color: #e7e7e7;">) - ext4<span/>
-<span style="color: #E57000;">  '/oooooooo:'<span/><span style="color: #e7e7e7;">:mMMMMMMMMMMMMm:<span/><span style="color: #E57000;">':oooooooo/'      <span/><span style="color: #e7e7e7;">Local IP (vmbr0): 192.168.178.252/24<span/>
-<span style="color: #E57000;">':oooooooo/'<span/><span style="color: #e7e7e7;">-hMMMMMMMyyMMMMMMMh-<span/><span style="color: #E57000;">'/oooooooo:'    <span/><span style="color: #e7e7e7;">Locale: en_US.UTF-8<span/>
-<span style="color: #E57000;">'-/+oo+/:'<span/><span style="color: #e7e7e7;">.yMMMMMMMh-  -hMMMMMMMy.<span/><span style="color: #E57000;">':/+oo+/-'<span/>
+<span style="color: #E57000;">          :oooooooo/<span/><span style="color: #e7e7e7;">'..'<span/><span style="color: #E57000;">/oooooooo:              <span/><span style="color: #e7e7e7;">CPU: Intel(R) Core(TM) i7-3615QM (8) @ 3.30 GHz <span class="nlive" data-live="temp"></span><span/>
+<span style="color: #E57000;">          :oooooooo/'<span/><span style="color: #e7e7e7;">..<span/><span style="color: #E57000;">'/oooooooo:              <span/><span style="color: #e7e7e7;">CPU Usage: <span class="nlive" data-live="cpu">—</span><span/>
+<span style="color: #E57000;">        -+ooooooo/.'<span/><span style="color: #e7e7e7;">sMMs<span/><span style="color: #E57000;">'./ooooooo+-            <span/><span style="color: #e7e7e7;">GPU: Intel 3rd Gen Core processor Graphics Controller<span/>
+<span style="color: #E57000;">      .+ooooooo+-'<span/><span style="color: #e7e7e7;">oNMMMMNo<span/><span style="color: #E57000;">'-+ooooooo+.          <span/><span style="color: #e7e7e7;">Memory: <span class="nlive" data-live="mem-used">12.66 GiB</span> / <span class="nlive" data-live="mem-total">15.53 GiB</span> (<span/><span class="nlive" data-live="mem-pct" style="color: #da0a0a;">82%<span/><span style="color: #e7e7e7;">)<span/>
+<span style="color: #E57000;">    ./ooooooo+- <span/><span style="color: #e7e7e7;">+NMMMMMMMMN+ <span/><span style="color: #E57000;">-+ooooooo/.        <span/><span style="color: #e7e7e7;">Swap: 124.55 MiB / 8.00 GiB (<span/><span style="color: #06e236;">2%<span/><span style="color: #e7e7e7;">)<span/>
+<span style="color: #E57000;">  '/oooooooo:'<span/><span style="color: #e7e7e7;">:mMMMMMMMMMMMMm:<span/><span style="color: #E57000;">':oooooooo/'      <span/><span style="color: #e7e7e7;">Disk (/): 21.41 GiB / 93.93 GiB (<span/><span style="color: #06e236;">23%<span/><span style="color: #e7e7e7;">) - ext4<span/>
+<span style="color: #E57000;">':oooooooo/'<span/><span style="color: #e7e7e7;">-hMMMMMMMyyMMMMMMMh-<span/><span style="color: #E57000;">'/oooooooo:'    <span/><span style="color: #e7e7e7;">Local IP (vmbr0): 192.168.178.252/24<span/>
+<span style="color: #E57000;">'-/+oo+/:'<span/><span style="color: #e7e7e7;">.yMMMMMMMh-  -hMMMMMMMy.<span/><span style="color: #E57000;">':/+oo+/-'    <span/><span style="color: #e7e7e7;">Locale: en_US.UTF-8<span/>
 <span style="color: #e7e7e7;">        'sMMMMMMMm:      :dMMMMMMMs'<span/>
 <span style="color: #e7e7e7;">       'hMMMMMMd/          /dMMMMMMh'<span/>
 <span style="color: #e7e7e7;">         '://:'              '://:'<span/> `
@@ -601,6 +641,8 @@
       group: 'server',
       title: 'vega.lucya.intra // synology nas',
       width: 780,
+      live: 'vega',
+      memTotal: 8.00,
       // DSM has no fastfetch, so this sheet is transcribed by hand from
       // Systemsteuerung > Info-Center (Allgemein / Speicher / Netzwerk).
       // Only what those pages actually show — the serial number and the MAC
@@ -609,18 +651,19 @@
  <span style="color:#2074cf;">###############################</span>    <span style="color:#8a8f98;">----------</span>
 <span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">OS:</span><span style="color:#e7e7e7;"> DSM 7.x.x-xxxx</span>
 <span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">Host:</span><span style="color:#e7e7e7;"> Synology DS918+ (4-bay)</span>
-<span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">Uptime:</span><span style="color:#e7e7e7;"> 27 days, 13 hours, 47 mins</span>
+<span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">Uptime:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="uptime">27 days, 13 hours, 47 mins</span></span>
 <span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">CPU:</span><span style="color:#e7e7e7;"> Intel Celeron J3455 (4) @ 1.50 GHz</span>
-<span style="color:#2074cf;">##</span><span style="color:#ffffff;">#######</span><span style="color:#2074cf;">####</span><span style="color:#ffffff;">#######</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#####</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span>   <span style="color:#44a9fe;">Memory:</span><span style="color:#e7e7e7;"> 8.00 GiB</span>
-<span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">####</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">########</span><span style="color:#ffffff;">###</span><span style="color:#2074cf;">###</span><span style="color:#ffffff;">###</span><span style="color:#2074cf;">##</span>   <span style="color:#44a9fe;">Volume 1 (SSD RAID 1):</span><span style="color:#e7e7e7;"> 502.7 GB / 884.2 GB (56%)</span>
-<span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#####</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">######</span><span style="color:#2074cf;">###</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#</span><span style="color:#ffffff;">###</span><span style="color:#2074cf;">#</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span>   <span style="color:#44a9fe;">Volume 2 (HDD RAID 1):</span><span style="color:#e7e7e7;"> 1.7 TB / 3.5 TB (49%)</span>
-<span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">####</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#########</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">#</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span>   <span style="color:#44a9fe;">Drives:</span><span style="color:#e7e7e7;"> 2 x Samsung 870 EVO 1 TB - 34/35 °C</span>
-<span style="color:#2074cf;">##</span><span style="color:#ffffff;">#######</span><span style="color:#2074cf;">###</span><span style="color:#ffffff;">########</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#####</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span>   <span style="color:#44a9fe;">Drives:</span><span style="color:#e7e7e7;"> 2 x WD Red WD40EFRX 4 TB - 41/40 °C</span>
+<span style="color:#2074cf;">##</span><span style="color:#ffffff;">#######</span><span style="color:#2074cf;">####</span><span style="color:#ffffff;">#######</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#####</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span>   <span style="color:#44a9fe;">CPU Usage:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="cpu">—</span></span>
+<span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">####</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">########</span><span style="color:#ffffff;">###</span><span style="color:#2074cf;">###</span><span style="color:#ffffff;">###</span><span style="color:#2074cf;">##</span>   <span style="color:#44a9fe;">Memory:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="mem-used">—</span> / <span class="nlive" data-live="mem-total">8.00 GiB</span> (<span class="nlive" data-live="mem-pct">—</span>)</span>
+<span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#####</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">######</span><span style="color:#2074cf;">###</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#</span><span style="color:#ffffff;">###</span><span style="color:#2074cf;">#</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span>   <span style="color:#44a9fe;">Volume 1 (SSD RAID 1):</span><span style="color:#e7e7e7;"> 502.7 GB / 884.2 GB (56%)</span>
+<span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">####</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#########</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">#</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span>   <span style="color:#44a9fe;">Volume 2 (HDD RAID 1):</span><span style="color:#e7e7e7;"> 1.7 TB / 3.5 TB (49%)</span>
+<span style="color:#2074cf;">##</span><span style="color:#ffffff;">#######</span><span style="color:#2074cf;">###</span><span style="color:#ffffff;">########</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#####</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span>   <span style="color:#44a9fe;">Drives:</span><span style="color:#e7e7e7;"> 2 x Samsung 870 EVO 1 TB - 34/35 °C</span>
+<span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">Drives:</span><span style="color:#e7e7e7;"> 2 x WD Red WD40EFRX 4 TB - 41/40 °C</span>
 <span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">Cache:</span><span style="color:#e7e7e7;"> HP SSD EX900 120 GB</span>
 <span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">Thermal:</span><span style="color:#06e236;"> Normal</span>
-<span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">Fan:</span><span style="color:#e7e7e7;"> Quiet Mode</span>
- <span style="color:#2074cf;">###############################</span>    <span style="color:#44a9fe;">USB:</span><span style="color:#e7e7e7;"> Transcend StoreJet (external)</span>
-  <span style="color:#2074cf;">#############################</span>     <span style="color:#44a9fe;">Network (bond1):</span><span style="color:#e7e7e7;"> 2000 Mbit/s full duplex - MTU 1500</span>
+ <span style="color:#2074cf;">###############################</span>    <span style="color:#44a9fe;">Fan:</span><span style="color:#e7e7e7;"> Quiet Mode</span>
+  <span style="color:#2074cf;">#############################</span>     <span style="color:#44a9fe;">USB:</span><span style="color:#e7e7e7;"> Transcend StoreJet (external)</span>
+                                    <span style="color:#44a9fe;">Network (bond1):</span><span style="color:#e7e7e7;"> 2000 Mbit/s full duplex - MTU 1500</span>
                                     <span style="color:#44a9fe;">Local IP:</span><span style="color:#e7e7e7;"> 192.168.178.xxx/xx</span>
                                     <span style="color:#44a9fe;">DNS:</span><span style="color:#e7e7e7;"> 192.168.178.xxx</span>
                                     <span style="color:#44a9fe;">NTP:</span><span style="color:#e7e7e7;"> time.google.com</span>
@@ -633,26 +676,28 @@
       group: 'server',
       title: 'chimera.lucya.intra // homelab hypervisor',
       width: 850,
+      live: 'chimera',
+      memTotal: 62.69,
       content: `<span style="color: #e7e7e7;">         .://:'              '://:.</span>             <span style="color: #E57000;">root</span><span style="color: #e7e7e7;">@</span><span style="color: #E57000;">chimera</span>
 <span style="color: #e7e7e7;">       'hMMMMMMd/          /dMMMMMMh'</span>           <span style="color: #E57000;">------------</span>
 <span style="color: #e7e7e7;">        'sMMMMMMMd:      :mMMMMMMMs'</span>            <span style="color: #e7e7e7;">OS: Proxmox VE 9.2.4 x86_64</span>
 <span style="color: #E57000;">'-/+oo+/:</span><span style="color: #e7e7e7;">'.yMMMMMMMh-  -hMMMMMMMy.'</span><span style="color: #E57000;">:/+oo+/-'    </span><span style="color: #e7e7e7;">Host: SYS-5018D-FN4T (0123456789)</span>
 <span style="color: #E57000;">':oooooooo/</span><span style="color: #e7e7e7;">'-hMMMMMMMyyMMMMMMMh-'</span><span style="color: #E57000;">/oooooooo:'    </span><span style="color: #e7e7e7;">Kernel: Linux 7.0.14-5-pve</span>
-<span style="color: #E57000;">  '/oooooooo:</span><span style="color: #e7e7e7;">':mMMMMMMMMMMMMm:'</span><span style="color: #E57000;">:oooooooo/'      </span><span style="color: #e7e7e7;">Uptime: 17 hours, 29 mins</span>
+<span style="color: #E57000;">  '/oooooooo:</span><span style="color: #e7e7e7;">':mMMMMMMMMMMMMm:'</span><span style="color: #E57000;">:oooooooo/'      </span><span style="color: #e7e7e7;">Uptime: <span class="nlive" data-live="uptime">17 hours, 29 mins</span></span>
 <span style="color: #E57000;">    ./ooooooo+-</span><span style="color: #e7e7e7;"> +NMMMMMMMMN+ </span><span style="color: #E57000;">-+ooooooo/.        </span><span style="color: #e7e7e7;">Packages: 753 (dpkg)</span>
 <span style="color: #E57000;">      .+ooooooo+-</span><span style="color: #e7e7e7;">'oNMMMMNo'</span><span style="color: #E57000;">-+ooooooo+.          </span><span style="color: #e7e7e7;">Shell: bash 5.2.37</span>
 <span style="color: #E57000;">        -+ooooooo/.</span><span style="color: #e7e7e7;">'sMMs'</span><span style="color: #E57000;">./ooooooo+-            </span><span style="color: #e7e7e7;">Display (VGA-1): 1024x768 @ 60 Hz</span>
 <span style="color: #E57000;">          :oooooooo/</span><span style="color: #e7e7e7;">'..'</span><span style="color: #E57000;">/oooooooo:              </span><span style="color: #e7e7e7;">Terminal: termproxy</span>
-<span style="color: #E57000;">          :oooooooo/'</span><span style="color: #e7e7e7;">..</span><span style="color: #E57000;">'/oooooooo:              </span><span style="color: #e7e7e7;">CPU: Intel(R) Xeon(R) D-1541 (16) @ 2.70 GHz</span>
-<span style="color: #E57000;">        -+ooooooo/.'</span><span style="color: #e7e7e7;">sMMs</span><span style="color: #E57000;">'./ooooooo+-            </span><span style="color: #e7e7e7;">GPU 1: ASPEED Technology, Inc. ASPEED Graphics Family</span>
-<span style="color: #E57000;">      .+ooooooo+-'</span><span style="color: #e7e7e7;">oNMMMMNo</span><span style="color: #E57000;">'-+ooooooo+.          </span><span style="color: #e7e7e7;">GPU 2: NVIDIA Quadro M2000 [Discrete]</span>
-<span style="color: #E57000;">    ./ooooooo+- </span><span style="color: #e7e7e7;">+NMMMMMMMMN+ </span><span style="color: #E57000;">-+ooooooo/.        </span><span style="color: #e7e7e7;">Memory: 31.92 GiB / 62.69 GiB (</span><span style="color: #06e236;">51%</span><span style="color: #e7e7e7;">)</span>
-<span style="color: #E57000;">  '/oooooooo:'</span><span style="color: #e7e7e7;">:mMMMMMMMMMMMMm:</span><span style="color: #E57000;">':oooooooo/'      </span><span style="color: #e7e7e7;">Swap: Disabled</span>
-<span style="color: #E57000;">':oooooooo/'</span><span style="color: #e7e7e7;">-hMMMMMMMyyMMMMMMMh-</span><span style="color: #E57000;">'/oooooooo:'    </span><span style="color: #e7e7e7;">Disk (/): 3.13 GiB / 430.18 GiB (</span><span style="color: #06e236;">1%</span><span style="color: #e7e7e7;">) - zfs</span>
-<span style="color: #E57000;">'-/+oo+/:'</span><span style="color: #e7e7e7;">.yMMMMMMMh-  -hMMMMMMMy.</span><span style="color: #E57000;">':/+oo+/-'    </span><span style="color: #e7e7e7;">Disk (/rpool): 128.00 KiB / 427.05 GiB (</span><span style="color: #06e236;">0%</span><span style="color: #e7e7e7;">) - zfs</span>
-<span style="color: #e7e7e7;">        'sMMMMMMMm:      :dMMMMMMMs'</span>            <span style="color: #e7e7e7;">Local IP (vmbr0): 192.168.178.242/24</span>
-<span style="color: #e7e7e7;">       'hMMMMMMd/          /dMMMMMMh'</span>           <span style="color: #e7e7e7;">Locale: en_US.UTF-8</span>
-<span style="color: #e7e7e7;">         '://:'              '://:'</span>`
+<span style="color: #E57000;">          :oooooooo/'</span><span style="color: #e7e7e7;">..</span><span style="color: #E57000;">'/oooooooo:              </span><span style="color: #e7e7e7;">CPU: Intel(R) Xeon(R) D-1541 (16) @ 2.70 GHz <span class="nlive" data-live="temp"></span></span>
+<span style="color: #E57000;">        -+ooooooo/.'</span><span style="color: #e7e7e7;">sMMs</span><span style="color: #E57000;">'./ooooooo+-            </span><span style="color: #e7e7e7;">CPU Usage: <span class="nlive" data-live="cpu">—</span></span>
+<span style="color: #E57000;">      .+ooooooo+-'</span><span style="color: #e7e7e7;">oNMMMMNo</span><span style="color: #E57000;">'-+ooooooo+.          </span><span style="color: #e7e7e7;">GPU 1: ASPEED Technology, Inc. ASPEED Graphics Family</span>
+<span style="color: #E57000;">    ./ooooooo+- </span><span style="color: #e7e7e7;">+NMMMMMMMMN+ </span><span style="color: #E57000;">-+ooooooo/.        </span><span style="color: #e7e7e7;">GPU 2: NVIDIA Quadro M2000 [Discrete]</span>
+<span style="color: #E57000;">  '/oooooooo:'</span><span style="color: #e7e7e7;">:mMMMMMMMMMMMMm:</span><span style="color: #E57000;">':oooooooo/'      </span><span style="color: #e7e7e7;">Memory: <span class="nlive" data-live="mem-used">31.92 GiB</span> / <span class="nlive" data-live="mem-total">62.69 GiB</span> (</span><span class="nlive" data-live="mem-pct" style="color: #06e236;">51%</span><span style="color: #e7e7e7;">)</span>
+<span style="color: #E57000;">':oooooooo/'</span><span style="color: #e7e7e7;">-hMMMMMMMyyMMMMMMMh-</span><span style="color: #E57000;">'/oooooooo:'    </span><span style="color: #e7e7e7;">Swap: Disabled</span>
+<span style="color: #E57000;">'-/+oo+/:'</span><span style="color: #e7e7e7;">.yMMMMMMMh-  -hMMMMMMMy.</span><span style="color: #E57000;">':/+oo+/-'    </span><span style="color: #e7e7e7;">Disk (/): 3.13 GiB / 430.18 GiB (</span><span style="color: #06e236;">1%</span><span style="color: #e7e7e7;">) - zfs</span>
+<span style="color: #e7e7e7;">        'sMMMMMMMm:      :dMMMMMMMs'</span>            <span style="color: #e7e7e7;">Disk (/rpool): 128.00 KiB / 427.05 GiB (</span><span style="color: #06e236;">0%</span><span style="color: #e7e7e7;">) - zfs</span>
+<span style="color: #e7e7e7;">       'hMMMMMMd/          /dMMMMMMh'</span>           <span style="color: #e7e7e7;">Local IP (vmbr0): 192.168.178.242/24</span>
+<span style="color: #e7e7e7;">         '://:'              '://:'</span>             <span style="color: #e7e7e7;">Locale: en_US.UTF-8</span>`
     },
     {
       id: 'esx-01',
@@ -1000,10 +1045,16 @@
         const pane = document.createElement('div');
         pane.className = 'nterm' + (open ? ' is-active' : '');
         pane.dataset.pane = entry.id;
+        if (entry.live) {
+          pane.dataset.liveHost = entry.live;
+          pane.dataset.liveState = 'off';
+          if (entry.memTotal) pane.dataset.memTotal = String(entry.memTotal);
+        }
         pane.innerHTML = `
           <div class="nterm__bar">
             <span class="nterm__dot"></span><span class="nterm__dot"></span><span class="nterm__dot"></span>
             <span class="nterm__title">${entry.title}</span>
+            ${entry.live ? '<span class="nterm__live" data-live="badge">snapshot</span>' : ''}
           </div>
           <pre class="nterm__body">${sanitize(entry.content)}</pre>
         `;
@@ -1019,6 +1070,119 @@
       nTabs.querySelectorAll('.ntab').forEach(t => t.classList.toggle('is-active', t === btn));
       nPanes.querySelectorAll('.nterm').forEach(p => p.classList.toggle('is-active', p.dataset.pane === target));
     });
+
+    // ---- live figures from the checkmk feed ---------------------
+    // Only the .nlive spans are rewritten — the rest of a sheet stays
+    // the hand-transcribed dump. When the probe is missing or the host
+    // is down, every cell falls back to its dump value and the pane
+    // drops the "live" marking, so nothing on screen ever claims to be
+    // current when it is not.
+    const livePanes = Array.from(nPanes.querySelectorAll('.nterm[data-live-host]'));
+    if (livePanes.length) {
+      const fmtUptime = (s) => {
+        const t = Math.max(0, Math.floor(Number(s) || 0));
+        const d = Math.floor(t / 86400), h = Math.floor((t % 86400) / 3600), m = Math.floor((t % 3600) / 60);
+        const unit = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+        const out = [];
+        if (d) out.push(unit(d, 'day'));
+        if (d || h) out.push(unit(h, 'hour'));
+        out.push(unit(m, 'min'));
+        return out.join(', ');
+      };
+      // sheet palette: green / amber / red, same hexes the dumps use
+      const band = (v, warn, crit) => v >= crit ? '#da0a0a' : v >= warn ? '#e5c07b' : '#06e236';
+      const fmtAge = (ts) => {
+        const a = Math.max(0, Math.floor(Date.now() / 1000) - Number(ts || 0));
+        return a < 60 ? `${a}s` : a < 3600 ? `${Math.floor(a / 60)}m`
+             : a < 86400 ? `${Math.floor(a / 3600)}h` : `${Math.floor(a / 86400)}d`;
+      };
+
+      let feedTs = 0;
+
+      const paint = (data) => {
+        feedTs = Number((data && data.ts) || 0);
+        const hosts = (data && Array.isArray(data.hosts)) ? data.hosts : [];
+
+        livePanes.forEach(pane => {
+          const h = hosts.find(x => x && x.name === pane.dataset.liveHost) || null;
+          const cells = Array.from(pane.querySelectorAll('.nlive'));
+          const badge = pane.querySelector('[data-live="badge"]');
+
+          // remember the dump value once, then always start from it
+          cells.forEach(el => {
+            if (el.dataset.snap === undefined) {
+              el.dataset.snap = el.textContent;
+              el.dataset.snapColor = el.style.color || '';
+            }
+            el.textContent = el.dataset.snap;
+            el.style.color = el.dataset.snapColor;
+          });
+
+          const put = (key, text, color) => {
+            pane.querySelectorAll(`.nlive[data-live="${key}"]`).forEach(el => {
+              el.textContent = text;
+              if (color) el.style.color = color;
+            });
+          };
+
+          if (!h || String(h.state).toLowerCase() !== 'up') {
+            pane.dataset.liveState = 'off';
+            if (badge) {
+              badge.dataset.state = h ? 'down' : 'off';
+              badge.textContent = h ? `${h.state || 'down'}` : 'snapshot';
+            }
+            return;
+          }
+
+          pane.dataset.liveState = 'on';
+          const crit = Number(h.svc_crit) || 0, warn = Number(h.svc_warn) || 0;
+          if (badge) {
+            badge.dataset.state = crit > 0 ? 'crit' : warn > 0 ? 'warn' : 'on';
+            badge.dataset.svc = crit > 0 ? `${crit} crit` : warn > 0 ? `${warn} warn` : '';
+          }
+
+          if (h.uptime_s != null) put('uptime', fmtUptime(h.uptime_s));
+
+          // the feed ships absolute memory when the check reports bytes;
+          // where it only knows the percentage, fall back to that percent
+          // of the installed memory from the sheet
+          const memPct = Number(h.mem_pct);
+          const usedGib = Number(h.mem_used_gib), totalGib = Number(h.mem_total_gib);
+          const memTotal = totalGib > 0 ? totalGib : Number(pane.dataset.memTotal);
+          if (totalGib > 0) put('mem-total', `${totalGib.toFixed(2)} GiB`);
+          if (isFinite(memPct)) {
+            put('mem-pct', `${memPct.toFixed(1)}%`, band(memPct, 75, 90));
+            if (usedGib > 0) put('mem-used', `${usedGib.toFixed(2)} GiB`);
+            else if (memTotal > 0) put('mem-used', `${(memTotal * memPct / 100).toFixed(2)} GiB`);
+          }
+
+          const cpu = Number(h.cpu_pct);
+          if (isFinite(cpu)) {
+            const load = Number(h.load1);
+            put('cpu', `${cpu.toFixed(1)}%` + (isFinite(load) ? ` (load ${load.toFixed(2)})` : ''),
+                band(cpu, 60, 85));
+          }
+
+          const temp = Number(h.temp_c);
+          if (isFinite(temp) && h.temp_c != null) put('temp', `[${temp.toFixed(0)} °C]`, band(temp, 75, 85));
+        });
+
+        tickBadges();
+      };
+
+      // the badge carries the feed age and, when the host has failing
+      // services, how many — the sheet itself stays a spec sheet
+      const tickBadges = () => {
+        livePanes.forEach(pane => {
+          const badge = pane.querySelector('[data-live="badge"]');
+          if (!badge || pane.dataset.liveState !== 'on') return;
+          badge.textContent = `live · ${fmtAge(feedTs)}` + (badge.dataset.svc ? ` · ${badge.dataset.svc}` : '');
+        });
+      };
+
+      statusFeed.subscribe(paint);
+      setInterval(tickBadges, 1000);
+    }
   }
 
   // switch the neofetch collection to a given host. The rack sits next to
@@ -1829,8 +1993,9 @@
   if (uptime) uptime.textContent = yearsMonthsSince('2007-08-26');
 
   // ---------- CHECKMK STATUS : fleet overview -------------------
-  // One poll of /status.json drives the header overview (aggregate counts).
-  // A server-side puller writes it. Counts only — no host/IP details leak.
+  // The header overview reads the shared statusFeed (aggregate counts).
+  // A server-side puller writes /status.json. The per-host block in the
+  // same file feeds the neofetch sheets; here only the summary is used.
   // Shows a clearly-labelled "sample" until live data arrives; never fakes
   // "live".
   (() => {
@@ -1875,26 +2040,16 @@
         if(ovSrc)ovSrc.textContent='sample data'; if(ovAge)ovAge.textContent='awaiting probe'; }
     };
 
-    const refresh = async () => {
-      try {
-        const r = await fetch('/status.json?t=' + Date.now(), { cache: 'no-store' });
-        if (!r.ok) throw new Error('http ' + r.status);
-        last = await r.json();
-        renderHeader();
-      } catch (e) {
-        last = null;
-        sample();
-      }
-    };
-
     const tickAge = () => {
       if (!last) return;
       if (ovAge) ovAge.textContent = fmtAge();
     };
 
     sample();          // honest neutral state until the first response
-    refresh();
-    setInterval(refresh, 30000);
+    statusFeed.subscribe((data) => {
+      last = data;
+      if (last) renderHeader(); else sample();
+    });
     setInterval(tickAge, 1000);
   })();
 

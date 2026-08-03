@@ -2379,6 +2379,26 @@ section{
   color:var(--text-dim);
   text-shadow: 0 0 5px currentColor;
 }
+/* checkmk feed state for the three monitored machines. The badge says
+   whether the sheet is being fed right now; the dotted underline marks
+   which single values are live. Everything unmarked is the transcribed
+   dump, and the marking disappears with the feed. */
+.nterm__live{
+  margin-left:auto;
+  font-family:"Proto Nerd Font Regular", monospace;
+  font-size:10px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  color:var(--text-ghost);
+}
+.nterm__live[data-state="on"]{ color:var(--acc-ok); text-shadow:0 0 6px rgba(61,255,165,.45); }
+.nterm__live[data-state="warn"]{ color:var(--acc-amb); }
+.nterm__live[data-state="crit"],
+.nterm__live[data-state="down"]{ color:var(--acc-red); }
+.nterm[data-live-state="on"] .nterm__body .nlive{
+  border-bottom:1px dotted rgba(216,218,250,.4);
+}
 .nterm__body{
   position:relative;
   z-index:1;

@@ -5,3 +5,8 @@ Desktop.ini
 
 # local Claude Code settings (machine-specific)
 .claude/settings.local.json
+
+# written by the checkmk puller on the server (and kept locally as a
+# sample for testing) — committing it would ship stale numbers that the
+# page would then present as live
+status.json
