@@ -1,0 +1,5 @@
+# lucya.sh — private, non-commercial project.
+User-agent: *
+Allow: /
+
+Sitemap: https://lucya.sh/sitemap.xml

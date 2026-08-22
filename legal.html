@@ -3,17 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRIVACY // LUCYA.SH</title>
-    <meta name="description" content="Datenschutzerklärung von lucya.sh — privates, nicht-kommerzielles Projekt. Informationen zur Datenverarbeitung nach DSGVO." />
+    <title>LEGAL // LUCYA.SH</title>
+    <meta name="description" content="Impressum und Datenschutzerklärung von lucya.sh — privates, nicht-kommerzielles Projekt. Informationen zur Datenverarbeitung nach DSGVO." />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#07070b" />
     <meta name="color-scheme" content="dark" />
     <link rel="canonical" href="https://lucya.sh/legal.html" />
+    <!-- both language versions live on one URL; ?lang= selects one so a
+         specific version stays linkable and search engines see the split. -->
+    <link rel="alternate" hreflang="en" href="https://lucya.sh/legal.html?lang=en" />
+    <link rel="alternate" hreflang="de" href="https://lucya.sh/legal.html?lang=de" />
+    <link rel="alternate" hreflang="x-default" href="https://lucya.sh/legal.html" />
     <link rel="icon" type="image/svg+xml" href="images/logo/lucya_logo.svg" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="lucya.sh" />
-    <meta property="og:title" content="Privacy Policy — lucya.sh" />
-    <meta property="og:description" content="Datenschutzerklärung von lucya.sh." />
+    <meta property="og:title" content="Legal notice &amp; privacy policy — lucya.sh" />
+    <meta property="og:description" content="Impressum und Datenschutzerklärung von lucya.sh." />
     <meta property="og:url" content="https://lucya.sh/legal.html" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:locale:alternate" content="de_DE" />
@@ -213,31 +218,94 @@
             color: var(--acc-cy);
             margin-bottom: 6px;
         }
+        /* One cell per apex domain; its subdomains hang underneath it, so the
+           list stays readable as hosts get added instead of turning into one
+           long undifferentiated run. */
         .domain-notice .list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
             font-family: "Proto Nerd Font Regular", monospace;
             font-size: 13px;
             color: var(--text);
             letter-spacing: .04em;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 4px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            align-items: start;
+            gap: 10px 26px;
         }
-        .domain-notice .list .dom {
+        .domain-notice .list li {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+        .domain-notice .dom {
             white-space: nowrap;
         }
-        .domain-notice .list .dom + .dom::before {
-            content: "·";
-            color: var(--text-ghost);
-            margin: 0 10px;
+        .domain-notice .dom--sub {
+            position: relative;
+            padding-left: 15px;
+            font-size: 12px;
+            color: var(--text-dim);
         }
+        .domain-notice .dom--sub::before {
+            content: "└";
+            position: absolute;
+            left: 0;
+            color: var(--text-ghost);
+        }
+
+        /* Table of contents */
+        .toc {
+            margin-bottom: 44px;
+            padding: 16px 20px;
+            border: 1px solid var(--line);
+            border-left: 3px solid var(--acc-mag);
+            background: rgba(255,255,255,.02);
+        }
+        .toc__label {
+            font-family: "Proto Nerd Font Regular", monospace;
+            font-size: 10.5px;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: var(--acc-mag);
+            margin-bottom: 10px;
+        }
+        .toc ol {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 4px 26px;
+        }
+        .toc li {
+            font-family: "Proto Nerd Font Regular", monospace;
+            font-size: 12.5px;
+            letter-spacing: .04em;
+        }
+        .toc li .n {
+            color: var(--acc-cy);
+            margin-right: 9px;
+        }
+        .toc a { border-bottom-color: transparent; color: var(--text-dim); }
+        .toc a:hover { border-bottom-color: var(--text); }
 
         /* Sections */
         .legal-wrap section {
             margin-bottom: 44px;
             position: relative;
+            /* keep headings clear of the fixed corner tags when jumped to */
+            scroll-margin-top: 72px;
         }
         .legal-wrap section + section { padding-top: 8px; }
+
+        /* Imprint contact card — same shape as .contact-block, own accent */
+        .imprint-note {
+            font-size: 13px;
+            color: var(--text-dim);
+            margin-top: 14px;
+        }
 
         .sec-head {
             display: flex;
@@ -397,8 +465,8 @@
             .domain-notice .list {
                 font-size: 12px;
                 line-height: 1.7;
+                gap: 8px 18px;
             }
-            .domain-notice .list .sep { margin: 0 4px; }
 
             .legal-wrap section { margin-bottom: 36px; }
             .sec-head { gap: 10px; margin-bottom: 16px; }
@@ -460,7 +528,7 @@
             }
             .lang-toggle { align-self: flex-start; }
 
-            .domain-notice .list { font-size: 11.5px; }
+            .domain-notice .list { font-size: 11.5px; grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -471,8 +539,8 @@
     <div class="wallpaper-overlay" aria-hidden="true"></div>
 
     <div class="legal-corners">
-        <span class="tag"><b>LUCYA</b> · LEGAL // PRIVACY</span>
-        <span class="tag">SECTION · 04</span>
+        <span class="tag"><b>LUCYA</b> · LEGAL</span>
+        <span class="tag">STAND · 2026-08-22</span>
     </div>
 
     <main class="legal-wrap">
@@ -481,13 +549,13 @@
             <div class="legal-head__brand">
                 <img class="legal-head__logo" src="images/logo/lucya_logo.svg" alt="lucya" />
                 <div class="legal-head__stamp">
-                    <span><b>LUCYA</b> · personal systems</span>
-                    <span>/// document · privacy_policy.md</span>
+                    <span><b>LUCYA</b> · private project</span>
+                    <span id="stamp-doc">imprint &amp; privacy policy</span>
                 </div>
             </div>
-            <h1 class="legal-head__title" id="page-title">Privacy Policy</h1>
+            <h1 class="legal-head__title" id="page-title">Legal notice &amp; privacy policy</h1>
             <div class="legal-head__row">
-                <span class="legal-head__sub">private project · non-commercial · self-hosted · EU/DE</span>
+                <span class="legal-head__sub" id="page-sub">private project · non-commercial · self-hosted · EU/DE · last updated 2026-08-22</span>
                 <div class="lang-toggle" role="group" aria-label="Language">
                     <button type="button" id="lang-en" aria-pressed="true">EN</button>
                     <button type="button" id="lang-de" aria-pressed="false">DE</button>
@@ -502,20 +570,58 @@
 
             <div class="domain-notice">
                 <div class="label">Scope · this policy applies to:</div>
-                <div class="list">
-                    <span class="dom">lucya.sh</span>
-                    <span class="dom">lucya.systems</span>
-                    <span class="dom">inter-astra.org</span>
-                    <span class="dom">inter-astra.net</span>
-                    <span class="dom">astralytic.net</span>
-                    <span class="dom">nekolabs.me</span>
-                    <span class="dom">astraOS.app</span>
-                    <span class="dom">aizaku.com</span>
-                    <span class="dom">binbows.net</span>
-                </div>
+                <ul class="list">
+                    <li>
+                        <span class="dom">lucya.sh</span>
+                        <span class="dom dom--sub">images.lucya.sh</span>
+                    </li>
+                    <li>
+                        <span class="dom">lucya.systems</span>
+                        <span class="dom dom--sub">status.lucya.systems</span>
+                    </li>
+                    <li>
+                        <span class="dom">inter-astra.net</span>
+                        <span class="dom dom--sub">gov.inter-astra.net</span>
+                    </li>
+                    <li>
+                        <span class="dom">astraos.app</span>
+                        <span class="dom dom--sub">beta.astraos.app</span>
+                    </li>
+                    <li><span class="dom">aizaku.com</span></li>
+                    <li><span class="dom">binbows.net</span></li>
+                    <li><span class="dom">astralytic.net</span></li>
+                    <li><span class="dom">nekolabs.me</span></li>
+                    <li><span class="dom">wirtaufendeinauto.de</span></li>
+                </ul>
             </div>
 
-            <section>
+            <nav class="toc" aria-label="Contents">
+                <div class="toc__label">Contents</div>
+                <ol>
+                    <li><span class="n">00</span><a href="#impressum">Imprint</a></li>
+                    <li><span class="n">01</span><a href="#datenschutz">Privacy at a glance</a></li>
+                    <li><span class="n">02</span><a href="#hosting">Hosting</a></li>
+                    <li><span class="n">03</span><a href="#pflichtinformationen">Mandatory disclosures</a></li>
+                    <li><span class="n">04</span><a href="#datenerfassung">Data collection</a></li>
+                    <li><span class="n">05</span><a href="#tools">Plugins and tools</a></li>
+                    <li><span class="n">06</span><a href="#medien">Media usage / trademarks</a></li>
+                </ol>
+            </nav>
+
+            <section data-sec="impressum" id="impressum">
+                <div class="sec-head"><span class="sec-head__num">00</span><h2>Imprint</h2></div>
+
+                <p>This website is a private, non-commercial project run by a natural person. It is not a business-like offering within the meaning of § 5 DDG (formerly § 5 TMG) and is not a journalistic-editorial offering within the meaning of § 18(2) MStV. For that reason no postal address is published here.</p>
+
+                <div class="contact-block">
+                    <span class="k">Operator</span>Timo Wager<br>
+                    <span class="k">Contact</span><a href="mailto:sosumi@lucya.sh">sosumi@lucya.sh</a>
+                </div>
+
+                <p class="imprint-note">Email is the contact channel for every matter concerning this site — including data protection requests under the GDPR and takedown requests from rights holders (see section 06). If a postal address is legally required for a specific matter, it will be provided on request.</p>
+            </section>
+
+            <section data-sec="datenschutz" id="datenschutz">
                 <div class="sec-head"><span class="sec-head__num">01</span><h2>Privacy at a glance</h2></div>
 
                 <h3>General information</h3>
@@ -535,13 +641,13 @@
                 <p>You have the right to receive information about the origin, recipient and purpose of your stored personal data at any time free of charge. You also have the right to request correction or deletion of this data. If you have given consent to data processing, you can revoke this consent at any time for the future. You also have the right, under certain circumstances, to request restriction of the processing of your personal data. Furthermore, you have the right to lodge a complaint with the competent supervisory authority.</p>
             </section>
 
-            <section>
+            <section data-sec="hosting" id="hosting">
                 <div class="sec-head"><span class="sec-head__num">02</span><h2>Hosting</h2></div>
                 <p>This website is operated on our own servers (self-hosting). No personal data is passed on to external hosting providers.</p>
                 <p>The server location is Germany. Delivery is accelerated and protected via Cloudflare as a CDN (see section 05).</p>
             </section>
 
-            <section>
+            <section data-sec="pflichtinformationen" id="pflichtinformationen">
                 <div class="sec-head"><span class="sec-head__num">03</span><h2>General information and mandatory disclosures</h2></div>
 
                 <h3>Data protection</h3>
@@ -589,12 +695,17 @@
                 <p>This site uses SSL/TLS encryption for security reasons and to protect the transmission of confidential content. You can recognise an encrypted connection by the browser address line changing from <code>http://</code> to <code>https://</code> and by the lock symbol in your browser bar.</p>
             </section>
 
-            <section>
+            <section data-sec="datenerfassung" id="datenerfassung">
                 <div class="sec-head"><span class="sec-head__num">04</span><h2>Data collection on this website</h2></div>
 
-                <h3>Cookies</h3>
-                <p>This website does not set tracking cookies. The site may make use of small functional storage entries in your browser (e.g. <code>localStorage</code>) only where strictly necessary to remember a setting you have made yourself. The legal basis for this is § 25(2) no. 2 TDDDG (storage strictly necessary to provide a service explicitly requested by the user) and Art. 6(1)(f) GDPR.</p>
-                <p>You can configure your browser to inform you about the setting of cookies and storage and to delete them automatically.</p>
+                <h3>Cookies and local storage</h3>
+                <p>This website sets <strong>no cookies at all</strong> — neither for tracking nor for any other purpose. Our CDN provider Cloudflare is configured so that it does not set cookies either (see section 05).</p>
+                <p>The site does use a small number of functional entries in your browser's <code>localStorage</code>, exclusively to remember a setting you made yourself. These entries stay on your device, are never transmitted to the server and contain no identifier:</p>
+                <ul class="plain">
+                    <li><code>lucya-lite</code> — stores whether you switched on "lite mode" (reduced version without background video, blur and animations). Values: <code>0</code> or <code>1</code>.</li>
+                    <li><code>lucya-lang</code> — stores the language you selected on this legal page. Values: <code>en</code> or <code>de</code>.</li>
+                </ul>
+                <p>The legal basis for this is § 25(2) no. 2 TDDDG (storage strictly necessary to provide a service explicitly requested by the user) and Art. 6(1)(f) GDPR. You can delete these entries at any time via your browser settings; the site then simply falls back to its defaults.</p>
 
                 <h3>Server log files</h3>
                 <p>The provider of this website automatically collects and stores information in so-called server log files, which your browser transmits to us automatically. These are:</p>
@@ -607,6 +718,7 @@
                     <li>IP address</li>
                 </ul>
                 <p>This data is not merged with other data sources. Collection is based on Art. 6(1)(f) GDPR — the website operator has a legitimate interest in the technically error-free presentation and security of the website.</p>
+                <p><strong>Storage duration:</strong> log files are rotated daily and kept for a maximum of 14 days, after which they are deleted automatically. Longer storage only occurs if a specific log entry is required to clarify a concrete incident (e.g. an attack on the server); in that case the affected entries are stored until the incident has been fully resolved.</p>
 
                 <h3>Contact by email</h3>
                 <p>If you contact us by email, your inquiry including all personal data resulting from it (name, message content) will be stored and processed by us for the sole purpose of handling your request. We do not pass on this data without your consent.</p>
@@ -614,17 +726,30 @@
                 <p>The data you send to us via email remains with us until you request deletion, revoke your consent to storage, or the purpose for data storage no longer applies. Mandatory statutory provisions — in particular statutory retention periods — remain unaffected.</p>
             </section>
 
-            <section>
+            <section data-sec="tools" id="tools">
                 <div class="sec-head"><span class="sec-head__num">05</span><h2>Plugins and tools</h2></div>
 
                 <h3>Font Awesome (local hosting)</h3>
-                <p>This site uses Font Awesome icons. Font Awesome is installed locally on our server. No connection to servers of Fonticons, Inc. takes place. More information: <a href="https://fontawesome.com/privacy" target="_blank" rel="noopener noreferrer">fontawesome.com/privacy</a>.</p>
+                <p>Where the sites covered by this policy use Font Awesome icons, Font Awesome is installed locally on our own server. No connection to servers of Fonticons, Inc. takes place. More information: <a href="https://fontawesome.com/privacy" target="_blank" rel="noopener noreferrer">fontawesome.com/privacy</a>.</p>
 
                 <h3>Web fonts (self-hosted)</h3>
-                <p>All web fonts used (e.g. Space Grotesk, JetBrains Mono, Chakra Petch, Noto Sans JP, Whitney) are served from our own infrastructure. No connection to Google Fonts or any other third-party font CDN is established when you visit the site.</p>
+                <p>All web fonts are served from our own infrastructure. No connection to Google Fonts or any other third-party font CDN is established when you visit the site. The fonts used on lucya.sh are:</p>
+                <ul class="plain">
+                    <li>Space Grotesk</li>
+                    <li>Chakra Petch</li>
+                    <li>JetBrains Mono</li>
+                    <li>Cascadia Mono</li>
+                    <li>0xProto Nerd Font (subset)</li>
+                    <li>Noto Sans JP (subset)</li>
+                    <li>Whitney</li>
+                    <li>Ethnocentric</li>
+                    <li>Zen Dots</li>
+                </ul>
+                <p>Two of these are subset to the characters actually used on the page, which keeps the transferred file size down — this is a purely technical optimisation and does not process any personal data.</p>
 
                 <h3>Cloudflare</h3>
                 <p>We use the Content Delivery Network (CDN) of Cloudflare Germany GmbH, Rosental 7, c/o Mindspace, 80331 Munich, Germany ("Cloudflare") to increase the security and delivery speed of our website. This corresponds to our legitimate interest pursuant to Art. 6(1)(f) GDPR. A CDN is a network of globally distributed servers that can deliver optimised content to website users. For this purpose, personal data (in particular IP addresses) may be processed in Cloudflare's server log files.</p>
+                <p>Cloudflare is configured by us in such a way that it sets no cookies in your browser. No Cloudflare web analytics or comparable measurement feature is in use.</p>
                 <p>Cloudflare acts as a processor for us on the basis of a data processing agreement. You have the right to object to the processing; whether the objection succeeds must be determined as part of a balancing of interests. The functionality of the website is not guaranteed without this processing.</p>
                 <p>Cloudflare has implemented compliance measures for international data transfers based on the EU Standard Contractual Clauses (SCCs). More information: <a href="https://www.cloudflare.com/cloudflare-customer-dpa/" target="_blank" rel="noopener noreferrer">Cloudflare Customer DPA</a> and <a href="https://www.cloudflare.com/cloudflare_customer_SCCs-German.pdf" target="_blank" rel="noopener noreferrer">SCCs (PDF)</a>.</p>
 
@@ -634,12 +759,17 @@
                 <p>The status server is operated by us on our own infrastructure within the European Union. Data is not passed on to third parties beyond what is technically required to deliver the badge image. The legal basis is Art. 6(1)(f) GDPR — we have a legitimate interest in transparently displaying the operational status of our infrastructure.</p>
                 <p>You can prevent the badge from loading by using a content blocker or by disabling image loading in your browser. The rest of the website is not affected.</p>
 
+                <h3>Photo gallery (images.lucya.sh)</h3>
+                <p>The start page shows a teaser of our photo gallery. To do so, your browser requests a list of the most recent images from <a href="https://images.lucya.sh" target="_blank" rel="noopener noreferrer">images.lucya.sh</a> when the page loads and then loads the preview images from that host. Following the link opens the full gallery there.</p>
+                <p>This host is operated by us on our own infrastructure within the European Union — it is not a third-party service. The following data may be processed in its server log files: IP address, browser type and version, operating system, referrer URL, time of the request, user agent string. The same storage duration applies as for the server log files described in section 04.</p>
+                <p>The legal basis is Art. 6(1)(f) GDPR — we have a legitimate interest in delivering images from a host optimised for that purpose instead of from the main server. Data is not passed on to third parties.</p>
+
                 <h3>External links to social media and third-party platforms</h3>
                 <p>This website contains links to our profiles on external platforms (e.g. GitHub, Bluesky, Instagram, Threads, X/Twitter, Reddit, Spotify, Steam, Inara). These are plain hyperlinks — no embedded widgets, no tracking pixels, no data is transmitted to those platforms simply by loading our page.</p>
                 <p>As soon as you <em>click</em> one of those links, your browser connects to the operator of the linked platform, which will receive your IP address and may store cookies or other identifiers according to their own policies. We have no influence on this. Please refer to the respective platform's privacy policy for details.</p>
             </section>
 
-            <section>
+            <section data-sec="medien" id="medien">
                 <div class="sec-head"><span class="sec-head__num">06</span><h2>Media usage / trademarks</h2></div>
                 <p>This website includes various visual elements such as Slackmojis, 88×31 buttons, fan artwork, logos, screenshots, cover art and key art. These assets may be protected by copyright or trademark law and are the property of their respective owners, including but not limited to:</p>
                 <ul class="plain">
@@ -671,20 +801,58 @@
 
             <div class="domain-notice">
                 <div class="label">Geltungsbereich · diese Erklärung gilt für:</div>
-                <div class="list">
-                    <span class="dom">lucya.sh</span>
-                    <span class="dom">lucya.systems</span>
-                    <span class="dom">inter-astra.org</span>
-                    <span class="dom">inter-astra.net</span>
-                    <span class="dom">astralytic.net</span>
-                    <span class="dom">nekolabs.me</span>
-                    <span class="dom">astraOS.app</span>
-                    <span class="dom">aizaku.com</span>
-                    <span class="dom">binbows.net</span>
-                </div>
+                <ul class="list">
+                    <li>
+                        <span class="dom">lucya.sh</span>
+                        <span class="dom dom--sub">images.lucya.sh</span>
+                    </li>
+                    <li>
+                        <span class="dom">lucya.systems</span>
+                        <span class="dom dom--sub">status.lucya.systems</span>
+                    </li>
+                    <li>
+                        <span class="dom">inter-astra.net</span>
+                        <span class="dom dom--sub">gov.inter-astra.net</span>
+                    </li>
+                    <li>
+                        <span class="dom">astraos.app</span>
+                        <span class="dom dom--sub">beta.astraos.app</span>
+                    </li>
+                    <li><span class="dom">aizaku.com</span></li>
+                    <li><span class="dom">binbows.net</span></li>
+                    <li><span class="dom">astralytic.net</span></li>
+                    <li><span class="dom">nekolabs.me</span></li>
+                    <li><span class="dom">wirtaufendeinauto.de</span></li>
+                </ul>
             </div>
 
-            <section>
+            <nav class="toc" aria-label="Inhalt">
+                <div class="toc__label">Inhalt</div>
+                <ol>
+                    <li><span class="n">00</span><a href="#impressum">Impressum</a></li>
+                    <li><span class="n">01</span><a href="#datenschutz">Datenschutz auf einen Blick</a></li>
+                    <li><span class="n">02</span><a href="#hosting">Hosting</a></li>
+                    <li><span class="n">03</span><a href="#pflichtinformationen">Pflichtinformationen</a></li>
+                    <li><span class="n">04</span><a href="#datenerfassung">Datenerfassung</a></li>
+                    <li><span class="n">05</span><a href="#tools">Plugins und Tools</a></li>
+                    <li><span class="n">06</span><a href="#medien">Mediennutzung</a></li>
+                </ol>
+            </nav>
+
+            <section data-sec="impressum">
+                <div class="sec-head"><span class="sec-head__num">00</span><h2>Impressum</h2></div>
+
+                <p>Diese Website ist ein privates, nicht-kommerzielles Projekt einer natürlichen Person. Es handelt sich nicht um geschäftsmäßige Telemedien im Sinne des § 5 DDG (vormals § 5 TMG) und nicht um ein journalistisch-redaktionelles Angebot im Sinne des § 18 Abs. 2 MStV. Eine Anschrift wird daher hier nicht veröffentlicht.</p>
+
+                <div class="contact-block">
+                    <span class="k">Betreiber</span>Timo Wager<br>
+                    <span class="k">Kontakt</span><a href="mailto:sosumi@lucya.sh">sosumi@lucya.sh</a>
+                </div>
+
+                <p class="imprint-note">Die E-Mail-Adresse ist der Kontaktweg für alle Anliegen zu dieser Seite — einschließlich Betroffenenanfragen nach der DSGVO und Entfernungsverlangen von Rechteinhaber:innen (siehe Abschnitt 06). Sofern für ein konkretes Anliegen eine ladungsfähige Anschrift erforderlich ist, wird sie auf Anfrage mitgeteilt.</p>
+            </section>
+
+            <section data-sec="datenschutz">
                 <div class="sec-head"><span class="sec-head__num">01</span><h2>Datenschutz auf einen Blick</h2></div>
 
                 <h3>Allgemeine Hinweise</h3>
@@ -704,13 +872,13 @@
                 <p>Du hast jederzeit das Recht, unentgeltlich Auskunft über Herkunft, Empfänger und Zweck deiner gespeicherten personenbezogenen Daten zu erhalten. Du hast außerdem ein Recht, die Berichtigung oder Löschung dieser Daten zu verlangen. Wenn du eine Einwilligung zur Datenverarbeitung erteilt hast, kannst du diese jederzeit für die Zukunft widerrufen. Außerdem hast du das Recht, unter bestimmten Umständen die Einschränkung der Verarbeitung deiner personenbezogenen Daten zu verlangen. Des Weiteren steht dir ein Beschwerderecht bei der zuständigen Aufsichtsbehörde zu.</p>
             </section>
 
-            <section>
+            <section data-sec="hosting">
                 <div class="sec-head"><span class="sec-head__num">02</span><h2>Hosting</h2></div>
                 <p>Diese Website wird auf eigenen Servern betrieben (Self-Hosting). Eine Weitergabe personenbezogener Daten an externe Hosting-Dienstleister findet nicht statt.</p>
                 <p>Serverstandort ist Deutschland. Die Auslieferung wird über Cloudflare als CDN beschleunigt und abgesichert (siehe Abschnitt 05).</p>
             </section>
 
-            <section>
+            <section data-sec="pflichtinformationen">
                 <div class="sec-head"><span class="sec-head__num">03</span><h2>Allgemeine Hinweise und Pflichtinformationen</h2></div>
 
                 <h3>Datenschutz</h3>
@@ -758,12 +926,17 @@
                 <p>Diese Seite nutzt aus Sicherheitsgründen und zum Schutz der Übertragung vertraulicher Inhalte eine SSL- bzw. TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennst du daran, dass die Adresszeile des Browsers von <code>http://</code> auf <code>https://</code> wechselt und am Schloss-Symbol in deiner Browserzeile.</p>
             </section>
 
-            <section>
+            <section data-sec="datenerfassung">
                 <div class="sec-head"><span class="sec-head__num">04</span><h2>Datenerfassung auf dieser Website</h2></div>
 
-                <h3>Cookies</h3>
-                <p>Diese Website setzt keine Tracking-Cookies. Die Seite verwendet ggf. kleine funktionale Speichereinträge in deinem Browser (z. B. <code>localStorage</code>) ausschließlich dort, wo dies unbedingt erforderlich ist, um eine von dir selbst getroffene Einstellung zu merken. Rechtsgrundlage ist § 25 Abs. 2 Nr. 2 TDDDG (unbedingt erforderlich für die Bereitstellung eines vom Nutzer ausdrücklich gewünschten Dienstes) und Art. 6 Abs. 1 lit. f DSGVO.</p>
-                <p>Du kannst deinen Browser so einstellen, dass du über das Setzen von Cookies und Speichereinträgen informiert wirst und diese automatisch gelöscht werden.</p>
+                <h3>Cookies und lokale Speicherung</h3>
+                <p>Diese Website setzt <strong>überhaupt keine Cookies</strong> — weder zu Tracking- noch zu sonstigen Zwecken. Auch unser CDN-Dienstleister Cloudflare ist so konfiguriert, dass er keine Cookies setzt (siehe Abschnitt 05).</p>
+                <p>Die Seite verwendet einige wenige funktionale Einträge im <code>localStorage</code> deines Browsers, ausschließlich um eine von dir selbst getroffene Einstellung zu merken. Diese Einträge verbleiben auf deinem Gerät, werden nie an den Server übertragen und enthalten keine Kennung:</p>
+                <ul class="plain">
+                    <li><code>lucya-lite</code> — speichert, ob du den „Lite-Modus" aktiviert hast (reduzierte Fassung ohne Hintergrundvideo, Blur und Animationen). Werte: <code>0</code> oder <code>1</code>.</li>
+                    <li><code>lucya-lang</code> — speichert die von dir gewählte Sprache dieser Rechtsseite. Werte: <code>en</code> oder <code>de</code>.</li>
+                </ul>
+                <p>Rechtsgrundlage ist § 25 Abs. 2 Nr. 2 TDDDG (unbedingt erforderlich für die Bereitstellung eines vom Nutzer ausdrücklich gewünschten Dienstes) und Art. 6 Abs. 1 lit. f DSGVO. Du kannst diese Einträge jederzeit über deine Browsereinstellungen löschen; die Seite fällt dann einfach auf ihre Standardwerte zurück.</p>
 
                 <h3>Server-Log-Dateien</h3>
                 <p>Der Provider der Seite erhebt und speichert automatisch Informationen in so genannten Server-Log-Dateien, die dein Browser automatisch an uns übermittelt. Dies sind:</p>
@@ -776,6 +949,7 @@
                     <li>IP-Adresse</li>
                 </ul>
                 <p>Eine Zusammenführung dieser Daten mit anderen Datenquellen wird nicht vorgenommen. Die Erfassung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Der Websitebetreiber hat ein berechtigtes Interesse an der technisch fehlerfreien Darstellung und Sicherheit seiner Website.</p>
+                <p><strong>Speicherdauer:</strong> Die Logdateien werden täglich rotiert und für maximal 14 Tage vorgehalten, danach werden sie automatisch gelöscht. Eine längere Speicherung erfolgt nur, wenn ein konkreter Logeintrag zur Aufklärung eines konkreten Vorfalls benötigt wird (z. B. bei einem Angriff auf den Server); in diesem Fall werden die betroffenen Einträge bis zur abschließenden Klärung des Vorfalls aufbewahrt.</p>
 
                 <h3>Anfrage per E-Mail</h3>
                 <p>Wenn du uns per E-Mail kontaktierst, wird deine Anfrage inklusive aller daraus hervorgehenden personenbezogenen Daten (Name, Nachrichteninhalt) zum Zwecke der Bearbeitung deines Anliegens bei uns gespeichert und verarbeitet. Diese Daten geben wir nicht ohne deine Einwilligung weiter.</p>
@@ -783,17 +957,30 @@
                 <p>Die von dir an uns per E-Mail übersandten Daten verbleiben bei uns, bis du uns zur Löschung aufforderst, deine Einwilligung zur Speicherung widerrufst oder der Zweck für die Datenspeicherung entfällt. Zwingende gesetzliche Bestimmungen — insbesondere gesetzliche Aufbewahrungsfristen — bleiben unberührt.</p>
             </section>
 
-            <section>
+            <section data-sec="tools">
                 <div class="sec-head"><span class="sec-head__num">05</span><h2>Plugins und Tools</h2></div>
 
                 <h3>Font Awesome (lokales Hosting)</h3>
-                <p>Diese Seite nutzt Font Awesome zur einheitlichen Darstellung von Icons. Font Awesome ist lokal auf unserem Server installiert. Eine Verbindung zu Servern von Fonticons, Inc. findet dabei nicht statt. Weitere Informationen: <a href="https://fontawesome.com/privacy" target="_blank" rel="noopener noreferrer">fontawesome.com/privacy</a>.</p>
+                <p>Soweit die von dieser Erklärung erfassten Seiten Font-Awesome-Icons verwenden, ist Font Awesome lokal auf unserem eigenen Server installiert. Eine Verbindung zu Servern von Fonticons, Inc. findet dabei nicht statt. Weitere Informationen: <a href="https://fontawesome.com/privacy" target="_blank" rel="noopener noreferrer">fontawesome.com/privacy</a>.</p>
 
                 <h3>Webfonts (selbst gehostet)</h3>
-                <p>Sämtliche auf dieser Seite verwendeten Webfonts (z. B. Space Grotesk, JetBrains Mono, Chakra Petch, Noto Sans JP, Whitney) werden von eigener Infrastruktur ausgeliefert. Eine Verbindung zu Google Fonts oder einem anderen Drittanbieter-Font-CDN findet beim Besuch der Seite nicht statt.</p>
+                <p>Sämtliche Webfonts werden von eigener Infrastruktur ausgeliefert. Eine Verbindung zu Google Fonts oder einem anderen Drittanbieter-Font-CDN findet beim Besuch der Seite nicht statt. Auf lucya.sh kommen folgende Schriften zum Einsatz:</p>
+                <ul class="plain">
+                    <li>Space Grotesk</li>
+                    <li>Chakra Petch</li>
+                    <li>JetBrains Mono</li>
+                    <li>Cascadia Mono</li>
+                    <li>0xProto Nerd Font (Subset)</li>
+                    <li>Noto Sans JP (Subset)</li>
+                    <li>Whitney</li>
+                    <li>Ethnocentric</li>
+                    <li>Zen Dots</li>
+                </ul>
+                <p>Zwei davon sind auf die tatsächlich verwendeten Zeichen reduziert (Subset), was die übertragene Dateigröße klein hält — eine rein technische Optimierung, bei der keine personenbezogenen Daten verarbeitet werden.</p>
 
                 <h3>Cloudflare</h3>
                 <p>Wir nutzen das Content Delivery Network (CDN) der Cloudflare Germany GmbH, Rosental 7, c/o Mindspace, 80331 München, Deutschland ("Cloudflare"), um die Sicherheit und die Auslieferungsgeschwindigkeit unserer Website zu erhöhen. Dies entspricht unserem berechtigten Interesse nach Art. 6 Abs. 1 lit. f DSGVO. Ein CDN ist ein Netzwerk aus weltweit verteilten Servern, das Inhalte optimiert an den Websitenutzer ausliefern kann. Für diesen Zweck können personenbezogene Daten (insbesondere IP-Adressen) in Server-Logfiles von Cloudflare verarbeitet werden.</p>
+                <p>Cloudflare ist von uns so konfiguriert, dass keine Cookies in deinem Browser gesetzt werden. Cloudflare Web Analytics oder eine vergleichbare Messfunktion wird nicht eingesetzt.</p>
                 <p>Cloudflare ist als Auftragsverarbeiter auf Grundlage eines Auftragsverarbeitungsvertrags für uns tätig. Du hast das Recht, der Verarbeitung zu widersprechen; ob der Widerspruch erfolgreich ist, ist im Rahmen einer Interessenabwägung zu ermitteln. Die Funktionsfähigkeit der Website ist ohne diese Verarbeitung nicht gewährleistet.</p>
                 <p>Cloudflare hat Compliance-Maßnahmen für internationale Datenübermittlungen umgesetzt, die auf den EU-Standardvertragsklauseln (SCCs) basieren. Weitere Informationen: <a href="https://www.cloudflare.com/cloudflare-customer-dpa/" target="_blank" rel="noopener noreferrer">Cloudflare Customer DPA</a> und <a href="https://www.cloudflare.com/cloudflare_customer_SCCs-German.pdf" target="_blank" rel="noopener noreferrer">SCCs (PDF)</a>.</p>
 
@@ -803,12 +990,17 @@
                 <p>Der Status-Server wird von uns auf eigener Infrastruktur innerhalb der Europäischen Union betrieben. Eine Weitergabe der Daten an Dritte über das technisch zur Auslieferung des Badges Notwendige hinaus findet nicht statt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO — wir haben ein berechtigtes Interesse, den Betriebszustand unserer Infrastruktur transparent für Besucher anzuzeigen.</p>
                 <p>Du kannst das Laden des Badges durch den Einsatz eines Content-Blockers oder durch Deaktivierung von Bildladevorgängen in deinem Browser verhindern. Die übrige Funktionalität der Website wird hiervon nicht beeinträchtigt.</p>
 
+                <h3>Fotogalerie (images.lucya.sh)</h3>
+                <p>Auf der Startseite wird eine Vorschau unserer Fotogalerie angezeigt. Dazu ruft dein Browser beim Laden der Seite eine Liste der neuesten Bilder von <a href="https://images.lucya.sh" target="_blank" rel="noopener noreferrer">images.lucya.sh</a> ab und lädt anschließend die Vorschaubilder von diesem Host. Über den Link gelangst du zur vollständigen Galerie auf demselben Host.</p>
+                <p>Dieser Host wird von uns auf eigener Infrastruktur innerhalb der Europäischen Union betrieben — es handelt sich nicht um einen Drittanbieter. In dessen Server-Logfiles können folgende Daten verarbeitet werden: IP-Adresse, Browsertyp und Browserversion, Betriebssystem, Referrer-URL, Uhrzeit der Anfrage, User-Agent-String. Es gilt dieselbe Speicherdauer wie für die in Abschnitt 04 beschriebenen Server-Log-Dateien.</p>
+                <p>Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO — wir haben ein berechtigtes Interesse daran, Bilder von einem dafür optimierten Host statt vom Hauptserver auszuliefern. Eine Weitergabe an Dritte findet nicht statt.</p>
+
                 <h3>Externe Verlinkungen zu Social Media und Drittanbietern</h3>
                 <p>Auf dieser Website befinden sich Links zu unseren Profilen auf externen Plattformen (z. B. GitHub, Bluesky, Instagram, Threads, X/Twitter, Reddit, Spotify, Steam, Inara). Es handelt sich dabei um gewöhnliche Hyperlinks — es werden keine Widgets oder Tracking-Pixel eingebunden und beim bloßen Laden unserer Seite werden keine Daten an diese Plattformen übertragen.</p>
                 <p>Sobald du einen dieser Links <em>anklickst</em>, baut dein Browser eine Verbindung zum Betreiber der verlinkten Plattform auf. Dabei werden mindestens deine IP-Adresse und ggf. weitere Daten an den jeweiligen Betreiber übermittelt; dieser kann gemäß seiner eigenen Datenschutzerklärung Cookies oder andere Identifier setzen. Wir haben darauf keinen Einfluss. Bitte beachte für Details die Datenschutzerklärungen der jeweiligen Plattformen.</p>
             </section>
 
-            <section>
+            <section data-sec="medien">
                 <div class="sec-head"><span class="sec-head__num">06</span><h2>Rechtlicher Hinweis zur Mediennutzung</h2></div>
                 <p>Diese Website enthält verschiedene visuelle Elemente wie Slackmojis, 88×31-Buttons, Fan-Artworks, Logos, Screenshots, Cover-Artworks und Key-Artworks. Diese Inhalte können urheberrechtlich oder markenrechtlich geschützt sein und gehören ihren jeweiligen Rechteinhabern, einschließlich (aber nicht beschränkt auf):</p>
                 <ul class="plain">
@@ -836,7 +1028,7 @@
         <footer class="legal-foot">
             <span class="legal-foot__mark">
                 <img src="images/logo/lucya_logo.svg" alt="" aria-hidden="true" />
-                // EOF · privacy_policy.md
+                <span id="foot-mark-text">// end of document · last updated 2026-08-22</span>
             </span>
             <a href="/">← back to lucya.sh</a>
         </footer>
