@@ -26,7 +26,7 @@
   // guess about whether you've been here before.
   //
   // 5.4s, down from 7.4s. The tail is deliberate, not slack:
-  //   ~2.9s  logo build ends, wordmark settled, idle pulse starts breathing
+  //   ~3.15s logo build ends, wordmark settled, idle pulse starts breathing
   //   ~3.4s  progress bar reaches 100%
   //   ~4.5s  the .is-complete blink across the boot chrome finishes
   //   ~5.4s  a full second of settled logo, then the handoff
@@ -147,25 +147,38 @@
     const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (LITE || REDUCED){
       // no draw-in, no shake/burst intervals — final state immediately
-      ['p0','p1','p2','p3','p4','p5'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.add('drawn', 'filled');
+      mainSvg.querySelectorAll('.piece').forEach(el => {
+        el.classList.add('drawn', 'filled');
       });
       return;
     }
     const rgbR = document.getElementById('rgbR');
     const rgbB = document.getElementById('rgbB');
-    // Stroke durations, shortened along with the rest of the boot. Each piece
-    // still finishes drawing before the next one is halfway, which is what
-    // makes it read as an assembly rather than six things happening at once.
+    // The mark is mirror-symmetric, so it builds in PAIRS rather than one
+    // piece at a time. Drawing a left feather and then its right twin a beat
+    // later reads as a stutter, not as assembly — the eye sees the symmetry
+    // break and waits for it to be repaired. Stepping outward from the centre
+    // spine keeps the mark balanced on every frame of the build.
+    //
+    // Durations are set from each path's own length so the stroke travels at
+    // roughly one speed everywhere (~1250-1450 user units/sec). Reusing one
+    // duration for every group would draw the 1245-unit wings at more than
+    // twice the pace of the 481-unit feathers, and a mark whose parts appear
+    // at different speeds reads as several animations rather than one hand.
+    // The tail is the deliberate exception — slower, because it is the
+    // opening beat with nothing else on screen to race.
+    //
+    // Groups overlap rather than queue: the wings start third but are the
+    // longest stroke, so they land last, at ~1.4s, and the big sweep closing
+    // the outline is the payoff of phase 1 instead of a straggler.
     const order = [
-      { id: 'p2', dur: 0.75 },
-      { id: 'p5', dur: 0.62 },
-      { id: 'p3', dur: 0.62 },
-      { id: 'p0', dur: 0.45 },
-      { id: 'p4', dur: 0.3 },
-      { id: 'p1', dur: 0.3 },
+      { ids: ['pc-tail'],                  dur: 0.66 },  // 579u -> ~880 u/s
+      { ids: ['pc-head'],                  dur: 0.46 },  // 574u -> ~1250
+      { ids: ['pc-wing-l',  'pc-wing-r'],  dur: 0.86 },  // 1245u -> ~1450
+      { ids: ['pc-mid-l',   'pc-mid-r'],   dur: 0.46 },  // 622u -> ~1350
+      { ids: ['pc-small-l', 'pc-small-r'], dur: 0.36 },  // 481u -> ~1340
     ];
+    const groupEls = g => g.ids.map(id => document.getElementById(id)).filter(Boolean);
     const wait = ms => new Promise(r => setTimeout(r, ms));
     const rgbSplit = dx => {
       if (rgbR){ rgbR.style.opacity = '0.4'; rgbR.style.transform = `translate(${-dx}px, ${dx*0.3}px)`; }
@@ -257,15 +270,13 @@
     const aborted = () => !!splashEl && splashEl.classList.contains('is-done');
 
     (async () => {
-      order.forEach(p => {
-        const el = document.getElementById(p.id);
-        if (!el) return;
+      order.forEach(g => groupEls(g).forEach(el => {
         try {
           const len = el.getTotalLength();
           el.style.setProperty('--len', len);
-          el.style.setProperty('--dur', p.dur + 's');
+          el.style.setProperty('--dur', g.dur + 's');
         } catch(e){}
-      });
+      }));
       // the wordmark is held back and glitched in at the end (phase 3)
       if (label) label.style.opacity = '0';
 
@@ -273,12 +284,21 @@
       await wait(200);
       for (let i = 0; i < order.length; i++){
         if (aborted()) return;
-        const el = document.getElementById(order[i].id);
-        if (el) el.classList.add('drawn');
+        groupEls(order[i]).forEach(el => el.classList.add('drawn'));
         if (i === 1 || i === 3) await shake(mainSvg, 3, 3);
-        await wait(105);
+        // 130ms, up from 105: five groups instead of six pieces, so the gap
+        // widens to land the build on the same ~2.9s mark the splash timings
+        // and the idle-pulse delay are cut against.
+        await wait(130);
       }
-      await wait(150);
+      // The loop only STARTS each stroke — it hands off to a CSS transition
+      // and moves on, so it returns (~1.06s) well before the last stroke has
+      // landed. The wings start third but run 0.86s, finishing at ~1.43s, so
+      // this wait covers the gap. Too short and the signal drop cuts across
+      // wings that are still drawing, which turns the hinge of the sequence
+      // into an interruption of it — the dropout has to land on a finished
+      // outline to read as one.
+      await wait(380);
       if (aborted()) return;
 
       // --- phase 2: signal drops, logo comes back solid ---
@@ -286,10 +306,9 @@
       await burst(mainSvg, 6, 15);
       for (let i = 0; i < order.length; i++){
         if (aborted()) return;
-        const el = document.getElementById(order[i].id);
-        if (el) el.classList.add('filled');
+        groupEls(order[i]).forEach(el => el.classList.add('filled'));
         if (i % 2 === 0){ rgbSplit(2 + Math.random()*3); await wait(22); rgbClear(); }
-        await wait(30);
+        await wait(36);
       }
       // tail trimmed so the wordmark gets going sooner — the burst and the
       // flicker are the run-up, not the event, and at 5/4 rounds they were

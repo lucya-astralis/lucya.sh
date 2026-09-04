@@ -696,7 +696,7 @@ img{ user-select:none; -webkit-user-drag:none; }
 .glitch-logo{
   position:relative;
   width:min(620px, 78vw);
-  aspect-ratio: 1337 / 815;
+  aspect-ratio: 964 / 543;
   margin:0 auto;
   filter:drop-shadow(0 0 36px rgba(91,138,255,.35));
   /* Breathing glow once the build is done. It is deliberately slower than
@@ -704,10 +704,11 @@ img{ user-select:none; -webkit-user-drag:none; }
      powered-up, not as another event. signalLoss writes an inline `filter`
      during the dropout, which wins over this for those 260ms — the glow
      dying mid-cut is the point. */
-  /* 7s, and the delay is set to land on the end of the logo build (~2.9s) so
+  /* 7s, and the delay is set to land on the end of the logo build (~3.15s) so
      the first breath starts the moment the wordmark stops moving rather than
-     cutting across it. */
-  animation: splashIdlePulse 7s ease-in-out 2.9s infinite;
+     cutting across it. The new mark's wings are a longer stroke than anything
+     in the old one, which pushed the build end out from 2.9s. */
+  animation: splashIdlePulse 7s ease-in-out 3.15s infinite;
 }
 @keyframes splashIdlePulse{
   0%, 100%{ filter:drop-shadow(0 0 20px rgba(91,138,255,.22)); }
@@ -738,12 +739,9 @@ img{ user-select:none; -webkit-user-drag:none; }
 .glitch-logo__rgb--b{ z-index:3; }
 .glitch-logo__rgb .piece--static{
   fill:none;
-  stroke-width:1.4;
+  stroke-width:1;
   stroke-dasharray:none;
   stroke-dashoffset:0;
-}
-.glitch-logo__rgb .piece--static.piece--head{
-  stroke-width:0.21;
 }
 .glitch-logo__rgb--r .piece--static{ stroke:#7aa6ff; fill:#7aa6ff; }
 .glitch-logo__rgb--b .piece--static{ stroke:#b478ff; fill:#b478ff; }
@@ -751,7 +749,7 @@ img{ user-select:none; -webkit-user-drag:none; }
 .piece{
   fill: rgba(255,255,255,0);
   stroke: rgba(210,230,255,.78);
-  stroke-width: 1.5;
+  stroke-width: 1.08;
   stroke-linejoin: round;
   stroke-miterlimit: 2;
   stroke-dasharray: var(--len);
@@ -765,14 +763,10 @@ img{ user-select:none; -webkit-user-drag:none; }
 .piece.filled{
   fill: rgba(255,255,255,1);
   stroke: rgba(210,230,255,.2);
-  stroke-width: .6;
+  stroke-width: .43;
   transition: fill .18s var(--ease-build), stroke .3s ease;
 }
 
-/* eagle head sits inside a matrix(4.6, 1.9, -3.4, 8.3, …) parent
-   (~6.7× linear scale). Compensate so its stroke matches the rest. */
-.piece--head{ stroke-width: 0.22; }
-.piece--head.filled{ stroke-width: 0.09; }
 
 @keyframes splashLogoReveal{
   from{ opacity:0; transform:scale(.94); filter:blur(4px); }
