@@ -10,3 +10,6 @@ Desktop.ini
 # sample for testing) — committing it would ship stale numbers that the
 # page would then present as live
 status.json
+
+# aperture output, generated locally — not part of the repo
+/aperture/
