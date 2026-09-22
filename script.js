@@ -901,6 +901,39 @@
 <span style="color: #BD93F9;">                                  └ BT Ver</span> <span style="color: #BFBFBF;">-></span><span style="color: #F8F8F2;"> 5.2</span>`
     },
     {
+      id: 'ceres',
+      tab: 'ceres',
+      group: 'mobile',
+      title: 'ceres.lucya.intra // macbook 12-inch 2017',
+      width: 1000,
+      content: `<span style="color:#61BB46;">                     ..'</span>          <span style="color: #33cc33;">lucya@Ceres</span>
+<span style="color:#61BB46;">                 ,xNMM.</span>           <span style="color: #33cc33;">-----------</span>
+<span style="color:#61BB46;">               .OMMMMo</span>            <span style="color: #e5c07b;">OS:</span> <span style="color: #ffffff;">macOS Ventura 13.7.8 (22H730) x86_64</span>
+<span style="color:#61BB46;">               lMM"</span>               <span style="color: #e5c07b;">Host:</span> <span style="color: #ffffff;">MacBook (Retina, 12-inch, 2017) (1.0)</span>
+<span style="color:#61BB46;">     .;loddo:.  .olloddol;.</span>       <span style="color: #e5c07b;">Kernel:</span> <span style="color: #ffffff;">Darwin 22.6.0</span>
+<span style="color:#61BB46;">   cKMMMMMMMMMMNWMMMMMMMMMM0:</span>     <span style="color: #e5c07b;">Uptime:</span> <span style="color: #ffffff;">17 hours, 38 mins</span>
+<span style="color:#FDB827;"> .KMMMMMMMMMMMMMMMMMMMMMMMWd.</span>     <span style="color: #e5c07b;">Shell:</span> <span style="color: #ffffff;">zsh 5.9</span>
+<span style="color:#FDB827;"> XMMMMMMMMMMMMMMMMMMMMMMMX.</span>       <span style="color: #e5c07b;">Display (Color LCD):</span> <span style="color: #ffffff;">2880x1800 @ 2x in 12", 60 Hz [Built-in]</span>
+<span style="color:#E03A3E;">;MMMMMMMMMMMMMMMMMMMMMMMM:</span>        <span style="color: #e5c07b;">Window Manager:</span> <span style="color: #ffffff;">Quartz Compositor 1.600.0 (with Rectangle 1.100)</span>
+<span style="color:#E03A3E;">:MMMMMMMMMMMMMMMMMMMMMMMM:</span>        <span style="color: #e5c07b;">WM Theme:</span> <span style="color: #ffffff;">Multicolor (Dark)</span>
+<span style="color:#E03A3E;">.MMMMMMMMMMMMMMMMMMMMMMMMX.</span>       <span style="color: #e5c07b;">Theme:</span> <span style="color: #ffffff;">Aqua</span>
+<span style="color:#E03A3E;"> kMMMMMMMMMMMMMMMMMMMMMMMMWd.</span>     <span style="color: #e5c07b;">Font:</span> <span style="color: #ffffff;">.AppleSystemUIFont [System], Helvetica [User]</span>
+<span style="color:#963D97;"> 'XMMMMMMMMMMMMMMMMMMMMMMMMMMk</span>    <span style="color: #e5c07b;">Cursor:</span> <span style="color: #ffffff;">Fill - Black, Outline - White (32px)</span>
+<span style="color:#963D97;">  'XMMMMMMMMMMMMMMMMMMMMMMMMK.</span>    <span style="color: #e5c07b;">Terminal:</span> <span style="color: #ffffff;">ghostty 1.3.1</span>
+<span style="color:#009DDC;">    kMMMMMMMMMMMMMMMMMMMMMMd</span>      <span style="color: #e5c07b;">Terminal Font:</span> <span style="color: #ffffff;">0xProto Nerd Font (13pt)</span>
+<span style="color:#009DDC;">     ;KMMMMMMMWXXWMMMMMMMk.</span>       <span style="color: #e5c07b;">CPU:</span> <span style="color: #ffffff;">Intel(R) Core(TM) m3-7Y32 (4) @ 1.20 GHz</span>
+<span style="color:#009DDC;">       "cooc*"    "*coo'"</span>         <span style="color: #e5c07b;">GPU:</span> <span style="color: #ffffff;">Intel HD Graphics 615 [Integrated]</span>
+                                  <span style="color: #e5c07b;">Memory:</span> <span style="color: #ffffff;">4.64 GiB / 8.00 GiB (58%)</span>
+                                  <span style="color: #e5c07b;">Swap:</span> <span style="color: #ffffff;">290.50 MiB / 1.00 GiB (28%)</span>
+                                  <span style="color: #e5c07b;">Disk (/):</span> <span style="color: #ffffff;">42.68 GiB / 233.47 GiB (18%) - apfs [Read-only]</span>
+                                  <span style="color: #e5c07b;">Disk (/Volumes/Backup):</span> <span style="color: #ffffff;">161.35 GiB / 465.57 GiB (35%) - apfs [External]</span>
+                                  <span style="color: #e5c07b;">Disk (/Volumes/Ceres):</span> <span style="color: #ffffff;">161.35 GiB / 465.57 GiB (35%) - apfs [External]</span>
+                                  <span style="color: #e5c07b;">Local IP (en0):</span> <span style="color: #ffffff;">192.168.11.38/24</span>
+                                  <span style="color: #e5c07b;">Battery (bq20z451):</span> <span style="color: #ffffff;">74% [AC Connected, Charging]</span>
+                                  <span style="color: #e5c07b;">Power Adapter:</span> <span style="color: #ffffff;">60W</span>
+                                  <span style="color: #e5c07b;">Locale:</span> <span style="color: #ffffff;">en_US.UTF-8</span>`
+    },
+    {
       id: 'kolibri',
       tab: 'kolibri',
       group: 'mobile',
@@ -1024,39 +1057,6 @@
                                     <span style="color:#F9F1A5;">Local IP (WLAN):</span> <span style="color:#F2F2F2;">192.168.178.54/24</span>
                                     <span style="color:#F9F1A5;">Battery (SR Real Battery):</span> <span style="color:#F2F2F2;">77% (3 hours, 56 mins remaining) [Discharging]</span>
                                     <span style="color:#F9F1A5;">Locale:</span> <span style="color:#F2F2F2;">de-DE</span>`
-    },
-    {
-      id: 'ceres',
-      tab: 'ceres',
-      group: 'mobile',
-      title: 'ceres.lucya.intra // macbook 12-inch 2017',
-      width: 1000,
-      content: `<span style="color:#61BB46;">                     ..'</span>          <span style="color: #33cc33;">lucya@Ceres</span>
-<span style="color:#61BB46;">                 ,xNMM.</span>           <span style="color: #33cc33;">-----------</span>
-<span style="color:#61BB46;">               .OMMMMo</span>            <span style="color: #e5c07b;">OS:</span> <span style="color: #ffffff;">macOS Ventura 13.7.8 (22H730) x86_64</span>
-<span style="color:#61BB46;">               lMM"</span>               <span style="color: #e5c07b;">Host:</span> <span style="color: #ffffff;">MacBook (Retina, 12-inch, 2017) (1.0)</span>
-<span style="color:#61BB46;">     .;loddo:.  .olloddol;.</span>       <span style="color: #e5c07b;">Kernel:</span> <span style="color: #ffffff;">Darwin 22.6.0</span>
-<span style="color:#61BB46;">   cKMMMMMMMMMMNWMMMMMMMMMM0:</span>     <span style="color: #e5c07b;">Uptime:</span> <span style="color: #ffffff;">17 hours, 38 mins</span>
-<span style="color:#FDB827;"> .KMMMMMMMMMMMMMMMMMMMMMMMWd.</span>     <span style="color: #e5c07b;">Shell:</span> <span style="color: #ffffff;">zsh 5.9</span>
-<span style="color:#FDB827;"> XMMMMMMMMMMMMMMMMMMMMMMMX.</span>       <span style="color: #e5c07b;">Display (Color LCD):</span> <span style="color: #ffffff;">2880x1800 @ 2x in 12", 60 Hz [Built-in]</span>
-<span style="color:#E03A3E;">;MMMMMMMMMMMMMMMMMMMMMMMM:</span>        <span style="color: #e5c07b;">Window Manager:</span> <span style="color: #ffffff;">Quartz Compositor 1.600.0 (with Rectangle 1.100)</span>
-<span style="color:#E03A3E;">:MMMMMMMMMMMMMMMMMMMMMMMM:</span>        <span style="color: #e5c07b;">WM Theme:</span> <span style="color: #ffffff;">Multicolor (Dark)</span>
-<span style="color:#E03A3E;">.MMMMMMMMMMMMMMMMMMMMMMMMX.</span>       <span style="color: #e5c07b;">Theme:</span> <span style="color: #ffffff;">Aqua</span>
-<span style="color:#E03A3E;"> kMMMMMMMMMMMMMMMMMMMMMMMMWd.</span>     <span style="color: #e5c07b;">Font:</span> <span style="color: #ffffff;">.AppleSystemUIFont [System], Helvetica [User]</span>
-<span style="color:#963D97;"> 'XMMMMMMMMMMMMMMMMMMMMMMMMMMk</span>    <span style="color: #e5c07b;">Cursor:</span> <span style="color: #ffffff;">Fill - Black, Outline - White (32px)</span>
-<span style="color:#963D97;">  'XMMMMMMMMMMMMMMMMMMMMMMMMK.</span>    <span style="color: #e5c07b;">Terminal:</span> <span style="color: #ffffff;">ghostty 1.3.1</span>
-<span style="color:#009DDC;">    kMMMMMMMMMMMMMMMMMMMMMMd</span>      <span style="color: #e5c07b;">Terminal Font:</span> <span style="color: #ffffff;">0xProto Nerd Font (13pt)</span>
-<span style="color:#009DDC;">     ;KMMMMMMMWXXWMMMMMMMk.</span>       <span style="color: #e5c07b;">CPU:</span> <span style="color: #ffffff;">Intel(R) Core(TM) m3-7Y32 (4) @ 1.20 GHz</span>
-<span style="color:#009DDC;">       "cooc*"    "*coo'"</span>         <span style="color: #e5c07b;">GPU:</span> <span style="color: #ffffff;">Intel HD Graphics 615 [Integrated]</span>
-                                  <span style="color: #e5c07b;">Memory:</span> <span style="color: #ffffff;">4.64 GiB / 8.00 GiB (58%)</span>
-                                  <span style="color: #e5c07b;">Swap:</span> <span style="color: #ffffff;">290.50 MiB / 1.00 GiB (28%)</span>
-                                  <span style="color: #e5c07b;">Disk (/):</span> <span style="color: #ffffff;">42.68 GiB / 233.47 GiB (18%) - apfs [Read-only]</span>
-                                  <span style="color: #e5c07b;">Disk (/Volumes/Backup):</span> <span style="color: #ffffff;">161.35 GiB / 465.57 GiB (35%) - apfs [External]</span>
-                                  <span style="color: #e5c07b;">Disk (/Volumes/Ceres):</span> <span style="color: #ffffff;">161.35 GiB / 465.57 GiB (35%) - apfs [External]</span>
-                                  <span style="color: #e5c07b;">Local IP (en0):</span> <span style="color: #ffffff;">192.168.11.38/24</span>
-                                  <span style="color: #e5c07b;">Battery (bq20z451):</span> <span style="color: #ffffff;">74% [AC Connected, Charging]</span>
-                                  <span style="color: #e5c07b;">Power Adapter:</span> <span style="color: #ffffff;">60W</span>
-                                  <span style="color: #e5c07b;">Locale:</span> <span style="color: #ffffff;">en_US.UTF-8</span>`
     },
   ];
 
