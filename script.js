@@ -678,7 +678,7 @@
       // Systemsteuerung > Info-Center (Allgemein / Speicher / Netzwerk).
       // Only what those pages actually show — the serial number and the MAC
       // stay off a public page. The logo is the DSM app icon in ASCII.
-      content: `  <span style="color:#2074cf;">#############################</span>     <span style="color:#44a9fe;">astra</span><span style="color:#8a8f98;">@</span><span style="color:#44a9fe;">vega</span>
+      content: `  <span style="color:#2074cf;">#############################</span>     <span style="color:#44a9fe;">lucya</span><span style="color:#8a8f98;">@</span><span style="color:#44a9fe;">vega</span>
  <span style="color:#2074cf;">###############################</span>    <span style="color:#8a8f98;">----------</span>
 <span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">OS:</span><span style="color:#e7e7e7;"> DSM 7.x.x-xxxx</span>
 <span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">Host:</span><span style="color:#e7e7e7;"> Synology DS918+ (4-bay)</span>
@@ -784,7 +784,7 @@
       group: 'server',
       title: 'backup-01.lucya.intra // thinkstation c20x / old backup pc',
       width: 1020,
-      content: `<span style="color:#ee0303;">        ,.=:!!t3Z3z.,</span>                   <span style="color:#08e008;">astra@backup-01</span>
+      content: `<span style="color:#ee0303;">        ,.=:!!t3Z3z.,</span>                   <span style="color:#08e008;">lucya@backup-01</span>
 <span style="color:#ee0303;">       :tt:::tt333EE3</span>                   <span style="color:#08e008;">---------------</span>
 <span style="color:#ee0303;">       Et:::ztt33EEEL</span> <span style="color:#08e008;">@Ee.,      ..,</span>    <span style="color:#e5c07b;">OS:</span> <span style="color:#ffffff;">Windows 7 Professional x86_64</span>
 <span style="color:#ee0303;">      ;tt:::tt333EE7</span> <span style="color:#08e008;">;EEEEEEttttt33#</span>    <span style="color:#e5c07b;">Host:</span> <span style="color:#ffffff;">4269A55 (ThinkStation C20X)</span>
@@ -813,7 +813,7 @@
       group: 'desktop',
       title: 'vanta.lucya.intra // main system',
       width: 680,
-      content: `<span style="color:#F14F21;"> lllllllllllllll</span>   <span style="color:#7EB900;">lllllllllllllll</span>  <span style="color:#F9F1A5;">astra@vanta</span>
+      content: `<span style="color:#F14F21;"> lllllllllllllll</span>   <span style="color:#7EB900;">lllllllllllllll</span>  <span style="color:#F9F1A5;">lucya@vanta</span>
 <span style="color:#F14F21;"> lllllllllllllll</span>   <span style="color:#7EB900;">lllllllllllllll</span>  <span style="color:#767676;">-----------</span>
 <span style="color:#F14F21;"> lllllllllllllll</span>   <span style="color:#7EB900;">lllllllllllllll</span>  <span style="color:#F9F1A5;">OS:</span> <span style="color:#F2F2F2;">Windows 11 Pro [64-bit]</span>
 <span style="color:#F14F21;"> lllllllllllllll</span>   <span style="color:#7EB900;">lllllllllllllll</span>  <span style="color:#F9F1A5;">Host:</span> <span style="color:#F2F2F2;">Gigabyte A520 AORUS ELITE</span>
@@ -840,7 +840,7 @@
       group: 'desktop',
       title: 'orcus.lucya.intra // imac mid 2011 21.5 inch',
       width: 730,
-      content: `<span style="color:#61BB46;">                     ..'</span>          <span style="color: #33cc33;">astra@Orcus</span>
+      content: `<span style="color:#61BB46;">                     ..'</span>          <span style="color: #33cc33;">lucya@Orcus</span>
 <span style="color:#61BB46;">                 ,xNMM.</span>           <span style="color: #33cc33;">-----------</span>
 <span style="color:#61BB46;">               .OMMMMo</span>            <span style="color: #e5c07b;">OS:</span> <span style="color: #ffffff;">macOS Sequoia 15.1.1 x86_64</span>
 <span style="color:#61BB46;">               lMM"</span>               <span style="color: #e5c07b;">Host:</span> <span style="color: #ffffff;">iMac (21.5-inch, Mid 2011)</span>
@@ -871,7 +871,7 @@
       group: 'mobile',
       title: 'aoi.lucya.intra // mobile workstation',
       width: 890,
-      content: `<span style="color: #50FA7B;">                                  astra</span><span style="color: #BFBFBF;">@</span><span style="color: #50FA7B;">aoi</span>
+      content: `<span style="color: #50FA7B;">                                  lucya</span><span style="color: #BFBFBF;">@</span><span style="color: #50FA7B;">aoi</span>
 <span style="color: #BFBFBF;">                                  ---------</span>
 
 <span style="color: #F1FA8C;">                                  모Hardware</span>
@@ -939,7 +939,7 @@
       group: 'mobile',
       title: 'kolibri.lucya.intra // main laptop / tablet',
       width: 1000,
-      content: `<span style="color:#08a1f7;">/////////////////</span>  <span style="color:#09e0fe;">/////////////////</span>    <span style="color:#56b6c2;">Astra@kolibri</span>
+      content: `<span style="color:#08a1f7;">/////////////////</span>  <span style="color:#09e0fe;">/////////////////</span>    <span style="color:#56b6c2;">lucya@kolibri</span>
 <span style="color:#08a1f7;">/////////////////</span>  <span style="color:#09e0fe;">/////////////////</span>    <span style="color:#56b6c2;">--------------</span>
 <span style="color:#08a1f7;">/////////////////</span>  <span style="color:#09e0fe;">/////////////////</span>    <span style="color:#e5c07b;">OS:</span> Windows 11 Pro x86_64
 <span style="color:#08a1f7;">/////////////////</span>  <span style="color:#09e0fe;">/////////////////</span>    <span style="color:#e5c07b;">Host:</span> Surface Pro 7
@@ -973,7 +973,7 @@
       group: 'mobile',
       title: 'rubicon.lucya.intra // linux macbook',
       width: 820,
-      content: `<span style="color: #EDAECA;">                                           </span><span style="color: #D26BA4;">astra</span><span style="color: #EDAECA;">@</span><span style="color: #D26BA4;">Rubicon</span>
+      content: `<span style="color: #EDAECA;">                                           </span><span style="color: #D26BA4;">lucya</span><span style="color: #EDAECA;">@</span><span style="color: #D26BA4;">Rubicon</span>
 <span style="color: #D26BA4;">           ..:/ossyyyysso/:.</span>               <span style="color: #EDAECA;">-------------</span>
 <span style="color: #D26BA4;">        .:oyyyyyyyyyyyyyyyyyyo:.</span>           <span style="color: #56C4EB;">OS:</span> <span style="color: #EDAECA;">Kubuntu 25.10 x86_64</span>
 <span style="color: #EDAECA;">      -oyyyyyyyo</span><span style="color: #FFFFFF;">dMM</span><span style="color: #EDAECA;">yyyyyyyysyyyyo-</span>         <span style="color: #56C4EB;">Host:</span> <span style="color: #EDAECA;">MacBookPro11,1 1.0</span>
@@ -1001,7 +1001,7 @@
       group: 'mobile',
       title: 'delta.lucya.intra // main system',
       width: 680,
-      content: `<span style="color: #61FFCA;">                  -'                     </span><span style="color: #EDECEE;">astra</span><span style="color: #A277FF;">@</span><span style="color: #EDECEE;">delta</span>
+      content: `<span style="color: #61FFCA;">                  -'                     </span><span style="color: #EDECEE;">lucya</span><span style="color: #A277FF;">@</span><span style="color: #EDECEE;">delta</span>
 <span style="color: #61FFCA;">                 .o+'                    </span><span style="color: #A277FF;">-------------</span>
 <span style="color: #61FFCA;">                'ooo/                    </span><span style="color: #A277FF;">OS:</span><span style="color: #EDECEE;"> Arch Linux x86_64</span>
 <span style="color: #61FFCA;">               '+oooo:                   </span><span style="color: #A277FF;">Host:</span><span style="color: #EDECEE;"> HP EliteBook 2570p (A1029D1102)</span>
@@ -1033,7 +1033,7 @@
       group: 'mobile',
       title: 'motte.lucya.intra // garbage 1st gen lenovo yogabook',
       width: 950,
-      content: `<span style="color:#E2232A;"> lllllllllllllll</span>   <span style="color:#E2232A;">lllllllllllllll</span>  <span style="color:#F9F1A5;">Astra@motte</span>
+      content: `<span style="color:#E2232A;"> lllllllllllllll</span>   <span style="color:#E2232A;">lllllllllllllll</span>  <span style="color:#F9F1A5;">lucya@motte</span>
 <span style="color:#E2232A;"> lllllllllllllll</span>   <span style="color:#E2232A;">lllllllllllllll</span>  <span style="color:#767676;">--------------</span>
 <span style="color:#E2232A;"> lllllllllllllll</span>   <span style="color:#E2232A;">lllllllllllllll</span>  <span style="color:#F9F1A5;">OS:</span> <span style="color:#F2F2F2;">Windows 11 Pro x86_64</span>
 <span style="color:#E2232A;"> lllllllllllllll</span>   <span style="color:#E2232A;">lllllllllllllll</span>  <span style="color:#F9F1A5;">Host:</span> <span style="color:#F2F2F2;">ZA150085DE (X91F)</span>
