@@ -2265,8 +2265,11 @@ section{
 .buttons__note{ margin-top:12px; }
 
 /* FRIENDS — same wall as the collection, but these are real links */
-.friends__wall{ justify-content:start; }
-.friends__note{ margin-top:12px; display:flex; flex-direction:column; gap:8px; }
+/* kept compact: it follows the collection directly, so it doesn't need a
+   full section's top padding, and the snippet sits on a single line */
+.layout section.friends{ padding-top:8px; }
+.friends__wall{ justify-content:start; padding:8px 10px; }
+.friends__note{ margin-top:8px; display:flex; flex-direction:column; gap:6px; }
 .friends__snippet{
   all:unset;
   cursor:copy;
@@ -2274,8 +2277,12 @@ section{
   font-family:"Proto Nerd Font Regular", monospace;
   font-size:10px;
   line-height:1.5;
-  word-break:break-all;
-  padding:8px 10px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:100%;
+  box-sizing:border-box;
+  padding:5px 8px;
   background:rgba(0,0,0,.55);
   border:1px solid var(--line);
   color:var(--text);
@@ -2284,7 +2291,14 @@ section{
 .friends__snippet:hover,
 .friends__snippet:focus-visible{ border-color:var(--acc-cy); }
 .friends__snippet.is-copied{ border-color:var(--acc-cy); }
-.friends__snippet.is-copied::after{ content:"  ✓ copied"; color:var(--acc-cy); }
+.friends__snippet{ position:relative; }
+.friends__snippet.is-copied::after{
+  content:"✓ copied";
+  position:absolute; inset:0 0 0 auto;
+  padding:5px 8px;
+  background:rgba(0,0,0,.9);
+  color:var(--acc-cy);
+}
 
 /* ================================================================
    NEOFETCH — retro CRT terminal
