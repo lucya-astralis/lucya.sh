@@ -128,7 +128,7 @@
   }
 
   // ---------- REVEAL : mark below-fold blocks (observer starts post-splash) ----------
-  const revealSelectors = ['.about', '.interests', '.rack', '.buttons', '.neofetch', '.services', '.spotify', '.photos', '.foot'];
+  const revealSelectors = ['.about', '.interests', '.rack', '.buttons', '.friends', '.neofetch', '.services', '.spotify', '.photos', '.foot'];
   const revealTargets = revealSelectors.flatMap(sel => Array.from(document.querySelectorAll(sel)));
   revealTargets.forEach(el => el.classList.add('reveal-block'));
 
@@ -552,6 +552,38 @@
       frag.appendChild(a);
     });
     wall.appendChild(frag);
+  }
+
+  // ---------- FRIENDS (linked 88x31s) ---------------------------
+  const friends = [
+    ['aspectra.gif', 'aspectra.world', 'https://aspectra.world'],
+  ];
+  const fWall = document.getElementById('friendWall');
+  if (fWall) {
+    const frag = document.createDocumentFragment();
+    friends.forEach(([file, name, href]) => {
+      const a = document.createElement('a');
+      a.className = 'b81';
+      a.href = href;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.title = name;
+      a.innerHTML =
+        `<img src="images/88x31 buttons/${file}" alt="${name}" width="88" height="31" loading="lazy" decoding="async" />` +
+        `<span class="b81__name">${name}</span>`;
+      frag.appendChild(a);
+    });
+    fWall.appendChild(frag);
+  }
+  const fSnip = document.getElementById('friendSnippet');
+  if (fSnip) {
+    fSnip.addEventListener('click', () => {
+      if (!navigator.clipboard) return;
+      navigator.clipboard.writeText(fSnip.textContent.trim()).then(() => {
+        fSnip.classList.add('is-copied');
+        setTimeout(() => fSnip.classList.remove('is-copied'), 1200);
+      }, () => {});
+    });
   }
 
   // ---------- DOMAINS --------------------------------------------

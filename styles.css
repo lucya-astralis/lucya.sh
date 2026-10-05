@@ -1033,6 +1033,7 @@ section{
   .photos    { order:4; }
   .interests { order:5; }
   .buttons   { order:6; }
+  .friends   { order:6; } /* tied with .buttons → follows it in DOM order */
   .rack      { order:7; }
   .neofetch  { order:8; }
   .services  { order:9; }
@@ -2262,6 +2263,28 @@ section{
 .b81:hover .b81__name{ opacity:1; }
 
 .buttons__note{ margin-top:12px; }
+
+/* FRIENDS — same wall as the collection, but these are real links */
+.friends__wall{ justify-content:start; }
+.friends__note{ margin-top:12px; display:flex; flex-direction:column; gap:8px; }
+.friends__snippet{
+  all:unset;
+  cursor:copy;
+  display:block;
+  font-family:"Proto Nerd Font Regular", monospace;
+  font-size:10px;
+  line-height:1.5;
+  word-break:break-all;
+  padding:8px 10px;
+  background:rgba(0,0,0,.55);
+  border:1px solid var(--line);
+  color:var(--text);
+  transition:border-color .15s;
+}
+.friends__snippet:hover,
+.friends__snippet:focus-visible{ border-color:var(--acc-cy); }
+.friends__snippet.is-copied{ border-color:var(--acc-cy); }
+.friends__snippet.is-copied::after{ content:"  ✓ copied"; color:var(--acc-cy); }
 
 /* ================================================================
    NEOFETCH — retro CRT terminal
@@ -4216,6 +4239,7 @@ html:not(.setmode) .about,
 html:not(.setmode) .interests,
 html:not(.setmode) .rack,
 html:not(.setmode) .buttons,
+html:not(.setmode) .friends,
 html:not(.setmode) .neofetch,
 html:not(.setmode) .services,
 html:not(.setmode) .spotify,

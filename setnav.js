@@ -41,7 +41,7 @@
 
   function buildPanels() {
     panels = [
-      { main: pick(['profile']),            side: pick(['buttons', 'spotify']) },
+      { main: pick(['profile']),            side: pick(['buttons', 'friends', 'spotify']) },
       { main: pick(['about', 'interests']), side: pick(['photos']) },
       // the rack sits beside the systems/services pair and only needs a
       // narrow strip, so this set runs an extra-slim side column
