@@ -1,0 +1,15 @@
+# curl card for lucya.sh — see src/index.js
+# deploy:  cd worker && npx wrangler deploy
+# preview: cd worker && npx wrangler dev   then  curl localhost:8787/curl
+name = "lucya-curl"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+workers_dev = false
+
+# Only the pages the card can replace go through the worker — images, css,
+# js etc. never hit it (no extra latency / request quota for the site).
+routes = [
+  { pattern = "lucya.sh/", zone_name = "lucya.sh" },
+  { pattern = "lucya.sh/index.html", zone_name = "lucya.sh" },
+  { pattern = "lucya.sh/curl", zone_name = "lucya.sh" },
+]

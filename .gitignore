@@ -13,3 +13,6 @@ status.json
 
 # aperture output, generated locally — not part of the repo
 /aperture/
+
+# wrangler local state
+worker/.wrangler/
