@@ -1037,6 +1037,8 @@ section{
   .rack      { order:7; }
   .neofetch  { order:8; }
   .services  { order:9; }
+  .concordia { order:10; }
+  .reika     { order:11; }
 }
 
 @media (min-width: 1100px){
@@ -1983,6 +1985,8 @@ section{
   border-bottom:1px dashed var(--line);
   color:#d2d4f0;
 }
+.funfacts__link{ color:var(--acc-cy); border-bottom:1px dashed rgba(91,138,255,.45); }
+.funfacts__link:hover{ color:var(--text); border-bottom-color:var(--text); }
 .fx{
   display:inline-block;
   min-width:32px;
@@ -4902,4 +4906,248 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
      mix-blend-mode. Both stay visible, they just stop moving. */
   .nterm{ animation:none; }
   .nterm::before{ animation:none; }
+}
+
+/* ================================================================
+   CONCORDIA — set 07: the orrery (main) and the Expanse (side).
+   Orikaia Prime and Orikaia are drawn by concordia-gl.js into
+   #orreryGl; the copy and the dock float over the stage on wide
+   panes and drop below it on narrow ones. Concordia blue and
+   imperial gold come from the flag and the seals.
+   ================================================================ */
+.concordia, .reika{ --cc-gold:#d9b55f; --cc-gold-dim:rgba(217,181,95,.5); }
+
+.orrery{
+  position:relative;
+  height:clamp(440px, 72vh, 680px);
+  border:1px solid var(--line);
+  background:#030409;
+  overflow:hidden;
+  box-shadow: var(--glass-edge);
+}
+.orrery__stage{
+  position:absolute; inset:0;
+  touch-action:pan-y;
+  cursor:grab;
+  user-select:none; -webkit-user-select:none;
+}
+.orrery__stage.is-dragging{ cursor:grabbing; }
+.orrery__stars,
+.orrery__gl{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  display:block;
+}
+.orrery__gl{ opacity:0; transition:opacity 1.2s var(--ease-enter); }
+.orrery.is-ready .orrery__gl{ opacity:1; }
+
+/* no WebGL: the Blender renders, still */
+.orrery__still{ display:none; position:absolute; pointer-events:none; }
+.orrery.is-fallback .orrery__still{ display:block; }
+.orrery__still--giant{ width:62%; right:-12%; top:-30%; opacity:.9; }
+.orrery__still--moon { width:44%; right:14%; top:16%; }
+
+.orrery__tag{
+  position:absolute; left:0; top:0;
+  pointer-events:none;
+  font-family:"Proto Nerd Font Regular", monospace;
+  font-size:10px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  white-space:nowrap;
+  transition:opacity .3s ease;
+  will-change:transform;
+}
+.orrery__tag.is-off,
+.orrery:not(.is-ready) .orrery__tag{ opacity:0; }
+.orrery__tag span{
+  display:inline-block;
+  padding:2px 7px;
+  border:1px solid var(--line-strong);
+  background:rgba(4,5,10,.55);
+}
+/* Seiki-tō: a pin on the ground, its label on a short stalk */
+.orrery__tag--cap span{
+  transform:translate(-50%, calc(-100% - 14px));
+  color:var(--cc-gold);
+  border-color:var(--cc-gold-dim);
+}
+.orrery__tag--cap::before{
+  content:"";
+  position:absolute; left:-3px; top:-3px;
+  width:6px; height:6px;
+  border:1px solid var(--cc-gold);
+  transform:rotate(45deg);
+  box-shadow:0 0 8px rgba(217,181,95,.8);
+}
+.orrery__tag--cap::after{
+  content:"";
+  position:absolute; left:0; top:-14px;
+  width:1px; height:11px;
+  background:var(--cc-gold-dim);
+}
+
+.orrery__copy,
+.orrery__dock{
+  position:absolute;
+  left:22px;
+  width:min(370px, 38%);
+  z-index:2;
+  pointer-events:none;
+}
+.orrery__copy > *,
+.orrery__dock > *{ pointer-events:auto; }
+.orrery__copy{ top:20px; }
+.orrery__dock{ bottom:20px; }
+
+.orrery__flag{
+  display:flex; align-items:center; gap:10px;
+  font-size:11px;
+  letter-spacing:.24em;
+  color:var(--text);
+}
+.orrery__flag img{ width:30px; height:20px; display:block; box-shadow:0 0 0 1px var(--line-strong); }
+.orrery__lede{
+  margin:12px 0 0;
+  font-size:14px;
+  line-height:1.65;
+  color:var(--text-dim);
+  text-shadow:0 1px 12px rgba(0,0,0,.9);
+}
+.orrery__lede b{ color:var(--text); font-weight:500; }
+
+.orrery__tabs{
+  display:inline-flex;
+  border:1px solid var(--line-strong);
+  background:rgba(6,7,12,.6);
+  font-size:10.5px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+}
+.orrery__tabs button{
+  appearance:none;
+  background:transparent;
+  border:0;
+  color:var(--text-dim);
+  padding:8px 13px;
+  font:inherit; letter-spacing:inherit; text-transform:inherit;
+  transition:color .12s ease, background .12s ease;
+}
+.orrery__tabs button + button{ border-left:1px solid var(--line-strong); }
+.orrery__tabs button:hover{ color:var(--text); }
+.orrery__tabs button[aria-pressed="true"]{
+  color:var(--text);
+  background:rgba(91,138,255,.14);
+  box-shadow:inset 0 0 0 1px rgba(91,138,255,.35);
+}
+.orrery__tabs button:focus-visible{ outline:1px solid var(--acc-cy); outline-offset:2px; }
+
+.orrery__sheet{
+  margin:10px 0 0;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  background:var(--surface);
+  -webkit-backdrop-filter:var(--glass);
+          backdrop-filter:var(--glass);
+  box-shadow:var(--glass-edge);
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:5px 14px;
+  font-size:11px;
+  line-height:1.5;
+  animation:orrerySheet var(--dur-build) var(--ease-build);
+}
+.orrery__sheet[hidden]{ display:none; }
+.orrery__sheet dt{ color:var(--text-ghost); letter-spacing:.14em; text-transform:uppercase; }
+.orrery__sheet dd{ margin:0; color:var(--text); }
+@keyframes orrerySheet{ from{ opacity:0; transform:translateY(6px); } }
+
+.orrery__readout{
+  margin-top:10px;
+  display:flex; flex-wrap:wrap; gap:4px 12px; align-items:baseline;
+  font-size:10px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--text-ghost);
+}
+.orrery__readout b{ color:var(--cc-gold); font-weight:400; font-size:12.5px; letter-spacing:.1em; }
+.orrery.is-fallback .orrery__readout{ display:none; }
+
+/* narrow panes: the copy, the stage, then the dock */
+@media (max-width: 820px){
+  .orrery{ height:auto; display:flex; flex-direction:column; }
+  .orrery__stage{ position:relative; inset:auto; height:min(78vw, 520px); }
+  .orrery__copy,
+  .orrery__dock{ position:static; width:auto; padding:0 16px; }
+  .orrery__copy{ order:-1; padding-top:16px; padding-bottom:4px; }
+  .orrery__dock{ padding-top:4px; padding-bottom:16px; }
+  .orrery__tabs{ display:flex; }
+  .orrery__tabs button{ flex:1; }
+  .orrery__still--giant{ width:80%; }
+  .orrery__still--moon { width:56%; right:8%; top:20%; }
+}
+
+/* ----- the readme, beside it ------------------------------------ */
+.reika__intro{
+  margin:0 0 12px;
+  font-size:13.5px;
+  line-height:1.65;
+  color:var(--text-dim);
+}
+.reika__intro b{ color:var(--text); font-weight:500; }
+.reika__intro + .h-sub{ margin-top:22px; }
+
+.reika__stack,
+.reika__links{
+  list-style:none;
+  margin:0 0 22px;
+  padding:0;
+  border:1px solid var(--line);
+  background:var(--surface);
+  -webkit-backdrop-filter:var(--glass);
+          backdrop-filter:var(--glass);
+  font-size:11px;
+}
+.reika__links li + li,
+.reika__stack li + li{ border-top:1px solid var(--line); }
+.reika__stack li{
+  display:flex; justify-content:space-between; gap:10px;
+  padding:7px 12px;
+  align-items:baseline;
+}
+.reika__stack b{ color:var(--text); font-weight:400; }
+.reika__stack span{ color:var(--text-ghost); font-size:10px; letter-spacing:.06em; text-align:right; }
+.reika__note{
+  margin:0;
+  font-size:10.5px;
+  letter-spacing:.12em;
+  color:var(--text-ghost);
+}
+
+.reika__links a{
+  display:flex; flex-direction:column; gap:2px;
+  padding:8px 12px;
+  color:var(--acc-cy);
+  transition:background .12s ease, color .12s ease;
+}
+.reika__links a span{ color:var(--text-ghost); font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; }
+.reika__links a:hover{ background:rgba(91,138,255,.08); color:var(--text); }
+
+/* set-mode: the orrery takes whatever height the stage leaves it */
+html.setmode .layout__main > section.concordia.is-set-active{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  padding-bottom:0;
+}
+html.setmode .concordia .orrery{ flex:1 1 auto; min-height:280px; height:auto; }
+
+/* wide panes: the overlay gives way as the stage gets short (a laptop in
+   set-mode leaves the orrery barely 300px) - the lede goes first, then the
+   sheet; the tabs and the clock always stay */
+@media (min-width: 820.02px){
+  .orrery{ container-type:size; }
+  @container (max-height: 540px){ .orrery__lede{ display:none; } }
+  @container (max-height: 430px){ .orrery__sheet{ display:none !important; } }
 }

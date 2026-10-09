@@ -193,6 +193,7 @@
       <a href="#rack">RACK <em>/ 04</em></a>
       <a href="#systems">SYSTEMS <em>/ 05</em></a>
       <a href="#services">WEBSERVICES <em>/ 06</em></a>
+      <a href="#concordia">CONCORDIA <em>/ 07</em></a>
     </nav>
 
     <div class="nav__status">
@@ -211,6 +212,7 @@
   <a href="#rack">Rack</a>
   <a href="#systems">Systems</a>
   <a href="#services">Services</a>
+  <a href="#concordia">Concordia</a>
 </nav>
 
 <!-- ============================================================= -->
@@ -708,7 +710,7 @@
       <li><span class="fx">02</span> Listens to music 24/7, silence is not an option</li>
       <li><span class="fx">03</span> Likes minimal chaos, controlled complexity</li>
       <li><span class="fx">04</span> POSIX enthusiast</li>
-      <li><span class="fx">05</span> CEO of inter-astra corp, a fictional megacorp</li>
+      <li><span class="fx">05</span> CEO of inter-astra corp, a fictional megacorp in <a class="funfacts__link" href="#concordia" data-set-jump>Shinsei Concordia</a></li>
       <li><span class="fx">06</span> Blahaj owner, certified.</li>
     </ul>
   </div>
@@ -775,6 +777,90 @@
 
   <div class="domains__grid" id="domainGrid">
     <!-- populated by JS -->
+  </div>
+</section>
+
+
+<!-- ============================================================= -->
+<!-- CONCORDIA — Orikaia Prime and Orikaia, rendered live           -->
+<!-- (concordia.js + concordia-gl.js; maps load on first sight)     -->
+<!-- ============================================================= -->
+<section class="concordia" id="concordia">
+  <div class="section__doc">
+    <span>DOC <b>07.CONCORDIA</b></span>
+    <span>REV <b>IY 2847</b></span>
+    <span class="stamp">FICTION</span>
+    <span>FORM <b>LOR-07</b></span>
+    <span>RENDER · LIVE</span>
+  </div>
+
+  <div class="section__head">
+    <div class="section__slug">
+      <span class="ix">// 07</span>
+      <span class="name">CONCORDIA</span>
+      <span class="jp">真聖協和国</span>
+    </div>
+    <div class="section__meta">
+      <span class="mono">WORLDBUILDING · REIKA II · ORIKAIA PRIME</span>
+    </div>
+  </div>
+
+  <div class="orrery" id="orrery" data-focus="prime">
+    <div class="orrery__stage" id="orreryStage" role="img" aria-label="Orikaia Prime and the ringed giant Orikaia, rendered live. Drag to turn.">
+      <canvas class="orrery__stars" id="orreryStars" aria-hidden="true"></canvas>
+      <img class="orrery__still orrery__still--giant" alt="" aria-hidden="true" data-src="images/concordia/orikaia-render-m.webp" />
+      <img class="orrery__still orrery__still--moon" alt="" aria-hidden="true" data-src="images/concordia/orikaia-prime-render-m.webp" />
+      <canvas class="orrery__gl" id="orreryGl" aria-hidden="true"></canvas>
+      <div class="orrery__tag" id="tagGiant"><span>Orikaia · Reika II</span></div>
+      <div class="orrery__tag" id="tagMoon"><span>Orikaia Prime</span></div>
+      <div class="orrery__tag orrery__tag--cap" id="tagCap"><span>Seiki-tō</span></div>
+      <div class="orrery__tag" id="tagSat0"><span>Kagerō</span></div>
+      <div class="orrery__tag" id="tagSat1"><span>Kasumi</span></div>
+      <div class="orrery__tag" id="tagSat2"><span>Tsukiyo</span></div>
+      <div class="orrery__tag" id="tagSat3"><span>Yūgiri</span></div>
+    </div>
+
+    <div class="orrery__copy">
+      <div class="orrery__flag">
+        <img src="images/concordia/flag.svg" alt="flag of Shinsei Concordia" />
+        <span class="mono">SHINSEI CONCORDIA</span>
+      </div>
+      <p class="orrery__lede">
+        A fictional empire I'm building across a handful of websites. This is its homeworld,
+        the moon <b>Orikaia Prime</b>, in front of the gas giant <b>Orikaia</b>, drawn live in your browser.
+      </p>
+    </div>
+
+    <div class="orrery__dock">
+      <div class="orrery__tabs mono" role="group" aria-label="Focus">
+        <button type="button" data-focus="prime" aria-pressed="true">Orikaia Prime</button>
+        <button type="button" data-focus="giant" aria-pressed="false">Orikaia</button>
+        <button type="button" data-focus="system" aria-pressed="false">System</button>
+      </div>
+      <dl class="orrery__sheet mono" data-sheet="prime">
+        <dt>What</dt><dd>The homeworld, a moon built over with cities</dd>
+        <dt>Render</dt><dd>One WebGL shader, live, no 3D model</dd>
+        <dt>Maps</dt><dd>Day, night lights, terrain: made in Python</dd>
+        <dt>Cities</dt><dd>Islands, sea platforms, ridge belts, underwater</dd>
+      </dl>
+      <dl class="orrery__sheet mono" data-sheet="giant" hidden>
+        <dt>What</dt><dd>The gas giant the moon circles</dd>
+        <dt>Render</dt><dd>Same shader, cloud bands from noise</dd>
+        <dt>Storm</dt><dd>Swirled into the bands, turns with them</dd>
+        <dt>Rings</dt><dd>Drawn in its equatorial plane</dd>
+      </dl>
+      <dl class="orrery__sheet mono" data-sheet="system" hidden>
+        <dt>Kagerō</dt><dd>Tidally heated, lava lakes</dd>
+        <dt>Kasumi</dt><dd>Ice and plumes; the water works</dd>
+        <dt>Tsukiyo</dt><dd>Airless rock; the mass driver</dd>
+        <dt>Yūgiri</dt><dd>A moonlet keeping the ring gap clear</dd>
+      </dl>
+      <div class="orrery__readout mono">
+        <span>SEIKI-TŌ <b id="capClock">--:--</b></span>
+        <span id="capPhase">—</span>
+        <span class="dim">· DRAG TO TURN</span>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1168,6 +1254,55 @@
   </div>
 </section>
 
+
+<!-- ============================================================= -->
+<!-- REIKA — the empire in brief, beside the orrery                 -->
+<!-- ============================================================= -->
+<section class="reika" id="reika">
+  <div class="section__doc">
+    <span>DOC <b>07.A.README</b></span>
+    <span>REV <b>2026.10</b></span>
+    <span class="stamp stamp--ok">README</span>
+  </div>
+
+  <div class="section__head">
+    <div class="section__slug">
+      <span class="ix">// 07.A</span>
+      <span class="name">WHAT IS THIS</span>
+      <span class="jp">これは何</span>
+    </div>
+  </div>
+
+  <p class="reika__intro">
+    <b>Shinsei Concordia</b> is a worldbuilding project of mine: a made-up interstellar
+    empire with its own government, companies and planets. Each part gets its own
+    website, written as if it really existed.
+  </p>
+  <p class="reika__intro">
+    The scene beside this is its homeworld and the gas giant it circles. It isn't a
+    video or a 3D model: a single WebGL shader paints both worlds every frame, from
+    maps a Python script generates.
+  </p>
+
+  <h3 class="h-sub">THE SITES <em>サイト</em></h3>
+  <ul class="reika__links mono">
+    <li><a href="https://gov.inter-astra.net" target="_blank" rel="noopener">gov.inter-astra.net <span>the empire's government portal</span></a></li>
+    <li><a href="https://inter-astra.net" target="_blank" rel="noopener">inter-astra.net <span>a fictional tech company · 3D model</span></a></li>
+    <li><a href="https://terra.inter-astra.net" target="_blank" rel="noopener">terra.inter-astra.net <span>terraforming a planet over centuries</span></a></li>
+    <li><a href="https://aizaku.com" target="_blank" rel="noopener">aizaku.com <span>a fictional defence contractor</span></a></li>
+  </ul>
+
+  <h3 class="h-sub">BUILT WITH <em>道具</em></h3>
+  <ul class="reika__stack mono">
+    <li><b>HTML · CSS · JS</b><span>static, no framework</span></li>
+    <li><b>WebGL · three.js</b><span>live renders, model viewer</span></li>
+    <li><b>Blender</b><span>models and stills</span></li>
+    <li><b>Python</b><span>maps, seals, star charts</span></li>
+  </ul>
+
+  <p class="reika__note mono">// the lore lives on the sites. start at the portal.</p>
+</section>
+
 </div><!-- /layout__side -->
 </div><!-- /layout -->
 
@@ -1228,5 +1363,6 @@
 
 <script src="script.js"></script>
 <script src="setnav.js"></script>
+<script type="module" src="concordia.js"></script>
 </body>
 </html>

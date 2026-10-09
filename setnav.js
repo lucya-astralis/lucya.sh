@@ -45,7 +45,9 @@
       { main: pick(['about', 'interests']), side: pick(['photos']) },
       // the rack sits beside the systems/services pair and only needs a
       // narrow strip, so this set runs an extra-slim side column
-      { main: pick(['systems', 'services']),side: pick(['rack']), slim: true }
+      { main: pick(['systems', 'services']),side: pick(['rack']), slim: true },
+      // the orrery wants the width; the lore beside it is a reading strip
+      { main: pick(['concordia']),          side: pick(['reika']), slim: true }
     ];
     // footer is no longer a panel — it's rendered as a slim persistent bar
   }
@@ -278,7 +280,8 @@
 
   // ---- nav links jump to their set instead of anchor-scrolling ----
   function wireNav() {
-    var links = document.querySelectorAll('.nav__links a[href^="#"]');
+    // nav links, plus in-page links marked data-set-jump
+    var links = document.querySelectorAll('.nav__links a[href^="#"], a[data-set-jump][href^="#"]');
     for (var i = 0; i < links.length; i++) {
       (function (a) {
         var id = a.getAttribute('href').slice(1);
