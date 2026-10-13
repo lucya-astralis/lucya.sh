@@ -4967,7 +4967,7 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
 
 /* ================================================================
    CONCORDIA — set 07: the orrery (main) and the Expanse (side).
-   Orikaia Prime and Orikaia are drawn by concordia-gl.js into
+   Orikaia Prime and Orikaia are drawn by planet-gl.js into
    #orreryGl; the copy and the dock float over the stage on wide
    panes and drop below it on narrow ones. Concordia blue and
    imperial gold come from the flag and the seals.
