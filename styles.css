@@ -4082,7 +4082,56 @@ html.setmode .setbar{ display:flex; }
 }
 .mnav a.is-current{ color:var(--acc-cy); }
 .mnav a.is-current::after{ opacity:.9; }
+/* page index above the label — the bar is a tab strip now, not a TOC */
+.mnav a em{
+  font-style:normal;
+  font-size:8px; letter-spacing:.12em;
+  color:var(--text-dim); opacity:.55;
+  margin-bottom:2px;
+}
+.mnav a.is-current em{ color:var(--acc-cy); opacity:.8; }
 /* responsive: see RESPONSIVE section (MD tier) */
+
+/* ================================================================
+   M-PAGES — phones only (html.mpages is set by mpage.js ≤767.98px).
+   One page of sections in the layout at a time; the rest leave it.
+   ================================================================ */
+html.mpages .layout__main > :not(.is-mpage),
+html.mpages .layout__side > :not(.is-mpage){ display:none; }
+
+html.mpages .mpage-in{ animation:mpageIn .32s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes mpageIn{
+  from{ opacity:0; transform:translateY(10px); }
+  to  { opacity:1; transform:none; }
+}
+
+.mpage-next{ display:none; }
+html.mpages .mpage-next:not([hidden]){
+  display:block;
+  padding:8px 18px 0;
+}
+.mpage-next a{
+  display:flex; align-items:center; gap:10px;
+  padding:14px 16px;
+  border:1px solid var(--line-strong);
+  background:rgba(9,9,14,.9);
+  color:var(--text-dim);
+  text-decoration:none;
+  font-size:10px; letter-spacing:.18em; text-transform:uppercase;
+}
+.mpage-next b{ color:var(--text); font-weight:600; letter-spacing:.14em; }
+.mpage-next em{ font-style:normal; margin-left:auto; opacity:.6; }
+.mpage-next i{ font-style:normal; color:var(--acc-cy); }
+.mpage-next a:active{ border-color:var(--acc-cy); }
+
+/* the footer closes every page now, so on a phone it keeps only what
+   has to be reachable from each one: legal links + the fine print */
+html.mpages .foot{ margin-top:28px; }
+html.mpages .foot__inner{ padding:22px 18px 18px; }
+html.mpages .foot__logo img{ height:28px; }
+html.mpages .foot__cols{ margin:14px 0 10px; }
+html.mpages .foot__cols > :first-child,
+html.mpages .foot__cols > :last-child{ display:none; }
 
 /* ----- exit -----
    A card leaves toward its own side of the layout, the way it came in, with a
@@ -4656,8 +4705,16 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
   .photos__grid{ grid-template-columns:repeat(2,1fr); }
   .photos--teaser .photos__grid--teaser{ grid-template-columns:repeat(3,1fr); }
 
-  /* mobile nav bar replaces the top links */
-  .mnav{ display:flex; }
+  /* mobile nav bar replaces the top links — five page tabs that share
+     the width, so nothing hides off the edge */
+  .mnav{ display:flex; overflow-x:hidden; padding:0 2px; }
+  .mnav a{
+    flex:1 1 0; min-width:0;
+    flex-direction:column;
+    padding:0 2px;
+    font-size:9px; letter-spacing:.1em;
+  }
+  .mnav a::after{ left:22%; right:22%; bottom:5px; }
   /* keep the fixed bar from covering the footer end (index only — legal.html has no bar) */
   body:has(.mnav){ padding-bottom:calc(46px + env(safe-area-inset-bottom)); }
   .lite-toggle{ bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }

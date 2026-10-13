@@ -203,16 +203,15 @@
   </div>
 </header>
 
-<!-- mobile section nav — fixed bottom bar; visible only <=768px where
-     the header links are hidden. current section highlighted by JS. -->
-<nav class="mnav mono" aria-label="sections">
-  <a href="#profile">Profile</a>
-  <a href="#about">About</a>
-  <a href="#interests">Interests</a>
-  <a href="#rack">Rack</a>
-  <a href="#systems">Systems</a>
-  <a href="#services">Services</a>
-  <a href="#concordia">Concordia</a>
+<!-- mobile page nav — fixed bottom bar; visible only <=768px where the
+     header links are hidden. mpage.js turns the page into one page per
+     tab here and rebuilds these links from its own page list. -->
+<nav class="mnav mono" aria-label="pages">
+  <a href="#profile"><em>01</em>Profile</a>
+  <a href="#about"><em>02</em>About</a>
+  <a href="#systems"><em>03</em>Systems</a>
+  <a href="#concordia"><em>04</em>Concordia</a>
+  <a href="#buttons"><em>05</em>Links</a>
 </nav>
 
 <!-- ============================================================= -->
@@ -1363,6 +1362,7 @@
 
 <script src="script.js"></script>
 <script src="setnav.js"></script>
+<script src="mpage.js"></script>
 <script type="module" src="concordia.js"></script>
 </body>
 </html>
