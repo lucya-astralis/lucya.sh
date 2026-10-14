@@ -22,8 +22,7 @@
   var PAGES = [
     { key: 'profile',   label: 'Profile',   ids: ['profile', '.kpibar', 'spotify'] },
     { key: 'about',     label: 'About',     ids: ['about', 'interests', 'photos'] },
-    { key: 'systems',   label: 'Systems',   ids: ['rack', 'systems', 'services'] },
-    { key: 'concordia', label: 'Concordia', ids: ['concordia', 'reika'] },
+    { key: 'systems',   label: 'Systems',   ids: ['rack', 'systems'] },
     { key: 'links',     label: 'Links',     ids: ['buttons', 'friends'] }
   ];
 

@@ -128,7 +128,7 @@
   }
 
   // ---------- REVEAL : mark below-fold blocks (observer starts post-splash) ----------
-  const revealSelectors = ['.about', '.interests', '.rack', '.buttons', '.friends', '.neofetch', '.services', '.spotify', '.photos', '.foot'];
+  const revealSelectors = ['.about', '.interests', '.rack', '.buttons', '.friends', '.neofetch', '.spotify', '.photos', '.foot'];
   const revealTargets = revealSelectors.flatMap(sel => Array.from(document.querySelectorAll(sel)));
   revealTargets.forEach(el => el.classList.add('reveal-block'));
 
@@ -586,42 +586,6 @@
     });
   }
 
-  // ---------- DOMAINS --------------------------------------------
-  const domains = [
-    ['lucya.sh',           'lucya_logo_text.svg',     'Personal homepage',                   'PRIMARY', true, 'logo'],
-    ['images.lucya.sh',    'gallery.svg',             'Image gallery',                       'ACTIVE',  true],
-    ['aizaku.com',         'aizaku.com.svg',          'Defence industry',                    'ACTIVE',  true],
-    ['astraos.app',        'astraos.app.svg',         'AstraOS · main product site',         'ACTIVE',  true],
-    ['beta.astraos.app',   'beta.astraos.app.svg',    'AstraOS public beta portal',          'ACTIVE',  true],
-    ['status.lucya.systems', 'status.lucya.systems.svg',  'System status · uptime monitor',      'ACTIVE',  true],
-    ['binbows.net',        'binbows.net.svg',         'Official Binbows site',               'ACTIVE',  true],
-    ['inter-astra.net',    'inter-astra.net.svg',     'inter-astra Corp.',              'PARKED',  true],
-    ['gov.inter-astra.net','gov.inter-astra.net.svg', 'Internal governance portal',          'ACTIVE',  true],
-    ['wirtaufendeinauto.de','wirtaufendeinauto.de.svg','Lass dein Auto taufen',         'ACTIVE',  true],
-  ];
-  const dGrid = document.getElementById('domainGrid');
-  if (dGrid) {
-    const frag = document.createDocumentFragment();
-    domains.forEach(([url, img, role, status, ok, src]) => {
-      const path = src === 'logo' ? `images/logo/${img}` : `images/projects/${img}`;
-      const card = document.createElement('a');
-      card.className = 'dcard';
-      card.href = `https://${url}`;
-      card.target = '_blank';
-      card.rel = 'noopener';
-      card.innerHTML = `
-        <div class="dcard__logo"><img src="${path}" alt="${url}" loading="lazy" decoding="async" /></div>
-        <div class="dcard__url">${url}</div>
-        <div class="dcard__role">${role}</div>
-        <div class="dcard__row">
-          <span class="${ok ? 'ok' : 'dim'}">● ${status}</span>
-          <span>TLS · OK</span>
-        </div>
-      `;
-      frag.appendChild(card);
-    });
-    dGrid.appendChild(frag);
-  }
 
 
 
