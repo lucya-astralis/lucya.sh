@@ -187,7 +187,7 @@ function start(box, stage, canvas) {
     planet.define('giant', {
       kind: 'gas', proc: 'bands', flat: [0.58, 0.68, 0.86],
       storm: [0.6, 0.36, 0.3, 0.09], ovals: [2.0, 0.55, 0.62, 6],
-      rings: { inner: 1.3, outer: 2.35, proc: true, gain: 1.6 },
+      rings: { inner: 1.3, outer: 2.35, proc: true }, albedo: 0.5,
     });
     planet.define('prime', {
       kind: 'terrestrial', maps: MAPS, flat: [5 / 255, 14 / 255, 33 / 255], cloud: true, frame: { ...FRAME, lon0: MOON_MAP.lon0 },
@@ -324,10 +324,10 @@ function start(box, stage, canvas) {
       if (m[2] * dpr <= 0.5) return;
       const k = SATS[i].kind;
       const a = satSpin * (0.6 + 0.15 * k) + k * 1.7;
-      items.push({ id: `sat${i}`, cx: m[0] * dpr, cy: m[1] * dpr, r: m[2] * dpr, sun, toBody: faceMatrix(0, 0, 0, a), dpr });
+      items.push({ id: `sat${i}`, cx: m[0] * dpr, cy: m[1] * dpr, r: m[2] * dpr, sun, toBody: faceMatrix(0, 0, 0, a), dpr, parent: 'giant' });
     });
-    items.push({ id: 'prime', cx: D(L.moon)[0], cy: D(L.moon)[1], r: D(L.moon)[2], sun, toBody: yNorth(toBody), dpr });
-    planet.draw(items, 0);
+    items.push({ id: 'prime', cx: D(L.moon)[0], cy: D(L.moon)[1], r: D(L.moon)[2], sun, toBody: yNorth(toBody), dpr, parent: 'giant' });
+    planet.draw(items, still ? 0 : performance.now() / 1000);   // the giant's weather drifts with it
     L.sats.forEach((m, i) => placeTag(satTags[i], m[0] - 30, m[1] + m[2] + 10, L.open[i] > 0.92));
 
     // Seiki-tō: where it shows, and its hour by the star

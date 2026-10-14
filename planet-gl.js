@@ -84,15 +84,29 @@ float fbm(vec3 p, float oct){
 }
 // an equirectangular map read at a body-frame direction (z north), centred on
 // longitude lon0, without the date line's mip seam
-vec4 equi(sampler2D t, vec3 nb, float lon0){
+vec4 equiB(sampler2D t, vec3 nb, float lon0, float blur){
   float lon = atan(nb.y, nb.x), lat = asin(clamp(nb.z, -1.0, 1.0));
   vec2 uv = vec2(fract((lon - lon0) / TAU + 0.5), 0.5 - lat / PI);
   vec2 uv2 = vec2(fract(uv.x + 0.5), uv.y);
   vec2 dx = dFdx(uv), dy = dFdy(uv), dx2 = dFdx(uv2), dy2 = dFdy(uv2);
   if (dot(dx2, dx2) + dot(dy2, dy2) < dot(dx, dx) + dot(dy, dy)) { dx = dx2; dy = dy2; }
-  return textureGrad(t, uv, dx, dy);
+  return textureGrad(t, uv, dx * blur, dy * blur);
 }
+vec4 equi(sampler2D t, vec3 nb, float lon0){ return equiB(t, nb, lon0, 1.0); }
 vec3 turnLon(vec3 n, float a){ float c = cos(a), s = sin(a); return vec3(c * n.x - s * n.y, s * n.x + c * n.y, n.z); }
+`;
+
+const GLSL_RINGGEO = `
+// Henyey-Greenstein phase function (unnormalised): g > 0 scatters forward
+float hgp(float g, float c){ float g2 = g * g, d = 1.0 + g2 - 2.0 * g * c; return (1.0 - g2) / (d * sqrt(d)); }
+// what a ring plane (normal N) looks like from here, for the star at sun and a viewer toward v:
+// (mu0, mu: the slant cosines of the light and the sight, the dust's phase function, 1 on the lit face).
+// It is the same everywhere on a flat ring seen in parallel, so a vertex shader can compute it once.
+vec4 ringGeo(vec3 sun, vec3 N, vec3 v){
+  float cosT = dot(-sun, v);                                      // 1: looking toward the star through it
+  float ph = 0.5 * (hgp(0.65, cosT) + hgp(-0.25, cosT));          // dust: a forward lobe, a mild back lobe
+  return vec4(max(abs(dot(sun, N)), 0.02), max(abs(dot(v, N)), 0.02), ph, dot(sun, N) * dot(v, N) > 0.0 ? 1.0 : 0.0);
+}
 `;
 
 // the light: explicit arguments only, no uniforms, so anything can call it
@@ -110,8 +124,6 @@ vec4 orkHalo(float rr, vec3 nh, vec3 sun, vec3 air, float thick, float amount){
   return vec4(air * a, a);
 }
 
-// Henyey-Greenstein phase function (unnormalised): g > 0 scatters forward
-float hgp(float g, float c){ float g2 = g * g; return (1.0 - g2) / pow(1.0 + g2 - 2.0 * g * c, 1.5); }
 
 // One tone curve for every body: linear up to a knee, then a soft shoulder, so a
 // glint or a sunlit cloud never clips to a flat white and nothing needs its own exposure.
@@ -120,6 +132,7 @@ vec3 orkTone(vec3 c){
   return min(c, vec3(0.85)) + 0.15 * (1.0 - exp(-over / 0.15));
 }
 
+// shL, shD: light a parent body reflects onto this one (planetshine): colour times strength, and the direction to it.
 // A world with air. n: the smooth normal, nl: the one the ground's relief gives
 // the light; v: toward the viewer. wet: how much of the point is open water;
 // c: cloud cover, cs: cloud over the ground the star lights, cv: the cloud's own
@@ -130,7 +143,7 @@ vec3 orkTone(vec3 c){
 // scatters forward instead, in white.
 vec3 orkTerrestrial(vec3 albedo, vec3 n, vec3 nl, vec3 sun, vec3 v,
                     float wet, float c, float cs, float cv, vec3 gl3, vec3 lights,
-                    vec3 air, float airK, float mie){
+                    vec3 air, float airK, float mie, vec3 shL, vec3 shD){
   float day = dot(n, sun);
   float k = clamp(airK, 0.05, 1.5);
   // the terminator is as soft as the air is thick: scattered light carries past it
@@ -163,7 +176,7 @@ vec3 orkTerrestrial(vec3 albedo, vec3 n, vec3 nl, vec3 sun, vec3 v,
   }
   // cloud: lit by the star itself, a little past the terminator (it stands above the ground)
   float cl = 0.08 + 1.1 * max((day + 0.06) / 1.06, 0.0);
-  col = mix(col, vec3(0.93, 0.95, 1.0) * cl * (0.8 + 0.2 * cv), c);
+  col = mix(col, vec3(0.95, 0.96, 1.0) * cl * (0.45 + 0.55 * cv), c);
   // the air in front of it: in-scattered light grows with the airmass along the line of sight,
   // so the limb brightens smoothly; it is only lit where the star shines
   float path = min(1.0 / max(mu, 0.05), 12.0);
@@ -183,6 +196,7 @@ vec3 orkTerrestrial(vec3 albedo, vec3 n, vec3 nl, vec3 sun, vec3 v,
   float night = 1.0 - smoothstep(-0.02, 0.3, day);
   col += lights * night;
   col += vec3(0.05, 0.06, 0.08) * c * night;
+  col += albedo * shL * max(dot(nl, shD), 0.0) * (1.0 - 0.7 * c);       // the parent's light, on the night side too
   return col;
 }
 
@@ -191,7 +205,7 @@ vec3 orkTerrestrial(vec3 albedo, vec3 n, vec3 nl, vec3 sun, vec3 v,
 // toward opposition, when the star is behind the viewer. The terminator is
 // knife-sharp. What the ground itself emits (lava) glows through the night;
 // glow is how much of it shows by day.
-vec3 orkRock(vec3 albedo, vec3 emit, float glow, vec3 n, vec3 nl, vec3 sun, vec3 v){
+vec3 orkRock(vec3 albedo, vec3 emit, float glow, vec3 n, vec3 nl, vec3 sun, vec3 v, vec3 shL, vec3 shD){
   float day = dot(n, sun);
   float mu = max(dot(n, v), 0.0);
   float mu0 = max(dot(nl, sun), 0.0) * smoothstep(0.0, 0.05, day);
@@ -199,7 +213,7 @@ vec3 orkRock(vec3 albedo, vec3 emit, float glow, vec3 n, vec3 nl, vec3 sun, vec3
   float g = acos(clamp(dot(sun, v), -1.0, 1.0));               // the phase angle
   float surge = 1.0 + 0.4 * exp(-g * 8.0);
   float L = mix(mu0, ls, 0.75) * surge;
-  return albedo * (0.012 + 1.15 * L) + emit * (glow + (1.0 - glow) * (1.0 - smoothstep(-0.1, 0.25, day)));
+  return albedo * (0.012 + 1.15 * L + shL * max(dot(nl, shD), 0.0)) + emit * (glow + (1.0 - glow) * (1.0 - smoothstep(-0.1, 0.25, day)));
 }
 
 // A giant: Lambert under heavy limb darkening, soft over the terminator (the deck
@@ -230,21 +244,33 @@ vec4 orkStarGlow(float x){
 // over the plane; the far face shows only what the ring lets through, which is most
 // when the star is behind it and the dust throws the light forward. The planet's shadow
 // is cast along the ray to the star, with the star's disc blurring its edge.
-vec4 orkRing(vec3 rgb, float tau, vec3 sun, vec3 N, vec3 v, vec3 P, float gain){
-  float ci = abs(dot(sun, N));
-  float cosT = dot(-sun, v);
-  float lit;
-  if (dot(sun, N) * dot(v, N) > 0.0) {
-    lit = max(ci, 0.04) * (0.9 + 0.1 * hgp(0.3, -cosT));       // seen from the lit face
+vec4 orkRingG(vec3 rgb, float alpha, vec4 g, vec3 sun, vec3 P, float gain){
+  // g: ringGeo's (mu0, mu, phase, lit face). alpha is the ring's opacity face-on; its optical depth is
+  // -ln(1 - alpha), and the light takes the slant path 1/mu through it
+  float tau = -log(1.0 - min(alpha, 0.97)) * 0.6;       // the ring map's opacity is for a thicker sheet than these
+  float mu0 = g.x, mu = g.y, ph = g.z;
+  float e0 = exp(-tau / mu0), e1 = exp(-tau / mu);      // the slant transmittances, toward the star and toward us
+  float I;
+  if (g.w > 0.5) {
+    // the lit face: single scattering off a layer of optical depth tau (rgb is the particles' albedo)
+    I = 0.38 * mu0 / (mu0 + mu) * (1.0 - e0 * e1) * ph;     // 0.38: single scattering is 0.25, multiple scattering in a dense ring adds the rest
   } else {
-    float fwd = hgp(0.75, cosT) / hgp(0.75, 1.0);              // seen from the dark face
-    lit = ci * 0.18 + fwd * (0.6 + 0.9 * (1.0 - tau));
+    // the far face: only what leaks through, bright when the star is behind it
+    float d = mu0 - mu;
+    float tr = abs(d) < 1e-3 ? tau / mu0 * e0 : mu0 / d * (e0 - e1);
+    I = 0.38 * tr * ph;
   }
+  // the planet's shadow, cast along the ray to the star, with the star's disc blurring its edge
   float t = -dot(P, sun);
   float dmin = t > 0.0 ? length(P + sun * t) : length(P);
   float w = 0.03 * max(t, 0.0) + 0.012;
-  lit *= mix(0.06, 1.0, smoothstep(1.0 - w, 1.0 + w, dmin));
-  return vec4(rgb * lit * gain * tau, tau);
+  float sh = mix(0.06, 1.0, smoothstep(1.0 - w, 1.0 + w, dmin));
+  sh *= 1.0 + 0.05 * cos(2.0 * atan(P.y, P.x) + 0.7);              // the A ring is a little brighter on one side than the other (self-gravity wakes)
+  // I/F to display units: a Lambert surface of albedo A shows A * 1.25 * mu0, and returns I/F = A * mu0 / pi
+  return vec4(orkTone(rgb * 0.9 * I * 3.9269908 * gain * sh), 1.0 - e1);   // 0.9: slightly dirty water ice
+}
+vec4 orkRing(vec3 rgb, float alpha, vec3 sun, vec3 N, vec3 v, vec3 P, float gain){
+  return orkRingG(rgb, alpha, ringGeo(sun, N, v), sun, P, gain);
 }
 `;
 
@@ -252,19 +278,74 @@ vec4 orkRing(vec3 rgb, float tau, vec3 sun, vec3 N, vec3 v, vec3 P, float gain){
 const GLSL_RING = `
 uniform vec4 uRingP;          // the ring plane's normal (view), on/off
 uniform vec4 uRingR;          // inner, outer (radii), gain, 1 once the ring map is in
-uniform float uRingMode;      // 0 the ring map, 1 procedural stripes with a gap
 uniform sampler2D uRing;
 
-// colour and opacity of the ring at rr radii
+// colour and opacity of the ring at rr radii (its radial profile is a baked map, see bakeRing)
 vec4 ringAt(float rr){
   float t = (rr - uRingR.x) / (uRingR.y - uRingR.x);
-  if (uRingMode > 0.5) {
-    float a = (0.35 + 0.65 * noise(vec3(rr * 38.0, 0.0, 0.0))) * smoothstep(0.0, 0.06, t) * smoothstep(1.0, 0.85, t);
-    a *= 1.0 - 0.75 * smoothstep(0.42, 0.5, t) * smoothstep(0.58, 0.5, t);   // a gap
-    return vec4(0.8, 0.84, 0.93, a * 0.7);
+  return texture(uRing, vec2(t, 0.5));
+}
+`;
+
+
+// A giant's weather is drawn once, into an equirectangular map, and read like any other map: the
+// per-pixel cost of a giant is then one more lookup, however fine the weather.
+const GLSL_WEATHER = `
+// A giant's weather as the Cassini and Juno cameras show one: mostly smooth, laminar zonal bands, each its
+// own flat tone with a sharp edge and only a small step between neighbours; turbulence kept to a few narrow
+// belts, where the edges ripple into thin festoons; a handful of small sharp ovals; a quiet darker pole.
+// Noise is advected along the latitude circles (stretched many times longer than it is wide). Returns
+// (brightness, warmth, pole, 0).
+float zoneStep(float L, float n, float seed){
+  float x = L * n;
+  float id = floor(x), f = fract(x);
+  float cur = hash(vec3(id, seed, 1.0)), prev = hash(vec3(id - 1.0, seed, 1.0));
+  // flat inside a zone, a narrow ramp at its edge, a whisper of gradient across it
+  return mix(prev, cur, smoothstep(0.0, 0.07, f)) + (f - 0.5) * 0.12 * (cur - 0.5);
+}
+float beltAt(float lat, float c, float w){ float d = (lat - c) / w; return exp(-d * d); }
+vec4 gasWeather(vec3 p, float lat, float rpx, float time){
+  float lon = atan(p.y, p.x);
+  float fine = smoothstep(60.0, 150.0, rpx);
+  // where the weather is: a few narrow belts
+  float belts = max(max(beltAt(lat, 0.23, 0.05), beltAt(lat, -0.31, 0.045)), max(beltAt(lat, 0.50, 0.04), beltAt(lat, -0.66, 0.04)));
+  // the edges ripple only in those belts: thin festoons
+  float fest = belts * (0.012 * sin(lon * 13.0 + lat * 40.0) + 0.006 * sin(lon * 29.0 - lat * 70.0)) + 0.004 * sin(lon * 3.0 + lat * 5.0);
+  float L = lat + fest;
+  float t1 = zoneStep(L, 11.0, 1.0) - 0.5;             // the broad zones
+  float t2 = zoneStep(L, 29.0, 2.0) - 0.5;             // finer ones, for a big disc
+  float br = t1 * 0.30 + t2 * 0.12 * fine;
+  float warm = t1 * 1.2;
+  // noise advected along the latitude circles: long, thin, faint everywhere, stronger in the belts
+  float adv = noise(vec3(p.x * 2.4, p.y * 2.4, p.z * 55.0)) - 0.5;
+  float adv2 = noise(vec3(p.x * 6.0, p.y * 6.0, p.z * 130.0 + 7.0)) - 0.5;
+  br += adv * 0.07 + belts * (adv * 0.22 + adv2 * 0.24 * fine);
+  // thin bright and dark lines on the belts' edges
+  float dl = L - 0.23 - 0.0;
+  br += 0.22 * exp(-dl * dl / 0.00003) * fine - 0.12 * exp(-(dl + 0.018) * (dl + 0.018) / 0.00005) * fine;
+  // a handful of small sharp ovals, in fixed places
+  for (int i = 0; i < 7; i++) {
+    float fi = float(i);
+    float la = (hash(vec3(fi, 11.0, 0.0)) - 0.5) * 1.7;
+    float lo = hash(vec3(fi, 12.0, 0.0)) * TAU;
+    float rx = 0.022 + 0.035 * hash(vec3(fi, 13.0, 0.0));
+    float dlo = lon - lo;
+    dlo -= TAU * floor((dlo + PI) / TAU);
+    vec2 q = vec2(dlo * cos(la) / rx, (lat - la) / (rx * 0.55));
+    float r = length(q);
+    float core = 1.0 - smoothstep(0.72, 1.0, r);
+    float rim = smoothstep(0.85, 1.0, r) * (1.0 - smoothstep(1.0, 1.35, r));
+    float sg = hash(vec3(fi, 14.0, 0.0)) > 0.45 ? 1.0 : -1.0;
+    br += (core * sg * 0.30 - rim * sg * 0.12) * mix(0.5, 1.0, fine);
+    warm += core * -sg * 0.3;
   }
-  vec4 s = texture(uRing, vec2(t, 0.5));
-  return vec4(s.rgb, mix(0.45, s.a, uRingR.w));
+  // the pole: a quiet, darker cap with a little structure
+  float pol = smoothstep(0.95, 1.22, abs(lat));
+  if (pol > 0.0) {
+    float ch = noise(vec3(p.x * 5.0, p.y * 5.0, p.z * 5.0) + 3.0) - 0.5;
+    br = mix(br, ch * 0.25 - 0.1, pol);
+  }
+  return vec4(br, warm, pol, 0.0);
 }
 `;
 
@@ -293,10 +374,17 @@ uniform vec3 uAerE;           // the photograph's east and north on the world, s
 uniform vec3 uAerN;
 uniform vec3 uAerial;         // its span (radians), and the dome in it (x, y as fractions)
 uniform vec4 uStorm;          // a giant's great storm: longitude, latitude, width, height (0: none)
+uniform vec4 uShine;          // planetshine: toward the parent (view), strength
+uniform vec3 uShineCol;       // and its colour
 uniform vec4 uOvals;          // a string of white ovals: first longitude, latitude, spacing, count
 uniform vec3 uBand1, uBand2, uBand3;
 uniform mat3 uToBody;         // view → the body's frame
-uniform sampler2D uDay, uNight, uClouds, uData, uMask;
+uniform sampler2D uDay, uNight, uClouds, uData, uMask, uWeather, uCloudDetail, uZonal;
+uniform float uZonalOn;       // 1 once the giant's zonal-mean colours are in
+uniform float uWeatherOn;     // 1 once the weather map is baked
+uniform float uCloudDetail1;  // how much of the baked cloud detail a world's clouds take, 0..1
+uniform float uCalm;          // 1: an ice giant, smooth and hazy
+uniform vec4 uShallow;        // a sea's shallow colour, and how far it shows toward the shores
 
 // the winds, as radians of longitude a second of the visitor's time: + eastward
 float winds(float lat){
@@ -306,22 +394,57 @@ float winds(float lat){
 // a giant's jets: the bands slide against each other
 float jets(float lat){ return 0.0022 * sin(lat * 9.0) * cos(lat * 0.5) + 0.0012 * exp(-pow(lat / 0.2, 2.0)); }
 
-float cloudAt(vec3 nb, float time){
+// The cloud map (full resolution; softer only toward the limb, where it is squeezed and would streak).
+// cloudDir: where on the map this point reads, carried by the winds and a slow wandering warp.
+vec3 cloudDir(vec3 nb, float time, out vec3 m, out vec3 w){
   float lat = asin(clamp(nb.z, -1.0, 1.0));
-  vec3 m = turnLon(nb, -time * winds(lat));
-  // the cloud re-forms as it goes: the map read through a slow, wandering warp
-  vec3 w = vec3(sin(time * 0.031 + nb.z * 11.0 + nb.y * 5.0), cos(time * 0.027 + nb.x * 9.0 - nb.z * 4.0), 0.0) * 0.006;
-  float a = equi(uClouds, normalize(m + w), 0.0).r;
-  float b = equi(uClouds, normalize(turnLon(m, 0.012) - w), 0.0).r;
-  return mix(a, b, 0.5 + 0.5 * sin(time * 0.013 + nb.x * 3.0));
+  m = turnLon(nb, -time * winds(lat));
+  w = vec3(sin(time * 0.031 + nb.z * 11.0 + nb.y * 5.0), cos(time * 0.027 + nb.x * 9.0 - nb.z * 4.0), 0.0) * 0.006;
+  return normalize(m + w);
+}
+
+// Cloud as an optical depth, not a coverage. From the map's coverage (sharp, and a wide soft one beside it) and a baked,
+// tileable detail texture, a density: thick cores, a margin that breaks into wisps and holes, thin patches inside; the
+// opacity is 1 - exp(-k density), so thin cloud is translucent and a thick core opaque, with no threshold anywhere.
+// Brightness comes from the density and from a fake normal (the detail toward the star against the detail here: lumpy
+// cumulus tops lit on the sunward side). Returns (opacity, brightness 0..1). On a small disc or at the limb the detail
+// fades out and the plain map takes over.
+vec2 cloudDensity(vec3 nb, vec3 q, float csun, float covS, float rpx, float mu, float blur){
+  float lat = asin(clamp(nb.z, -1.0, 1.0));
+  float amt = smoothstep(55.0, 170.0, rpx) * smoothstep(0.1, 0.45, mu) * (1.0 - smoothstep(1.0, 1.3, abs(lat)));
+  if (uCloudDetail1 <= 0.0) {
+    // no baked detail: the map's own density, translucent, with the lump lighting from the map itself
+    if (rpx <= 55.0) return vec2(covS * 0.92, 0.5);
+    float cw = equiB(uClouds, q, 0.0, blur * 4.0).r;
+    float rho0 = 0.15 + 1.2 * covS;
+    float opm = (1.0 - exp(-2.3 * rho0 * covS)) ;
+    float lump0 = (cw - csun) * 0.9;
+    return vec2(mix(covS * 0.92, opm, amt), clamp(0.35 + 0.4 * covS + lump0 * smoothstep(0.1, 0.9, cw), 0.0, 1.0));
+  }
+  if (amt <= 0.0) return vec2(covS * 0.92, 0.5);
+  amt *= uCloudDetail1;
+  float covW = equiB(uClouds, q, 0.0, blur * 6.0).r;
+  float lon = atan(nb.y, nb.x);
+  vec2 uv = vec2(lon / TAU * 6.0, lat / PI * 3.0 + 0.5);                   // a 512 tile is 60 degrees across
+  float lod = log2(max(489.0 / (rpx * max(mu, 0.1)), 1.0));               // texels a pixel spans, from the disc size
+  vec4 t = textureLod(uCloudDetail, uv, lod);
+  float dm = 0.5 * t.g + 0.3 * t.r + 0.2 * t.b;
+  float base = mix(covS, covW, 0.5);
+  float rho = base * (0.2 + 1.7 * dm) + covW * (1.0 - covS) * max(t.b - 0.35, 0.0) * 1.6;
+  float op = 1.0 - exp(-2.3 * rho);
+  // the fake normal: more cloud toward the star than here means this is in a lump's shadow, less means it is its lit face
+  // (csun is the soft cloud a little way toward the star: the same tap the ground's shadow needs)
+  float lump = (covW - csun) * 0.9;
+  float shade = clamp(0.3 + 0.45 * clamp(rho / 1.2, 0.0, 1.0) + lump * smoothstep(0.1, 0.9, covW) + (dm - 0.45) * 0.65 + (covS - covW) * 0.4, 0.0, 1.0);
+  return vec2(mix(covS * 0.92, op, amt), mix(0.5, shade, amt));
 }
 
 // the same cloud, read once: the shadow does not need the re-forming blend
-float cloudOnce(vec3 nb, float time){
+float cloudOnce(vec3 nb, float time){   // (soft: a shadow is)
   float lat = asin(clamp(nb.z, -1.0, 1.0));
   vec3 m = turnLon(nb, -time * winds(lat));
   vec3 w = vec3(sin(time * 0.031 + nb.z * 11.0 + nb.y * 5.0), cos(time * 0.027 + nb.x * 9.0 - nb.z * 4.0), 0.0) * 0.006;
-  return equi(uClouds, normalize(m + w), 0.0).r;
+  return smoothstep(0.1, 0.9, equiB(uClouds, normalize(m + w), 0.0, 2.0).r);
 }
 
 // one cell of a street web: (distance to the nearest street in px, cell tone, distance to the knot in px)
@@ -449,6 +572,12 @@ vec3 shadeTerrestrial(vec3 n, vec3 sun, vec3 v, vec3 nb, vec3 lb, float pxr){
     // no data map: the sea is the map's dark blue
     float luma = dot(dayTex, vec3(0.3, 0.55, 0.15));
     land = 1.0 - smoothstep(0.0, 0.07, dayTex.b - max(dayTex.r, dayTex.g)) * (1.0 - smoothstep(0.4, 0.7, luma));
+    if (uShallow.w > 0.0 && uTex > 0.5) {
+      // a sea is deep in the middle and pale toward its shores: the map's own sea, blurred, says how far from one
+      vec3 bl = equiB(uDay, nb, uLon0, 14.0).rgb;
+      float seaB = smoothstep(0.0, 0.07, bl.b - max(bl.r, bl.g)) * (1.0 - smoothstep(0.4, 0.7, dot(bl, vec3(0.3, 0.55, 0.15))));
+      albedo = mix(dayTex, uShallow.rgb, (1.0 - land) * (1.0 - seaB) * uShallow.w);
+    }
   }
   float wet = (1.0 - land) * (1.0 - plat);
 
@@ -476,9 +605,26 @@ vec3 shadeTerrestrial(vec3 n, vec3 sun, vec3 v, vec3 nb, vec3 lb, float pxr){
     c = smoothstep(0.54, 0.74, cf) * 0.9;
     cs = smoothstep(0.54, 0.74, fbm(cw + vec3(4.0, 1.0, 7.0) - bsun * 0.02, min(oct, 6.0)));
   } else if (uCloudMode > 0.5) {
-    c = clamp(cloudAt(nb, uTime) * 0.92, 0.0, 1.0);
-    cs = pxr < 1.0 / 60.0 ? c : cloudOnce(normalize(nb + lb * 0.008), uTime);   // the shadow falls a little way from it; on a small disc it is not seen
+    float mu_ = max(dot(n, v), 0.0);
+    float rpx_ = 1.0 / pxr;
+    float cblur = mix(1.0, 9.0, pow(1.0 - mu_, 3.0));
+    vec3 cm, cw_;
+    vec3 cq = cloudDir(nb, uTime, cm, cw_);
+    float covS = equiB(uClouds, cq, 0.0, cblur).r;
+    if (rpx_ <= 55.0) {
+      // a small disc: the map as it is, re-forming (the soft, round-four look)
+      float covB = equiB(uClouds, normalize(turnLon(cm, 0.012) - cw_), 0.0, cblur).r;
+      covS = mix(covS, covB, 0.5 + 0.5 * sin(uTime * 0.013 + nb.x * 3.0));
+    }
+    float csun = rpx_ > 55.0 ? cloudOnce(normalize(nb + lb * 0.008), uTime) : 0.0;   // the soft cloud toward the star: shadow and lump shading both want it
+    vec2 cd = cloudDensity(nb, cq, csun, covS, rpx_, mu_, cblur);
+    c = clamp(cd.x, 0.0, 1.0);
+    cv = cd.y;
+    cs = rpx_ > 55.0 ? csun : c;   // the shadow falls a little way from it; on a small disc it is not seen
   }
+
+  // a cloud is shaded by the cloud toward the star, and lit on its sun-facing edge
+  cv = clamp(cv + 0.8 * (c - cs), 0.0, 1.0);
 
   // glints of glass and rooftop water, a point here and there, cells about a pixel
   // across so they stay sharp at any distance
@@ -572,7 +718,7 @@ vec3 shadeTerrestrial(vec3 n, vec3 sun, vec3 v, vec3 nb, vec3 lb, float pxr){
       lights = mapLights * (1.0 - 0.85 * c);
     }
   }
-  return orkTerrestrial(albedo, n, nl, sun, v, wet * uGlint, c, cs, cv, gl3, lights, uAir, uAirP.z, uMie);
+  return orkTerrestrial(albedo, n, nl, sun, v, wet * uGlint, c, cs, cv, gl3, lights, uAir, uAirP.z, uMie, uShineCol * uShine.w * 1.25, uShine.xyz);
 }
 
 // ---- rock and ice -----------------------------------------------------------------
@@ -617,14 +763,17 @@ vec3 shadeRock(vec3 n, vec3 sun, vec3 v, vec3 nb, float pxr){
     vec3 q0 = vec3(nb.y, -nb.z, nb.x) * 24.0, q1 = vec3(b1.y, -b1.z, b1.x) * 24.0, q2 = vec3(b2.y, -b2.z, b2.x) * 24.0;
     float h0 = fbm(q0, 5.0);
     vec2 grad = vec2(fbm(q1, 5.0) - h0, fbm(q2, 5.0) - h0) / eps;
-    nl = normalize(n - (t1 * grad.x + t2 * grad.y) * 0.011);
+    nl = normalize(n - (t1 * grad.x + t2 * grad.y) * 0.006 * smoothstep(0.0, 0.35, n.z));   // not at the limb, where it only frizzes
   }
-  return orkRock(alb, emit, uGlow, n, nl, sun, v);
+  return orkRock(alb, emit, uGlow, n, nl, sun, v, uShineCol * uShine.w * 1.25, uShine.xyz);
 }
 
 // ---- a giant ----------------------------------------------------------------------
-vec3 shadeGas(vec3 n, vec3 sun, vec3 v, vec3 nb, float shade){
+vec3 shadeGas(vec3 n, vec3 sun, vec3 v, vec3 nb, float shade, float pxr){
   vec3 alb = uFlat;
+  float glat = asin(clamp(nb.z, -1.0, 1.0));
+  float jv = jets(glat);
+  vec3 nd = nb;
   if (uProc > 3.5) {
     // bands along the equator, stirred; the cloud deck turns about the pole
     vec3 gs = vec3(nb.y, -nb.z, nb.x);
@@ -639,12 +788,12 @@ vec3 shadeGas(vec3 n, vec3 sun, vec3 v, vec3 nb, float shade){
       vec2 so = vec2(dLon / uStorm.z, (lat - uStorm.y) / uStorm.w);
       storm = exp(-dot(so, so) * 1.6);
       float swirl = atan(so.y, so.x) + length(so) * 3.0;
-      turb = fbm(gs * 3.0 + vec3(0.0, lat * 4.0, 0.0) + vec3(cos(swirl), sin(swirl), 0.0) * storm * 0.5, 6.0);
+      turb = fbm(vec3(gs.x * 2.0, gs.y * 16.0, gs.z * 2.0) + vec3(cos(swirl), sin(swirl), 0.0) * storm * 0.5, 4.0);
     } else {
-      turb = fbm(gs * 3.0 + vec3(0.0, lat * 4.0, 0.0), 6.0);
+      turb = fbm(vec3(gs.x * 2.0, gs.y * 16.0, gs.z * 2.0), 4.0);
     }
-    float bb = lat * 7.0 + turb * 2.2;
-    alb = mix(uBand1, uBand2, 0.5 + 0.5 * sin(bb * 3.1));
+    float bb = lat * 7.0 + (turb - 0.5) * 0.9;
+    alb = mix(uBand1, uBand2, smoothstep(0.25, 0.75, 0.5 + 0.5 * sin(bb * 3.1)));
     alb = mix(alb, uBand3, smoothstep(0.55, 0.9, sin(bb * 1.3 + 1.0)) * 0.6);
     if (uStorm.z > 0.0) {
       alb = mix(alb, vec3(0.30, 0.40, 0.66), smoothstep(0.25, 0.8, storm) * 0.75);
@@ -664,10 +813,36 @@ vec3 shadeGas(vec3 n, vec3 sun, vec3 v, vec3 nb, float shade){
     }
   } else if (uTex > 0.5) {
     // the bands stream against each other, as jets do
-    vec3 nd = turnLon(nb, -uTime * jets(asin(clamp(nb.z, -1.0, 1.0))));
-    alb = equi(uDay, nd, uLon0).rgb;
+    nd = turnLon(nb, -uTime * jv * (1.0 - 0.9 * uCalm));
+    // the band map is painted, and mottled along every band: low-pass it along the latitude circles (its mean colour at this
+    // latitude, taken once at load) so that the bands stay and the mottling goes; a little of the local colour is kept
+    vec3 loc = equiB(uDay, nd, uLon0, 2.2).rgb;
+    vec3 zm = uZonalOn > 0.5 ? texture(uZonal, vec2(0.5, 0.5 - glat / PI)).rgb : loc;
+    alb = mix(zm, loc, 0.2);
+    if (uCalm > 0.5) {
+      // the map, blurred, and pulled toward its own mean: a hazy, almost uniform ball
+      vec3 soft = equiB(uDay, nd, uLon0, 7.0).rgb, mean = equiB(uDay, nd, uLon0, 90.0).rgb;
+      alb = mix(mean, soft, 0.45);
+    }
   }
-  return orkGas(alb, n, sun, v, shade, uAir, uAirP.z);
+  float rpx = 1.0 / pxr;
+  if (rpx > 28.0) {
+    // the weather map, drifted by this latitude's own rate; it is stored as (brightness, warmth, pole) * 0.8 + 0.5
+    vec3 wm = equi(uWeather, turnLon(nb, -uTime * jv * 4.0), 0.0).rgb;
+    float amt = smoothstep(28.0, 70.0, rpx) * uWeatherOn;
+    float wx = (wm.r - 0.5) * 1.25, wy = (wm.g - 0.5) * 1.25;
+    amt *= mix(1.0, 0.18, uCalm);                           // an ice giant is nearly featureless
+    alb *= 1.0 + wx * amt * 0.8;
+    alb += vec3(0.04, 0.015, -0.05) * wy * amt * 0.5;
+    alb = mix(alb, alb * vec3(0.7, 0.78, 0.92), wm.b * amt);
+  }
+  vec3 gas = orkGas(alb, n, sun, v, shade, uAir, uAirP.z * (1.0 + uCalm));
+  if (uCalm > 0.5) {
+    // methane haze: heavy limb darkening and a haze over the limb
+    float hz = pow(1.0 - max(dot(n, v), 0.0), 2.4);
+    gas = mix(gas * (1.0 - 0.35 * hz), uAir * (0.06 + 0.5 * max(dot(n, sun) + 0.1, 0.0)), hz * 0.5);
+  }
+  return gas;
 }
 
 // ---- the entry point ----------------------------------------------------------------
@@ -689,7 +864,7 @@ vec3 planetColor(vec3 n, vec3 sun, vec3 v, vec3 nb, float pxr, float shade){
   if (uKind == 2) return orkTone(shadeTerrestrial(n, sun, v, nb, lb, pxr) * shade);
 #endif
 #if !defined(KIND) || KIND == 3
-  return orkTone(shadeGas(n, sun, v, nb, shade));
+  return orkTone(shadeGas(n, sun, v, nb, shade, pxr));
 #else
   return vec3(0.0);
 #endif
@@ -698,21 +873,21 @@ vec3 planetColor(vec3 n, vec3 sun, vec3 v, vec3 nb, float pxr, float shade){
 // How much of the planet's light a ring in the planet's own plane takes: 1 where
 // nothing shades it. p: a point on the ball, in radii, view space; sun: toward the star.
 float ringTauAt(float rr){ return (rr > uRingR.x && rr < uRingR.y) ? ringAt(rr).a : 0.0; }
-float ringShadow(vec3 p, vec3 sun){
+float ringShadow(vec3 p, vec3 sun, float pxr_inv){
   if (uRingP.w < 0.5) return 1.0;
   float den = dot(sun, uRingP.xyz);
   if (abs(den) < 1e-4) return 1.0;
   float s = -dot(p, uRingP.xyz) / den;               // along the ray to the star, to the ring's plane
   if (s <= 0.0) return 1.0;
   float rr = length(p + sun * s);
-  float w = 0.03 * s + 0.01;                       // the star's disc blurs the shadow's edge, radially
-  float a = 0.25 * ringTauAt(rr - w) + 0.5 * ringTauAt(rr) + 0.25 * ringTauAt(rr + w);
-  return 1.0 - 0.85 * a;
+  float w = 0.03 * s + 0.01;                         // the star's disc blurs the shadow's edge, radially
+  float a = w * pxr_inv > 1.5 ? 0.5 * (ringTauAt(rr - 0.5 * w) + ringTauAt(rr + 0.5 * w)) : ringTauAt(rr);   // blur only where the blur spans pixels
+  return max(pow(1.0 - min(a, 0.97), 1.0 / max(abs(den), 0.05)), 0.08);   // the light that gets through, on the slant
 }
 `;
 
 /** noise, fbm, the equirectangular lookup, and the Orikaia light (orkTerrestrial, orkRock, orkGas, orkStar, orkHalo, orkRing). No uniforms. */
-export const PLANET_LIGHT_GLSL = GLSL_CORE + GLSL_LIGHT;
+export const PLANET_LIGHT_GLSL = GLSL_CORE + GLSL_RINGGEO + GLSL_LIGHT;
 /** the above, plus the ring's uniforms and ringAt(rr): for a caller that draws the ring itself */
 export const PLANET_RING_GLSL = PLANET_LIGHT_GLSL + GLSL_RING;
 /** the whole body shading: uniforms (set them with applyBody) and planetColor(n, sun, v, nb, pxr, shade) */
@@ -721,12 +896,17 @@ export const PLANET_BODY_GLSL = PLANET_RING_GLSL + GLSL_BODY;
 // ---- the screen-space layer's shaders ---------------------------------------------
 
 const VS = `#version 300 es
+${GLSL_RINGGEO}
 in vec2 aCorner;
 uniform vec2 uRes;          // the canvas, device px
 uniform vec3 uDisc;         // centre x, y (device px, y down), radius (device px)
 uniform float uFrame;       // the quad's half-size, in radii (rings and air reach past the disc)
 out vec2 vP;                // in radii, y down
+uniform vec3 uSun;
+uniform vec4 uRingP;
+flat out vec4 vG;           // the ring's light, once
 void main(){
+  vG = ringGeo(normalize(uSun), uRingP.xyz, vec3(0.0, 0.0, 1.0));
   vP = aCorner * uFrame;
   vec2 px = uDisc.xy + vP * uDisc.z;
   gl_Position = vec4(px.x / uRes.x * 2.0 - 1.0, 1.0 - px.y / uRes.y * 2.0, 0.0, 1.0);
@@ -737,6 +917,7 @@ const fsSource = (kind, detail) => `#version 300 es
 ${detail ? '#define DETAIL 1' : '// no data map'}
 precision highp float;
 in vec2 vP;
+flat in vec4 vG;
 uniform vec3 uDisc;
 uniform vec3 uSun;          // toward the star, view
 uniform float uAlpha;
@@ -756,7 +937,7 @@ void main(){
     vec3 n = vec3(vP, sqrt(max(1.0 - d2, 0.0)));
     vec3 nb = uToBody * n;
 #if !defined(KIND) || KIND == 3
-    float shade = ringShadow(n, sun);
+    float shade = ringShadow(n, sun, 1.0 / pxr);
 #else
     float shade = 1.0;
 #endif
@@ -776,7 +957,7 @@ void main(){
     float zb = sqrt(max(1.0 - d2, 0.0));
     if (rr > uRingR.x && rr < uRingR.y) {
       vec4 s = ringAt(rr);
-      vec4 r = orkRing(s.rgb, s.a, sun, uRingP.xyz, v, P, uRingR.z);
+      vec4 r = orkRingG(s.rgb, s.a, vG, sun, P, uRingR.z);
       if (d >= 1.0 || zr > zb) front = r;                  // beside the ball, or in front of it
       else under = r + under * (1.0 - r.a);                // behind it: the ball's soft edge lets it show
     }
@@ -844,6 +1025,177 @@ export const yNorth = (m) => [0, 1, 2].flatMap((c) => [m[c * 3], m[c * 3 + 2], m
 
 // ---- WebGL plumbing -------------------------------------------------------------------
 
+/**
+ * How strongly a parent body lights its moon, relative to the star: the parent's albedo, its lit share as the
+ * moon sees it, and its angular size (its radius over its distance, squared), for a Lambert sphere (2/3), with a
+ * small perceptual gain (x1.5): a faint ghost on the night side, never a second sun.
+ */
+export function planetshine(albedo, litShare, radiusOverDistance) {
+  return albedo * (2 / 3) * litShare * radiusOverDistance * radiusOverDistance * 1.5;
+}
+
+// draws a giant's weather into a 2048 x 1024 map (once per GL context) and gives it mipmaps
+function bakeWeather(gl, black) {
+  try {
+    const W = 2048, H = 1024;
+    const prog = compileProgram(gl, `#version 300 es
+in vec2 aPos;
+void main(){ gl_Position = vec4(aPos, 0.0, 1.0); }`, `#version 300 es
+precision highp float;
+${GLSL_CORE}
+${GLSL_WEATHER}
+uniform vec2 uSize;
+out vec4 frag;
+void main(){
+  vec2 uv = gl_FragCoord.xy / uSize;
+  float lon = (uv.x - 0.5) * TAU, lat = (0.5 - uv.y) * PI;
+  vec3 p = vec3(cos(lat) * cos(lon), cos(lat) * sin(lon), sin(lat));
+  vec4 w = gasWeather(p, lat, 200.0, 0.0);
+  frag = vec4(clamp(w.x * 0.8 + 0.5, 0.0, 1.0), clamp(w.y * 0.8 + 0.5, 0.0, 1.0), clamp(w.z, 0.0, 1.0), 1.0);
+}`);
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, W, H, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    const fbo = gl.createFramebuffer();
+    const keep = { vp: gl.getParameter(gl.VIEWPORT), prog: gl.getParameter(gl.CURRENT_PROGRAM), vao: gl.getParameter(gl.VERTEX_ARRAY_BINDING), blend: gl.isEnabled(gl.BLEND) };
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) throw new Error('weather framebuffer');
+    const vao = gl.createVertexArray();
+    gl.bindVertexArray(vao);
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, 'aPos');
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    gl.viewport(0, 0, W, H);
+    gl.disable(gl.BLEND);
+    gl.useProgram(prog);
+    gl.uniform2f(gl.getUniformLocation(prog, 'uSize'), W, H);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    gl.deleteFramebuffer(fbo); gl.deleteProgram(prog);
+    gl.viewport(...keep.vp);
+    gl.useProgram(keep.prog);
+    gl.bindVertexArray(keep.vao);
+    if (keep.blend) gl.enable(gl.BLEND);
+    return tex;
+  } catch (error) {
+    console.warn('[planet] no weather map', error);
+    return null;
+  }
+}
+
+// A ring system's radial profile, as a 4096 x 1 map: t = 0 at the inner edge, 1 at the outer. A translucent C ring
+// of fine dark ringlets, a bright, dense B ring with a few thin gaps, a Cassini-type division, an A ring of
+// finer structure with an Encke-type gap and a narrow one near the edge. rgb: the particles' albedo, a: the
+// opacity looking straight down on the ring.
+function bakeRing(gl) {
+  const N = 4096;
+  const data = new Uint8Array(N * 4);
+  const h1 = (i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+  const n1 = (x, seed) => { const i = Math.floor(x), f = x - i, u = f * f * (3 - 2 * f); return h1(i + seed) * (1 - u) + h1(i + 1 + seed) * u; };
+  const ss = (a, b, x) => { const t = Math.min(Math.max((x - a) / (b - a), 0), 1); return t * t * (3 - 2 * t); };
+  for (let i = 0; i < N; i++) {
+    const t = (i + 0.5) / N;
+    // ringlets: many fine bands of varying density, at several scales
+    const ring = 0.5 * n1(t * 140, 1) + 0.3 * n1(t * 420, 7) + 0.2 * n1(t * 1300, 13);
+    let a, col;
+    if (t < 0.2) {                                              // C ring: translucent, dark
+      a = 0.10 + 0.20 * ring + 0.06 * n1(t * 60, 3);
+      col = [0.62, 0.6, 0.58];
+    } else if (t < 0.57) {                                      // B ring: dense and bright
+      const k = (t - 0.2) / 0.37;
+      a = 0.70 + 0.28 * (ring - 0.2) + 0.08 * Math.sin(k * 40);
+      col = [0.99, 0.96, 0.91];
+      a *= 1 - 0.7 * Math.exp(-Math.pow((t - 0.37) / 0.004, 2)) - 0.6 * Math.exp(-Math.pow((t - 0.47) / 0.003, 2));   // thin gaps
+    } else if (t < 0.63) {                                      // the division, with a ringlet in it
+      a = 0.05 + 0.05 * ring + 0.25 * Math.exp(-Math.pow((t - 0.597) / 0.004, 2));
+      col = [0.6, 0.58, 0.56];
+    } else {                                                    // A ring: finer, a little thinner
+      a = 0.52 + 0.30 * (ring - 0.2) + 0.1 * n1(t * 900, 21);
+      col = [0.92, 0.91, 0.9];
+      a *= 1 - 0.95 * Math.exp(-Math.pow((t - 0.865) / 0.009, 2)) - 0.9 * Math.exp(-Math.pow((t - 0.945) / 0.003, 2));   // the Encke gap, a narrow one
+    }
+    // hundreds of faint ringlets over the whole profile: density and brightness
+    const fine = 0.5 * n1(t * 1500, 41) + 0.3 * n1(t * 2600, 47) + 0.2 * n1(t * 420, 53) - 0.5;
+    a *= 1 + 0.35 * fine;
+    col = col.map((x) => x * (1 + 0.1 * fine));
+    a *= ss(0.0, 0.012, t) * (1 - ss(0.975, 1.0, t));           // soft outer and inner edges
+    a = Math.min(Math.max(a, 0), 0.97);
+    data.set([col[0], col[1], col[2], a].map((x) => Math.min(Math.max(x * 255, 0), 255)), i * 4);
+  }
+  const tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, N, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  return tex;
+}
+
+// A tileable 512 x 512 cloud-detail texture, drawn once: R fbm, G worley billows blended with a mid fbm, B a fine fbm.
+// Everything wraps, so it tiles. Mipmapped.
+function bakeCloudDetail(gl) {
+  const N = 512;
+  const data = new Uint8Array(N * N * 4);
+  const hash = (x, y, z) => { const v = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453; return v - Math.floor(v); };
+  const wrap = (i, g) => ((i % g) + g) % g;
+  const vnoise = (u, v, g, seed) => {
+    const x = u * g, y = v * g, ix = Math.floor(x), iy = Math.floor(y), fx = x - ix, fy = y - iy;
+    const sx = fx * fx * (3 - 2 * fx), sy = fy * fy * (3 - 2 * fy);
+    const a = hash(wrap(ix, g), wrap(iy, g), seed), b = hash(wrap(ix + 1, g), wrap(iy, g), seed);
+    const c = hash(wrap(ix, g), wrap(iy + 1, g), seed), d = hash(wrap(ix + 1, g), wrap(iy + 1, g), seed);
+    return (a * (1 - sx) + b * sx) * (1 - sy) + (c * (1 - sx) + d * sx) * sy;
+  };
+  const fbm = (u, v, g0, oct, seed) => {
+    let sum = 0, amp = 0.5, norm = 0, g = g0;
+    for (let o = 0; o < oct; o++) { sum += amp * vnoise(u, v, g, seed + o); norm += amp; amp *= 0.5; g *= 2; }
+    return sum / norm;
+  };
+  const worley = (u, v, g, seed) => {
+    const x = u * g, y = v * g, ix = Math.floor(x), iy = Math.floor(y);
+    let best = 9;
+    for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) {
+      const cx = wrap(ix + i, g), cy = wrap(iy + j, g);
+      const px = ix + i + hash(cx, cy, seed), py = iy + j + hash(cx, cy, seed + 5);
+      best = Math.min(best, Math.hypot(px - x, py - y));
+    }
+    return Math.min(best, 1);
+  };
+  for (let j = 0; j < N; j++) {
+    for (let i = 0; i < N; i++) {
+      const u = (i + 0.5) / N, v = (j + 0.5) / N, k = (j * N + i) * 4;
+      const r = fbm(u, v, 6, 5, 1);
+      const billow = 1 - worley(u, v, 22, 3);
+      const g = 0.15 * billow + 0.85 * fbm(u, v, 10, 4, 9);
+      const b = fbm(u, v, 28, 4, 21);
+      data[k] = r * 255; data[k + 1] = Math.min(Math.max((g - 0.15) * 1.5, 0), 1) * 255; data[k + 2] = b * 255; data[k + 3] = 255;
+    }
+  }
+  const tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, N, N, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+  return tex;
+}
+
 /** compiles and links; throws with the driver's log on failure */
 export function compileProgram(gl, vs, fs) {
   const prog = gl.createProgram();
@@ -880,10 +1232,18 @@ export function createTextures(gl, onLoad = () => {}) {
   gl.bindTexture(gl.TEXTURE_2D, black);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255]));
   const cache = new Map();
+  let weather, ringMap, cloudDetail;
   const api = {
+    /** the baked cloud-detail texture (see bakeCloudDetail) */
+    cloudDetail() { return cloudDetail ?? (cloudDetail = bakeCloudDetail(gl)); },
+    /** the baked ring-system profile (see bakeRing) */
+    ring() { return ringMap ?? (ringMap = bakeRing(gl)); },
     black,
     onLoad,
-    get(url, { data = false, mip = true, clamp = false, aniso = 0 } = {}) {
+    /** a giant's weather map, drawn on first call (call it before binding a program to draw with) */
+    weather() { if (weather === undefined) weather = bakeWeather(gl, black); return weather; },
+    get weatherReady() { return !!weather; },
+    get(url, { data = false, mip = true, clamp = false, aniso = 0, zonal = false } = {}) {
       if (!url) return null;
       if (cache.has(url)) return cache.get(url);
       const e = { tex: black, ready: false };
@@ -905,6 +1265,30 @@ export function createTextures(gl, onLoad = () => {}) {
         } else gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         const ext = aniso && gl.getExtension('EXT_texture_filter_anisotropic');
         if (ext) gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, aniso);
+        if (zonal) {
+          // the mean colour of each row of the map (each latitude), as a 1 x H map
+          try {
+            const c = document.createElement('canvas');
+            c.width = img.naturalWidth; c.height = img.naturalHeight;
+            const x = c.getContext('2d');
+            x.drawImage(img, 0, 0);
+            const px = x.getImageData(0, 0, c.width, c.height).data;
+            const rows = new Uint8Array(c.height * 4);
+            for (let j = 0; j < c.height; j++) {
+              let r = 0, g = 0, b = 0;
+              for (let i = 0; i < c.width; i++) { const k = (j * c.width + i) * 4; r += px[k]; g += px[k + 1]; b += px[k + 2]; }
+              rows.set([r / c.width, g / c.width, b / c.width, 255], j * 4);
+            }
+            const zt = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, zt);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, c.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, rows);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            e.zonal = zt;
+          } catch (error) { console.warn('[planet] no zonal mean', error); }
+        }
         e.tex = t;
         e.ready = true;
         api.onLoad();
@@ -949,7 +1333,10 @@ const AIR = {
  *   frame       { lon0 (deg), capB, aerE, aerN, aerial: [span, domeFx, domeFy] } for the data map
  *   storm, ovals, bands  a procedural giant's great storm [lon, lat, w, h], its string of ovals
  *               [lon0, lat, spacing, n] and band colours [c1, c2, c3]
- *   rings       { inner, outer, gain, proc }: radii of the giant; proc: stripes, not a map
+ *   rings       { inner, outer, gain, proc }: radii of the giant; proc: stripes, not a map; gain: irradiance, 1 physical
+ *   cloudDetail 0..1: how much of the baked fine cloud detail the clouds take (default 1; 0: the map's own density only)
+ *   shallow     [r, g, b, k]: a sea's pale shore colour, on a world whose map has no depth (k: how far it shows)
+ *   albedo, shine  a body's albedo and the colour it reflects onto its moons (item.parent names the body)
  */
 export function resolveBody(spec) {
   const kind = spec.kind ?? 'terrestrial';
@@ -961,6 +1348,8 @@ export function resolveBody(spec) {
   return {
     kind, k: KIND[kind], mie, maps: spec.maps ?? {}, flat: spec.flat ?? [0.3, 0.3, 0.3], air, atm,
     proc: spec.proc ? PROC[spec.proc] : -1, seed: spec.seed ?? 0, cloud: !!spec.cloud,
+    albedo: spec.albedo ?? 0.45, shine: spec.shine ?? [0.62, 0.72, 0.92],
+    cloudDetail: spec.cloudDetail ?? 1, calm: spec.calm ? 1 : 0, shallow: spec.shallow ?? [0, 0, 0, 0],
     glint: spec.glint ?? 1, nightGain: spec.nightGain ?? 1.9, glow: spec.glow ?? 0,
     frame: spec.frame ?? null, storm: spec.storm ?? [0, 0, 0, 0], ovals: spec.ovals ?? [0, 0, 0, 0],
     bands: spec.bands ?? [[0.58, 0.68, 0.86], [0.80, 0.84, 0.92], [0.36, 0.46, 0.68]],
@@ -969,13 +1358,15 @@ export function resolveBody(spec) {
 }
 
 /** makes (once) a body's map entries, which start loading at once; returns them */
-export function loadBodyMaps(tc, b, aniso = 0) {
+export function loadBodyMaps(tc, b, aniso = 4) {
   if (b.tex) return b.tex;
   const m = b.maps;
   b.tex = {
-    day: tc.get(m.day, { aniso }), night: tc.get(m.night, { aniso }), clouds: tc.get(m.clouds, { data: true, aniso }),
+    day: tc.get(m.day, { aniso, zonal: b.k === 3 }), night: tc.get(m.night, { aniso }), clouds: tc.get(m.clouds, { data: true }),          // read soft anyway: no anisotropic taps
     data: tc.get(m.data, { data: true }), mask: tc.get(m.mask, { data: true, mip: false, clamp: true }),
-    ring: tc.get(m.ring ?? b.rings?.tex, { data: true }),
+    detail: m.clouds ? { tex: tc.cloudDetail(), ready: true } : null,
+    // a ring map of the body's own, or the baked profile
+    ring: (m.ring ?? b.rings?.tex) ? tc.get(m.ring ?? b.rings?.tex, { data: true }) : (b.rings ? { tex: tc.ring(), ready: true } : null),
   };
   return b.tex;
 }
@@ -987,7 +1378,7 @@ export function loadBodyMaps(tc, b, aniso = 0) {
  * The body's maps start loading the first time it is applied.
  */
 export function applyBody(gl, u, tc, b, extra) {
-  const { toBody, ring = null, veil = 0, dpr = 1, time = 0, aniso = 0 } = extra;
+  const { toBody, ring = null, veil = 0, dpr = 1, time = 0, aniso = 4, shine = null } = extra;
   const t = loadBodyMaps(tc, b, aniso);
   const ready = (e) => (e?.ready ? 1 : 0);
   const fr = b.frame;
@@ -1000,6 +1391,11 @@ export function applyBody(gl, u, tc, b, extra) {
   gl.uniform1f(u.uCloudMode, t.clouds ? ready(t.clouds) : b.cloud ? 2 : 0);
   gl.uniform1f(u.uTime, time);
   gl.uniform1f(u.uMie, b.mie);
+  gl.uniform1f(u.uCalm, b.calm);
+  gl.uniform1f(u.uCloudDetail1, b.cloudDetail);
+  gl.uniform4fv(u.uShallow, b.shallow);
+  gl.uniform4f(u.uShine, ...(shine ? [...shine.dir, shine.k] : [0, 0, 1, 0]));
+  gl.uniform3fv(u.uShineCol, shine?.col ?? [0, 0, 0]);
   gl.uniform1f(u.uGlint, b.glint);
   gl.uniform1f(u.uNightGain, b.nightGain);
   gl.uniform1f(u.uGlow, b.glow);
@@ -1022,9 +1418,19 @@ export function applyBody(gl, u, tc, b, extra) {
   const R = b.rings;
   if (R && ring) {
     gl.uniform4f(u.uRingP, ...norm(ring), 1);
-    gl.uniform4f(u.uRingR, R.inner, R.outer, R.gain ?? 1.1, R.proc ? 1 : ready(t.ring));
-    gl.uniform1f(u.uRingMode, R.proc ? 1 : 0);
+    gl.uniform4f(u.uRingR, R.inner, R.outer, R.gain ?? 1, 1);
   } else gl.uniform4f(u.uRingP, 0, 0, 1, 0);
+  gl.activeTexture(gl.TEXTURE8);
+  gl.bindTexture(gl.TEXTURE_2D, t.day?.zonal ?? tc.black);
+  gl.uniform1i(u.uZonal, 8);
+  gl.uniform1f(u.uZonalOn, t.day?.zonal ? 1 : 0);
+  gl.activeTexture(gl.TEXTURE7);
+  gl.bindTexture(gl.TEXTURE_2D, t.detail?.tex ?? tc.black);
+  gl.uniform1i(u.uCloudDetail, 7);
+  gl.activeTexture(gl.TEXTURE6);
+  gl.bindTexture(gl.TEXTURE_2D, b.k === 3 && tc.weatherReady ? tc.weather() : tc.black);
+  gl.uniform1i(u.uWeather, 6);
+  gl.uniform1f(u.uWeatherOn, b.k === 3 && tc.weatherReady ? 1 : 0);
   const units = [t.day, t.night, t.clouds, t.data, t.mask, t.ring];
   ['uDay', 'uNight', 'uClouds', 'uData', 'uMask', 'uRing'].forEach((name, i) => {
     gl.activeTexture(gl.TEXTURE0 + i);
@@ -1079,6 +1485,22 @@ export function createPlanetLayer(canvas) {
   let onLoad = () => {};
   const tc = createTextures(gl, () => onLoad());
   const bodies = new Map();
+  // a moon of another item in the same draw gets that body's light on its night side:
+  // from the parent's direction, coloured by it, as strong as its disc is large and as full as the
+  // moon sees it (the parent's lit share, from where the moon stands)
+  const shineOf = (it, items) => {
+    if (!it.parent) return null;
+    const P = items.find((x) => x.id === it.parent);
+    const pb = P && bodies.get(P.id);
+    if (!pb) return null;
+    const dx = P.cx - it.cx, dy = P.cy - it.cy, dz = it.parentZ ?? P.r * 2;
+    const dist = Math.hypot(dx, dy, dz) || 1;
+    const dir = [dx / dist, dy / dist, dz / dist];
+    const s = norm(it.sun);
+    const lit = 0.5 * (1 - (dir[0] * s[0] + dir[1] * s[1] + dir[2] * s[2]));
+    const ratio = Math.min(P.r / dist, 0.35);
+    return { dir, k: planetshine(pb.albedo, lit, ratio), col: pb.shine };
+  };
   let W = 1, H = 1;
   return {
     get gl() { return gl; },
@@ -1111,12 +1533,13 @@ export function createPlanetLayer(canvas) {
     draw(items, time = 0) {
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
+      if (items.some((it) => bodies.get(it.id)?.k === 3)) tc.weather();
       gl.enable(gl.BLEND);
       gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
       let cur = null;
       for (const it of items) {
         const b = bodies.get(it.id);
-        if (!b) continue;
+        if (!b || (it.alpha ?? 1) <= 0.002) continue;      // an invisible body (still a parent for its moons' light) costs nothing
         const P = programFor(b.k, b.detail);
         if (!P) continue;
         if (P !== cur) {
@@ -1126,7 +1549,7 @@ export function createPlanetLayer(canvas) {
           gl.uniform2f(P.u.uRes, W, H);
         }
         const u = P.u;
-        applyBody(gl, u, tc, b, { toBody: it.toBody, ring: it.ring, veil: it.veil, dpr: it.dpr ?? 1, time });
+        applyBody(gl, u, tc, b, { toBody: it.toBody, ring: it.ring, veil: it.veil, dpr: it.dpr ?? 1, time, shine: shineOf(it, items) });
         gl.uniform3f(u.uDisc, it.cx, it.cy, it.r);
         gl.uniform3fv(u.uSun, norm(it.sun));
         gl.uniform1f(u.uAlpha, it.alpha ?? 1);
