@@ -2456,6 +2456,13 @@ section{
     0 0 6px currentColor,
     0 0 12px rgba(255,255,255,0.08);
 }
+.nterm__body .nlogo--kira{
+  color:#83AED5;
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:none;
+}
 .nterm__body .k{ color:var(--acc-mag); font-weight:700; }
 .nterm__body .c1{ color:#b98cff; }
 .nterm__body .c2{ color:#ff79c6; }
