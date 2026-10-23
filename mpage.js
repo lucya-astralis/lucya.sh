@@ -187,25 +187,72 @@
     return true;
   }
 
-  function enable() {
+  // ---- fold / unfold ---------------------------------------------
+  // A foldable (iPhone Duo: 466px outside, ~890px inside) crosses the
+  // breakpoint every time it opens or closes. Without this the reader
+  // is thrown back to the top: unfolding shows every section again at
+  // the old scroll offset, folding re-opens whatever page the hash last
+  // named. Instead, note the block under the header before the switch
+  // and put it back under the header after.
+  var READ_LINE = 90;       // px below the top edge, clear of the sticky nav
+
+  function anchorAt(list) {
+    var pick = null;
+    list.forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      if (r.height && r.top <= READ_LINE) pick = { el: el, top: r.top };
+    });
+    if (!pick && list[0]) pick = { el: list[0], top: list[0].getBoundingClientRect().top };
+    return pick;
+  }
+
+  function restore(a) {
+    if (!a) return;
+    // after every other breakpoint listener (the kpi bar move) has run
+    requestAnimationFrame(function () {
+      var y = a.el.getBoundingClientRect().top + window.scrollY - Math.min(a.top, READ_LINE);
+      window.scrollTo({ top: Math.max(0, y), behavior: 'instant' });
+    });
+  }
+
+  function enable(fold) {
     if (active) return;
+    var a = null, page = -1;
+    if (fold) {
+      var all = [];
+      PAGES.forEach(function (p, i) {
+        els(p).forEach(function (el) { el._mpage = i; all.push(el); });
+      });
+      all.sort(function (x, y) {
+        return x.compareDocumentPosition(y) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+      });
+      a = anchorAt(all);
+      if (a) page = a.el._mpage;
+    }
     active = true;
     root.classList.add('mpages');
-    var r = resolve(location.hash);
     current = -1;
+    if (page >= 0) {
+      show(page, { hash: true });
+      restore(a);
+      return;
+    }
+    var r = resolve(location.hash);
     show(r ? r.page : 0, { target: r && r.target, hash: !!r });
   }
 
   function disable() {
     if (!active) return;
+    var a = anchorAt(els(PAGES[current]));
     active = false;
     root.classList.remove('mpages');
     document.querySelectorAll('.is-mpage, .mpage-in').forEach(function (el) {
       el.classList.remove('is-mpage', 'mpage-in');
     });
+    restore(a);
   }
 
-  function sync() { if (MQ.matches) enable(); else disable(); }
+  function sync(e) { if (MQ.matches) enable(!!e); else disable(); }
 
   function init() {
     PAGES.forEach(function (p, i) {

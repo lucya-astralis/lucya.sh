@@ -2235,7 +2235,7 @@
   const profileSection = document.getElementById('profile');
   const docstrip = document.querySelector('.docstrip');
   if (kpiBar && profileSection && docstrip) {
-    const mq = matchMedia('(max-width: 768px)');
+    const mq = matchMedia('(max-width: 767.98px)');
     const place = () => {
       if (mq.matches) {
         if (kpiBar.previousElementSibling !== profileSection) {

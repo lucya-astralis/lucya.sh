@@ -2900,6 +2900,7 @@ html.is-scrolllock body{ overflow:hidden; }
   /* fixed height, not max-height: the columns can only claim the free
      space if the sheet commits to a height first (their lists scroll) */
   height:min(calc(100vh - 48px), 920px);
+  height:min(calc(100dvh - 48px), 920px);
   display:flex;
   flex-direction:column;
   background:
@@ -3515,6 +3516,7 @@ html.is-scrolllock body{ overflow:hidden; }
 .lightbox__img{
   max-width:100%;
   max-height:82vh;
+  max-height:82dvh;
   object-fit:contain;
   border:1px solid var(--line-strong);
 }
@@ -4893,7 +4895,7 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
 }
 
 /* ================================================================
-   MOBILE COMPOSITING TIER  (<= 767.98px)
+   MOBILE COMPOSITING TIER  (<= 767.98px, touch <= 1099.98px)
    ----------------------------------------------------------------
    Not a look change — a compositing change. html.lite already fixes
    all of this, but lite only auto-arms on <=2GB / <=2 cores, so a
@@ -4915,8 +4917,12 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
    Keeping the video: it is only expensive because things blend and
    blur over it. With the blend layer gone and the panes unblurred it
    composites on its own GPU layer for free, so the wallpaper stays.
+
+   Touch screens up to MD get it too: a foldable opened up (iPhone Duo,
+   ~890px inside) or a tablet is the same phone GPU behind a wider
+   viewport, and the width test alone handed it the desktop stack.
    ================================================================ */
-@media (max-width: 767.98px){
+@media (max-width: 767.98px), (hover: none) and (pointer: coarse) and (max-width: 1099.98px){
   /* the single worst offender: fullscreen, fixed, mix-blend-mode:overlay,
      animating a non-compositable property (background-position) forever.
      Forces a full-viewport repaint AND re-blends the whole page beneath it
@@ -4926,6 +4932,8 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
   /* No pane blur at this width. The kpi bar and thermals already made this
      trade above for legibility reasons; the rest of the panes make it here
      for frame-rate reasons — same fix, same fallback (near-opaque fills). */
+  .kpibar__grid,
+  .therm__body,
   .hero__stats,
   .specsheet,
   .interests__grid,
@@ -4954,6 +4962,9 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
     --surface:    rgba(11, 11, 17, 0.94);
     --surface-2:  rgba(22, 22, 34, 0.96);
   }
+  .kpi,
+  .therm__primary,
+  .therm__cell{ background:rgba(9,9,14,.94); }
   .spotify__bars{ background:rgba(7,7,11,.88); }
   .manifest__backdrop{ background:rgba(7,7,11,.92); }
 
