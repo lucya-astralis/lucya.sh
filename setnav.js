@@ -246,12 +246,29 @@
   // either, or the overlay's own lists could not scroll.
   function modalOpen() { return root.classList.contains('is-scrolllock'); }
 
+  // A wheel gesture is a run of events with no gap longer than
+  // GESTURE_GAP — trackpad momentum included. A gesture that scrolled a
+  // panel (or already flipped a card) never flips one: reaching the end
+  // of a page stops there, and the next card needs a fresh swipe that
+  // travels at least FLIP_DISTANCE. One mouse-wheel notch still does it.
+  var GESTURE_GAP = 260;
+  var FLIP_DISTANCE = 90;
+  var lastWheel = 0, gestureDir = 0, gestureTravel = 0, gestureSpent = false;
+
   function onWheel(e) {
     if (!active || modalOpen()) return;
     var dir = e.deltaY > 0 ? 1 : -1;
-    if (innerCanScroll(e.target, dir)) return; // let the panel scroll internally
+    var now = Date.now();
+    if (now - lastWheel > GESTURE_GAP || dir !== gestureDir) {
+      gestureDir = dir; gestureTravel = 0; gestureSpent = false;
+    }
+    lastWheel = now;
+    if (innerCanScroll(e.target, dir)) { gestureSpent = true; return; } // let the panel scroll internally
     e.preventDefault();
-    if (transitioning || wheelLock) return;
+    if (transitioning || wheelLock || gestureSpent) return;
+    gestureTravel += Math.abs(e.deltaY) * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1);
+    if (gestureTravel < FLIP_DISTANCE) return;
+    gestureSpent = true;
     wheelLock = true;
     setTimeout(function () { wheelLock = false; }, EXIT_MS + ENTER_MS + COOLDOWN);
     go(dir);

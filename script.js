@@ -861,6 +861,27 @@ import { initPhotos } from './js/photos.js';
     mq.addEventListener('change', place);
   }
 
+  // ---------- SPOTIFY RELOCATION (mobile under the profile card) ----
+  // On a phone the player is the first thing worth touching after the
+  // card, so it moves into the hero grid right behind .pcard. A comment
+  // node keeps its sidebar slot so desktop gets it back in place.
+  const spotifySection = document.getElementById('spotify');
+  const profileCard = document.querySelector('.hero__grid > .pcard');
+  if (spotifySection && profileCard) {
+    const mq = matchMedia('(max-width: 767.98px)');
+    const slot = document.createComment('spotify');
+    spotifySection.before(slot);
+    const place = () => {
+      if (mq.matches) {
+        if (profileCard.nextElementSibling !== spotifySection) profileCard.after(spotifySection);
+      } else if (slot.nextSibling !== spotifySection) {
+        slot.after(spotifySection);
+      }
+    };
+    place();
+    mq.addEventListener('change', place);
+  }
+
   // ---------- LITE TOGGLE : manual override, persists ------------
   // small fixed chip; switching reloads so every load-time decision
   // (video, splash, fonts already cached) is applied consistently.

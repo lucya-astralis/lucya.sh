@@ -1062,6 +1062,12 @@ section{
   .layout__side .section__doc > span{ padding:5px 8px; }
   .layout__side .section__doc > span:nth-child(n+4){ display:none; }
   .layout__side .section__doc > span:last-child{ margin-left:auto; }
+  /* The sidebar is 260–480px wide, so its doc strips wrapped to two rows
+     and sat lower than the main column's. Measured against the sidebar
+     itself: the decorative stamp goes first, the revision after it. */
+  .layout__side{ container: side / inline-size; }
+  @container side (max-width: 399px){ .section__doc > .stamp{ display:none; } }
+  @container side (max-width: 279px){ .section__doc > span:nth-child(2){ display:none; } }
 
   .layout__side .section__head{
     flex-direction:column;
@@ -4448,6 +4454,13 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
    ================================================================ */
 
 /* ---- hero, measured against its own box ------------------------ */
+/* phones: script.js moves #spotify into the hero grid behind the card.
+   While the hero is still two columns it stays under the card and the
+   copy column spans both rows; stacked, it simply follows the card. */
+.hero__grid > .spotify{ grid-column:1; order:0; min-width:0; padding:0; }
+.hero__grid > .spotify .section__doc{ margin-top:0; }
+.hero__grid:has(> .spotify) > .hero__side{ grid-column:2; grid-row:1 / span 2; }
+
 @container hero (max-width: 899px){
   /* still side by side, but the card track now scales with the hero
      instead of holding 360px — stacking here would leave a dead column */
@@ -4458,6 +4471,8 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
      any narrower and both lose. Stack, and let the card use the row. */
   .hero__grid{ grid-template-columns:1fr; gap:24px; }
   .pcard{ max-width:520px; }
+  .hero__grid > .spotify,
+  .hero__grid:has(> .spotify) > .hero__side{ grid-column:auto; grid-row:auto; }
 }
 @container hero-side (max-width: 699px){
   /* Project descriptions keep two readable columns beside the profile. */
@@ -5402,6 +5417,21 @@ html.setmode .concordia .orrery{ flex:1 1 auto; min-height:280px; height:auto; }
  .kpi,.kpi:first-child,.kpi.kpi--telemetry{ padding:10px 8px; gap:5px; }
 }
 @media(max-width:479px){ .storage-value{ font-size:8px; } .kpi__value,.storage-value b{ font-size:19px; } .ram-row{ font-size:7px; } }
+
+/* Phones: the strip sits between the hero panels instead of under the
+   ticker, so it takes their frame — hairline grid, accent edge and the
+   same head bar as ELSEWHERE / PERSONAL SETUP. */
+@media(max-width:767.98px){
+ .kpibar{ margin:0 0 28px; border:1px solid var(--line-strong); background:var(--surface); }
+ .kpibar::before{ content:""; position:absolute; left:-1px; right:-1px; top:-1px; height:2px; background:var(--grad-accent-fade); opacity:.6; z-index:1; }
+ .kpibar .kpibar__inner{ padding:0; gap:0; }
+ .kpibar .kpibar__head{ display:flex; flex-wrap:nowrap; margin:0; padding:6px 12px; border-bottom:1px solid var(--line-strong); background:var(--surface-2); font-size:10.5px; letter-spacing:.24em; color:var(--acc-cy); }
+ .kpibar .kpibar__head .dim{ font-size:inherit; color:var(--text-dim); letter-spacing:.18em; }
+ .kpibar .kpibar__head .dim b{ color:var(--text); font-weight:400; letter-spacing:.14em; }
+ .kpibar .kpibar__grid{ gap:1px; background:var(--line); }
+ .kpibar .kpi,.kpibar .kpi:first-child,.kpibar .kpi.kpi--telemetry{ border:0; background:var(--surface); padding:10px; }
+ .kpibar .therm{ padding:12px; }
+}
 
 /* Quiet status indicators: no pulsing or blinking points anywhere. */
 .dot,.dot--ok,#thermDot,.therm #thermDot,
