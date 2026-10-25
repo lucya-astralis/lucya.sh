@@ -5382,28 +5382,29 @@ html.setmode .concordia .orrery{ flex:1 1 auto; min-height:280px; height:auto; }
 .ru .ru__led,.pcard__status-dot{ animation:none !important; box-shadow:none !important; }
 .nav__status .dot,.hero__kicker .dot,.ticker__label .dot,.pcard__status-dot{ display:none; }
 
-/* ELSEWHERE — destination cards, built from the same parts as the
-   datasheet and the old unit-status tiles: shared surface, hairline
-   grid, mono captions, accent bar on hover. */
+/* ELSEWHERE — destination cards in the layout of the old unit-status
+   tiles: index top right, icon beside the name and katakana line,
+   then the address under a dashed rule. Same surface, hairline grid
+   and hover bar as the datasheet beside it. */
 .site-grid{ position:relative; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px; min-width:0; background:var(--line); border:1px solid var(--line-strong); transition:border-color .25s ease, box-shadow .25s ease; }
 .site-grid::before{ content:""; position:absolute; left:-1px; right:-1px; top:-1px; height:2px; background:var(--grad-accent-fade); opacity:.6; z-index:2; }
 .site-grid:hover{ border-color:rgba(91,138,255,.4); box-shadow:0 0 0 1px rgba(91,138,255,.08), 0 10px 32px rgba(0,0,0,.4); }
 .site-grid > .hero__stats-head{ grid-column:1 / -1; }
-.site-card{ position:relative; isolation:isolate; display:grid; grid-template-rows:1fr auto; height:118px; min-width:0; overflow:hidden; color:var(--text); text-decoration:none; background:var(--surface); transition:background .25s ease; }
-.site-card::before{ content:""; position:absolute; left:0; top:0; width:100%; height:2px; background:var(--grad-accent); transform:scaleX(0); transform-origin:left; transition:transform .3s ease; z-index:1; }
-.site-card::after{ content:""; position:absolute; inset:0 0 38px; z-index:-1; background:radial-gradient(rgba(255,255,255,.05) 1px, transparent 1.5px) 0 0/12px 12px; mask-image:linear-gradient(180deg,#000,transparent); -webkit-mask-image:linear-gradient(180deg,#000,transparent); }
-.site-card img.site-card__logo{ position:static; grid-row:1; align-self:center; justify-self:center; width:62%; height:40px; object-fit:contain; mix-blend-mode:screen; }
-.site-card--concordia img.site-card__logo{ height:50px; }
-.site-card--gallery img.site-card__logo{ height:36px; }
-.site-card__number{ position:absolute; top:7px; left:10px; font-size:9px; letter-spacing:.14em; color:var(--text-ghost); }
-.site-card__caption{ grid-row:2; display:flex; flex-direction:column; gap:3px; padding:7px 38px 8px 12px; border-top:1px dashed var(--line); }
-.site-card__caption strong{ font-family:"Space Grotesk",sans-serif; font-size:13px; font-weight:600; line-height:1.15; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.site-card__caption small{ font-size:8px; letter-spacing:.2em; color:var(--text-ghost); text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.site-card__arrow{ position:absolute; right:12px; bottom:12px; font-size:13px; line-height:1; color:var(--text-dim); transition:color .2s ease, transform .2s ease; }
+.site-card{ position:relative; display:flex; flex-direction:column; gap:10px; min-width:0; padding:12px 14px; overflow:hidden; color:var(--text); text-decoration:none; background:var(--surface); transition:background .25s ease; }
+.site-card::before{ content:""; position:absolute; left:0; top:0; width:100%; height:2px; background:var(--grad-accent); transform:scaleX(0); transform-origin:left; transition:transform .3s ease; }
+.site-card__main{ display:flex; align-items:center; gap:12px; min-width:0; padding-right:22px; }
+.site-card img.site-card__logo{ flex:0 0 40px; width:40px; height:40px; object-fit:contain; mix-blend-mode:screen; }
+.site-card__text{ display:flex; flex-direction:column; gap:4px; min-width:0; }
+.site-card__number{ position:absolute; top:12px; right:14px; font-size:9px; letter-spacing:.18em; color:var(--text-ghost); }
+.site-card__title{ font-family:"Space Grotesk",sans-serif; font-weight:600; font-size:18px; line-height:1.15; letter-spacing:.02em; text-wrap:balance; transition:color .25s ease, text-shadow .25s ease; }
+.site-card__jp{ font-family:"Noto Sans JP",sans-serif; font-size:11px; color:var(--acc-cy); }
+.site-card__sub{ display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-top:auto; padding-top:6px; border-top:1px dashed var(--line); font-size:8.5px; letter-spacing:.18em; color:var(--text-ghost); text-transform:uppercase; }
+.site-card__sub > span:first-child{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.site-card__arrow{ font-size:12px; letter-spacing:0; color:var(--text-dim); transition:color .2s ease, transform .2s ease; }
 .site-card:hover,.site-card:focus-visible{ background:var(--surface-2); }
 .site-card:hover::before,.site-card:focus-visible::before{ transform:scaleX(1); }
-.site-card:hover .site-card__caption strong,.site-card:focus-visible .site-card__caption strong{ color:var(--acc-cy); }
+.site-card:hover .site-card__title,.site-card:focus-visible .site-card__title{ color:var(--acc-cy); text-shadow:0 0 12px rgba(91,138,255,.4); }
 .site-card:hover .site-card__arrow,.site-card:focus-visible .site-card__arrow{ color:var(--acc-cy); transform:translate(2px,-2px); }
 .site-card:focus-visible{ outline:2px solid var(--acc-cy); outline-offset:-3px; }
-@media(max-width:479px){ .site-card{ height:104px; } .site-card img.site-card__logo{ height:34px; } .site-card--concordia img.site-card__logo{ height:42px; } .site-card__caption{ padding:6px 30px 7px 10px; } .site-card__caption strong{ font-size:12px; } .site-card__caption small{ font-size:7px; letter-spacing:.1em; } }
-@media(prefers-reduced-motion:reduce){ .site-card::before,.site-card__arrow{ transition:none; } }
+@media(max-width:479px){ .site-card{ padding:10px; } .site-card__title{ font-size:15px; } .site-card__main{ gap:9px; padding-right:16px; } .site-card img.site-card__logo{ flex-basis:30px; width:30px; height:30px; } .site-card__sub{ font-size:7px; letter-spacing:.1em; } }
+@media(prefers-reduced-motion:reduce){ .site-card::before,.site-card__arrow,.site-card__title{ transition:none; } }
