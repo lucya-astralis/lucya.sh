@@ -4671,8 +4671,8 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
   .stat__label{ font-size:9.5px; }
   .stat__ix{ top:12px; right:12px; font-size:8.5px; }
   .stat__sub{ font-size:8px; padding-top:6px; }
-  .specsheet__row{ grid-template-columns: 100px 1fr; padding:4px 10px; }
-  .specsheet__list dt{ font-size:9.5px; }
+  .specsheet__row{ grid-template-columns: 112px 1fr; padding:4px 10px; }
+  .specsheet__list dt{ font-size:9.5px; letter-spacing:.14em; }
   .specsheet__list{ font-size:11px; }
 
   .pcard__banner{ height:160px; }
@@ -5406,5 +5406,14 @@ html.setmode .concordia .orrery{ flex:1 1 auto; min-height:280px; height:auto; }
 .site-card:hover .site-card__title,.site-card:focus-visible .site-card__title{ color:var(--acc-cy); text-shadow:0 0 12px rgba(91,138,255,.4); }
 .site-card:hover .site-card__arrow,.site-card:focus-visible .site-card__arrow{ color:var(--acc-cy); transform:translate(2px,-2px); }
 .site-card:focus-visible{ outline:2px solid var(--acc-cy); outline-offset:-3px; }
-@media(max-width:479px){ .site-card{ padding:10px; } .site-card__title{ font-size:15px; } .site-card__main{ gap:9px; padding-right:16px; } .site-card img.site-card__logo{ flex-basis:30px; width:30px; height:30px; } .site-card__sub{ font-size:7px; letter-spacing:.1em; } }
+@media(max-width:479px){ .site-card{ padding:10px; } .site-card__title{ font-size:15px; } .site-card__sub{ font-size:7px; letter-spacing:.1em; } }
+/* Narrow cards (two columns beside the profile card, or phones): the
+   icon moves up next to the index, like the old tiles' label row, and
+   the name gets the full card width instead of wrapping word by word. */
+.site-card{ container-type:inline-size; }
+@container (max-width:240px){
+ .site-card__main{ flex-direction:column; align-items:flex-start; gap:8px; padding-right:0; }
+ .site-card img.site-card__logo{ flex-basis:auto; width:28px; height:28px; }
+ .site-card__title{ font-size:16px; }
+}
 @media(prefers-reduced-motion:reduce){ .site-card::before,.site-card__arrow,.site-card__title{ transition:none; } }
