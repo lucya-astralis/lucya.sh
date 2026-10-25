@@ -40,9 +40,8 @@
 <meta name="twitter:image:alt" content="lucya - personal website" />
 
 <!-- Resource hints -->
-<link rel="preload" href="styles.css" as="style" />
-<link rel="preload" href="data.json" as="fetch" crossorigin="anonymous" />
-<link rel="stylesheet" href="styles.css" />
+<link rel="preload" href="styles.css?v=20261025-destination-plates" as="style" />
+<link rel="stylesheet" href="styles.css?v=20261025-destination-plates" />
 
 <!-- LITE MODE: decide before first paint so html.lite styles apply everywhere.
      auto-on for weak hardware / data-saver / reduced-motion; manual override
@@ -214,44 +213,18 @@
 <!-- ============================================================= -->
 <!-- LIVE TICKER                                                    -->
 <!-- ============================================================= -->
-<div class="ticker" role="presentation" aria-hidden="true">
+<div class="ticker">
   <div class="ticker__label">
     <span class="dot dot--ok"></span>
-    <span>LIVE FEED · 中継</span>
+    <span id="feedLabel">TELEMETRY</span>
   </div>
-  <div class="ticker__viewport">
-    <div class="ticker__track" id="tickerTrack">
-      <!-- fallback only — data.json is the source of truth and overwrites
-           this list on load; duplicated by JS for the seamless loop -->
-      <span class="ticker__item"><b>SYS</b> aoi.inter-astra.local · uptime 03d 23h 33m</span>
-      <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>OPS</b> 15/15 services up · self-hosted · best effort</span>
-      <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>NET</b> uplink NODE-01 · 802.11ac · 98% signal</span>
-      <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>SYS</b> Try Michaelsoft Binbows · new release available</span>
-      <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>BUILD</b> astraOS @ 11-stable · kernel 6.8.0</span>
-      <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>FUEL</b> monster reserves · 67% · resupply scheduled</span>
-      <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>BCN</b> astral.express · all systems nominal · CMDR 310217</span>
-      <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>JP</b> オンライン</span>
-      <span class="ticker__sep">◇</span>
-      <span class="ticker__item"><b>CAL</b> JP trip · あと <span id="tickerDays">—</span>日</span>
-      <span class="ticker__sep">◇</span>
-    </div>
+  <div class="ticker__viewport" tabindex="0" aria-label="Host telemetry; focus to pause">
+    <div class="ticker__track" id="tickerTrack"><span class="ticker__item">Awaiting CheckMK data</span></div>
   </div>
-  <div class="ticker__tag">
-    <span class="mono">FEED · #01</span>
-  </div>
-</div>
-
-<!-- ============================================================= -->
-<!-- DOCUMENT CONTROL STRIP                                         -->
-<!-- ============================================================= -->
-<div class="docstrip" role="presentation">
+  <span class="pride-tag ticker__pride" role="img" aria-label="Pastel rainbow pride flag" title="Pride"></span>
+  <details class="dossier">
+    <summary class="mono">PERSONNEL DOSSIER <span>＋</span></summary>
+    <div class="dossier__panel">
   <div class="docstrip__inner">
     <span class="docstrip__cls">PUBLIC RECORD</span>
     <span>DOC <b>0451-LUC</b></span>
@@ -264,6 +237,12 @@
     <span>PAGE 01 / 05</span>
   </div>
 </div>
+  </details>
+</div>
+
+<!-- ============================================================= -->
+<!-- DOCUMENT CONTROL STRIP                                         -->
+<!-- ============================================================= -->
 
 <!-- ============================================================= -->
 <!-- KPI STRIP — annual-report style                                -->
@@ -277,30 +256,29 @@
       </div>
       <div class="kpibar__grid" id="kpiGrid">
         <!-- populated from data.json — fallback values below render if fetch fails -->
-        <div class="kpi" data-kpi="uptime">
-          <span class="kpi__label mono">UPTIME</span>
-          <span class="kpi__value" data-kpi-value>18y —m</span>
-          <span class="kpi__sub mono">SINCE 2007 · CONTINUOUS</span>
-        </div>
-        <div class="kpi" data-kpi="services">
-          <span class="kpi__label mono">WEBSERVICES</span>
-          <span class="kpi__value" data-kpi-value>15 / 15</span>
-          <span class="kpi__sub mono kpi__sub--ok">SELF-HOSTED · BEST EFFORT</span>
-        </div>
         <div class="kpi" data-kpi="japan">
+          <svg class="kpi__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="m8 16 3-5 5-3-3 5Z"/></svg>
           <span class="kpi__label mono">JAPAN</span>
           <span class="kpi__value" data-kpi-value>— <em>d</em></span>
-          <span class="kpi__sub mono kpi__sub--ok">TRIP · 2026-08-09</span>
+          <span class="kpi__sub mono kpi__sub--ok">UNTIL DEPARTURE</span>
+          <span class="kpi__visual kpi__journey" aria-hidden="true"><span>JP</span></span>
         </div>
-        <div class="kpi" data-kpi="domains">
-          <span class="kpi__label mono">DOMAINS OWNED</span>
-          <span class="kpi__value" data-kpi-value>21</span>
-          <span class="kpi__sub mono">REGISTERED · ACTIVE</span>
+        <div class="kpi kpi--telemetry" id="nasMetric">
+          <span class="kpi__label mono">NAS STORAGE · VEGA</span>
+          <span class="storage-value"><b id="nasUsed">—</b><span id="nasTotal"> / — TiB</span></span>
+          <span class="metric-bar" aria-hidden="true"><i id="nasFill"></i></span>
+          <span class="kpi__sub mono" id="nasFree">AWAITING TELEMETRY</span>
+        </div>
+        <div class="kpi kpi--telemetry" id="ramMetric">
+          <span class="kpi__label mono">HYPERVISOR RAM</span>
+          <span class="ram-row mono"><span>LYNX</span><b id="lynxRam">—</b></span>
+          <span class="metric-bar" aria-hidden="true"><i id="lynxFill"></i></span>
+          <span class="ram-row mono"><span>CHIMERA</span><b id="chimeraRam">—</b></span>
+          <span class="metric-bar" aria-hidden="true"><i id="chimeraFill"></i></span>
         </div>
       </div>
       <div class="kpibar__foot mono">
-        <span>// FIGURES ARE LIVE · COMPUTED CLIENT-SIDE</span>
-        <span>// ALL DATA STORED LOCALLY · NO TELEMETRY</span>
+        <span>// CLIENT-SIDE METRICS · NO TELEMETRY</span>
         <span>FORM <b>KPI-A · REV 2026.Q2</b></span>
       </div>
     </div>
@@ -312,10 +290,12 @@
         <span class="therm__title">
           <span class="dot dot--ok" id="thermDot"></span>
           SYSTEM STATUS
+          <span class="therm__room" id="ovRoom" hidden></span>
         </span>
         <span class="therm__tag" id="ovTag">CHECKMK · SAMPLE</span>
       </div>
 
+      <div class="therm__summary mono" id="ovSummary" role="status">AWAITING LIVE TELEMETRY</div>
       <div class="therm__body">
         <div class="therm__primary">
           <span class="therm__label mono">HOSTS UP</span>
@@ -325,7 +305,7 @@
           </div>
         </div>
 
-        <div class="therm__grid">
+        <div class="therm__grid" id="ovAlerts" hidden>
           <div class="therm__cell">
             <span class="therm__label mono">WARNING</span>
             <span class="therm__cell-val mono"><b id="ovWarn">1</b></span>
@@ -394,9 +374,6 @@
     <aside class="pcard">
       <div class="pcard__banner">
         <img src="images/profile/profilebanner.webp" alt="" width="426" height="240" loading="lazy" decoding="async" />
-        <div class="pcard__countdown">
-          <span>あと</span><span id="countdownDays">114</span><span>日</span>
-        </div>
       </div>
 
       <div class="pcard__pfp">
@@ -430,7 +407,6 @@
           <img src="images/emoji/flag_eu.svg" alt="" class="inline-emoji" />
         </div>
 
-        <a class="pcard__url" href="https://lucya.sh" target="_blank" rel="noopener">https://lucya.sh/</a>
         <a class="pcard__url pcard__url--mail" href="mailto:hi@lucya.sh">hi@lucya.sh</a>
 
         <div class="pcard__tz">
@@ -487,53 +463,38 @@
       </p>
 
       <div class="hero__lower">
-        <div class="hero__stats" aria-label="unit status">
-          <div class="hero__stats-head mono">
-            <span>UNIT STATUS</span>
-            <span class="hero__stats-cls">FORM <b>US-01</b></span>
-          </div>
-          <div class="stat">
-            <span class="stat__label">DIVISION</span>
-            <span class="stat__ix mono" aria-hidden="true">01</span>
-            <span class="stat__value">SYS / OPS</span>
-            <span class="stat__jp">システム運用</span>
-            <span class="stat__sub mono">HOMELAB · RETRO</span>
-          </div>
-          <div class="stat">
-            <span class="stat__label">LOCATION</span>
-            <span class="stat__ix mono" aria-hidden="true">02</span>
-            <span class="stat__value">DE · BY</span>
-            <span class="stat__jp">ババリア</span>
-            <span class="stat__sub mono">GRID 48N · 12E</span>
-          </div>
-          <div class="stat">
-            <span class="stat__label">UPTIME</span>
-            <span class="stat__ix mono" aria-hidden="true">03</span>
-            <span class="stat__value" id="uptimeStat">18y 00m</span>
-            <span class="stat__jp">稼働時間</span>
-            <span class="stat__sub mono">SINCE 2007-08-26</span>
-          </div>
-          <div class="stat">
-            <span class="stat__label">FUEL</span>
-            <span class="stat__ix mono" aria-hidden="true">04</span>
-            <span class="stat__value">MONSTER</span>
-            <span class="stat__jp">エナジー</span>
-            <span class="stat__sub mono stat__sub--ok">RESERVES · 67%</span>
-          </div>
-        </div>
+        <nav class="site-grid" aria-label="my websites">
+          <div class="hero__stats-head mono"><span>ELSEWHERE</span><span class="hero__stats-cls">EXPLORE <b>01–04</b></span></div>
+          <a class="site-card site-card--lucya" href="https://lucya.systems">
+            <img class="site-card__logo" src="images/projects/lucya-lockup.svg" alt="" loading="lazy" />
+            <span class="site-card__number mono">01</span><span class="site-card__arrow" aria-hidden="true">↗</span>
+            <span class="site-card__caption"><strong>lucya.systems</strong><small class="mono">PROJECTS & WORLDS</small></span>
+          </a>
+          <a class="site-card site-card--gallery" href="https://images.lucya.sh">
+            <img class="site-card__logo" src="images/projects/aperture.svg" alt="" loading="lazy" />
+            <span class="site-card__number mono">02</span><span class="site-card__arrow" aria-hidden="true">↗</span>
+            <span class="site-card__caption"><strong>Photo archive</strong><small class="mono">IMAGES.LUCYA.SH</small></span>
+          </a>
+          <a class="site-card site-card--binbows" href="https://binbows.net">
+            <img class="site-card__logo" src="images/projects/binbows.net.svg" alt="" loading="lazy" />
+            <span class="site-card__number mono">03</span><span class="site-card__arrow" aria-hidden="true">↗</span>
+            <span class="site-card__caption"><strong>binbows.net</strong><small class="mono">MICHAELSOFT BINBOWS</small></span>
+          </a>
+          <a class="site-card site-card--concordia" href="https://gov.inter-astra.net">
+            <img class="site-card__logo" src="images/projects/concordia-emblem.svg" alt="" loading="lazy" />
+            <span class="site-card__number mono">04</span><span class="site-card__arrow" aria-hidden="true">↗</span>
+            <span class="site-card__caption"><strong>Shinsei Concordia</strong><small class="mono">GOV.INTER-ASTRA.NET</small></span>
+          </a>
+        </nav>
 
         <!-- SPEC SHEET PANEL — datasheet for the specimen.
              Fallback rows mirror data.json (spec[]) — keep both in sync. -->
-        <div class="specsheet" aria-label="datasheet">
+        <div class="specsheet" aria-label="personal setup">
           <div class="specsheet__head mono">
-            <span>DATASHEET</span>
+            <span>PERSONAL SETUP</span>
             <span class="specsheet__cls">FORM <b>DS-01</b></span>
           </div>
           <dl class="specsheet__list mono">
-            <div class="specsheet__row">
-              <dt>DESIGNATION</dt>
-              <dd>LUC-Y4</dd>
-            </div>
             <div class="specsheet__row">
               <dt>OPERATING SYS</dt>
               <dd>MacOS / Linux</dd>
@@ -609,21 +570,20 @@
 
   <div class="about__grid">
     <div class="about__col">
-      <h3 class="h-sub">PROFILE <em>プロフィール</em></h3>
+      <h3 class="h-sub">OFF THE TERMINAL <em>日常</em></h3>
       <p>
-        18-year-old sysadmin &amp; system tinkerer from Bavaria
-        <img src="images/profile/badges/flag-bavaria.png" alt="BY" class="inline-emoji" />.
-        Obsessed with tech, space, and everything that hums, blinks, or boots.
-        Runs on Monster, curiosity, and good music.
+        Old computers, photographs and imaginary worlds: I like things with
+        a history, whether I am bringing them back to life or inventing it.
+        The homelab is where I tinker; the camera is my excuse to go outside.
       </p>
     </div>
 
     <div class="about__col">
-      <h3 class="h-sub">WHAT I DO <em>仕事</em></h3>
+      <h3 class="h-sub">BEYOND THE HOMELAB <em>創作</em></h3>
       <p>
-        Mostly building, breaking, and fixing systems, sometimes all at once.
-        From homelabs and servers to creative web projects, I love making stuff
-        work and look cool doing it :3
+        Shinsei Concordia is my science-fiction worldbuilding project.
+        I build its star charts, cities and institutions as places you can
+        explore — from the ocean moon Orikaia Prime to the edge of the Expanse.
         <img src="images/emoji/blahaj.webp" alt="blahaj" class="inline-emoji" />
       </p>
     </div>
@@ -652,7 +612,6 @@
     <span>REV <b>2026.05</b></span>
     <span class="stamp stamp--ok">INDEXED · 05 ENTRIES</span>
     <span>FORM <b>BHV-03</b></span>
-    <span>OBSERVED · 18Y</span>
   </div>
 
   <div class="section__head">
@@ -694,7 +653,7 @@
     <article class="tile">
       <span class="tile__tag">INT · 05</span>
       <h4>Web Tinkering</h4>
-      <p>Making small, pretty, strange corners of the internet.</p>
+      <p>Interactive star charts, fictional government portals and small corners of the web.</p>
       <span class="tile__jp">ウェブ</span>
     </article>
   </div>
@@ -720,7 +679,7 @@
   <div class="section__doc">
     <span>DOC <b>05.INFRA</b></span>
     <span>REV <b>2026.05</b></span>
-    <span class="stamp stamp--ok">PROD · OPERATIONAL</span>
+    <span class="stamp stamp--ok">HARDWARE INVENTORY</span>
     <span>FORM <b>SYS-04</b></span>
     <span>NEOFETCH · SYSTEM INFO</span>
   </div>
@@ -1189,7 +1148,7 @@
   </div>
 </div>
 
-<script type="module" src="script.js"></script>
+<script type="module" src="script.js?v=20261025-capacity"></script>
 <script src="setnav.js"></script>
 <script src="mpage.js"></script>
 </body>

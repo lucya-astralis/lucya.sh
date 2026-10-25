@@ -407,32 +407,6 @@ import { initPhotos } from './js/photos.js';
   updateClock();
   setInterval(updateClock, 1000);
 
-  // ---------- JP TRIP COUNTDOWN : あとXX日 ------------------------
-  // three phases, same anchor dates as the JAPAN kpi in data.json:
-  //   pre  — days until departure
-  //   in   — days left in Japan (counts down to the return flight)
-  //   post — trip over: the badge disappears
-  const JP_START = new Date('2026-08-09T00:00:00');
-  const JP_END   = new Date('2027-01-02T00:00:00');
-  const jpTrip = () => {
-    const now = new Date();
-    const left = t => Math.ceil((t - now) / 86400000);
-    if (left(JP_START) > 0) return { phase: 'pre',  days: left(JP_START) };
-    if (left(JP_END)   > 0) return { phase: 'in',   days: left(JP_END) };
-    return { phase: 'post', days: 0 };
-  };
-  const updateCountdown = () => {
-    const s = jpTrip();
-    const a = document.getElementById('countdownDays');
-    const b = document.getElementById('pcardCountdown');
-    if (a) a.textContent = s.days;
-    if (b) b.textContent = s.days;
-    const badge = a && a.closest('.pcard__countdown');
-    if (badge) badge.style.display = s.phase === 'post' ? 'none' : '';
-  };
-  updateCountdown();
-  setInterval(updateCountdown, 60_000);
-
   // ---------- YEAR -----------------------------------------------
   const y = document.getElementById('thisYear');
   if (y) y.textContent = new Date().getFullYear();
@@ -563,24 +537,58 @@ import { initPhotos } from './js/photos.js';
     };
   })();
 
+  // Capacity is taken from named hosts, never inferred from the aggregate.
+  statusFeed.subscribe(data => {
+    const hosts = Array.isArray(data?.hosts) ? data.hosts : [];
+    const find = name => hosts.find(h => h?.name === name);
+    const number = n => typeof n === 'number' && Number.isFinite(n) && n >= 0;
+    const put = (id, text) => { document.getElementById(id).textContent = text; };
+    const fill = (id, pct) => { document.getElementById(id).style.width = `${Math.min(100, Math.max(0, pct))}%`; };
+    const nas = find('vega');
+    const valid = number(nas?.fs_used_gib) && number(nas?.fs_total_gib) && nas.fs_total_gib > 0 && nas.fs_used_gib <= nas.fs_total_gib;
+    put('nasUsed', valid ? (nas.fs_used_gib / 1024).toFixed(2) : '—');
+    put('nasTotal', valid ? ` / ${(nas.fs_total_gib / 1024).toFixed(2)} TiB` : ' / — TiB');
+    put('nasFree', valid ? `${((nas.fs_total_gib - nas.fs_used_gib) / 1024).toFixed(2)} TiB FREE` : 'AWAITING TELEMETRY');
+    fill('nasFill', valid ? nas.fs_used_gib / nas.fs_total_gib * 100 : 0);
+    for (const name of ['lynx', 'chimera']) {
+      const host = find(name);
+      const validRam = number(host?.mem_pct) && host.mem_pct <= 100;
+      put(`${name}Ram`, validRam ? `${host.mem_pct.toFixed(1)}%` : '—');
+      fill(`${name}Fill`, validRam ? host.mem_pct : 0);
+    }
+    for (const id of ['nasMetric', 'ramMetric']) {
+      const el = document.getElementById(id);
+      el.title = data?.ts ? `CheckMK snapshot · ${new Date(Number(data.ts) * 1000).toLocaleString()}` : 'No telemetry available';
+    }
+  });
+
+  // Detailed measurements complement the aggregate header without repeating it.
+  const tickerTrack = document.getElementById('tickerTrack');
+  let tickerContent = '';
+  statusFeed.subscribe(data => {
+    if (!tickerTrack) return;
+    const hosts = Array.isArray(data?.hosts) ? data.hosts : [];
+    const number = value => typeof value === 'number' && Number.isFinite(value);
+    const items = hosts.filter(h => h && typeof h.name === 'string').map(h => {
+      const readings = [];
+      if (typeof h.state === 'string') readings.push(h.state);
+      if (number(h.cpu_pct)) readings.push(`CPU ${h.cpu_pct.toFixed(1)}%`);
+      if (number(h.mem_pct)) readings.push(`RAM ${h.mem_pct.toFixed(1)}%`);
+      if (number(h.temp_c)) readings.push(`${h.temp_c.toFixed(1)} °C`);
+      if (number(h.uptime_s)) readings.push(`UP ${Math.floor(h.uptime_s / 86400)}d ${Math.floor(h.uptime_s % 86400 / 3600)}h`);
+      if (number(h.ports_up) && number(h.ports_monitored)) readings.push(`PORTS ${h.ports_up}/${h.ports_monitored}`);
+      if (number(h.traffic_bps)) readings.push(`${(h.traffic_bps / 1e6).toFixed(2)} Mbit/s`);
+      return `<span class="ticker__item"><b>${escHtml(h.name)}</b>${escHtml(readings.join(' · ') || 'no measurements')}</span><span class="ticker__sep">◇</span>`;
+    }).join('');
+    const content = items || '<span class="ticker__item">No host measurements available</span>';
+    if (content === tickerContent) return;
+    tickerContent = content;
+    tickerTrack.innerHTML = `<span class="ticker__group">${content}</span><span class="ticker__group" aria-hidden="true">${content}</span>`;
+  });
+
   initSystems(statusFeed, scrambleTo);
 
   initSpotify(scrambleTo);
-
-  // ---------- TICKER : seamless loop (fallback duplication) -------
-  // duplicates the static HTML so the loop works even if data.json fails.
-  // data.json loader (below) overwrites with live content if available.
-  const tickerTrack = document.getElementById('tickerTrack');
-  if (tickerTrack) {
-    tickerTrack.innerHTML += tickerTrack.innerHTML;
-    const days = document.getElementById('countdownDays');
-    if (days) {
-      tickerTrack.querySelectorAll('#tickerDays').forEach((el, i) => {
-        el.id = i ? '' : 'tickerDays';
-        el.textContent = days.textContent;
-      });
-    }
-  }
 
   // ---------- DATA.JSON : single source of truth -----------------
   const daysUntil = (target) => {
@@ -597,7 +605,7 @@ import { initPhotos } from './js/photos.js';
     return `${y}y ${String(m).padStart(2, '0')}m`;
   };
 
-  fetch('data.json', { cache: 'no-cache' })
+  fetch('data.json?v=20261025', { cache: 'no-store' })
     .then(r => r.ok ? r.json() : Promise.reject(r.status))
     .then(data => {
       // -- KPIs --
@@ -613,12 +621,24 @@ import { initPhotos } from './js/photos.js';
           if (subEl) {
             subEl.classList.toggle('kpi__sub--ok', kpi.subClass === 'ok');
           }
+          const countVisual = el.querySelector('[data-count-visual]');
+          if (countVisual) {
+            const count = Number(kpi.value);
+            countVisual.replaceChildren();
+            if (Number.isInteger(count) && count >= 0 && count <= 100) {
+              for (let i = 0; i < count; i++) countVisual.appendChild(document.createElement('i'));
+            }
+          }
           if (!valEl) continue;
           if (kpi.since) {
             valEl.textContent = yearsMonthsSince(kpi.since);
           } else if (kpi.target) {
             // JP trip: counts down to `target`, then — while there — down
             // to `end`; afterwards shows the total stay + subAfter.
+            const start = new Date(kpi.target).getTime();
+            const end = new Date(kpi.end).getTime();
+            const progress = end > start ? Math.min(1, Math.max(0, (Date.now() - start) / (end - start))) : 0;
+            el.style.setProperty('--journey', `${(progress * 100).toFixed(2)}%`);
             const toStart = daysUntil(kpi.target);
             const toEnd   = kpi.end ? daysUntil(kpi.end) : 0;
             let d = toStart;
@@ -640,28 +660,6 @@ import { initPhotos } from './js/photos.js';
         }
       }
 
-      // -- TICKER --
-      if (tickerTrack && Array.isArray(data.ticker)) {
-        const japanKpi = (data.kpis || []).find(k => k && k.target);
-        let japanPhase = 'pre', japanDays = '';
-        if (japanKpi) {
-          const toStart = daysUntil(japanKpi.target);
-          const toEnd   = japanKpi.end ? daysUntil(japanKpi.end) : 0;
-          japanPhase = toStart > 0 ? 'pre' : (toEnd > 0 ? 'in' : 'post');
-          japanDays  = toStart > 0 ? toStart : toEnd;
-        }
-        const items = data.ticker.map(t => {
-          // items may carry phase variants for the JP trip (textIn / textAfter)
-          const base = (japanPhase === 'in' && t.textIn) ? t.textIn
-                     : (japanPhase === 'post' && t.textAfter) ? t.textAfter
-                     : (t.text || '');
-          const text = base.replaceAll('{japanDays}', japanDays);
-          const tag = t.tag ? `<b>${escHtml(t.tag)}</b> ` : '';
-          return `<span class="ticker__item">${tag}${escHtml(text)}</span><span class="ticker__sep">◇</span>`;
-        }).join('');
-        tickerTrack.innerHTML = items + items;
-      }
-
       // -- SPEC SHEET --
       const specList = document.querySelector('.specsheet__list');
       if (specList && Array.isArray(data.spec)) {
@@ -674,11 +672,6 @@ import { initPhotos } from './js/photos.js';
     .catch(err => console.warn('[lucya] data.json unavailable, using fallback HTML', err));
 
   initPhotos(LITE);
-
-  // ---------- UPTIME STAT ----------------------------------------
-  // same anchor date as the UPTIME kpi in data.json so both always agree
-  const uptime = document.getElementById('uptimeStat');
-  if (uptime) uptime.textContent = yearsMonthsSince('2007-08-26');
 
   // ---------- CHECKMK STATUS : fleet overview -------------------
   // The header overview reads the shared statusFeed (aggregate counts).
@@ -703,6 +696,7 @@ import { initPhotos } from './js/photos.js';
       return a < 60 ? `${a}s ago` : a < 3600 ? `${Math.floor(a/60)}m ago`
            : a < 86400 ? `${Math.floor(a/3600)}h ago` : `${Math.floor(a/86400)}d ago`;
     };
+    const isStale = () => !Number.isFinite(Number(last?.ts)) || Number(last.ts) <= 0 || Date.now()/1000 - Number(last.ts) > 120;
     const renderHeader = () => {
       if (!ov || !last) return;
       const s = last.summary || last;
@@ -717,20 +711,31 @@ import { initPhotos } from './js/photos.js';
         ovHostsBar.parentElement.dataset.band = hu<ht ? (hu===0?'crit':'warm') : 'ok'; }
       if (ovSvcBar){ ovSvcBar.style.width = pct(ok,st).toFixed(1)+'%';
         ovSvcBar.parentElement.dataset.band = crit>0?'crit':warn>0?'warm':'ok'; }
-      ov.dataset.state = crit>0 ? 'dead' : warn>0 ? 'stale' : 'ok';
-      if (ovTag) ovTag.textContent = 'CHECKMK · LIVE';
+      const healthy = ht > 0 && st > 0 && hu === ht && ok === st && !warn && !crit;
+      const stale = isStale();
+      $('feedLabel').textContent = stale ? 'LAST SNAPSHOT' : 'LIVE FEED';
+      ov.dataset.state = stale ? 'stale' : crit > 0 || (ht > 0 && hu === 0) ? 'dead' : healthy ? 'ok' : 'stale';
+      $('ovAlerts').hidden = !warn && !crit;
+      $('ovSummary').textContent = stale ? 'TELEMETRY OUTDATED' : healthy ? 'ALL SYSTEMS OPERATIONAL' : 'SYSTEMS REQUIRE ATTENTION';
+      if (ovTag) ovTag.textContent = stale ? 'CHECKMK · STALE' : 'CHECKMK · LIVE';
+      const room = last.room;
+      const hasRoom = room?.temp_c != null && Number.isFinite(Number(room.temp_c));
+      $('ovRoom').hidden = !hasRoom;
+      $('ovRoom').textContent = hasRoom ? `ROOM ${Number(room.temp_c).toFixed(1)} °C` : '';
+      $('ovRoom').title = hasRoom ? `Room temperature · ${String(room.state || 'unknown')}` : '';
+      $('ovRoom').dataset.state = room?.state || 'unknown';
       if (ovSrc) ovSrc.textContent = String(last.source || 'checkmk');
       if (ovAge) ovAge.textContent = fmtAge();
     };
 
     const sample = () => {
-      if (ov){ ov.dataset.state='down'; if(ovTag)ovTag.textContent='CHECKMK · SAMPLE';
-        if(ovSrc)ovSrc.textContent='sample data'; if(ovAge)ovAge.textContent='awaiting probe'; }
+      if (ov){ ov.dataset.state='down'; if(ovTag)ovTag.textContent='CHECKMK · OFFLINE';
+        $('feedLabel').textContent='FEED OFFLINE'; $('ovRoom').hidden=true; if(ovHosts)ovHosts.textContent='— / —'; if(ovSvc)ovSvc.textContent='— / —'; if(ovHostsBar)ovHostsBar.style.width='0%'; if(ovSvcBar)ovSvcBar.style.width='0%'; $('ovSummary').textContent='AWAITING LIVE TELEMETRY'; $('ovAlerts').hidden=true; if(ovSrc)ovSrc.textContent='sample data'; if(ovAge)ovAge.textContent='awaiting probe'; }
     };
 
     const tickAge = () => {
       if (!last) return;
-      if (ovAge) ovAge.textContent = fmtAge();
+      renderHeader();
     };
 
     sample();          // honest neutral state until the first response
@@ -829,7 +834,7 @@ import { initPhotos } from './js/photos.js';
   // ---------- KPI BAR RELOCATION (mobile under profile) ----------
   const kpiBar = document.querySelector('.kpibar');
   const profileSection = document.getElementById('profile');
-  const docstrip = document.querySelector('.docstrip');
+  const docstrip = document.querySelector('.ticker');
   if (kpiBar && profileSection && docstrip) {
     const mq = matchMedia('(max-width: 767.98px)');
     const place = () => {
