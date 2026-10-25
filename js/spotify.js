@@ -57,6 +57,9 @@ export function initSpotify(scrambleTo) {
     const dotsEl = document.getElementById('spotifyDots');
     const elapsedEl = document.getElementById('spotifyElapsed');
     const totalEl = document.getElementById('spotifyTotal');
+    const labelEl = document.getElementById('spotifyLabel');
+    const modeEl = document.getElementById('spotifyMode');
+    const progressEl = document.getElementById('spotifyProgress');
 
     const fmtTime = sec => pad2(Math.floor(sec / 60)) + ':' + pad2(Math.floor(sec % 60));
 
@@ -85,6 +88,8 @@ export function initSpotify(scrambleTo) {
     let idx = 0;
     let tickStart = 0;
     let elapsedRaf = 0;
+    // the track from /nowplaying.json while something plays, else null
+    let live = null;
 
     const stopElapsed = () => { if (elapsedRaf) cancelAnimationFrame(elapsedRaf); elapsedRaf = 0; };
     const startElapsed = () => {
@@ -106,12 +111,25 @@ export function initSpotify(scrambleTo) {
       elapsedRaf = requestAnimationFrame(step);
     };
 
-    let onAfterRender = null;
-    const render = () => {
-      const s = songs[idx];
+    // cross-fade: fade out, swap content, fade in. A newer swap supersedes a
+    // pending one, so a rotation tick can't land on top of a live track.
+    let swapId = 0;
+    const swap = (fn) => {
+      const id = ++swapId;
       coverWrap.classList.add('is-swap');
       meta.classList.add('is-swap');
       setTimeout(() => {
+        if (id !== swapId) return;
+        fn();
+        coverWrap.classList.remove('is-swap');
+        meta.classList.remove('is-swap');
+      }, 300);
+    };
+
+    let onAfterRender = null;
+    const render = () => {
+      const s = songs[idx];
+      swap(() => {
         cover.src = s.cover;
         cover.alt = s.title + ' — ' + s.artist;
         scrambleTo(trackEl, s.title);
@@ -128,12 +146,10 @@ export function initSpotify(scrambleTo) {
           void active.offsetWidth;
           active.classList.add('is-active');
         }
-        coverWrap.classList.remove('is-swap');
-        meta.classList.remove('is-swap');
         startElapsed();
         preloadNext();
         if (onAfterRender) onAfterRender();
-      }, 300);
+      });
     };
 
     let timer = 0;
@@ -146,6 +162,7 @@ export function initSpotify(scrambleTo) {
     };
 
     const jumpTo = (i) => {
+      if (live) return;   // the live track owns the card until it stops
       idx = ((i % songs.length) + songs.length) % songs.length;
       render();
       schedule();
@@ -239,9 +256,10 @@ export function initSpotify(scrambleTo) {
 
       const markActive = () => {
         manifestList.querySelectorAll('.manifest__row').forEach((r, i) => {
-          r.classList.toggle('is-active', i === idx);
+          const on = i === idx && !live;
+          r.classList.toggle('is-active', on);
           const st = r.querySelector('.manifest__status');
-          if (st) st.textContent = i === idx ? '▸ PLAYING' : '';
+          if (st) st.textContent = on ? '▸ PLAYING' : '';
         });
       };
 
@@ -351,12 +369,138 @@ export function initSpotify(scrambleTo) {
     // burns CPU forever in the background
     let cardInView = true;
     const updateRunState = () => {
-      const run = cardInView && !document.hidden;
-      if (run){ schedule(); startElapsed(); }
-      else { clearInterval(timer); stopElapsed(); }
+      clearInterval(timer);
+      stopElapsed();
+      if (!cardInView || document.hidden) return;
+      if (live) startLiveElapsed();
+      else { schedule(); startElapsed(); }
     };
+
+    // ---------- LIVE : /nowplaying.json overrides the rotation ------
+    // server/spotify-nowplaying.py writes the file every ~10s. A file older
+    // than LIVE_STALE_S means the puller is down, which reads the same as
+    // "nothing playing": the card goes back to the favourites.
+    const LIVE_POLL_MS = 15000;
+    const LIVE_STALE_S = 90;
+    const ROTATION_LABEL = labelEl ? labelEl.textContent : '';
+    let liveKey = '';
+    let liveTotal = 0;   // s
+    let liveBase = 0;    // performance.now() at which the track was at 0:00
+    let liveSeen = 0;    // Date.now() of the last poll that confirmed playback
+    let pollTimer = 0;
+
+    const startLiveElapsed = () => {
+      stopElapsed();
+      let shown = '';
+      const step = () => {
+        const e = Math.min(liveTotal, Math.max(0, (performance.now() - liveBase) / 1000));
+        const t = fmtTime(e);
+        if (t !== shown){ shown = t; if (elapsedEl) elapsedEl.textContent = t; }
+        if (e < liveTotal) elapsedRaf = requestAnimationFrame(step);
+      };
+      elapsedRaf = requestAnimationFrame(step);
+    };
+
+    // progress is a CSS animation started mid-way (negative delay) rather
+    // than a per-frame width write, for the same backdrop-filter reason as
+    // the elapsed readout above
+    const syncProgress = (pos) => {
+      if (!progressEl) return;
+      progressEl.style.setProperty('--live-dur', liveTotal + 's');
+      progressEl.style.setProperty('--live-delay', (-pos) + 's');
+      progressEl.classList.remove('is-run');
+      void progressEl.offsetWidth;
+      progressEl.classList.add('is-run');
+    };
+
+    // lag: seconds between the puller's sample and now, by the server's clock
+    const showLive = (t, lag) => {
+      const key = t.url || (t.title + '\n' + t.artist);
+      const changed = key !== liveKey;
+      const entering = !live;
+      live = t;
+      liveKey = key;
+      liveSeen = Date.now();
+      liveTotal = Math.max(1, (Number(t.duration_ms) || 0) / 1000);
+      const pos = Math.min(liveTotal, (Number(t.progress_ms) || 0) / 1000 + lag);
+      liveBase = performance.now() - pos * 1000;
+
+      if (entering) {
+        clearInterval(timer);
+        stopElapsed();
+        spotifyCard.classList.add('is-live');
+        dotsEl.hidden = true;
+        if (progressEl) progressEl.hidden = false;
+        if (labelEl) labelEl.textContent = 'NOW PLAYING · 再生中';
+        if (modeEl) modeEl.textContent = 'LIVE';
+        counterEl.textContent = 'LIVE';
+      }
+      const apply = () => {
+        if (totalEl) totalEl.textContent = fmtTime(liveTotal);
+        // the swap delay moved the playhead on; measure from liveBase again
+        syncProgress((performance.now() - liveBase) / 1000);
+        if (cardInView && !document.hidden) startLiveElapsed();
+      };
+      if (changed) {
+        swap(() => {
+          if (t.cover) cover.src = t.cover;
+          cover.alt = t.title + ' — ' + t.artist;
+          scrambleTo(trackEl, t.title);
+          artistEl.textContent = t.artist || '';
+          apply();
+        });
+      } else {
+        apply();
+      }
+    };
+
+    const exitLive = () => {
+      if (!live) return;
+      live = null;
+      liveKey = '';
+      spotifyCard.classList.remove('is-live');
+      dotsEl.hidden = false;
+      if (progressEl) { progressEl.hidden = true; progressEl.classList.remove('is-run'); }
+      if (labelEl) labelEl.textContent = ROTATION_LABEL;
+      if (modeEl) modeEl.textContent = 'ROTATION';
+      if (totalEl) totalEl.textContent = fmtTime(INTERVAL_MS / 1000);
+      render();
+      updateRunState();
+    };
+
+    const pollLive = async () => {
+      clearTimeout(pollTimer);
+      let next = LIVE_POLL_MS;
+      if (!document.hidden) {
+        try {
+          const r = await fetch('/nowplaying.json?t=' + Date.now(), { cache: 'no-store' });
+          const d = r.ok ? await r.json() : null;
+          // age by the server's Date header, so a wrong client clock can't
+          // make a fresh file look stale (or the other way round)
+          const date = Date.parse(r.headers.get('Date') || '');
+          const now = (Number.isFinite(date) ? date : Date.now()) / 1000;
+          const age = d ? now - Number(d.ts || 0) : Infinity;
+          const t = d && d.playing && d.track && d.track.title && age < LIVE_STALE_S ? d.track : null;
+          if (t) {
+            showLive(t, Math.max(0, age));
+            // poll again right after the track should end, not up to 15s later
+            const left = liveTotal - (performance.now() - liveBase) / 1000;
+            next = Math.min(next, Math.max(2000, left * 1000 + 1500));
+          } else {
+            exitLive();
+          }
+        } catch (_) {
+          // a network blip shouldn't flip the card; only a long silence does
+          if (live && Date.now() - liveSeen > LIVE_STALE_S * 1000) exitLive();
+        }
+      }
+      pollTimer = setTimeout(pollLive, next);
+    };
+
     render();
     updateRunState();
+    pollLive();
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) pollLive(); });
     if ('IntersectionObserver' in window){
       new IntersectionObserver((ents) => {
         cardInView = ents[0].isIntersecting;

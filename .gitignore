@@ -10,6 +10,11 @@ Desktop.ini
 # sample for testing) — committing it would ship stale numbers that the
 # page would then present as live
 status.json
+# same for the spotify now-playing puller (server/spotify-nowplaying.py)
+nowplaying.json
+# puller secrets and its refresh token
+server/.env
+server/data/
 
 # aperture output, generated locally — not part of the repo
 /aperture/

@@ -2830,6 +2830,32 @@ section{
   to  { transform: scaleX(1); }
 }
 
+/* live mode: /nowplaying.json replaces the rotation dots with one real
+   progress bar; the fill is spotifyTick started mid-way via a negative delay */
+.spotify__dots[hidden],
+.spotify__progress[hidden]{ display:none; }
+.spotify__progress{
+  flex:1;
+  height:3px;
+  background:rgba(255,255,255,.07);
+  border-radius:1px;
+  position:relative;
+  overflow:hidden;
+}
+.spotify__progress i{
+  position:absolute; inset:0;
+  background:linear-gradient(90deg, var(--acc-ok), var(--acc-cy));
+  box-shadow:0 0 8px rgba(61,255,165,.5);
+  transform-origin:left;
+  transform:scaleX(0);
+}
+.spotify__progress.is-run i{
+  animation: spotifyTick var(--live-dur, 1s) linear var(--live-delay, 0s) forwards;
+}
+.spotify__card.is-live{ border-left-color:var(--acc-ok); }
+.spotify__card.is-live .spotify__label-name{ color:var(--acc-ok); }
+.layout__side .spotify__progress{ height:2px; }
+
 .spotify__foot{
   margin-top:14px;
   display:flex; align-items:center; gap:14px;
@@ -4626,6 +4652,7 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
   /* the segment rail doubles as a track picker — 3px tall dots are not
      tappable, so give each one a 22px hit box and draw the bar inside */
   .spotify__dots{ gap:3px; }
+  .spotify__progress{ height:4px; margin:9px 0; }
   .spotify__dots button{
     height:22px;
     background:transparent;

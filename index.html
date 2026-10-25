@@ -747,7 +747,7 @@
     <div class="spotify__meta">
       <div class="spotify__label mono">
         <img src="images/profile/sociallinks/spotify_color.svg" alt="" />
-        <span class="spotify__label-name">NOW SAMPLING · 最近のお気に入り</span>
+        <span class="spotify__label-name" id="spotifyLabel">NOW SAMPLING · 最近のお気に入り</span>
         <span class="spotify__counter mono" id="spotifyCounter">01 / 12</span>
       </div>
 
@@ -757,11 +757,12 @@
       <div class="spotify__timeline" aria-hidden="true">
         <span class="spotify__time mono" id="spotifyElapsed">00:00</span>
         <div class="spotify__dots" id="spotifyDots" role="tablist" aria-label="track selector"></div>
+        <div class="spotify__progress" id="spotifyProgress" hidden><i></i></div>
         <span class="spotify__time mono" id="spotifyTotal">00:05</span>
       </div>
 
       <div class="spotify__foot mono small">
-        <span class="spotify__pill"><i></i> ROTATION</span>
+        <span class="spotify__pill"><i></i> <span id="spotifyMode">ROTATION</span></span>
         <span class="spotify__hint mono">▸ TAP FOR MANIFEST</span>
       </div>
     </div>
