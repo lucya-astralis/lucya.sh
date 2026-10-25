@@ -12,6 +12,7 @@ Desktop.ini
 status.json
 # same for the spotify now-playing puller (server/spotify-nowplaying.py)
 nowplaying.json
+nowplaying-cover.jpg
 # puller secrets and its refresh token
 server/.env
 server/data/
@@ -21,3 +22,6 @@ server/data/
 
 # wrangler local state
 worker/.wrangler/
+
+# python bytecode
+__pycache__/
