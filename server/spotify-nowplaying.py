@@ -21,6 +21,7 @@ Settings come from the environment (see server/.env.example):
 
 import argparse
 import base64
+import hashlib
 import json
 import os
 import secrets
@@ -40,6 +41,8 @@ STATE_PATH = os.environ.get('NOWPLAYING_STATE', '/data/token.json')
 SCOPE = 'user-read-currently-playing'
 POLL = 10       # seconds between polls
 TIMEOUT = 10    # HTTP timeout
+COVER_NAME = 'nowplaying-cover.jpg'
+COVER_MAX = 2 * 1024 * 1024
 
 
 def client():
@@ -63,13 +66,13 @@ def save_token(refresh_token):
     write_atomic(STATE_PATH, json.dumps({'refresh_token': refresh_token}), mode=0o600)
 
 
-def write_atomic(path, text, mode=0o644):
+def write_atomic(path, content, mode=0o644):
     # write-then-rename so the web server never serves a half-written file
     d = os.path.dirname(os.path.abspath(path))
     fd, tmp = tempfile.mkstemp(dir=d, prefix='.np-')
     try:
-        with os.fdopen(fd, 'w') as f:
-            f.write(text)
+        with os.fdopen(fd, 'wb' if isinstance(content, bytes) else 'w') as f:
+            f.write(content)
         os.chmod(tmp, mode)
         os.replace(tmp, path)
     except BaseException:
@@ -178,6 +181,21 @@ def shape(payload):
     }
 
 
+def mirror_cover(url, out):
+    """Copies the cover next to nowplaying.json and returns its site path.
+
+    Served from our own origin, so the site's CSP needs no Spotify CDN entry
+    and visitors' browsers never contact Spotify. ?v= changes per cover, so
+    caches can't show the previous track's art.
+    """
+    with urllib.request.urlopen(url, timeout=TIMEOUT) as r:
+        data = r.read(COVER_MAX + 1)
+    if len(data) > COVER_MAX:
+        raise ValueError('cover too large')
+    write_atomic(os.path.join(os.path.dirname(os.path.abspath(out)), COVER_NAME), data)
+    return '/' + COVER_NAME + '?v=' + hashlib.sha1(url.encode()).hexdigest()[:12]
+
+
 def cmd_run(args):
     out = args.out or os.environ.get('NOWPLAYING_OUT')
     if not out:
@@ -192,10 +210,22 @@ def cmd_run(args):
 
     sp = Spotify(refresh_token)
     print('polling spotify, writing ' + out, flush=True)
+    cover_src, cover_path = None, None   # remote url -> mirrored site path
     while True:
         wait = POLL
         try:
             data = shape(sp.current())
+            track = data.get('track')
+            if track and track.get('cover'):
+                if track['cover'] != cover_src:
+                    try:
+                        cover_path = mirror_cover(track['cover'], out)
+                        cover_src = track['cover']
+                    except Exception as e:
+                        # no art beats someone else's art; retried next poll
+                        print(f'cover failed: {e}', file=sys.stderr, flush=True)
+                        cover_src, cover_path = None, None
+                track['cover'] = cover_path
             write_atomic(out, json.dumps(data, ensure_ascii=False, separators=(',', ':')))
         except urllib.error.HTTPError as e:
             if e.code == 429:

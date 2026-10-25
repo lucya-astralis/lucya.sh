@@ -443,7 +443,9 @@ export function initSpotify(scrambleTo) {
       };
       if (changed) {
         swap(() => {
-          if (t.cover) cover.src = t.cover;
+          // the puller sends no cover rather than a stale one; the logo beats
+          // leaving the previous track's art up
+          cover.src = t.cover || 'images/profile/sociallinks/spotify_color.svg';
           cover.alt = t.title + ' — ' + t.artist;
           scrambleTo(trackEl, t.title);
           artistEl.textContent = t.artist || '';

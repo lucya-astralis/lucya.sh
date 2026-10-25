@@ -47,7 +47,9 @@ account's playback, so any device counts (phone, desktop, speakers).
 ## Spotify now-playing puller
 
 Runs as a container from `server/` and writes
-`/srv/websites/lucya.sh/nowplaying.json`.
+`/srv/websites/lucya.sh/nowplaying.json` plus `nowplaying-cover.jpg` next to it
+(covers are mirrored so the CSP needs no Spotify host and visitors never
+contact Spotify).
 
 1. Create an app at https://developer.spotify.com/dashboard and add
    `http://127.0.0.1:8888/callback` as a Redirect URI.
