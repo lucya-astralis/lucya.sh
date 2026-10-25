@@ -1,12 +1,13 @@
 import { escHtml } from './utils.js';
-import { neofetchData, rackData } from './systems-data.js';
+import { neofetchData, rackData } from './systems-data.js?v=20261025-statuslink';
 
 export function initSystems(statusFeed, scrambleTo) {
   // ---------- NEOFETCH : real systems ----------------------------
   // raw content uses inline <span style="color:..."> and occasionally
   // malformed <span/> as closers — we sanitize on inject.
   // Sheets are hand-transcribed snapshots. Entries with a `live` id get
-  // their volatile figures (uptime, memory, cpu, temperature) rewritten
+  // their volatile figures (uptime, memory, cpu, temperature, storage,
+  // pool/disk/fan health, ports, traffic, service counts) rewritten
   // from status.json; those spans carry .nlive so the dotted underline
   // says which numbers are current and which are from the dump.
   const sanitize = s => s.replace(/<span\/>/g, '</span>');
@@ -112,6 +113,8 @@ export function initSystems(statusFeed, scrambleTo) {
              : a < 86400 ? `${Math.floor(a / 3600)}h` : `${Math.floor(a / 86400)}d`;
       };
 
+      const fmtGib = (g) => g >= 1024 ? `${(g / 1024).toFixed(2)} TiB` : `${g.toFixed(2)} GiB`;
+
       let feedTs = 0;
 
       const paint = (data) => {
@@ -180,6 +183,40 @@ export function initSystems(statusFeed, scrambleTo) {
 
           const temp = Number(h.temp_c);
           if (isFinite(temp) && h.temp_c != null) put('temp', `[${temp.toFixed(0)} °C]`, band(temp, 75, 85));
+          if (isFinite(temp) && h.temp_c != null) put('temp-c', `${temp.toFixed(1)} °C`, band(temp, 60, 75));
+          const diskTemp = Number(h.disk_temp_c);
+          if (isFinite(diskTemp) && h.disk_temp_c != null) put('disk-temp', `${diskTemp.toFixed(0)} °C`, band(diskTemp, 45, 55));
+
+          // filesystem the probe watches — the root fs on the hypervisors,
+          // the data volumes summed on the NAS
+          const fsUsed = Number(h.fs_used_gib), fsTotal = Number(h.fs_total_gib);
+          if (fsTotal > 0 && isFinite(fsUsed)) {
+            const pct = isFinite(Number(h.fs_pct)) && h.fs_pct != null ? Number(h.fs_pct) : fsUsed / fsTotal * 100;
+            put('disk-used', fmtGib(fsUsed));
+            put('disk-total', fmtGib(fsTotal));
+            put('disk-pct', `${pct.toFixed(pct < 10 ? 1 : 0)}%`, band(pct, 75, 90));
+          }
+
+          // n of m healthy — anything short of all is a fault, not a level
+          const ratio = (key, ok, total, word) => {
+            const o = Number(ok), t = Number(total);
+            if (t > 0 && isFinite(o)) put(key, `${o}/${t} ${word}`, o >= t ? '#06e236' : '#da0a0a');
+          };
+          ratio('pools', h.pools_ok, h.pools_total, 'online');
+          ratio('disks', h.disks_ok, h.disks_total, 'healthy');
+          ratio('fans',  h.fans_ok,  h.fans_total,  'ok');
+          ratio('ports', h.ports_up, h.ports_monitored, 'up');
+
+          const traffic = Number(h.traffic_bps);
+          if (isFinite(traffic) && h.traffic_bps != null) {
+            put('traffic', traffic >= 1e9 ? `${(traffic / 1e9).toFixed(2)} Gbit/s` : `${(traffic / 1e6).toFixed(2)} Mbit/s`);
+          }
+
+          if (h.svc_ok != null) {
+            const ok = Number(h.svc_ok) || 0;
+            put('svc', `${ok} ok` + (warn ? ` · ${warn} warn` : '') + (crit ? ` · ${crit} crit` : ''),
+                crit ? '#da0a0a' : warn ? '#e5c07b' : '#06e236');
+          }
         });
 
         tickBadges();

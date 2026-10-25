@@ -40,8 +40,8 @@
 <meta name="twitter:image:alt" content="lucya - personal website" />
 
 <!-- Resource hints -->
-<link rel="preload" href="styles.css?v=20261025-destination-plates" as="style" />
-<link rel="stylesheet" href="styles.css?v=20261025-destination-plates" />
+<link rel="preload" href="styles.css?v=20261025-statuslink" as="style" />
+<link rel="stylesheet" href="styles.css?v=20261025-statuslink" />
 
 <!-- LITE MODE: decide before first paint so html.lite styles apply everywhere.
      auto-on for weak hardware / data-saver / reduced-motion; manual override
@@ -214,35 +214,12 @@
 <!-- LIVE TICKER                                                    -->
 <!-- ============================================================= -->
 <div class="ticker">
-  <div class="ticker__label">
-    <span class="dot dot--ok"></span>
-    <span id="feedLabel">TELEMETRY</span>
-  </div>
   <div class="ticker__viewport" tabindex="0" aria-label="Host telemetry; focus to pause">
     <div class="ticker__track" id="tickerTrack"><span class="ticker__item">Awaiting CheckMK data</span></div>
   </div>
   <span class="pride-tag ticker__pride" role="img" aria-label="Pastel rainbow pride flag" title="Pride"></span>
-  <details class="dossier">
-    <summary class="mono">PERSONNEL DOSSIER <span>＋</span></summary>
-    <div class="dossier__panel">
-  <div class="docstrip__inner">
-    <span class="docstrip__cls">PUBLIC RECORD</span>
-    <span>DOC <b>0451-LUC</b></span>
-    <span>FILE <b>PERSONNEL.DOSSIER</b></span>
-    <span class="docstrip__rev">REV <b>2026.Q2</b></span>
-    <span class="pride-tag">PRIDE<b>2026</b></span>
-    <span class="docstrip__sp"></span>
-    <span>HOLDER <b>LUCYA@CORE</b></span>
-    <span>ATLAS · CET · DE-BY</span>
-    <span>PAGE 01 / 05</span>
-  </div>
+  <a class="ticker__link mono" href="https://status.lucya.systems" target="_blank" rel="noopener">STATUS PAGE <span aria-hidden="true">↗</span></a>
 </div>
-  </details>
-</div>
-
-<!-- ============================================================= -->
-<!-- DOCUMENT CONTROL STRIP                                         -->
-<!-- ============================================================= -->
 
 <!-- ============================================================= -->
 <!-- KPI STRIP — annual-report style                                -->
@@ -256,24 +233,23 @@
       </div>
       <div class="kpibar__grid" id="kpiGrid">
         <!-- populated from data.json — fallback values below render if fetch fails -->
-        <div class="kpi" data-kpi="japan">
-          <svg class="kpi__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="m8 16 3-5 5-3-3 5Z"/></svg>
-          <span class="kpi__label mono">JAPAN</span>
-          <span class="kpi__value" data-kpi-value>— <em>d</em></span>
-          <span class="kpi__sub mono kpi__sub--ok">UNTIL DEPARTURE</span>
-          <span class="kpi__visual kpi__journey" aria-hidden="true"><span>JP</span></span>
+        <div class="kpi kpi--telemetry" data-kpi="japan">
+          <span class="kpi__head mono"><span class="kpi__label">JAPAN</span><span class="kpi__meta" id="tripPct">—</span></span>
+          <span class="kpi__line"><span class="kpi__value" data-kpi-value>— <em>d</em></span><span class="kpi__sub mono kpi__sub--ok">UNTIL DEPARTURE</span></span>
+          <span class="metric-bar metric-bar--trip" aria-hidden="true"><i></i></span>
+          <span class="kpi__foot mono"><span id="tripDep">DEP —</span><span id="tripRet">RET —</span></span>
         </div>
         <div class="kpi kpi--telemetry" id="nasMetric">
-          <span class="kpi__label mono">NAS STORAGE · VEGA</span>
-          <span class="storage-value"><b id="nasUsed">—</b><span id="nasTotal"> / — TiB</span></span>
+          <span class="kpi__head mono"><span class="kpi__label">NAS STORAGE · VEGA</span><span class="kpi__meta" id="nasPct">—</span></span>
+          <span class="kpi__line"><span class="storage-value"><b id="nasUsed">—</b><span id="nasTotal"> / — TiB</span></span><span class="kpi__sub mono" id="nasFree">AWAITING TELEMETRY</span></span>
           <span class="metric-bar" aria-hidden="true"><i id="nasFill"></i></span>
-          <span class="kpi__sub mono" id="nasFree">AWAITING TELEMETRY</span>
+          <span class="kpi__foot mono"><span id="nasUp">UP —</span><span id="nasTemp">— °C</span></span>
         </div>
         <div class="kpi kpi--telemetry" id="ramMetric">
-          <span class="kpi__label mono">HYPERVISOR RAM</span>
-          <span class="ram-row mono"><span>LYNX</span><b id="lynxRam">—</b></span>
+          <span class="kpi__head mono"><span class="kpi__label">HYPERVISOR RAM</span><span class="kpi__meta">2 HOSTS</span></span>
+          <span class="ram-row mono"><span>LYNX</span><span><i id="lynxCpu">CPU —</i><b id="lynxRam">—</b></span></span>
           <span class="metric-bar" aria-hidden="true"><i id="lynxFill"></i></span>
-          <span class="ram-row mono"><span>CHIMERA</span><b id="chimeraRam">—</b></span>
+          <span class="ram-row mono"><span>CHIMERA</span><span><i id="chimeraCpu">CPU —</i><b id="chimeraRam">—</b></span></span>
           <span class="metric-bar" aria-hidden="true"><i id="chimeraFill"></i></span>
         </div>
       </div>
@@ -1148,7 +1124,7 @@
   </div>
 </div>
 
-<script type="module" src="script.js?v=20261025-capacity"></script>
+<script type="module" src="script.js?v=20261025-statuslink"></script>
 <script src="setnav.js"></script>
 <script src="mpage.js"></script>
 </body>

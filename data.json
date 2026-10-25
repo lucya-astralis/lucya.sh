@@ -15,7 +15,7 @@
       "end": "2027-01-02",
       "unit": "d",
       "sub": "UNTIL DEPARTURE",
-      "subIn": "DAYS LEFT · BACK JAN 02",
+      "subIn": "DAYS LEFT IN JAPAN",
       "subAfter": "DAYS IN JAPAN",
       "subClass": "ok"
     },

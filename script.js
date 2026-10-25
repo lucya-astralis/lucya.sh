@@ -1,6 +1,6 @@
 import { pad2, escHtml } from './js/utils.js';
 import { createScrambler } from './js/text-scramble.js';
-import { initSystems } from './js/systems.js';
+import { initSystems } from './js/systems.js?v=20261025-statuslink';
 import { initSpotify } from './js/spotify.js';
 import { initPhotos } from './js/photos.js';
 
@@ -550,9 +550,14 @@ import { initPhotos } from './js/photos.js';
     put('nasTotal', valid ? ` / ${(nas.fs_total_gib / 1024).toFixed(2)} TiB` : ' / — TiB');
     put('nasFree', valid ? `${((nas.fs_total_gib - nas.fs_used_gib) / 1024).toFixed(2)} TiB FREE` : 'AWAITING TELEMETRY');
     fill('nasFill', valid ? nas.fs_used_gib / nas.fs_total_gib * 100 : 0);
+    document.getElementById('nasFree').classList.toggle('kpi__sub--ok', valid && nas.fs_used_gib / nas.fs_total_gib < .85);
+    put('nasPct', valid ? `${(nas.fs_used_gib / nas.fs_total_gib * 100).toFixed(1)}% USED` : '—');
+    put('nasUp', number(nas?.uptime_s) ? `UP ${Math.floor(nas.uptime_s / 86400)}D ${Math.floor(nas.uptime_s % 86400 / 3600)}H` : 'UP —');
+    put('nasTemp', typeof nas?.temp_c === 'number' && Number.isFinite(nas.temp_c) ? `${nas.temp_c.toFixed(1)} °C` : '— °C');
     for (const name of ['lynx', 'chimera']) {
       const host = find(name);
       const validRam = number(host?.mem_pct) && host.mem_pct <= 100;
+      put(`${name}Cpu`, number(host?.cpu_pct) ? `CPU ${host.cpu_pct.toFixed(1)}%` : 'CPU —');
       put(`${name}Ram`, validRam ? `${host.mem_pct.toFixed(1)}%` : '—');
       fill(`${name}Fill`, validRam ? host.mem_pct : 0);
     }
@@ -605,7 +610,7 @@ import { initPhotos } from './js/photos.js';
     return `${y}y ${String(m).padStart(2, '0')}m`;
   };
 
-  fetch('data.json?v=20261025', { cache: 'no-store' })
+  fetch('data.json?v=20261025b', { cache: 'no-store' })
     .then(r => r.ok ? r.json() : Promise.reject(r.status))
     .then(data => {
       // -- KPIs --
@@ -639,6 +644,11 @@ import { initPhotos } from './js/photos.js';
             const end = new Date(kpi.end).getTime();
             const progress = end > start ? Math.min(1, Math.max(0, (Date.now() - start) / (end - start))) : 0;
             el.style.setProperty('--journey', `${(progress * 100).toFixed(2)}%`);
+            const stamp = t => new Date(t).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+            const setText = (id, text) => { const node = document.getElementById(id); if (node) node.textContent = text; };
+            setText('tripPct', `${Math.round(progress * 100)}% ELAPSED`);
+            setText('tripDep', `DEP ${stamp(kpi.target)}`);
+            if (kpi.end) setText('tripRet', `RET ${stamp(kpi.end)}`);
             const toStart = daysUntil(kpi.target);
             const toEnd   = kpi.end ? daysUntil(kpi.end) : 0;
             let d = toStart;
@@ -713,7 +723,6 @@ import { initPhotos } from './js/photos.js';
         ovSvcBar.parentElement.dataset.band = crit>0?'crit':warn>0?'warm':'ok'; }
       const healthy = ht > 0 && st > 0 && hu === ht && ok === st && !warn && !crit;
       const stale = isStale();
-      $('feedLabel').textContent = stale ? 'LAST SNAPSHOT' : 'LIVE FEED';
       ov.dataset.state = stale ? 'stale' : crit > 0 || (ht > 0 && hu === 0) ? 'dead' : healthy ? 'ok' : 'stale';
       $('ovAlerts').hidden = !warn && !crit;
       $('ovSummary').textContent = stale ? 'TELEMETRY OUTDATED' : healthy ? 'ALL SYSTEMS OPERATIONAL' : 'SYSTEMS REQUIRE ATTENTION';
@@ -730,7 +739,7 @@ import { initPhotos } from './js/photos.js';
 
     const sample = () => {
       if (ov){ ov.dataset.state='down'; if(ovTag)ovTag.textContent='CHECKMK · OFFLINE';
-        $('feedLabel').textContent='FEED OFFLINE'; $('ovRoom').hidden=true; if(ovHosts)ovHosts.textContent='— / —'; if(ovSvc)ovSvc.textContent='— / —'; if(ovHostsBar)ovHostsBar.style.width='0%'; if(ovSvcBar)ovSvcBar.style.width='0%'; $('ovSummary').textContent='AWAITING LIVE TELEMETRY'; $('ovAlerts').hidden=true; if(ovSrc)ovSrc.textContent='sample data'; if(ovAge)ovAge.textContent='awaiting probe'; }
+        $('ovRoom').hidden=true; if(ovHosts)ovHosts.textContent='— / —'; if(ovSvc)ovSvc.textContent='— / —'; if(ovHostsBar)ovHostsBar.style.width='0%'; if(ovSvcBar)ovSvcBar.style.width='0%'; $('ovSummary').textContent='AWAITING LIVE TELEMETRY'; $('ovAlerts').hidden=true; if(ovSrc)ovSrc.textContent='sample data'; if(ovAge)ovAge.textContent='awaiting probe'; }
     };
 
     const tickAge = () => {

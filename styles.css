@@ -5228,18 +5228,14 @@ html.setmode .concordia .orrery{ flex:1 1 auto; min-height:280px; height:auto; }
 }
 
 /* Header overview: a single feed rail and two distinct instrument panels. */
+.ticker__link{ flex-shrink:0; display:flex; align-items:center; gap:14px; padding:0 18px; background:#0b0c12; border-left:1px solid var(--line); font-size:9px; letter-spacing:.15em; color:var(--text); text-decoration:none; transition:color .2s ease, background .2s ease; }
+.ticker__link span{ color:var(--acc-cy); font-size:12px; transition:transform .2s ease; }
+.ticker__link:hover,.ticker__link:focus-visible{ color:var(--acc-cy); background:rgba(91,138,255,.06); }
+.ticker__link:hover span,.ticker__link:focus-visible span{ transform:translate(2px,-2px); }
+.ticker__link:focus-visible{ outline:2px solid var(--acc-cy); outline-offset:-3px; }
+@media(max-width:767.98px){ .ticker__link{ font-size:7px; padding:0 10px; gap:8px; letter-spacing:.08em; } }
 .ticker{ overflow:visible; }
 .ticker__viewport{ min-width:0; }
-.dossier{ position:relative; flex-shrink:0; background:#0b0c12; border-left:1px solid var(--line); }
-.dossier summary{ cursor:pointer; list-style:none; padding:0 18px; height:100%; display:flex; align-items:center; gap:18px; font-size:9px; letter-spacing:.15em; }
-.dossier summary::-webkit-details-marker{ display:none; }
-.dossier summary span{ color:var(--acc-cy); font-size:15px; }
-.dossier[open] summary span{ transform:rotate(45deg); }
-.dossier summary:focus-visible{ outline:2px solid var(--acc-cy); outline-offset:-3px; }
-.dossier__panel{ position:absolute; right:0; top:100%; width:min(440px, 94vw); background:#0b0c12; border:1px solid var(--line-strong); box-shadow:0 18px 50px #0009; }
-.dossier__panel .docstrip__inner{ padding:20px; display:flex; flex-wrap:wrap; gap:16px; font-size:10px; }
-.dossier__panel .docstrip__sp{ display:none; }
-.dossier__panel .docstrip__inner > span::before{ content:none; }
 /* A compact equipment rail, using the same rules as the dossier sections. */
 .kpibar{ background:rgba(7,7,11,.55); }
 .kpibar__inner{ grid-template-columns:minmax(0,1.3fr) minmax(340px,1fr); padding:12px var(--page-pad); gap:24px; align-items:center; }
@@ -5281,7 +5277,6 @@ html.setmode .concordia .orrery{ flex:1 1 auto; min-height:280px; height:auto; }
   .therm{ padding-left:16px; }
 }
 @media (max-width:767.98px){
-  .dossier summary{ font-size:8px; padding:0 10px; gap:8px; letter-spacing:.05em; }
   .ticker__label{ font-size:8px; letter-spacing:.08em; }
   .kpibar__inner{ grid-template-columns:1fr; padding:12px 0; gap:14px; }
   .kpibar__grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
@@ -5315,22 +5310,6 @@ html.setmode .concordia .orrery{ flex:1 1 auto; min-height:280px; height:auto; }
 .header-resources a:hover,.header-resources a:focus-visible{ color:var(--text); }
 @media(max-width:767.98px){ .header-resources{ gap:14px; padding:0 10px; } .header-resources a{ font-size:8px; } .ticker__label{ display:none; } }
 
-/* Four visual links, read left-to-right across each row. */
-.site-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px; min-width:0; background:var(--line); border:1px solid var(--line-strong); }
-.site-grid > .hero__stats-head{ grid-column:1 / -1; }
-.site-card{ position:relative; display:block; height:108px; min-height:0; overflow:hidden; color:var(--text); text-decoration:none; background:#080c16; }
-.site-card img{ width:100%; height:100%; object-fit:cover; position:absolute; inset:0; transition:transform .4s ease; }
-.site-card::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(4,7,15,.15),transparent 45%,rgba(4,7,15,.95)); }
-.site-card__caption{ position:absolute; z-index:1; bottom:9px; left:11px; right:10px; display:flex; flex-direction:column; gap:5px; }
-.site-card__caption strong{ font-family:"Space Grotesk",sans-serif; font-size:14px; line-height:1.15; }
-.site-card__caption small{ font-size:7px; letter-spacing:.12em; color:#c0cce3; }
-.site-card__number,.site-card__arrow{ position:absolute; z-index:1; top:9px; background:#080c1680; padding:3px 5px; }
-.site-card__number{ left:9px; font-size:8px; color:#d0d9ed; }
-.site-card__arrow{ right:9px; font-size:14px; }
-.site-card:focus-visible{ outline:2px solid var(--acc-cy); outline-offset:-3px; }
-@media(hover:hover) and (prefers-reduced-motion:no-preference){ .site-card:hover img{ transform:scale(1.04); } }
-@media(max-width:479px){ .site-card{ height:100px; } .site-card__caption{ left:10px; } .site-card__caption strong{ font-size:13px; } }
-
 /* Live host readouts in the rail; aggregate health remains in the panel. */
 .ticker__track{ gap:0; }
 .ticker__group{ display:inline-flex; align-items:center; gap:18px; padding-right:18px; }
@@ -5351,61 +5330,51 @@ html.setmode .concordia .orrery{ flex:1 1 auto; min-height:280px; height:auto; }
 @media(max-width:767.98px){
   .kpibar__inner{ grid-template-columns:1fr; }
   .therm{ padding:12px 0 0; }
-  .ticker__label{ display:flex; font-size:7px; padding:0 8px; }
   .ticker__pride{ padding:0 8px; }
-  .dossier summary{ font-size:7px; }
 }
 
-/* Illustrated inventory cards: each mark represents one item, not uptime. */
+/* Instrument cards: every card reads the same way — label and headline
+   figure on top, the reading and its context on one line, a bar, then
+   two footnotes pinned left and right so wide cards stay populated. */
 .kpibar__grid{ gap:8px; }
-.kpi,.kpi:first-child{ display:grid; grid-template-columns:minmax(0,1fr) 64px; grid-template-rows:auto 1fr auto; gap:5px 12px; min-height:90px; padding:12px 14px; border:1px solid var(--line); background:linear-gradient(130deg,rgba(91,138,255,.09),rgba(7,7,11,.55)); }
-.kpi__icon{ display:none; }
-.kpi__label,.kpi__value,.kpi__sub{ grid-column:1; }
-.kpi__label{ grid-row:1; }
-.kpi__value{ grid-row:2; font-size:29px; align-self:center; }
-.kpi__sub{ grid-row:3; font-size:7px; line-height:1.4; }
-.kpi__visual{ grid-column:2; grid-row:1 / 4; align-self:center; justify-self:center; }
-.kpi__matrix{ display:grid; grid-template-columns:repeat(5,8px); gap:4px; }
-.kpi__matrix i{ display:block; width:8px; height:12px; border:1px solid rgba(128,160,255,.7); background:rgba(91,138,255,.18); box-shadow:inset 0 -3px rgba(91,138,255,.3); }
-.kpi[data-kpi="domains"] .kpi__matrix{ grid-template-columns:repeat(7,5px); gap:4px; }
-.kpi[data-kpi="domains"] .kpi__matrix i{ width:5px; height:5px; border:0; border-radius:50%; background:#8daaff; box-shadow:0 0 5px #5b8aff55; }
-.kpi__journey{ width:58px; height:58px; border-radius:50%; padding:3px; background:conic-gradient(#8daaff var(--journey,0%),rgba(91,138,255,.16) 0); }
-.kpi__journey > span{ display:grid; place-content:center; width:100%; height:100%; border-radius:50%; background:#0c101c; font-family:"Space Grotesk",sans-serif; font-size:17px; letter-spacing:.05em; color:#dce5ff; }
-@media(min-width:768px) and (max-width:1099.98px){
- .kpi,.kpi:first-child{ grid-template-columns:minmax(0,1fr) 38px; gap:5px; padding:10px; }
- .kpi__visual{ transform:scale(.65); }
+.kpi,.kpi:first-child,.kpi.kpi--telemetry{ display:flex; flex-direction:column; justify-content:center; gap:7px; min-width:0; min-height:0; padding:12px 16px; border:1px solid var(--line); background:linear-gradient(130deg,rgba(91,138,255,.09),rgba(7,7,11,.55)); }
+.kpi__icon,.kpi__visual{ display:none; }
+.kpi__head,.kpi__line,.kpi__foot,.ram-row{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; min-width:0; }
+.kpi__head{ font-size:8px; letter-spacing:.15em; }
+.kpi__label{ font-size:inherit; letter-spacing:inherit; }
+.kpi__meta{ color:var(--acc-cy); letter-spacing:.1em; white-space:nowrap; }
+.kpi__value{ font-family:"Space Grotesk",sans-serif; font-size:26px; font-weight:600; line-height:1; letter-spacing:-.03em; white-space:nowrap; }
+.kpi__sub{ font-size:8px; line-height:1.3; letter-spacing:.08em; color:var(--text-dim); text-align:right; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.kpi__foot{ font-size:8px; letter-spacing:.1em; color:var(--text-ghost); white-space:nowrap; }
+.storage-value{ font-family:"Space Grotesk",sans-serif; font-size:12px; line-height:1; color:var(--text-dim); white-space:nowrap; }
+.storage-value b{ font-size:26px; color:var(--text); font-weight:600; letter-spacing:-.03em; }
+.metric-bar{ display:block; width:100%; height:4px; flex-shrink:0; background:rgba(128,160,255,.15); overflow:hidden; }
+.metric-bar i{ display:block; height:100%; width:0; background:linear-gradient(90deg,#668bdf,#a6baff); transition:width .6s ease; }
+.metric-bar--trip i{ width:var(--journey,0%); }
+.ram-row{ font-size:8px; letter-spacing:.08em; color:var(--text-dim); }
+.ram-row i{ font-style:normal; color:var(--text-ghost); margin-right:14px; }
+.ram-row b{ font-weight:400; color:var(--text); }
+/* Layout follows the card's own width, not the viewport. */
+.kpi{ container-type:inline-size; }
+.kpi__label{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+@container (max-width:360px){
+ .kpi__line{ flex-direction:column; align-items:flex-start; gap:5px; }
+ .kpi__sub{ text-align:left; }
+ .ram-row i{ margin-right:8px; }
 }
+@container (max-width:260px){
+ .kpi__meta,.ram-row i{ display:none; }
+ .kpi__value,.storage-value b{ font-size:21px; }
+ .kpi__head,.kpi__sub,.kpi__foot{ font-size:7px; letter-spacing:.06em; }
+}
+@container (max-width:150px){ .kpi__foot{ display:none; } }
+/* Healthy readings in the status green of the original KPI strip. */
+.kpi__sub.kpi__sub--ok{ color:var(--acc-ok); }
 @media(max-width:767.98px){
  .kpibar__grid{ gap:5px; }
- .kpi,.kpi:first-child{ grid-template-columns:1fr; padding:10px 8px; min-height:105px; }
- .kpi__visual{ grid-column:1; grid-row:2; justify-self:end; opacity:.45; transform:scale(.55); transform-origin:right center; }
- .kpi__value{ z-index:1; font-size:25px; }
- .kpi__label{ font-size:7px; }
- .kpi__sub{ font-size:7px; }
+ .kpi,.kpi:first-child,.kpi.kpi--telemetry{ padding:10px 8px; gap:5px; }
 }
-
-/* Bespoke logo cards: no photographic backgrounds. */
-.site-card{ isolation:isolate; }
-.site-card::after{ z-index:-1; background:linear-gradient(135deg,transparent 45%,rgba(255,255,255,.035) 45.5%,transparent 46%),linear-gradient(180deg,transparent,rgba(0,0,0,.25)); }
-.site-card--lucya{ background:radial-gradient(ellipse at 70% 10%,#292448,transparent 70%),#10101c; }
-.site-card--gallery{ background:linear-gradient(135deg,#182c32,#0b141b); }
-.site-card--binbows{ background:linear-gradient(135deg,#10383c,#0b1b21); }
-.site-card--concordia{ background:radial-gradient(ellipse at 80% 20%,#253963,transparent 70%),#0c1425; }
-.site-card img.site-card__logo{ position:absolute; inset:12px 18% auto; width:64%; height:44px; object-fit:contain; }
-.site-card--concordia img.site-card__logo{ inset:8px 18% auto; height:52px; }
-.site-card__caption{ border-top:1px solid #ffffff15; padding-top:6px; }
-.site-card__caption small{ font-size:6.5px; }
-@media(hover:hover){ .site-card:hover{ box-shadow:inset 0 0 0 1px #93adff66; } }
-
-.kpi.kpi--telemetry{ display:flex; flex-direction:column; justify-content:center; gap:5px; }
-.storage-value{ font-family:"Space Grotesk",sans-serif; font-size:11px; color:var(--text-dim); white-space:nowrap; }
-.storage-value b{ font-size:24px; color:var(--text); font-weight:600; }
-.metric-bar{ display:block; width:100%; height:4px; background:rgba(128,160,255,.15); overflow:hidden; }
-.metric-bar i{ display:block; height:100%; width:0; background:linear-gradient(90deg,#668bdf,#a6baff); transition:width .6s ease; }
-.ram-row{ display:flex; justify-content:space-between; font-size:8px; letter-spacing:.06em; color:var(--text-dim); }
-.ram-row b{ font-weight:400; color:var(--text); }
-.site-card--gallery img.site-card__logo{ width:44px; height:44px; left:calc(50% - 22px); }
-@media(max-width:479px){ .storage-value{ font-size:8px; } .storage-value b{ font-size:19px; } .ram-row{ font-size:7px; } }
+@media(max-width:479px){ .storage-value{ font-size:8px; } .kpi__value,.storage-value b{ font-size:19px; } .ram-row{ font-size:7px; } }
 
 /* Quiet status indicators: no pulsing or blinking points anywhere. */
 .dot,.dot--ok,#thermDot,.therm #thermDot,
@@ -5413,29 +5382,28 @@ html.setmode .concordia .orrery{ flex:1 1 auto; min-height:280px; height:auto; }
 .ru .ru__led,.pcard__status-dot{ animation:none !important; box-shadow:none !important; }
 .nav__status .dot,.hero__kicker .dot,.ticker__label .dot,.pcard__status-dot{ display:none; }
 
-/* Small destination plates, with a distinct visual language for each site. */
-.site-grid{ gap:8px; padding:8px; background:rgba(7,9,16,.55); }
-.site-grid > .hero__stats-head{ margin:-8px -8px 0; }
-.site-card{ height:104px; border:1px solid rgba(170,190,225,.2); transition:border-color .2s ease,background-color .2s ease; }
-.site-card::before{ content:""; position:absolute; pointer-events:none; z-index:-1; }
-.site-card::after{ inset:auto 0 0; height:39px; background:rgba(4,7,14,.68); border-top:1px solid rgba(190,210,255,.12); }
-.site-card__caption{ left:10px; right:34px; bottom:7px; padding:0; border:0; gap:3px; }
-.site-card__caption strong{ font-size:12px; letter-spacing:.01em; }
-.site-card__caption small{ font-size:6px; color:#9fadc7; letter-spacing:.09em; }
-.site-card__number{ top:6px; left:7px; font-size:7px; padding:0; background:none; opacity:.65; }
-.site-card__arrow{ top:auto; bottom:9px; right:8px; display:grid; place-items:center; width:22px; height:22px; padding:0; border:1px solid #b7caff35; background:transparent; }
-.site-card img.site-card__logo{ top:13px; height:38px; width:65%; left:17.5%; }
-.site-card--lucya{ background:linear-gradient(115deg,#151426,#24243b); }
-.site-card--lucya::before{ inset:-40px 0 30px 45%; transform:skew(-28deg); border-left:1px solid #a6a0ff40; background:repeating-linear-gradient(90deg,transparent 0 22px,#a6a0ff12 23px 24px); }
-.site-card--gallery{ background:radial-gradient(ellipse at 50% 20%,#203d40,#0d1a20); }
-.site-card--gallery::before{ inset:9px 17% 47px; border-left:1px solid #9bd8d580; border-right:1px solid #9bd8d580; background:linear-gradient(#9bd8d580,#9bd8d580) left top/10px 1px no-repeat,linear-gradient(#9bd8d580,#9bd8d580) right bottom/10px 1px no-repeat; }
-.site-card--gallery img.site-card__logo{ width:38px; height:38px; top:13px; left:calc(50% - 19px); }
-.site-card--binbows{ background:linear-gradient(135deg,#0a3638,#12292a); }
-.site-card--binbows::before{ inset:5px 5px 43px; border:1px solid #9ec4bd40; box-shadow:inset 0 4px #83b8ad20; }
-.site-card--binbows img.site-card__logo{ top:15px; height:34px; width:63%; left:18.5%; }
-.site-card--concordia{ background:radial-gradient(ellipse at 65% 10%,#263f62,#101a2c); }
-.site-card--concordia::before{ width:140px; height:140px; border:1px solid #a7c6ec30; border-radius:50%; top:-41px; right:-12px; box-shadow:0 0 0 14px #a7c6ec08,0 0 0 29px #a7c6ec06; }
-.site-card--concordia img.site-card__logo{ top:8px; height:48px; width:60%; left:20%; }
-.site-card:hover,.site-card:focus-visible{ border-color:#a9c0ff; box-shadow:none; }
-.site-card:hover .site-card__arrow,.site-card:focus-visible .site-card__arrow{ background:#c5d5ff; color:#0b1020; }
-@media(max-width:479px){ .site-card{ height:104px; } .site-card__caption strong{ font-size:11px; } .site-card__caption small{ font-size:5.8px; letter-spacing:0; } }
+/* ELSEWHERE — destination cards, built from the same parts as the
+   datasheet and the old unit-status tiles: shared surface, hairline
+   grid, mono captions, accent bar on hover. */
+.site-grid{ position:relative; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px; min-width:0; background:var(--line); border:1px solid var(--line-strong); transition:border-color .25s ease, box-shadow .25s ease; }
+.site-grid::before{ content:""; position:absolute; left:-1px; right:-1px; top:-1px; height:2px; background:var(--grad-accent-fade); opacity:.6; z-index:2; }
+.site-grid:hover{ border-color:rgba(91,138,255,.4); box-shadow:0 0 0 1px rgba(91,138,255,.08), 0 10px 32px rgba(0,0,0,.4); }
+.site-grid > .hero__stats-head{ grid-column:1 / -1; }
+.site-card{ position:relative; isolation:isolate; display:grid; grid-template-rows:1fr auto; height:118px; min-width:0; overflow:hidden; color:var(--text); text-decoration:none; background:var(--surface); transition:background .25s ease; }
+.site-card::before{ content:""; position:absolute; left:0; top:0; width:100%; height:2px; background:var(--grad-accent); transform:scaleX(0); transform-origin:left; transition:transform .3s ease; z-index:1; }
+.site-card::after{ content:""; position:absolute; inset:0 0 38px; z-index:-1; background:radial-gradient(rgba(255,255,255,.05) 1px, transparent 1.5px) 0 0/12px 12px; mask-image:linear-gradient(180deg,#000,transparent); -webkit-mask-image:linear-gradient(180deg,#000,transparent); }
+.site-card img.site-card__logo{ position:static; grid-row:1; align-self:center; justify-self:center; width:62%; height:40px; object-fit:contain; mix-blend-mode:screen; }
+.site-card--concordia img.site-card__logo{ height:50px; }
+.site-card--gallery img.site-card__logo{ height:36px; }
+.site-card__number{ position:absolute; top:7px; left:10px; font-size:9px; letter-spacing:.14em; color:var(--text-ghost); }
+.site-card__caption{ grid-row:2; display:flex; flex-direction:column; gap:3px; padding:7px 38px 8px 12px; border-top:1px dashed var(--line); }
+.site-card__caption strong{ font-family:"Space Grotesk",sans-serif; font-size:13px; font-weight:600; line-height:1.15; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.site-card__caption small{ font-size:8px; letter-spacing:.2em; color:var(--text-ghost); text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.site-card__arrow{ position:absolute; right:12px; bottom:12px; font-size:13px; line-height:1; color:var(--text-dim); transition:color .2s ease, transform .2s ease; }
+.site-card:hover,.site-card:focus-visible{ background:var(--surface-2); }
+.site-card:hover::before,.site-card:focus-visible::before{ transform:scaleX(1); }
+.site-card:hover .site-card__caption strong,.site-card:focus-visible .site-card__caption strong{ color:var(--acc-cy); }
+.site-card:hover .site-card__arrow,.site-card:focus-visible .site-card__arrow{ color:var(--acc-cy); transform:translate(2px,-2px); }
+.site-card:focus-visible{ outline:2px solid var(--acc-cy); outline-offset:-3px; }
+@media(max-width:479px){ .site-card{ height:104px; } .site-card img.site-card__logo{ height:34px; } .site-card--concordia img.site-card__logo{ height:42px; } .site-card__caption{ padding:6px 30px 7px 10px; } .site-card__caption strong{ font-size:12px; } .site-card__caption small{ font-size:7px; letter-spacing:.1em; } }
+@media(prefers-reduced-motion:reduce){ .site-card::before,.site-card__arrow{ transition:none; } }
