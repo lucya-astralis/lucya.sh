@@ -30,6 +30,7 @@ JavaScript modules, which browsers do not load reliably from `file://` URLs.
   not loaded by `index.html`.
 - `data.json`: profile, KPI, ticker, and specification content.
 - `worker/`: Cloudflare Worker serving the terminal card for curl clients.
+- `server/`: server-side pullers that write JSON into the web root.
 - `tools/`: asset generation scripts.
 
 Feature modules expose initialization functions. The entry point calls them in
@@ -38,7 +39,27 @@ order and passes the shared status feed and text renderer explicitly. Keep
 before `DOMContentLoaded`, when navigation builds its panels.
 
 `/status.json` is produced by the server-side CheckMK puller and is intentionally
-not committed. Local previews use the offline fallback. Photos also retain their
+not committed. `/nowplaying.json` works the same way: `server/spotify-nowplaying.py`
+writes it while Spotify plays, and the music card falls back to the favourites
+rotation when nothing plays or the file is older than 90s. It reads the
+account's playback, so any device counts (phone, desktop, speakers).
+
+## Spotify now-playing puller
+
+Runs as a container from `server/` and writes
+`/srv/websites/lucya.sh/nowplaying.json`.
+
+1. Create an app at https://developer.spotify.com/dashboard and add
+   `http://127.0.0.1:8888/callback` as a Redirect URI.
+2. On the server, in `server/`: `cp .env.example .env`, fill in client id and
+   secret, set `PUID`/`PGID` to a user that can write `./data` and the web
+   root, then `mkdir -p data && docker compose up -d --build`.
+3. Authorize once: `docker compose run --rm nowplaying auth`. Open the printed
+   URL on any device, approve, and paste back the URL the browser ends up on
+   (the page itself fails to load; the code is in the address bar).
+
+The running container picks up the token within 30s.
+`docker compose logs -f` shows poll errors. Local previews use the offline fallback. Photos also retain their
 static fallback if the remote gallery is unavailable.
 
 ## Checks

@@ -1,0 +1,18 @@
+# Spotify now-playing puller — writes nowplaying.json into the web root.
+#
+#   cp .env.example .env        # fill in client id + secret
+#   mkdir -p data
+#   docker compose up -d --build
+#   docker compose run --rm nowplaying auth    # one-time, see README
+services:
+  nowplaying:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    # this uid/gid needs write access to ./data and the web root (the file
+    # is written next to it and renamed into place, so the directory itself
+    # must be writable, not just the file)
+    user: "${PUID:-1000}:${PGID:-1000}"
+    volumes:
+      - ./data:/data
+      - /srv/websites/lucya.sh:/out
