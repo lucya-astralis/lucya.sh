@@ -2860,6 +2860,7 @@ section{
 }
 .spotify__card.is-live{ border-left-color:var(--acc-ok); }
 .spotify__card.is-live .spotify__label-name{ color:var(--acc-ok); }
+.spotify.is-live .section__slug .name{ color:var(--acc-ok); }
 .layout__side .spotify__progress{ height:2px; }
 
 .spotify__foot{

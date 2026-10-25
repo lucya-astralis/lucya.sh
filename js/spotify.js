@@ -60,6 +60,13 @@ export function initSpotify(scrambleTo) {
     const labelEl = document.getElementById('spotifyLabel');
     const modeEl = document.getElementById('spotifyMode');
     const progressEl = document.getElementById('spotifyProgress');
+    const sectionEl = document.getElementById('spotify');
+    // section heading: "TOP SONGS" for the rotation, "LIVE" while playing
+    const head = [
+      [document.getElementById('spotifyHeadName'), 'LIVE'],
+      [document.getElementById('spotifyHeadJp'), '再生中'],
+      [document.getElementById('spotifyHeadMeta'), 'SPOTIFY · LIVE · NOW PLAYING']
+    ].filter(([el]) => el).map(([el, live]) => ({ el, live, rotation: el.textContent }));
 
     const fmtTime = sec => pad2(Math.floor(sec / 60)) + ':' + pad2(Math.floor(sec % 60));
 
@@ -429,6 +436,8 @@ export function initSpotify(scrambleTo) {
         clearInterval(timer);
         stopElapsed();
         spotifyCard.classList.add('is-live');
+        if (sectionEl) sectionEl.classList.add('is-live');
+        head.forEach(h => scrambleTo(h.el, h.live));
         dotsEl.hidden = true;
         if (progressEl) progressEl.hidden = false;
         if (labelEl) labelEl.textContent = 'NOW PLAYING · 再生中';
@@ -461,6 +470,8 @@ export function initSpotify(scrambleTo) {
       live = null;
       liveKey = '';
       spotifyCard.classList.remove('is-live');
+      if (sectionEl) sectionEl.classList.remove('is-live');
+      head.forEach(h => scrambleTo(h.el, h.rotation));
       dotsEl.hidden = false;
       if (progressEl) { progressEl.hidden = true; progressEl.classList.remove('is-run'); }
       if (labelEl) labelEl.textContent = ROTATION_LABEL;
