@@ -10,7 +10,7 @@
   var root = document.documentElement;
 
   var main, layout, mainCol, sideCol, footer;
-  var panels = [];          // [{ main:[...], side:[...] } ...] + footer panel appended
+  var panels = [];          // [{ main:[...], side:[...] } ...]
   var current = 0;
   var transitioning = false;
   var wheelLock = false;
@@ -154,7 +154,6 @@
   function elementsFor(i) {
     var p = panels[i];
     if (!p) return [];
-    if (p.footer) return [p.footer];
     return p.main.concat(p.side);
   }
 
@@ -167,7 +166,7 @@
 
   function applyColumnMode(i) {
     var p = panels[i];
-    layout.classList.toggle('is-solo', !!(p && p.main && p.main.length && (!p.side || !p.side.length) && !p.footer));
+    layout.classList.toggle('is-solo', !!(p && p.main && p.main.length && (!p.side || !p.side.length)));
     layout.classList.toggle('is-slimside', !!(p && p.slim && p.side && p.side.length));
   }
 
@@ -186,7 +185,7 @@
     });
   }
 
-  function show(target, dir) {
+  function show(target) {
     target = Math.max(0, Math.min(panels.length - 1, target));
     if (target === current || transitioning) return;
     initialPlayed = true;   // the first-load entrance is moot from here on
@@ -221,11 +220,11 @@
   }
 
   function go(delta) {
-    show(current + delta, delta > 0 ? 1 : -1);
+    show(current + delta);
   }
 
   function jumpTo(i) {
-    show(i, i > current ? 1 : -1);
+    show(i);
   }
 
   // does some scrollable container under `node` still have room in `dir`?
@@ -297,7 +296,7 @@
   }
 
   function elementsForIds(p) {
-    if (!p || p.footer) return [];
+    if (!p) return [];
     return p.main.concat(p.side).map(function (el) { return el.id; });
   }
 
@@ -322,7 +321,7 @@
       var b = document.createElement('button');
       b.className = 'setpager__dot';
       b.type = 'button';
-      var label = p.footer ? 'INFO' : (p.main && p.main[0] ? p.main[0].id : ('panel ' + (i + 1)));
+      var label = p.main[0] ? p.main[0].id : ('panel ' + (i + 1));
       b.setAttribute('aria-label', label);
       b.addEventListener('click', function () { if (active) jumpTo(i); });
       pager.appendChild(b);
