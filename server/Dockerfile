@@ -1,9 +1,10 @@
 FROM python:3.13-alpine
 WORKDIR /app
-COPY spotify-nowplaying.py .
+COPY spotify-nowplaying.py weather.py ./
 # unbuffered, so `docker compose logs` shows poll errors as they happen
 ENV PYTHONUNBUFFERED=1 \
     NOWPLAYING_STATE=/data/token.json \
-    NOWPLAYING_OUT=/out/nowplaying.json
+    NOWPLAYING_OUT=/out/nowplaying.json \
+    WEATHER_OUT=/out/weather.json
 ENTRYPOINT ["python3", "/app/spotify-nowplaying.py"]
 CMD ["run"]

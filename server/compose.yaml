@@ -1,9 +1,12 @@
-# Spotify now-playing puller — writes nowplaying.json into the web root.
+# Pullers that write JSON into the web root: Spotify now-playing
+# (nowplaying.json) and Open-Meteo weather (weather.json).
 #
 #   cp .env.example .env        # fill in client id + secret
 #   mkdir -p data
 #   docker compose up -d --build
 #   docker compose run --rm nowplaying auth    # one-time, see README
+#
+# Changing WEATHER_* in .env needs `docker compose up -d` to take effect.
 services:
   nowplaying:
     build: .
@@ -15,4 +18,14 @@ services:
     user: "${PUID:-1000}:${PGID:-1000}"
     volumes:
       - ./data:/data
+      - /srv/websites/lucya.sh:/out
+
+  weather:
+    # same image; only the entrypoint differs
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    entrypoint: ["python3", "/app/weather.py"]
+    user: "${PUID:-1000}:${PGID:-1000}"
+    volumes:
       - /srv/websites/lucya.sh:/out

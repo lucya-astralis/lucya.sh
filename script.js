@@ -3,6 +3,7 @@ import { createScrambler } from './js/text-scramble.js';
 import { initSystems } from './js/systems.js?v=20261025-statuslink';
 import { initSpotify } from './js/spotify.js';
 import { initPhotos } from './js/photos.js';
+import { initWeather } from './js/weather.js';
 
 /* ================================================================
    LUCYA // lucya.sh  —  interactions
@@ -373,19 +374,6 @@ import { initPhotos } from './js/photos.js';
   })();
 
   // ---------- CLOCK ----------------------------------------------
-  const fmt12 = d => {
-    let h = d.getHours(); const m = d.getMinutes();
-    const am = h < 12 ? 'AM' : 'PM';
-    h = h % 12 || 12;
-    return `${h}:${pad2(m)} ${am}`;
-  };
-  const fmt12tz = (d, tz) => {
-    const parts = new Intl.DateTimeFormat('en-US', {
-      timeZone: tz, hour: 'numeric', minute: '2-digit', hour12: true
-    }).formatToParts(d);
-    const get = t => (parts.find(p => p.type === t) || {}).value || '';
-    return `${get('hour')}:${get('minute')} ${get('dayPeriod')}`;
-  };
   // the site's box lives in Bavaria, so "server time" == Europe/Berlin
   const SERVER_TZ = 'Europe/Berlin';
   const hmsTz = (d, tz) => new Intl.DateTimeFormat('en-GB', {
@@ -393,16 +381,12 @@ import { initPhotos } from './js/photos.js';
   }).format(d);
   const navTime   = document.getElementById('navTime');
   const footTime  = document.getElementById('footTime');
-  const tzLocal   = document.getElementById('tzLocal');
-  const tzYours   = document.getElementById('tzYours');
 
   const updateClock = () => {
     const now = new Date();
     const hms = hmsTz(now, SERVER_TZ);
     if (navTime)  navTime.textContent  = `${hms} SRV`;
     if (footTime) footTime.textContent = `SRV ${hms} · 通信中`;
-    if (tzLocal)  tzLocal.textContent  = fmt12tz(now, 'Asia/Tokyo');
-    if (tzYours)  tzYours.textContent  = fmt12(now);
   };
   updateClock();
   setInterval(updateClock, 1000);
@@ -594,6 +578,8 @@ import { initPhotos } from './js/photos.js';
   initSystems(statusFeed, scrambleTo);
 
   initSpotify(scrambleTo);
+
+  initWeather();
 
   // ---------- DATA.JSON : single source of truth -----------------
   const daysUntil = (target) => {

@@ -40,8 +40,8 @@
 <meta name="twitter:image:alt" content="lucya - personal website" />
 
 <!-- Resource hints -->
-<link rel="preload" href="styles.css?v=20261025-kpipanel" as="style" />
-<link rel="stylesheet" href="styles.css?v=20261025-kpipanel" />
+<link rel="preload" href="styles.css?v=20261026-location" as="style" />
+<link rel="stylesheet" href="styles.css?v=20261026-location" />
 
 <!-- LITE MODE: decide before first paint so html.lite styles apply everywhere.
      auto-on for weak hardware / data-saver / reduced-motion; manual override
@@ -233,20 +233,26 @@
       </div>
       <div class="kpibar__grid" id="kpiGrid">
         <!-- populated from data.json — fallback values below render if fetch fails -->
-        <div class="kpi kpi--telemetry" data-kpi="japan">
-          <span class="kpi__head mono"><span class="kpi__label">JAPAN</span><span class="kpi__meta" id="tripPct">—</span></span>
+        <div class="kpi kpi--telemetry kpi--trip" data-kpi="japan">
+          <span class="kpi__head mono"><span class="kpi__ix">01</span><span class="kpi__label">JAPAN</span><span class="kpi__jp">渡航</span><span class="kpi__meta" id="tripPct">—</span></span>
           <span class="kpi__line"><span class="kpi__value" data-kpi-value>— <em>d</em></span><span class="kpi__sub mono kpi__sub--ok">UNTIL DEPARTURE</span></span>
           <span class="metric-bar metric-bar--trip" aria-hidden="true"><i></i></span>
           <span class="kpi__foot mono"><span id="tripDep">DEP —</span><span id="tripRet">RET —</span></span>
         </div>
-        <div class="kpi kpi--telemetry" id="nasMetric">
-          <span class="kpi__head mono"><span class="kpi__label">NAS STORAGE · VEGA</span><span class="kpi__meta" id="nasPct">—</span></span>
+        <div class="kpi kpi--telemetry kpi--wx" id="wxMetric" title="Where I am right now">
+          <span class="kpi__head mono"><span class="kpi__ix">02</span><span class="kpi__label"><span id="wxPlace">I'M IN · —</span></span><span class="kpi__jp">現在地</span><span class="kpi__meta" id="wxOffset">—</span></span>
+          <span class="kpi__line"><span class="kpi__value" id="wxTime">—</span><span class="kpi__sub mono" id="wxNow">AWAITING WEATHER</span></span>
+          <span class="metric-bar metric-bar--sky" id="wxSky" aria-hidden="true"><i id="wxDay"></i></span>
+          <span class="kpi__foot mono"><span id="wxRange">— / —</span><span id="wxSun">SUN —</span></span>
+        </div>
+        <div class="kpi kpi--telemetry kpi--disk" id="nasMetric">
+          <span class="kpi__head mono"><span class="kpi__ix">03</span><span class="kpi__label">NAS · VEGA</span><span class="kpi__jp">記憶域</span><span class="kpi__meta" id="nasPct">—</span></span>
           <span class="kpi__line"><span class="storage-value"><b id="nasUsed">—</b><span id="nasTotal"> / — TiB</span></span><span class="kpi__sub mono" id="nasFree">AWAITING TELEMETRY</span></span>
           <span class="metric-bar" aria-hidden="true"><i id="nasFill"></i></span>
           <span class="kpi__foot mono"><span id="nasUp">UP —</span><span id="nasTemp">— °C</span></span>
         </div>
-        <div class="kpi kpi--telemetry" id="ramMetric">
-          <span class="kpi__head mono"><span class="kpi__label">HYPERVISOR RAM</span><span class="kpi__meta">2 HOSTS</span></span>
+        <div class="kpi kpi--telemetry kpi--ram" id="ramMetric">
+          <span class="kpi__head mono"><span class="kpi__ix">04</span><span class="kpi__label">HYPERVISOR RAM</span><span class="kpi__jp">主記憶</span><span class="kpi__meta">2 HOSTS</span></span>
           <span class="ram-row mono"><span>LYNX</span><span><i id="lynxCpu">CPU —</i><b id="lynxRam">—</b></span></span>
           <span class="metric-bar" aria-hidden="true"><i id="lynxFill"></i></span>
           <span class="ram-row mono"><span>CHIMERA</span><span><i id="chimeraCpu">CPU —</i><b id="chimeraRam">—</b></span></span>
@@ -362,7 +368,7 @@
 
       <div class="pcard__body">
         <div class="pcard__name">lucya</div>
-        <div class="pcard__handle">DISCORD: @lucya.systems · he/they/usb-c</div>
+        <div class="pcard__handle">he/they/usb-c</div>
 
         <div class="pcard__badges">
           <img src="images/profile/badges/apple.svg" alt="apple" title="apple" />
@@ -383,13 +389,9 @@
           <img src="images/emoji/flag_eu.svg" alt="" class="inline-emoji" />
         </div>
 
-        <a class="pcard__url pcard__url--mail" href="mailto:hi@lucya.sh">hi@lucya.sh</a>
-
-        <div class="pcard__tz">
-          <span class="mono">JST: <b id="tzLocal">12:00 PM</b></span>
-          <span class="tz-sep">for me is</span>
-          <span class="mono"><b id="tzYours">12:00 PM</b></span>
-          <span class="tz-sep">for you<span class="dots">...</span></span>
+        <div class="pcard__contact">
+          <a class="pcard__url pcard__url--mail" href="mailto:hi@lucya.sh">hi@lucya.sh</a>
+          <span class="pcard__discord mono">DISCORD <b>@lucya.systems</b></span>
         </div>
 
         <div class="pcard__socials">
@@ -1125,7 +1127,7 @@
   </div>
 </div>
 
-<script type="module" src="script.js?v=20261025-mobile"></script>
+<script type="module" src="script.js?v=20261026-location"></script>
 <script src="setnav.js?v=20261025-wheel"></script>
 <script src="mpage.js"></script>
 </body>

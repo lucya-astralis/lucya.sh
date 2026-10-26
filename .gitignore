@@ -13,6 +13,8 @@ status.json
 # same for the spotify now-playing puller (server/spotify-nowplaying.py)
 nowplaying.json
 nowplaying-cover.jpg
+# and the weather puller (server/weather.py)
+weather.json
 # puller secrets and its refresh token
 server/.env
 server/data/

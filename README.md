@@ -24,6 +24,8 @@ JavaScript modules, which browsers do not load reliably from `file://` URLs.
 - `js/systems.js`: hardware tabs, live host readings, and interactive rack.
 - `js/spotify.js`: music rotation and the music manifest dialog.
 - `js/photos.js`: gallery feed and photo lightbox, with static HTML fallback.
+- `js/weather.js`: "I'm in" KPI card (where I am right now: local time and
+  weather there), from `/weather.json`.
 - `setnav.js` / `mpage.js`: desktop panel navigation / phone page navigation.
 - `legal.html` / `legal.js`: bilingual legal page and language selection.
 - `concordia.js` / `planet-gl.js`: standalone planet visualization; currently
@@ -63,6 +65,28 @@ contact Spotify).
 The running container picks up the token within 30s.
 `docker compose logs -f` shows poll errors. Local previews use the offline fallback. Photos also retain their
 static fallback if the remote gallery is unavailable.
+
+## Weather puller
+
+`server/weather.py` runs as the `weather` service in the same compose file and
+image. It polls Open-Meteo (no account or key) every 10 minutes and writes
+`weather.json` into the web root, including the place's time zone. A KPI card
+shows the local time there next to the weather, and falls back to "awaiting"
+when the file is missing or older than 3h.
+
+The card is labelled as where I am right now, so update the location when
+travelling. It comes from `server/.env`:
+
+- `WEATHER_PLACE` (plus `WEATHER_COUNTRY`, an ISO code, when the name is
+  ambiguous) is looked up once at container start, or
+- `WEATHER_LAT` / `WEATHER_LON` give exact coordinates and win over the name.
+- `WEATHER_LABEL` overrides the name shown on the page.
+
+To change it, edit `.env` and run `docker compose up -d weather` (the
+container is recreated with the new environment); `docker compose logs weather`
+prints the place it resolved. Only the label reaches the page, never the
+coordinates, but the weather itself narrows things down, so prefer a town over
+your exact address.
 
 ## Checks
 
