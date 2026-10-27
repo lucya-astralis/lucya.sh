@@ -1,5 +1,5 @@
 import { escHtml } from './utils.js';
-import { neofetchData, rackData } from './systems-data.js?v=20261025-statuslink';
+import { neofetchData, rackData } from './systems-data.js?v=20261027-rack';
 
 export function initSystems(statusFeed, scrambleTo) {
   // ---------- NEOFETCH : real systems ----------------------------
@@ -249,8 +249,8 @@ export function initSystems(statusFeed, scrambleTo) {
   // One entry per physical unit, top to bottom. `u` is the height in rack
   // units; `ext: true` marks the boxes that sit on top of the cabinet —
   // those aren't rack-mounted, so `u` there is only how tall they're drawn
-  // and no U figure is shown. `state` drives the colour (on / standby /
-  // off) and `neofetch` links a unit to its tab in section 05. Specs come
+  // and no U figure is shown. `state` drives the colour (on / standby =
+  // on demand / off = reserve, racked but not in service) and `neofetch` links a unit to its tab in section 05. Specs come
   // from the neofetch dumps above — anything not measured stays empty and
   // renders as a dash rather than an invented value.
   const rackUnitsEl = document.getElementById('rackUnits');
@@ -259,7 +259,7 @@ export function initSystems(statusFeed, scrambleTo) {
   const rackLegend  = document.getElementById('rackLegend');
 
   if (rackUnitsEl && rackExtEl && rackInfoEl) {
-    const STATE_LABEL = { on: 'online', standby: 'on demand', off: 'offline' };
+    const STATE_LABEL = { on: 'online', standby: 'on demand', off: 'reserve' };
 
     const unitButton = (unit) => {
       const b = document.createElement('button');

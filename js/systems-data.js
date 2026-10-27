@@ -503,22 +503,22 @@ export const rackData = [
       note: 'Short-depth 1U board in a low-power SoC chassis — quiet enough to run around the clock.'
     },
     {
-      id: 'backup-01', u: 3, state: 'off',
+      id: 'backup-01', u: 3, state: 'standby',
       role: 'cold backup', chassis: 'Lenovo ThinkStation C20x (4269A55)',
       os: 'Windows 7 Professional', cpu: 'Intel Xeon X5690 (12) @ 3.47 GHz',
       mem: '23.99 GiB', ip: '10.174.110.143/24', neofetch: 'backup-01',
-      note: 'Powered off by default. Comes up only for backup runs.'
+      note: 'Cold backup: powered off between runs and woken only to take a copy, so the data sits offline the rest of the time.'
     },
     {
-      id: 'unnamed-01', u: 1, state: 'off',
-      role: 'unassigned', note: 'Not named, not in service. Data sheet pending.'
+      id: 'reserve-01', u: 1, state: 'off',
+      role: 'reserve slot', note: 'Racked and cabled, waiting for a job. It gets a name and a data sheet once it goes into service.'
     },
     {
-      id: 'esxi-02', u: 2, state: 'off',
+      id: 'esxi-02', u: 2, state: 'standby',
       role: 'virtualization host', chassis: 'IBM System x3650 M5',
       os: 'VMware ESXi 8.0U3e', cpu: '2 x Intel Xeon E5-2640 v3 (16) @ 2.60 GHz',
       mem: '335.31 GiB', ip: '10.0.3.2/8', neofetch: 'esx-02',
-      note: 'Second vSphere host. Off unless the lab needs the capacity — the power draw is not worth it idle.'
+      note: 'Second vSphere host. Booted when the lab needs the capacity — idle, the power draw is not worth it.'
     },
     {
       id: 'sw-01', u: 1, state: 'on',
@@ -532,12 +532,12 @@ export const rackData = [
       note: 'Booted on demand for lab work, then shut down again.'
     },
     {
-      id: 'unnamed-02', u: 4, state: 'off',
-      role: 'unassigned', note: 'Not named, not in service. Data sheet pending.'
+      id: 'reserve-02', u: 4, state: 'off',
+      role: 'reserve slot', note: 'Racked and cabled, waiting for a job. It gets a name and a data sheet once it goes into service.'
     },
     {
       id: 'esxi-03', u: 2, state: 'off',
-      role: 'virtualization host', note: 'Powered off. Data sheet pending.'
+      role: 'virtualization host', note: 'Third vSphere host, held in reserve. Its data sheet follows when it joins the others.'
     }
   ];
 

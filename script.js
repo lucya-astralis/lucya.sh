@@ -1,7 +1,7 @@
 import { pad2, escHtml } from './js/utils.js';
 import { createScrambler } from './js/text-scramble.js';
-import { initSystems } from './js/systems.js?v=20261025-statuslink';
-import { initSpotify } from './js/spotify.js';
+import { initSystems } from './js/systems.js?v=20261027-rack';
+import { initSpotify } from './js/spotify.js?v=20261027-lang';
 import { initPhotos } from './js/photos.js';
 import { initWeather } from './js/weather.js';
 
@@ -29,8 +29,8 @@ import { initWeather } from './js/weather.js';
   //
   // 5.4s, down from 7.4s. The tail is deliberate, not slack:
   //   ~3.15s logo build ends, wordmark settled, idle pulse starts breathing
-  //   ~3.4s  progress bar reaches 100%
-  //   ~4.5s  the .is-complete blink across the boot chrome finishes
+  //   the bar under the mark fills toward this handoff; the stamp
+  //   turns READY on the page's load event
   //   ~5.4s  a full second of settled logo, then the handoff
   // Nothing was cut from the sequence — only the dead time that used to sit
   // between the build finishing and the old 7.4s timer.
@@ -53,81 +53,122 @@ import { initWeather } from './js/weather.js';
     else wallVideo.play().catch(() => {});
   });
 
-  // ---------- SPLASH : session id + boot log ---------------------
+  // ---------- SPLASH : session stamp ----------------------------
   const sessionEl = document.getElementById('splashSession');
   if (sessionEl){
     const now = new Date();
     const stamp = `${now.getFullYear()}${pad2(now.getMonth()+1)}${pad2(now.getDate())}-${pad2(now.getHours())}${pad2(now.getMinutes())}`;
-    sessionEl.textContent = `SESSION · ${stamp}`;
+    sessionEl.innerHTML = `SESSION <b>${stamp}</b>`;
   }
 
-  const logEl = document.getElementById('splashLog');
-  if (logEl){
-    const hex = () => Math.random().toString(16).slice(2, 8).toUpperCase();
-    const lines = [
-      ['OK',   'LUCYA-CORE // COLD BOOT'],
-      ['OK',   'MOUNTING /dev/coffee'],
-      ['OK',   'LOAD KERNEL 7.0.1'],
-      ['WAIT', 'HANDSHAKE · ATLAS'],
-      ['OK',   'AUTH KEYRING · LUCYA@CORE'],
-      ['OK',   'NET · SECURE CHANNEL UP'],
-      ['OK',   'LOADING FONTS · ICONS'],
-      ['WAIT', 'WARMING UP CRT TUBES'],
-      ['OK',   'LOCALE · DE-BY'],
-      ['OK',   'CALIBRATING HUE BUFFER'],
-      ['OK',   'SPAWN COMPOSITOR'],
-      ['OK',   'READY · HANDOFF TO UI'],
-    ];
-    const frag = document.createDocumentFragment();
-    lines.forEach(l => {
+  // ---------- SPLASH : live log ----------------------------------
+  // Like the old boot log, but nothing in it is made up: one line per file
+  // this page fetches, read from the Resource Timing feed as each one
+  // lands (size, or CACHE, and how long it took), plus the boot's own
+  // milestones. Files that were in before this script ran come from the
+  // buffer, so the log starts at the document. Lines are paced a few
+  // frames apart so a burst stays readable; they are never invented.
+  const bootLog = (() => {
+    const el = document.getElementById('splashLog');
+    const MAX = 16, PACE = LITE ? 0 : 45;
+    const queue = [];
+    let busy = false, po = null;
+    // the figures under the mark: the same entries, summed
+    const stat = { files: 0, bytes: 0, cached: 0, issues: 0 };
+    const statEl = id => document.getElementById(id);
+    const kb = b => b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.round(b / 1024) + ' KB';
+    const tallyStats = () => {
+      const put = (id, v) => { const e = statEl(id); if (e) e.textContent = v; };
+      put('bootFiles', String(stat.files));
+      put('bootBytes', kb(stat.bytes));
+      put('bootCached', stat.files ? Math.round(stat.cached / stat.files * 100) + '%' : '0%');
+      put('bootIssues', String(stat.issues));
+      statEl('bootIssues')?.classList.toggle('is-bad', stat.issues > 0);
+    };
+    const write = ([lv, kind, text, meta, milestone]) => {
       const li = document.createElement('li');
-      const cls = l[0] === 'OK' ? 'lv' : (l[0] === 'WAIT' ? 'lv lv--wait' : 'lv lv--err');
-      li.innerHTML = `<span class="${cls}">[${l[0]}]</span><span class="ll">${l[1]}</span><span class="lh">0x${hex()}</span>`;
-      frag.appendChild(li);
-    });
-    logEl.appendChild(frag);
-  }
-  const logItems = logEl ? Array.from(logEl.children) : [];
+      if (milestone) li.className = 'is-milestone';
+      const cls = lv === 'OK' ? 'lv' : lv === 'ERR' ? 'lv lv--err' : 'lv lv--wait';
+      li.innerHTML = `<span class="${cls}">${escHtml(lv)}</span><span class="lk">${escHtml(kind)}</span>` +
+        `<span class="ll">${escHtml(text)}</span><span class="lh">${escHtml(meta || '')}</span>`;
+      el.appendChild(li);
+      while (el.children.length > MAX) el.firstElementChild.remove();
+    };
+    const pump = () => {
+      if (!queue.length){ busy = false; return; }
+      busy = true;
+      write(queue.shift());
+      setTimeout(pump, PACE);
+    };
+    const line = (...args) => {
+      if (!el) return;
+      queue.push(args);
+      if (!busy) pump();
+    };
+    const KIND = { css: 'CSS', js: 'JS', mjs: 'JS', json: 'DATA', woff2: 'FONT', woff: 'FONT', otf: 'FONT',
+      webp: 'IMG', png: 'IMG', jpg: 'IMG', jpeg: 'IMG', gif: 'IMG', svg: 'SVG', mp4: 'VID', cur: 'CUR', ico: 'ICO' };
+    const size = e => e.transferSize === 0 && e.decodedBodySize > 0 ? 'CACHE'
+      : e.transferSize ? (e.transferSize >= 1048576 ? (e.transferSize / 1048576).toFixed(1) + 'M'
+        : Math.max(1, Math.round(e.transferSize / 1024)) + 'K') : '';
+    const entry = e => {
+      let u;
+      try { u = new URL(e.name); } catch (_) { return; }
+      const file = decodeURIComponent(u.pathname.split('/').pop() || u.pathname) || '/';
+      const ext = (file.split('.').pop() || '').toLowerCase();
+      const kind = e.entryType === 'navigation' ? 'DOC' : KIND[ext] || (e.initiatorType || 'NET').slice(0, 4).toUpperCase();
+      const name = (u.origin !== location.origin ? u.host + ' · ' : '') + file;
+      const st = e.responseStatus || 0;
+      // a missing now-playing file just means nothing is playing
+      const lv = st >= 500 ? 'ERR' : st === 404 && file === 'nowplaying.json' ? 'IDLE' : st >= 400 ? 'MISS' : 'OK';
+      const meta = [st >= 400 ? String(st) : size(e), Math.round(e.duration) + 'MS'].filter(Boolean).join(' ');
+      stat.files++;
+      stat.bytes += e.transferSize || 0;
+      if (e.transferSize === 0 && e.decodedBodySize > 0) stat.cached++;
+      if (lv === 'MISS' || lv === 'ERR') stat.issues++;
+      tallyStats();
+      line(lv, kind, name, meta);
+    };
+    if ('PerformanceObserver' in window){
+      performance.getEntriesByType('navigation').forEach(entry);
+      try {
+        po = new PerformanceObserver(list => list.getEntries().forEach(entry));
+        po.observe({ type: 'resource', buffered: true });
+      } catch (_) { po = null; }
+      document.addEventListener('DOMContentLoaded', () => line('OK', 'BOOT', 'DOM READY', Math.round(performance.now()) + 'MS', true));
+      document.fonts?.ready.then(f => line('OK', 'BOOT', 'FONTS READY', `${[...f].filter(x => x.status === 'loaded').length} FACES`, true));
+    }
+    return { line, done(){ po?.disconnect(); } };
+  })();
 
-  // ---------- SPLASH : progress bar ------------------------------
-  // progress only starts once the whole splash UI has built in.
-  // UI reveal timing (CSS): corners 0.05-0.42s, log 0.55s, bottom 0.7s.
-  // Log lines stream in with progress, so this also sets when they start.
-  const PROGRESS_START_DELAY = 900;
-  const progressPct = document.getElementById('splashProgress');
-  const progressFill = document.getElementById('splashProgressFill');
-  if (progressPct && progressFill) {
-    let p = 0;
-    const revealLogs = () => {
-      if (!logItems.length) return;
-      const target = Math.min(logItems.length, Math.ceil(p * logItems.length / 100));
-      for (let j = 0; j < target; j++){
-        if (!logItems[j].classList.contains('is-in')) logItems[j].classList.add('is-in');
+  // ---------- SPLASH : clock + ready ------------------------------
+  // The bar is the boot's own clock, filling toward the handoff; the
+  // counter beside it is page time. The stamp turns READY when the
+  // page's load event is in — not on a timer.
+  (function bootClock(){
+    const splashEl = document.getElementById('splash');
+    const fill = document.getElementById('splashProgressFill');
+    const elapsed = document.getElementById('splashElapsed');
+    const stampEl = document.getElementById('splashStamp');
+    // a 100ms timer, not rAF: a background tab throttles rAF to nothing
+    const step = () => {
+      const t = performance.now();
+      if (elapsed) elapsed.textContent = (t / 1000).toFixed(1) + ' S';
+      if (fill) fill.style.width = Math.min(100, t / BOOT_READY_MS * 100) + '%';
+      if (t >= BOOT_READY_MS || splashEl?.classList.contains('is-done')) clearInterval(iv);
+    };
+    const iv = setInterval(step, 100);
+    step();
+    const ready = () => {
+      bootLog.line('OK', 'BOOT', 'PAGE LOADED', Math.round(performance.now()) + 'MS', true);
+      splashEl?.classList.add('is-complete');
+      if (stampEl){
+        stampEl.className = 'stamp stamp--ok';
+        stampEl.innerHTML = '<span lang="ja">完了</span> · READY';
       }
     };
-    const tick = () => {
-      if (p >= 100) {
-        progressPct.textContent = '100%';
-        progressFill.style.width = '100%';
-        logItems.forEach(li => li.classList.add('is-in'));
-        const splashEl = document.getElementById('splash');
-        if (splashEl) splashEl.classList.add('is-complete');
-        return;
-      }
-      // Bigger steps on a shorter interval. The jitter is what makes it read
-      // as work being done rather than a timer, but the old spread (2-11% per
-      // tick every 160-420ms) put the finish anywhere between 2s and 6s — far
-      // too loose once the whole boot is 4.2s. Tighter on both axes: ~12.5
-      // ticks at ~195ms lands the bar at ~3.4s, still visibly uneven.
-      p += Math.round(4 + Math.random() * 8);
-      if (p > 100) p = 100;
-      progressPct.textContent = `${pad2(p)}%`;
-      progressFill.style.width = p + '%';
-      revealLogs();
-      setTimeout(tick, LITE ? 60 + Math.random() * 90 : 110 + Math.random() * 170);
-    };
-    setTimeout(tick, LITE ? 100 : PROGRESS_START_DELAY);
-  }
+    if (document.readyState === 'complete') ready();
+    else window.addEventListener('load', ready, { once: true });
+  })();
 
   // ---------- REVEAL : mark below-fold blocks (observer starts post-splash) ----------
   const revealSelectors = ['.about', '.interests', '.rack', '.buttons', '.friends', '.neofetch', '.spotify', '.photos', '.foot'];
@@ -386,7 +427,7 @@ import { initWeather } from './js/weather.js';
     const now = new Date();
     const hms = hmsTz(now, SERVER_TZ);
     if (navTime)  navTime.textContent  = `${hms} SRV`;
-    if (footTime) footTime.textContent = `SRV ${hms} · 通信中`;
+    if (footTime) footTime.textContent = hms;
   };
   updateClock();
   setInterval(updateClock, 1000);
@@ -795,6 +836,8 @@ import { initWeather } from './js/weather.js';
       splashEl.classList.add('is-complete', 'is-done');
     }
     document.body.classList.add('is-ready');
+    // nobody sees the log once the splash fades
+    bootLog.done();
     // set-nav waits for this to play the first panel's entrance — running it
     // at DOM-ready would hide the whole animation behind the splash
     window.dispatchEvent(new CustomEvent('lucya:ready'));

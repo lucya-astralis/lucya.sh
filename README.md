@@ -46,6 +46,30 @@ writes it while Spotify plays, and the music card falls back to the favourites
 rotation when nothing plays or the file is older than 90s. It reads the
 account's playback, so any device counts (phone, desktop, speakers).
 
+## Boot
+
+The boot runs on every load (5.4s, 1.1s in Lite) and any key, tap or the
+skip button ends it. It is a document like every section (`DOC 00.BOOT`,
+form BT-00) with the mark building in the centre. Nothing on it is made up:
+
+- the log (top-left, from 1100px wide) lists every file the page fetches as
+  it lands, read from the Resource Timing feed: type, name, size or CACHE,
+  load time, and MISS/ERR for 4xx/5xx (a missing `nowplaying.json` is IDLE —
+  nothing is playing), plus milestones (DOM ready, fonts, page loaded);
+- the figures under the mark sum the same feed: files, bytes transferred,
+  share served from cache, issues;
+- the bar is the boot's clock toward the handoff, and the stamp turns from
+  BOOTING to READY on the page's load event.
+
+## Languages and caching
+
+Japanese text carries `lang="ja"` (static markup and the labels the scripts
+write), so screen readers and font fallback treat it as Japanese.
+Cache lifetimes are set at Cloudflare, not in this repo. Recommended Cache
+Rule ("Browser TTL: override"): `/fonts/*` one year, `/images/*` seven days;
+CSS and JS keep the default and carry a `?v=` that is bumped when they
+change (module imports included).
+
 ## Spotify now-playing puller
 
 Runs as a container from `server/` and writes

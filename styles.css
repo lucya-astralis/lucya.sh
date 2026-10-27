@@ -405,7 +405,10 @@ img{ user-select:none; -webkit-user-drag:none; }
 .splash{
   position:fixed; inset:0; z-index:9999;
   background:#05050a;
-  display:flex; align-items:center; justify-content:center;
+  /* a column: the mark, then the handshake under it; the strip is pinned */
+  display:flex; flex-direction:column; align-items:center; justify-content:safe center;
+  gap:clamp(18px, 4.5vh, 48px);
+  padding:72px 0 28px;
   overflow:hidden;
 }
 .splash__video{
@@ -414,6 +417,8 @@ img{ user-select:none; -webkit-user-drag:none; }
   object-fit:cover;
   z-index:0;
   pointer-events:none;
+  /* held back, so the mark and the handshake carry the screen */
+  filter:brightness(.55) saturate(.85);
 }
 /* fade-out runs when JS adds .is-done — after the timed boot or on skip */
 .splash.is-done{
@@ -444,72 +449,26 @@ img{ user-select:none; -webkit-user-drag:none; }
   pointer-events:none;
   background:radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,.75) 100%);
 }
-.splash__scanlines{
-  position:absolute; inset:0;
-  background:
-    repeating-linear-gradient(to bottom,
-      rgba(255,255,255,0.05) 0 1px,
-      transparent 1px 3px),
-    repeating-linear-gradient(to right,
-      rgba(0,0,0,0.25) 0 2px,
-      transparent 2px 4px);
-  mix-blend-mode:overlay;
-  pointer-events:none;
-  animation: scan 8s linear infinite;
-}
 
-.splash__grid{
-  position:absolute; inset:0;
-  padding:24px 28px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  grid-template-rows:1fr 1fr;
+/* the boot's document strip: the same .section__doc every section opens
+   with, pinned to the top edge. Form BT-00, stamp BOOTING → READY. */
+.splash__head{
+  position:absolute; left:28px; right:28px; top:24px; z-index:3;
   pointer-events:none;
-}
-.splash__corner{
-  display:flex; flex-direction:column; gap:4px; align-self:start;
   opacity:0;
-  animation: uiReveal .3s var(--ease-enter) forwards;
+  animation: uiReveal .35s var(--ease-enter) .05s forwards;
 }
-.splash__corner--tl{ animation-delay: 0.05s; }
-.splash__corner--tr{ animation-delay: 0.18s; }
-.splash__corner--bl{ animation-delay: 0.30s; }
-.splash__corner--br{ animation-delay: 0.42s; }
-/* The boot chrome used to snap in on steps(2) — two hard frames per element.
-   It now rides the same fade+rise as everything else; the terminal look is
-   carried by the type and the scanlines, not by a stuttering opacity. */
+.splash__head .section__doc{ margin:0; background:rgba(5,5,10,.55); }
+.splash__head .stamp{ margin-left:auto; }
+.stamp--warn{ color:var(--acc-amb); border-color:rgba(255,181,71,.5); animation: blink 1s steps(2) infinite; }
 @keyframes uiReveal{
   from{ opacity:0; transform:translateY(-5px); }
   to  { opacity:1; transform:translateY(0); }
 }
-@keyframes uiFade{
+@keyframes uiFadeNoBlur{
   from{ opacity:0; }
   to  { opacity:1; }
 }
-@keyframes uiBlink{
-  0%, 100% { opacity:1; }
-  10%, 30%, 50% { opacity:0; }
-  20%, 40%, 60% { opacity:1; }
-  70% { opacity:.3; }
-  80% { opacity:1; }
-}
-.splash.is-complete .splash__corner,
-.splash.is-complete .splash__log,
-.splash.is-complete .splash__bottom{
-  animation: uiBlink 1.1s steps(1,end) forwards;
-}
-.splash.is-complete .splash__progress-pct{
-  color: var(--acc-ok);
-  text-shadow: 0 0 14px rgba(61,255,165,.7);
-}
-.splash.is-complete .splash__progress-fill{
-  background: var(--acc-ok);
-  box-shadow: 0 0 14px rgba(61,255,165,.7);
-}
-.splash__corner--tr{ align-items:flex-end; grid-column:2; grid-row:1; }
-.splash__corner--tl{ grid-column:1; grid-row:1; }
-.splash__corner--bl{ align-self:end; grid-column:1; grid-row:2; }
-.splash__corner--br{ align-self:end; align-items:flex-end; grid-column:2; grid-row:2; }
 
 .tag{
   font-family:"Proto Nerd Font Regular", monospace;
@@ -525,7 +484,7 @@ img{ user-select:none; -webkit-user-drag:none; }
 .tag--warn{ color:var(--acc-amb); border-color:rgba(255,181,71,.5); animation: blink 1s steps(2) infinite; }
 
 .splash__logo{
-  position:relative;
+  position:relative; order:1;
   text-align:center;
   z-index:3;
   /* 1.4s, was 3s. This is only the container easing in underneath the build;
@@ -534,111 +493,85 @@ img{ user-select:none; -webkit-user-drag:none; }
   animation: splashLogoReveal 1.4s var(--ease-enter) forwards;
 }
 
-/* boot log (top-left, below corner tags) */
-.splash__log{
-  position:absolute;
-  left:28px;
-  top:96px;
-  margin:0; padding:0;
-  list-style:none;
-  display:flex; flex-direction:column;
-  gap:4px;
-  font-family:"Proto Nerd Font Regular", monospace;
-  font-size:10.5px;
-  letter-spacing:.05em;
-  color:var(--text-dim);
+/* the handshake: one row per real check, resolving as its data lands */
+.splash__hs{
+  position:relative; order:2;
+  width:min(600px, 86vw); z-index:3;
   pointer-events:none;
-  z-index:2;
-  max-width:360px;
+  font-family:"Proto Nerd Font Regular", monospace;
   text-transform:uppercase;
   opacity:0;
-  animation: uiFade .3s var(--ease-enter) 0.55s forwards;
+  animation: uiFadeNoBlur .32s var(--ease-enter) .7s forwards;
+}
+.splash__hs-head{
+  display:flex; align-items:baseline; gap:12px;
+  padding-bottom:8px; margin-bottom:6px;
+  border-bottom:1px solid var(--line);
+  font-size:10.5px; letter-spacing:.22em; color:var(--acc-cy);
+}
+.splash__hs-head .jp{ font-family:"Noto Sans JP", sans-serif; color:var(--text-ghost); letter-spacing:.3em; text-transform:none; }
+.splash__hs-count{ margin-left:auto; color:var(--text); letter-spacing:.14em; font-variant-numeric:tabular-nums; }
+.splash__stats{
+  margin:0; display:grid; grid-template-columns:repeat(4, 1fr);
+  border:1px solid var(--line); border-left:0;
+}
+.splash__stats > div{ padding:8px 12px; border-left:1px solid var(--line); }
+.splash__stats dt{ font-size:9.5px; letter-spacing:.2em; color:var(--text-ghost); }
+.splash__stats dd{ margin:4px 0 0; font-size:13px; letter-spacing:.06em; color:var(--text); font-variant-numeric:tabular-nums; }
+.splash__stats dd.is-bad{ color:var(--acc-amb); }
+/* the bar is the boot's clock toward the handoff */
+.splash__hs-bar{ position:relative; height:2px; margin-top:12px; background:var(--line); }
+.splash__hs-fill{
+  height:100%; width:0%;
+  background:var(--acc-cy); box-shadow:0 0 10px rgba(91,138,255,.6);
+  transition: background .3s ease;
+}
+.splash.is-complete .splash__hs-fill{ background:var(--acc-ok); box-shadow:0 0 12px rgba(61,255,165,.7); }
+.splash.is-complete .splash__hs-count{ color:var(--acc-ok); }
+
+/* the live log (top-left, under the strip): one line per file as it lands,
+   newest at the bottom, the oldest scrolling out above */
+.splash__log{
+  position:absolute; left:28px; top:76px; z-index:2;
+  width:min(380px, 30vw);
+  margin:0; padding:0; list-style:none;
+  display:flex; flex-direction:column; justify-content:flex-end; gap:4px;
+  max-height:calc(16 * 19px); overflow:hidden;
+  font-family:"Proto Nerd Font Regular", monospace;
+  font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--text-dim);
+  pointer-events:none;
+  mask-image:linear-gradient(180deg, transparent, #000 22%);
+  opacity:0;
+  animation: uiFadeNoBlur .3s var(--ease-enter) .2s forwards;
 }
 .splash__log li{
-  display:flex; justify-content:space-between; gap:10px;
-  opacity:0;
-  transform:translateX(-6px);
-  border-left:1px solid var(--line);
-  padding-left:8px;
+  flex:none;
+  display:grid; grid-template-columns:5ch 5ch 1fr auto; gap:10px;
+  border-left:1px solid var(--line); padding-left:8px;
   white-space:nowrap;
+  animation: logIn .24s var(--ease-build) both;
 }
-.splash__log li.is-in{
-  animation: logIn .28s var(--ease-build) forwards;
-}
-.splash__log .lv{ color:var(--acc-ok); letter-spacing:.16em; }
+.splash__log .lv{ color:var(--acc-ok); letter-spacing:.12em; }
 .splash__log .lv--wait{ color:var(--acc-amb); }
 .splash__log .lv--err{ color:var(--acc-red); }
-.splash__log .ll{ color:var(--text); flex:1; overflow:hidden; text-overflow:ellipsis; }
-.splash__log .lh{ color:var(--text-ghost); font-size:10px; letter-spacing:.1em; }
+.splash__log .lk{ color:var(--text-ghost); }
+.splash__log .ll{ color:var(--text); overflow:hidden; text-overflow:ellipsis; }
+.splash__log .lh{ color:var(--text-ghost); font-size:10px; letter-spacing:.08em; font-variant-numeric:tabular-nums; }
+.splash__log li.is-milestone .ll{ color:var(--acc-cy); }
 @keyframes logIn{
-  to{ opacity:1; transform:translateX(0); }
+  from{ opacity:0; transform:translateX(-6px); }
+  to  { opacity:1; transform:translateX(0); }
 }
-
-/* bottom progress cluster */
-.splash__bottom{
-  position:absolute;
-  left:50%; bottom:96px;
-  transform:translateX(-50%);
-  width:min(520px, 62vw);
-  z-index:3;
-  pointer-events:none;
-  opacity:0;
-  animation: uiFadeNoBlur .32s var(--ease-enter) 0.7s forwards;
-}
-@keyframes uiFadeNoBlur{
-  from{ opacity:0; }
-  to  { opacity:1; }
-}
-.splash__progress-head{
-  display:flex; justify-content:space-between;
-  font-family:"Proto Nerd Font Regular", monospace;
-  font-size:11px;
-  letter-spacing:.22em;
-  color:var(--text);
-  text-transform:uppercase;
-  margin-bottom:8px;
-}
-.splash__progress-label{ color:var(--acc-cy); }
-.splash__progress-pct{ color:var(--text); }
-.splash__progress-bar{
-  position:relative;
-  height:16px;
-  background:rgba(255,255,255,.06);
-  border:1px solid var(--line-strong);
-  overflow:hidden;
-}
-.splash__progress-bar::before{
-  content:""; position:absolute; inset:0;
-  background:repeating-linear-gradient(90deg,
-    rgba(255,255,255,.05) 0 2px,
-    transparent 2px 6px);
-  pointer-events:none;
-}
-.splash__progress-fill{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg, #2a4dcc 0%, #5b8aff 60%, #eef5ff 100%);
-  box-shadow:0 0 10px rgba(91,138,255,.55);
-  transition: width .16s steps(3);
-}
-.splash__progress-foot{
-  margin-top:8px;
-  display:flex; justify-content:space-between;
-  font-family:"Proto Nerd Font Regular", monospace;
-  font-size:10px;
-  letter-spacing:.22em;
-  color:var(--text-dim);
-  text-transform:uppercase;
-}
-.splash__progress-foot .jp{
-  font-family:"Noto Sans JP", sans-serif;
-  color:var(--text-ghost);
-  letter-spacing:.3em;
-  text-transform:none;
+/* short screens (landscape phones, small windows): the count and the bar
+   still say how far it is; the rows would push the mark off the top */
+@media (max-height:600px){
+  .splash__log{ display:none; }
+  .splash{ padding-top:56px; }
 }
 /* A real <button>, not a hint: the boot always runs full length now, so this
    is the way out and it has to be clickable and focusable. Its container
-   (.splash__bottom) is pointer-events:none so the rest of the boot chrome
+   (.splash__hs) is pointer-events:none so the rest of the boot chrome
    can't swallow the tap-anywhere skip — this one element opts back in. */
 .splash__skip{
   display:block;
@@ -667,6 +600,7 @@ img{ user-select:none; -webkit-user-drag:none; }
   color:var(--acc-cy);
 }
 @keyframes skipPulse{ 50%{ color:var(--text-dim); } }
+.splash__skip span{ color:var(--text-ghost); opacity:.7; }
 .splash__label{
   margin-top:34px;
   display:flex;
@@ -695,7 +629,8 @@ img{ user-select:none; -webkit-user-drag:none; }
 /* glitch logo */
 .glitch-logo{
   position:relative;
-  width:min(620px, 78vw);
+  /* also bounded by height, so the mark and the handshake share short screens */
+  width:min(620px, 78vw, max(200px, calc((100svh - 470px) * 1.775)));
   aspect-ratio: 964 / 543;
   margin:0 auto;
   filter:drop-shadow(0 0 36px rgba(91,138,255,.35));
@@ -4334,10 +4269,10 @@ html.setmode .sethint{ display:flex; }
   /* animation-driven reveals (opacity:0 base + keyframes with fill:both)
      never reach their visible end state once animations are off — force it */
   .reveal-block.is-visible{ opacity:1; }
-  .splash__corner,
+  .splash__head,
+  .splash__hs,
   .splash__log,
-  .splash__log li.is-in,
-  .splash__bottom,
+  .splash__log li,
   .splash__skip{ opacity:1; }
 }
 
@@ -4387,17 +4322,16 @@ html.lite{
 html.lite .splash.is-done{ opacity:0; visibility:hidden; }
 /* animation-driven reveals need their end state forced (see reduced-motion) */
 html.lite .reveal-block.is-visible{ opacity:1; }
-html.lite .splash__corner,
+html.lite .splash__head,
+html.lite .splash__hs,
 html.lite .splash__log,
-html.lite .splash__log li.is-in,
-html.lite .splash__bottom,
+html.lite .splash__log li,
 html.lite .splash__skip{ opacity:1; }
 html.lite .ticker__track{ padding-left:14px; }
 /* fullscreen overlays: animated scanlines + blend modes cost a composited
    pass over the whole viewport on every frame — drop them */
 html.lite body::before,
 html.lite body::after,
-html.lite .splash__scanlines,
 html.lite .splash__vignette{ display:none; }
 /* no video — static wallpaper still under the usual overlay gradients */
 html.lite .wallpaper-video,
@@ -4536,6 +4470,7 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
   .foot__cols{ grid-template-columns:repeat(2, 1fr); gap:28px; }
 
   .splash__log{ display:none; }
+  .splash__head-loc{ display:none; }
 }
 
 /* ---- SM: phones ------------------------------------------------ */
@@ -4928,12 +4863,11 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
   .foot__inner{ padding:32px 14px 20px; }
   .foot__logo img{ height:38px; }
 
-  .splash__grid{ padding:12px 14px; }
+  .splash__head{ left:14px; right:14px; top:12px; }
   .tag{ font-size:9px; padding:2px 6px; letter-spacing:.12em; }
-  .splash__bottom{ width:min(360px, 84vw); bottom:56px; }
-  .splash__progress-head{ font-size:9.5px; letter-spacing:.18em; }
-  .splash__progress-foot{ font-size:9px; letter-spacing:.16em; }
-  .splash__progress-bar{ height:14px; }
+  .splash__hs{ width:calc(100vw - 28px); }
+  .splash__stats{ grid-template-columns:repeat(2, 1fr); }
+  .splash__stats > div:nth-child(n+3){ border-top:1px solid var(--line); }
   .splash__label{ font-size:15px; margin-top:22px; letter-spacing:.18em; }
   .splash__label .jp{ font-size:10px; letter-spacing:.28em; }
 }

@@ -29,8 +29,6 @@
 <meta property="og:image" content="https://lucya.sh/images/card.jpg" />
 <meta property="og:image:alt" content="lucya - personal website" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:locale:alternate" content="ja_JP" />
-<meta property="og:locale:alternate" content="de_DE" />
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
@@ -40,8 +38,8 @@
 <meta name="twitter:image:alt" content="lucya - personal website" />
 
 <!-- Resource hints -->
-<link rel="preload" href="styles.css?v=20261026-location" as="style" />
-<link rel="stylesheet" href="styles.css?v=20261026-location" />
+<link rel="preload" href="styles.css?v=20261027-stats2" as="style" />
+<link rel="stylesheet" href="styles.css?v=20261027-stats2" />
 
 <!-- LITE MODE: decide before first paint so html.lite styles apply everywhere.
      auto-on for weak hardware / data-saver / reduced-motion; manual override
@@ -94,41 +92,39 @@
 <div id="splash" class="splash" aria-hidden="true">
   <video class="splash__video" muted loop playsinline preload="none" aria-hidden="true" data-src="images/wallpaper/f.mp4"></video>
   <div class="splash__bg"></div>
-  <div class="splash__scanlines"></div>
   <div class="splash__vignette"></div>
 
-  <div class="splash__grid">
-    <div class="splash__corner splash__corner--tl">
-      <span class="tag">LUCYA-SYSTEMS<span class="reg">®</span> CORE // V4.21.0</span>
-      <span class="tag tag--dim" id="splashSession">SESSION · ————————</span>
-    </div>
-    <div class="splash__corner splash__corner--tr">
-      <span class="tag">AUTH · LUCYA@CORE</span>
-      <span class="tag tag--dim">ルシア・システム</span>
-    </div>
-    <div class="splash__corner splash__corner--bl">
-      <span class="tag tag--dim">BAVARIA · CET</span>
-    </div>
-    <div class="splash__corner splash__corner--br">
-      <span class="tag tag--warn">起動中 / BOOTING</span>
+  <!-- the boot is a document like every section: same strip, form BT-00 -->
+  <div class="splash__head">
+    <div class="section__doc">
+      <span>DOC <b>00.BOOT</b></span>
+      <span>FORM <b>BT-00</b></span>
+      <span id="splashSession">SESSION <b>——</b></span>
+      <span class="splash__head-loc">BAVARIA · CET</span>
+      <span class="stamp stamp--warn" id="splashStamp"><span lang="ja">起動中</span> · BOOTING</span>
     </div>
   </div>
 
+  <!-- the live log: every file this page fetches, as it lands
+       (PerformanceObserver), plus the boot's own milestones -->
   <ul class="splash__log" id="splashLog" aria-hidden="true"></ul>
 
-  <div class="splash__bottom">
-    <div class="splash__progress">
-      <div class="splash__progress-head">
-        <span class="splash__progress-label">INITIALIZING CORE SYSTEM</span>
-        <span class="splash__progress-pct" id="splashProgress">00%</span>
-      </div>
-      <div class="splash__progress-bar"><div class="splash__progress-fill" id="splashProgressFill"></div></div>
-      <div class="splash__progress-foot">
-        <span>KERNEL 7.0.1</span>
-        <span class="jp">システム起動中・・・</span>
-      </div>
-      <button type="button" class="splash__skip" id="splashSkip">PRESS ANY KEY · SKIP ▸</button>
+  <!-- the log, summed up: what has loaded so far, counted from the same
+       Resource Timing feed; the bar is the time until the handoff -->
+  <div class="splash__hs">
+    <div class="splash__hs-head">
+      <span>LOADING · ATLAS</span>
+      <span class="jp" lang="ja">読込中</span>
+      <span class="splash__hs-count" id="splashElapsed">0.0 S</span>
     </div>
+    <dl class="splash__stats">
+      <div><dt>FILES</dt><dd id="bootFiles">0</dd></div>
+      <div><dt>TRANSFER</dt><dd id="bootBytes">0 KB</dd></div>
+      <div><dt>CACHED</dt><dd id="bootCached">0%</dd></div>
+      <div><dt>ISSUES</dt><dd id="bootIssues">0</dd></div>
+    </dl>
+    <div class="splash__hs-bar"><div class="splash__hs-fill" id="splashProgressFill"></div></div>
+    <button type="button" class="splash__skip" id="splashSkip">SKIP ▸ <span>ANY KEY</span></button>
   </div>
 
   <div class="splash__logo">
@@ -169,8 +165,8 @@
       </div>
     </div>
     <div class="splash__label" data-text="LUCYA">
-      <span>LUCYA SYSTEMS</span>
-      <span class="jp">ルシア・システムズ</span>
+      <span>LUCYA SYSTEMS<span class="tm">™</span></span>
+      <span class="jp" lang="ja">ルシア・システムズ</span>
     </div>
   </div>
 </div>
@@ -234,25 +230,25 @@
       <div class="kpibar__grid" id="kpiGrid">
         <!-- populated from data.json — fallback values below render if fetch fails -->
         <div class="kpi kpi--telemetry kpi--trip" data-kpi="japan">
-          <span class="kpi__head mono"><span class="kpi__ix">01</span><span class="kpi__label">JAPAN</span><span class="kpi__jp">渡航</span><span class="kpi__meta" id="tripPct">—</span></span>
+          <span class="kpi__head mono"><span class="kpi__ix">01</span><span class="kpi__label">JAPAN</span><span class="kpi__jp" lang="ja">渡航</span><span class="kpi__meta" id="tripPct">—</span></span>
           <span class="kpi__line"><span class="kpi__value" data-kpi-value>— <em>d</em></span><span class="kpi__sub mono kpi__sub--ok">UNTIL DEPARTURE</span></span>
           <span class="metric-bar metric-bar--trip" aria-hidden="true"><i></i></span>
           <span class="kpi__foot mono"><span id="tripDep">DEP —</span><span id="tripRet">RET —</span></span>
         </div>
         <div class="kpi kpi--telemetry kpi--wx" id="wxMetric" title="Where I am right now">
-          <span class="kpi__head mono"><span class="kpi__ix">02</span><span class="kpi__label"><span id="wxPlace">I'M IN · —</span></span><span class="kpi__jp">現在地</span><span class="kpi__meta" id="wxOffset">—</span></span>
+          <span class="kpi__head mono"><span class="kpi__ix">02</span><span class="kpi__label"><span id="wxPlace">I'M IN · —</span></span><span class="kpi__jp" lang="ja">現在地</span><span class="kpi__meta" id="wxOffset">—</span></span>
           <span class="kpi__line"><span class="kpi__value" id="wxTime">—</span><span class="kpi__sub mono" id="wxNow">AWAITING WEATHER</span></span>
           <span class="metric-bar metric-bar--sky" id="wxSky" aria-hidden="true"><i id="wxDay"></i></span>
           <span class="kpi__foot mono"><span id="wxRange">— / —</span><span id="wxSun">SUN —</span></span>
         </div>
         <div class="kpi kpi--telemetry kpi--disk" id="nasMetric">
-          <span class="kpi__head mono"><span class="kpi__ix">03</span><span class="kpi__label">NAS · VEGA</span><span class="kpi__jp">記憶域</span><span class="kpi__meta" id="nasPct">—</span></span>
+          <span class="kpi__head mono"><span class="kpi__ix">03</span><span class="kpi__label">NAS · VEGA</span><span class="kpi__jp" lang="ja">記憶域</span><span class="kpi__meta" id="nasPct">—</span></span>
           <span class="kpi__line"><span class="storage-value"><b id="nasUsed">—</b><span id="nasTotal"> / — TiB</span></span><span class="kpi__sub mono" id="nasFree">AWAITING TELEMETRY</span></span>
           <span class="metric-bar" aria-hidden="true"><i id="nasFill"></i></span>
           <span class="kpi__foot mono"><span id="nasUp">UP —</span><span id="nasTemp">— °C</span></span>
         </div>
         <div class="kpi kpi--telemetry kpi--ram" id="ramMetric">
-          <span class="kpi__head mono"><span class="kpi__ix">04</span><span class="kpi__label">HYPERVISOR RAM</span><span class="kpi__jp">主記憶</span><span class="kpi__meta">2 HOSTS</span></span>
+          <span class="kpi__head mono"><span class="kpi__ix">04</span><span class="kpi__label">HYPERVISOR RAM</span><span class="kpi__jp" lang="ja">主記憶</span><span class="kpi__meta">2 HOSTS</span></span>
           <span class="ram-row mono"><span>LYNX</span><span><i id="lynxCpu">CPU —</i><b id="lynxRam">—</b></span></span>
           <span class="metric-bar" aria-hidden="true"><i id="lynxFill"></i></span>
           <span class="ram-row mono"><span>CHIMERA</span><span><i id="chimeraCpu">CPU —</i><b id="chimeraRam">—</b></span></span>
@@ -342,7 +338,7 @@
     <div class="section__slug">
       <span class="ix">// 01</span>
       <span class="name">IDENTITY</span>
-      <span class="jp">本人確認</span>
+      <span class="jp" lang="ja">本人確認</span>
     </div>
     <div class="section__meta">
       <span class="mono">DIV. IDENTITY</span>
@@ -422,7 +418,7 @@
     <div class="hero__side">
       <div class="hero__kicker mono">
         <span class="dot dot--ok"></span>
-        <span>BROADCAST ONLINE · 放送中</span>
+        <span>BROADCAST ONLINE · <span lang="ja">放送中</span></span>
       </div>
 
       <h1 class="hero__title hero__title--mark">
@@ -432,7 +428,7 @@
           <span class="hero__wordmark-layer hero__wordmark-layer--r" aria-hidden="true"></span>
           <span class="hero__wordmark-layer hero__wordmark-layer--b" aria-hidden="true"></span>
         </span>
-        <span class="hero__title-jp">ルシア</span>
+        <span class="hero__title-jp" lang="ja">ルシア</span>
       </h1>
 
       <p class="hero__tagline">
@@ -539,7 +535,7 @@
     <div class="section__slug">
       <span class="ix">// 02</span>
       <span class="name">ABOUT</span>
-      <span class="jp">私について</span>
+      <span class="jp" lang="ja">私について</span>
     </div>
     <div class="section__meta">
       <span class="mono">DIV. PERSONNEL · FILE / ABOUT.TXT</span>
@@ -548,7 +544,7 @@
 
   <div class="about__grid">
     <div class="about__col">
-      <h3 class="h-sub">OFF THE TERMINAL <em>日常</em></h3>
+      <h3 class="h-sub">OFF THE TERMINAL <em lang="ja">日常</em></h3>
       <p>
         Old computers, photographs and imaginary worlds: I like things with
         a history, whether I am bringing them back to life or inventing it.
@@ -557,9 +553,9 @@
     </div>
 
     <div class="about__col">
-      <h3 class="h-sub">BEYOND THE HOMELAB <em>創作</em></h3>
+      <h3 class="h-sub">BEYOND THE HOMELAB <em lang="ja">創作</em></h3>
       <p>
-        Shinsei Concordia is my science-fiction worldbuilding project.
+        Shinsei Concordia<span class="tm">™</span> is my science-fiction worldbuilding project.
         I build its star charts, cities and institutions as places you can
         explore — from the ocean moon Orikaia Prime to the edge of the Expanse.
         <img src="images/emoji/blahaj.webp" alt="blahaj" class="inline-emoji" />
@@ -596,7 +592,7 @@
     <div class="section__slug">
       <span class="ix">// 03</span>
       <span class="name">INTERESTS</span>
-      <span class="jp">興味・豆知識</span>
+      <span class="jp" lang="ja">興味・豆知識</span>
     </div>
     <div class="section__meta">
       <span class="mono">DIV. CULTURE · BEHAVIORAL INDEX</span>
@@ -608,36 +604,36 @@
       <span class="tile__tag">INT · 01</span>
       <h4>Homelabs &amp; Servers</h4>
       <p>Racks, switches, servers. Everything that hums and beeps.</p>
-      <span class="tile__jp">ホームラボ</span>
+      <span class="tile__jp" lang="ja">ホームラボ</span>
     </article>
     <article class="tile">
       <span class="tile__tag">INT · 02</span>
       <h4>Space &amp; Astronomy</h4>
       <p>Elite: Dangerous, orbital mechanics, and anything past Low Earth Orbit.</p>
-      <span class="tile__jp">宇宙</span>
+      <span class="tile__jp" lang="ja">宇宙</span>
     </article>
     <article class="tile">
       <span class="tile__tag">INT · 03</span>
       <h4>Retro Tech</h4>
       <p>CRTs, old ThinkPads, and Apple hardware older than me.</p>
-      <span class="tile__jp">レトロ</span>
+      <span class="tile__jp" lang="ja">レトロ</span>
     </article>
     <article class="tile">
       <span class="tile__tag">INT · 04</span>
       <h4>Anime &amp; Music</h4>
       <p>City pop, vaporwave, J-rock. Mecha when it's Evangelion-shaped.</p>
-      <span class="tile__jp">アニメ</span>
+      <span class="tile__jp" lang="ja">アニメ</span>
     </article>
     <article class="tile">
       <span class="tile__tag">INT · 05</span>
       <h4>Web Tinkering</h4>
       <p>Interactive star charts, fictional government portals and small corners of the web.</p>
-      <span class="tile__jp">ウェブ</span>
+      <span class="tile__jp" lang="ja">ウェブ</span>
     </article>
   </div>
 
   <div class="funfacts">
-    <h3 class="h-sub">FUN FACTS <em>豆知識</em></h3>
+    <h3 class="h-sub">FUN FACTS <em lang="ja">豆知識</em></h3>
     <ul class="funfacts__list">
       <li><span class="fx">01</span> Autistic + ADHD combo platter</li>
       <li><span class="fx">02</span> Listens to music 24/7, silence is not an option</li>
@@ -666,7 +662,7 @@
     <div class="section__slug">
       <span class="ix">// 05</span>
       <span class="name">SYSTEMS</span>
-      <span class="jp">システム一覧</span>
+      <span class="jp" lang="ja">システム一覧</span>
     </div>
     <div class="section__meta">
       <span class="mono">NEOFETCH · SYSTEM INFO</span>
@@ -696,7 +692,7 @@
     <div class="section__slug">
       <span class="ix">// 03.A</span>
       <span class="name">BUTTONS</span>
-      <span class="jp">ボタン・コレクション</span>
+      <span class="jp" lang="ja">ボタン・コレクション</span>
     </div>
     <div class="section__meta">
       <span class="mono">88 × 31 · FORMAT / GIF · PNG</span>
@@ -708,7 +704,7 @@
   </div>
 
   <div class="buttons__note mono small dim">
-    // Hover a button for the name. 集めています。
+    // Hover a button for the name. <span lang="ja">集めています。</span>
   </div>
 </section>
 
@@ -728,7 +724,7 @@
     <div class="section__slug">
       <span class="ix">// 05.A</span>
       <span class="name" id="spotifyHeadName">TOP SONGS</span>
-      <span class="jp" id="spotifyHeadJp">最近のお気に入り</span>
+      <span class="jp" id="spotifyHeadJp" lang="ja">最近のお気に入り</span>
     </div>
     <div class="section__meta">
       <span class="mono" id="spotifyHeadMeta">SPOTIFY · ROTATION · ASSORTED</span>
@@ -749,7 +745,7 @@
     <div class="spotify__meta">
       <div class="spotify__label mono">
         <img src="images/profile/sociallinks/spotify_color.svg" alt="" />
-        <span class="spotify__label-name" id="spotifyLabel">NOW SAMPLING · 最近のお気に入り</span>
+        <span class="spotify__label-name" id="spotifyLabel">NOW SAMPLING · <span lang="ja">最近のお気に入り</span></span>
         <span class="spotify__counter mono" id="spotifyCounter">01 / 12</span>
       </div>
 
@@ -787,7 +783,7 @@
         <div class="section__slug">
           <span class="ix">// 05.A</span>
           <span class="name">AUDIO MANIFEST</span>
-          <span class="jp" id="manifestJp">お気に入り一覧</span>
+          <span class="jp" id="manifestJp" lang="ja">お気に入り一覧</span>
         </div>
         <div class="section__meta">
           <span class="mono" id="manifestMeta">TRACKS · ALBUMS · ARTISTS</span>
@@ -801,7 +797,7 @@
           <h3 class="mbox__head mono">
             <span class="mbox__ix">01</span>
             <span class="mbox__name">TRACKS</span>
-            <span class="mbox__jp">トラック</span>
+            <span class="mbox__jp" lang="ja">トラック</span>
             <b data-col-count="songs">0</b>
           </h3>
           <ul class="manifest__list" id="manifestList"></ul>
@@ -811,7 +807,7 @@
           <h3 class="mbox__head mono">
             <span class="mbox__ix">02</span>
             <span class="mbox__name">ALBUMS</span>
-            <span class="mbox__jp">アルバム</span>
+            <span class="mbox__jp" lang="ja">アルバム</span>
             <b data-col-count="albums">0</b>
           </h3>
           <ul class="mtiles" id="manifestAlbums"></ul>
@@ -821,7 +817,7 @@
           <h3 class="mbox__head mono">
             <span class="mbox__ix">03</span>
             <span class="mbox__name">ARTISTS</span>
-            <span class="mbox__jp">アーティスト</span>
+            <span class="mbox__jp" lang="ja">アーティスト</span>
             <b data-col-count="artists">0</b>
           </h3>
           <ul class="mfaces" id="manifestArtists"></ul>
@@ -852,7 +848,7 @@
     <div class="section__slug">
       <span class="ix">// 03.B</span>
       <span class="name">FRIENDS</span>
-      <span class="jp">ともだち</span>
+      <span class="jp" lang="ja">ともだち</span>
     </div>
     <div class="section__meta">
       <span class="mono">88 × 31 · OUTBOUND</span>
@@ -864,7 +860,7 @@
   </div>
 
   <div class="friends__note mono small dim">
-    // Wanna be here? Link mine &amp; tell me. 友達募集中。
+    // Wanna be here? Link mine &amp; tell me. <span lang="ja">友達募集中。</span>
     <button type="button" class="friends__snippet" id="friendSnippet" title="click to copy">&lt;a href="https://lucya.sh"&gt;&lt;img src="https://lucya.sh/images/88x31%20buttons/lucya.gif" width="88" height="31" alt="lucya.sh"&gt;&lt;/a&gt;</button>
   </div>
 </section>
@@ -886,7 +882,7 @@
     <div class="section__slug">
       <span class="ix">// 04.A</span>
       <span class="name">PHOTOS</span>
-      <span class="jp">写真</span>
+      <span class="jp" lang="ja">写真</span>
     </div>
     <div class="section__meta">
       <span class="mono" id="photosMeta">SAMPLE · FULL ARCHIVE EXTERNAL</span>
@@ -998,10 +994,10 @@
   <a class="photos__cta" href="https://images.lucya.sh" target="_blank" rel="noopener">
     <span class="photos__cta-label mono">
       <span class="dot dot--ok"></span>
-      FULL ARCHIVE · 完全アーカイブ
+      FULL ARCHIVE · <span lang="ja">完全アーカイブ</span>
     </span>
     <span class="photos__cta-url mono">images.lucya.sh ↗</span>
-    <span class="photos__cta-sub mono small dim">// the main gallery has moved · click to browse</span>
+    <span class="photos__cta-sub mono small dim">// the main gallery has moved · click to browse · photos © lucya, all rights reserved</span>
   </a>
 </section>
 
@@ -1021,7 +1017,7 @@
     <div class="section__slug">
       <span class="ix">// 04</span>
       <span class="name">RACK</span>
-      <span class="jp">ラックレイアウト</span>
+      <span class="jp" lang="ja">ラックレイアウト</span>
     </div>
     <div class="section__meta">
       <span class="mono">ELEVATION · FRONT VIEW</span>
@@ -1036,7 +1032,7 @@
       <!-- data-stagger: set-nav builds the units bottom-to-top on entry -->
       <div class="rackframe" data-stagger="up">
         <div class="rackframe__top mono">
-          <span>ON TOP · ラックのうえ</span>
+          <span>ON TOP · <span lang="ja">ラックのうえ</span></span>
           <span class="dim">NON-RACKED</span>
         </div>
         <div class="rackframe__ext" id="rackExt"><!-- populated by JS --></div>
@@ -1064,7 +1060,7 @@
   </div>
 
   <div class="rack__note mono small dim">
-    // Click a unit for its data sheet · ↑ ↓ to step through · えらんでください。
+    // Click a unit for its data sheet · ↑ ↓ to step through · <span lang="ja">えらんでください。</span>
   </div>
 </section>
 
@@ -1082,14 +1078,15 @@
     </div>
     <div class="foot__cols">
       <div>
-        <div class="foot__label mono">LUCYA SYSTEMS<span class="reg">®</span></div>
-        <div class="mono small dim">ルシア・インダストリーズ 株式会社</div>
+        <div class="foot__label mono">LUCYA SYSTEMS<span class="tm">™</span></div>
+        <div class="mono small dim" lang="ja">ルシア・インダストリーズ 株式会社</div>
         <div class="mono small dim">EST. 2007 · DE-BY · ATLAS</div>
         <div class="mono small dim">REG. NO. 0451-LUC</div>
       </div>
       <div>
         <div class="foot__label mono">LEGAL</div>
-        <div class="mono small dim">All marks &amp; logos<span class="tm">™</span> belong to their respective holders.</div>
+        <div class="mono small dim">Text, photos, logo &amp; Shinsei Concordia<span class="tm">™</span> © lucya.</div>
+        <div class="mono small dim">Other marks &amp; logos belong to their respective holders.</div>
         <div class="mono small dim">No cookies. No tracking. No telemetry.</div>
         <div class="mono small dim">Unauthorized retransmission prohibited.</div>
         <div class="mono small foot__legal-links">
@@ -1103,13 +1100,13 @@
         <div class="mono small">
           <span class="dot dot--ok"></span> <span>operational</span>
         </div>
-        <div class="mono small dim" id="footTime" title="server time · Europe/Berlin">SRV 00:00:00 · 通信中</div>
+        <div class="mono small dim" title="server time · Europe/Berlin">SRV <span id="footTime">00:00:00</span> · <span lang="ja">通信中</span></div>
         <div class="mono small dim">UPLINK · ATLAS · NOMINAL</div>
       </div>
     </div>
     <div class="foot__rule"></div>
     <div class="foot__tiny mono">
-      <span>© LUCYA SYSTEMS<span class="reg">®</span> <span id="thisYear">2026</span> · ALL RIGHTS RESERVED</span>
+      <span>© <span id="thisYear">2026</span> LUCYA SYSTEMS<span class="tm">™</span> · ALL RIGHTS RESERVED</span>
       <span>DOC 0451-LUC · REV 2026.Q2 · PUBLIC RECORD</span>
       <span>// BUILD 2.6.1-STABLE · KERNEL 7.0.1</span>
     </div>
@@ -1127,7 +1124,7 @@
   </div>
 </div>
 
-<script type="module" src="script.js?v=20261026-location"></script>
+<script type="module" src="script.js?v=20261027-stats2"></script>
 <script src="setnav.js?v=20261025-wheel"></script>
 <script src="mpage.js"></script>
 </body>

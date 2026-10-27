@@ -389,7 +389,7 @@ export function initSpotify(scrambleTo) {
     // "nothing playing": the card goes back to the favourites.
     const LIVE_POLL_MS = 15000;
     const LIVE_STALE_S = 90;
-    const ROTATION_LABEL = labelEl ? labelEl.textContent : '';
+    const ROTATION_LABEL = labelEl ? labelEl.innerHTML : '';
     let liveKey = '';
     let liveTotal = 0;   // s
     let liveBase = 0;    // performance.now() at which the track was at 0:00
@@ -440,7 +440,7 @@ export function initSpotify(scrambleTo) {
         head.forEach(h => scrambleTo(h.el, h.live));
         dotsEl.hidden = true;
         if (progressEl) progressEl.hidden = false;
-        if (labelEl) labelEl.textContent = 'NOW PLAYING · 再生中';
+        if (labelEl) labelEl.innerHTML = 'NOW PLAYING · <span lang="ja">再生中</span>';
         if (modeEl) modeEl.textContent = 'LIVE';
         counterEl.textContent = 'LIVE';
       }
@@ -474,7 +474,7 @@ export function initSpotify(scrambleTo) {
       head.forEach(h => scrambleTo(h.el, h.rotation));
       dotsEl.hidden = false;
       if (progressEl) { progressEl.hidden = true; progressEl.classList.remove('is-run'); }
-      if (labelEl) labelEl.textContent = ROTATION_LABEL;
+      if (labelEl) labelEl.innerHTML = ROTATION_LABEL;
       if (modeEl) modeEl.textContent = 'ROTATION';
       if (totalEl) totalEl.textContent = fmtTime(INTERVAL_MS / 1000);
       render();
