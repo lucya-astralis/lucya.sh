@@ -615,6 +615,8 @@
 
                 <p>This website is a private, non-commercial project run by a natural person. It is not a business-like offering within the meaning of § 5 DDG (formerly § 5 TMG) and is not a journalistic-editorial offering within the meaning of § 18(2) MStV. For that reason no postal address is published here.</p>
 
+                <p>The other websites hosted on this infrastructure are either the operator's own projects or sites of family and friends, run as a personal favour, without payment or any other consideration.</p>
+
                 <div class="contact-block">
                     <span class="k">Operator</span>Timo Wager<br>
                     <span class="k">Contact</span><a href="mailto:sosumi@lucya.sh">sosumi@lucya.sh</a>
@@ -755,11 +757,10 @@
                 <p>Cloudflare acts as a processor for us on the basis of a data processing agreement. You have the right to object to the processing; whether the objection succeeds must be determined as part of a balancing of interests. The functionality of the website is not guaranteed without this processing.</p>
                 <p>Cloudflare has implemented compliance measures for international data transfers based on the EU Standard Contractual Clauses (SCCs). More information: <a href="https://www.cloudflare.com/cloudflare-customer-dpa/" target="_blank" rel="noopener noreferrer">Cloudflare Customer DPA</a> and <a href="https://www.cloudflare.com/cloudflare_customer_SCCs-German.pdf" target="_blank" rel="noopener noreferrer">SCCs (PDF)</a>.</p>
 
-                <h3>Uptime status badge (status.lucya.systems)</h3>
-                <p>This website embeds a live uptime badge from <a href="https://status.lucya.systems" target="_blank" rel="noopener noreferrer">status.lucya.systems</a> to display the current availability of the "Hypervisor" service. The badge is loaded as an image directly from the status server (<code>https://status.lucya.systems/api/badge/1/uptime</code>).</p>
-                <p>When the page loads, your browser establishes a direct connection to that server. The following data may be processed in its server log files: IP address, browser type and version, operating system, referrer URL, time of the request, user agent string.</p>
-                <p>The status server is operated by us on our own infrastructure within the European Union. Data is not passed on to third parties beyond what is technically required to deliver the badge image. The legal basis is Art. 6(1)(f) GDPR — we have a legitimate interest in transparently displaying the operational status of our infrastructure.</p>
-                <p>You can prevent the badge from loading by using a content blocker or by disabling image loading in your browser. The rest of the website is not affected.</p>
+                <h3>Live status data (homelab, music, weather)</h3>
+                <p>Some cards on lucya.sh and lucya.systems show live data: the state of our homelab (hosts, services, temperatures), the track the operator is currently listening to, and the weather at the operator's current location. This data is written by our own servers into small JSON files (<code>status.json</code>, <code>nowplaying.json</code>, <code>weather.json</code>) on the same domain as the page, and your browser fetches them from there while the page is open.</p>
+                <p>No connection to a third party is made for this, and the files contain no data about you. The requests appear in the server log files like any other request to this website (see "Server log files"). The legal basis is Art. 6(1)(f) GDPR — we have a legitimate interest in transparently displaying the operational status of our infrastructure.</p>
+                <p>The uptime history at <a href="https://status.lucya.systems" target="_blank" rel="noopener noreferrer">status.lucya.systems</a> is only linked, not embedded. It runs on our own infrastructure within the European Union; if you open it, the data listed under "Server log files" is processed there.</p>
 
                 <h3>Photo gallery (images.lucya.sh)</h3>
                 <p>The start page shows a teaser of our photo gallery. To do so, your browser requests a list of the most recent images from <a href="https://images.lucya.sh" target="_blank" rel="noopener noreferrer">images.lucya.sh</a> when the page loads and then loads the preview images from that host. Following the link opens the full gallery there.</p>
@@ -845,6 +846,8 @@
                 <div class="sec-head"><span class="sec-head__num">00</span><h2>Impressum</h2></div>
 
                 <p>Diese Website ist ein privates, nicht-kommerzielles Projekt einer natürlichen Person. Es handelt sich nicht um geschäftsmäßige Telemedien im Sinne des § 5 DDG (vormals § 5 TMG) und nicht um ein journalistisch-redaktionelles Angebot im Sinne des § 18 Abs. 2 MStV. Eine Anschrift wird daher hier nicht veröffentlicht.</p>
+
+                <p>Die übrigen auf dieser Infrastruktur gehosteten Websites sind entweder eigene Projekte des Betreibers oder Seiten von Familie und Freunden, die als privater Gefallen betrieben werden — ohne Bezahlung oder sonstige Gegenleistung.</p>
 
                 <div class="contact-block">
                     <span class="k">Betreiber</span>Timo Wager<br>
@@ -986,11 +989,10 @@
                 <p>Cloudflare ist als Auftragsverarbeiter auf Grundlage eines Auftragsverarbeitungsvertrags für uns tätig. Du hast das Recht, der Verarbeitung zu widersprechen; ob der Widerspruch erfolgreich ist, ist im Rahmen einer Interessenabwägung zu ermitteln. Die Funktionsfähigkeit der Website ist ohne diese Verarbeitung nicht gewährleistet.</p>
                 <p>Cloudflare hat Compliance-Maßnahmen für internationale Datenübermittlungen umgesetzt, die auf den EU-Standardvertragsklauseln (SCCs) basieren. Weitere Informationen: <a href="https://www.cloudflare.com/cloudflare-customer-dpa/" target="_blank" rel="noopener noreferrer">Cloudflare Customer DPA</a> und <a href="https://www.cloudflare.com/cloudflare_customer_SCCs-German.pdf" target="_blank" rel="noopener noreferrer">SCCs (PDF)</a>.</p>
 
-                <h3>Uptime-Status-Badge (status.lucya.systems)</h3>
-                <p>Auf dieser Website wird ein Live-Uptime-Badge von <a href="https://status.lucya.systems" target="_blank" rel="noopener noreferrer">status.lucya.systems</a> eingebunden, um die aktuelle Verfügbarkeit des "Hypervisor"-Dienstes anzuzeigen. Das Badge wird als Bild direkt vom Status-Server (<code>https://status.lucya.systems/api/badge/1/uptime</code>) geladen.</p>
-                <p>Beim Aufruf der Seite stellt dein Browser eine direkte Verbindung zu diesem Server her. Dabei können folgende Daten in dessen Server-Logfiles verarbeitet werden: IP-Adresse, Browsertyp und Browserversion, Betriebssystem, Referrer-URL, Uhrzeit der Anfrage, User-Agent-String.</p>
-                <p>Der Status-Server wird von uns auf eigener Infrastruktur innerhalb der Europäischen Union betrieben. Eine Weitergabe der Daten an Dritte über das technisch zur Auslieferung des Badges Notwendige hinaus findet nicht statt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO — wir haben ein berechtigtes Interesse, den Betriebszustand unserer Infrastruktur transparent für Besucher anzuzeigen.</p>
-                <p>Du kannst das Laden des Badges durch den Einsatz eines Content-Blockers oder durch Deaktivierung von Bildladevorgängen in deinem Browser verhindern. Die übrige Funktionalität der Website wird hiervon nicht beeinträchtigt.</p>
+                <h3>Live-Statusdaten (Homelab, Musik, Wetter)</h3>
+                <p>Einige Karten auf lucya.sh und lucya.systems zeigen Live-Daten: den Zustand unseres Homelabs (Hosts, Dienste, Temperaturen), den Titel, den der Betreiber gerade hört, und das Wetter am aktuellen Aufenthaltsort des Betreibers. Diese Daten schreiben unsere eigenen Server in kleine JSON-Dateien (<code>status.json</code>, <code>nowplaying.json</code>, <code>weather.json</code>) auf derselben Domain wie die Seite; dein Browser ruft sie dort ab, solange die Seite geöffnet ist.</p>
+                <p>Dabei wird keine Verbindung zu Dritten aufgebaut, und die Dateien enthalten keine Daten über dich. Die Abrufe erscheinen wie jeder andere Aufruf dieser Website in den Server-Log-Dateien (siehe „Server-Log-Dateien“). Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO — wir haben ein berechtigtes Interesse, den Betriebszustand unserer Infrastruktur transparent anzuzeigen.</p>
+                <p>Der Uptime-Verlauf unter <a href="https://status.lucya.systems" target="_blank" rel="noopener noreferrer">status.lucya.systems</a> wird nur verlinkt, nicht eingebunden. Er läuft auf unserer eigenen Infrastruktur innerhalb der Europäischen Union; rufst du ihn auf, werden dort die unter „Server-Log-Dateien“ genannten Daten verarbeitet.</p>
 
                 <h3>Fotogalerie (images.lucya.sh)</h3>
                 <p>Auf der Startseite wird eine Vorschau unserer Fotogalerie angezeigt. Dazu ruft dein Browser beim Laden der Seite eine Liste der neuesten Bilder von <a href="https://images.lucya.sh" target="_blank" rel="noopener noreferrer">images.lucya.sh</a> ab und lädt anschließend die Vorschaubilder von diesem Host. Über den Link gelangst du zur vollständigen Galerie auf demselben Host.</p>
