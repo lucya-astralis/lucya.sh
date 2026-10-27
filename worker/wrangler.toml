@@ -11,5 +11,7 @@ workers_dev = false
 routes = [
   { pattern = "lucya.sh/", zone_name = "lucya.sh" },
   { pattern = "lucya.sh/index.html", zone_name = "lucya.sh" },
-  { pattern = "lucya.sh/curl", zone_name = "lucya.sh" },
+  # the wildcard lets /curl?plain through: a route only matches its own
+  # path, and "lucya.sh/" with a query string would mean routing everything
+  { pattern = "lucya.sh/curl*", zone_name = "lucya.sh" },
 ]

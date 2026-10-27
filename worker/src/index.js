@@ -3,7 +3,7 @@
 // `curl lucya.sh` (also wget / httpie / xh) gets a neofetch-style ANSI card
 // instead of HTML. Everyone else is passed through to the origin untouched.
 // /curl shows the card to any client (colours stripped for browsers),
-// ?plain strips colours for terminals too.
+// /curl?plain strips colours for terminals too (the root route takes no query).
 //
 // Live values (spec, kpis) come from the site's own data.json so the card
 // never drifts from the page; FALLBACK keeps it working if that fetch fails.
@@ -198,7 +198,7 @@ function card(data, color) {
   out.push('');
   for (const [k, url] of LINKS) out.push('  ' + c(MAG, '▸ ') + c(DIM, k.padEnd(11)) + c(CY, url));
   out.push('');
-  out.push('  ' + c(DIM, 'open https://lucya.sh in a browser for the full experience · ?plain for no colour'));
+  out.push('  ' + c(DIM, 'open https://lucya.sh in a browser for the full experience · lucya.sh/curl?plain for no colour'));
   out.push('');
   return out.join('\n');
 }
