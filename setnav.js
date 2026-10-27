@@ -364,7 +364,7 @@
     copy.className = 'setbar__copy';
     var yrEl = document.getElementById('thisYear');
     var yr = (yrEl && yrEl.textContent.trim()) || String(new Date().getFullYear());
-    copy.innerHTML = '© LUCYA SYSTEMS<span class="reg">®</span> ' + yr + ' · ALL RIGHTS RESERVED';
+    copy.innerHTML = '© ' + yr + ' LUCYA.SYSTEMS<span class="tm">™</span> · ALL RIGHTS RESERVED';
     bar.appendChild(copy);
 
     var links = document.createElement('span');

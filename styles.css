@@ -857,6 +857,25 @@ body.is-ready .hero__side{
 .nav__links a:hover{ color:var(--acc-cy); }
 .nav__links a:hover em{ color:var(--acc-mag); }
 
+/* the house: the one link out of the bar, so it wears the accent */
+.nav__house{
+  display:inline-flex; align-items:center; gap:6px; flex:none;
+  padding:5px 10px;
+  border:1px solid rgba(91,138,255,.45);
+  background:rgba(91,138,255,.08);
+  color:var(--acc-cy);
+  font-size:11px; letter-spacing:.16em; text-transform:uppercase; white-space:nowrap;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.nav__house em{ font-style:normal; color:var(--text-dim); }
+.nav__house:hover{ color:var(--text); border-color:var(--acc-cy); background:rgba(91,138,255,.16); }
+.nav__house:focus-visible{ outline:1px solid var(--acc-cy); outline-offset:2px; }
+.nav__house-short{ display:none; }
+@media (max-width:420px){
+  .nav__house-full{ display:none; }
+  .nav__house-short{ display:inline; }
+}
+
 .nav__status{
   display:flex; align-items:center; gap:8px;
   font-family:"Proto Nerd Font Regular", monospace; font-size:12px;
@@ -4631,6 +4650,7 @@ html.setmode .lite-toggle{ bottom:calc(var(--setbar-h, 34px) + 10px); }
 
   .nav__inner{ padding:0 14px; gap:12px; justify-content:space-between; }
   .nav__links{ display:none; }
+  .nav__house{ margin-left:auto; padding:4px 8px; font-size:10px; letter-spacing:.1em; }
   .nav__status{ flex:0 0 auto; padding-left:10px; font-size:10.5px; border-left:none; }
   .nav__brand img{ height:22px; }
 

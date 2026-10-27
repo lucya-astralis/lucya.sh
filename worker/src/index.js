@@ -25,6 +25,7 @@ const LOGO = [
 
 const LINKS = [
   ['web', 'https://lucya.sh'],
+  ['house', 'https://lucya.systems'],
   ['status', 'https://status.lucya.systems'],
   ['github', 'https://github.com/lucya-astralis'],
   ['bluesky', 'https://bsky.app/profile/lucya.systems'],
