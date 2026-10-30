@@ -1,4 +1,9 @@
-import { rackData } from '../js/systems-data.js';
+import { rackData } from '../js/systems-data.js?v=20261027-rack';
+import { initSystems } from '../js/systems.js?v=20261027-rack';
+import { initWeather } from '../js/weather.js';
+import { initSpotify } from '../js/spotify.js?v=20261027-lang';
+import { createScrambler } from '../js/text-scramble.js';
+import { buttons, friends } from './buttons.js';
 
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const root = document.documentElement;
@@ -18,6 +23,7 @@ document.getElementById('spec').append(...SPEC.flatMap(([k, v]) => {
 }));
 
 const rack = document.getElementById('rack');
+const rackRows = new Map();
 for (const host of rackData) {
   if (!host.chassis) continue;
   const li = document.createElement('li');
@@ -29,7 +35,20 @@ for (const host of rackData) {
     cell.textContent = text;
     li.append(cell);
   }
+  // a row opens its sheet in the neofetch terminal below, where it has one
+  const tab = host.neofetch || host.id;
+  li.tabIndex = 0;
+  li.addEventListener('click', () => openSheet(tab));
+  li.addEventListener('keydown', (e) => { if (e.key === 'Enter') openSheet(tab); });
   rack.append(li);
+  rackRows.set(host.live || host.id, li);
+}
+
+function openSheet(id) {
+  const button = document.querySelector(`#nTabs .ntab[data-tab="${id}"]`);
+  if (!button) return;
+  button.click();
+  document.getElementById('neofetch').scrollIntoView({ block: 'start' });
 }
 
 // the same layout as the model's lid: file, x, y (mm from top left), width, rotation
@@ -69,6 +88,107 @@ const seen = new IntersectionObserver((entries) => {
   }
 }, { rootMargin: '0px 0px -8% 0px' });
 document.querySelectorAll('.rise').forEach((el) => seen.observe(el));
+
+// ---- live data, the same files and rules as the main page -----------------
+// /status.json is polled once and shared; null means no probe, and everything
+// reading it falls back to an honest offline state.
+const statusFeed = (() => {
+  const subs = [];
+  let last = null;
+  const refresh = async () => {
+    try {
+      const r = await fetch(`/status.json?t=${Date.now()}`, { cache: 'no-store' });
+      if (!r.ok) throw new Error(`http ${r.status}`);
+      last = await r.json();
+    } catch {
+      last = null;
+    }
+    subs.forEach((fn) => fn(last));
+  };
+  refresh();
+  setInterval(refresh, 30000);
+  return { subscribe(fn) { subs.push(fn); fn(last); } };
+})();
+
+initSystems(statusFeed);
+initWeather();
+initSpotify(createScrambler(!!window.LUCYA_LITE));
+
+const wallButton = (file, name, href) => {
+  const el = document.createElement(href ? 'a' : 'span');
+  el.className = 'b81';
+  el.title = name;
+  if (href) {
+    el.href = href;
+    el.target = '_blank';
+    el.rel = 'noopener';
+  }
+  const img = new Image(88, 31);
+  img.src = `images/88x31 buttons/${file}`;
+  img.alt = name;
+  img.loading = 'lazy';
+  el.append(img);
+  return el;
+};
+document.getElementById('buttonWall').append(...buttons.map(([file, name]) => wallButton(file, name)));
+document.getElementById('friendWall').append(...friends.map(([file, name, href]) => wallButton(file, name, href)));
+const snippet = document.getElementById('friendSnippet');
+snippet.addEventListener('click', () => {
+  navigator.clipboard?.writeText(snippet.textContent.trim()).then(() => {
+    snippet.classList.add('is-copied');
+    setTimeout(() => snippet.classList.remove('is-copied'), 1200);
+  }, () => {});
+});
+
+const $ = (id) => document.getElementById(id);
+const percent = (n, d) => (d > 0 ? Math.min(100, n / d * 100) : 0);
+let fleet = null;
+
+function paintFleet() {
+  const dot = $('fleetDot');
+  if (!fleet) {
+    dot.dataset.state = 'down';
+    dot.title = 'Awaiting telemetry';
+    return;
+  }
+  const s = fleet.summary || fleet;
+  const up = +s.hosts_up || 0, hosts = +s.hosts_total || 0;
+  const ok = +s.services_ok || 0, warn = +s.services_warn || 0, crit = +s.services_crit || 0;
+  const services = +s.services_total || ok + warn + crit;
+  const age = Math.max(0, Math.floor(Date.now() / 1000) - Number(fleet.ts || 0));
+  const stale = !(Number(fleet.ts) > 0) || age > 120;
+  const healthy = hosts > 0 && services > 0 && up === hosts && ok === services && !warn && !crit;
+  const state = stale ? 'stale' : crit > 0 || (hosts > 0 && up === 0) ? 'dead' : healthy ? 'ok' : 'stale';
+
+  $('fleetHosts').textContent = `${up} / ${hosts}`;
+  $('fleetSvc').textContent = `${ok} / ${services}`;
+  $('fleetHostsBar').style.transform = `scaleX(${percent(up, hosts) / 100})`;
+  $('fleetSvcBar').style.transform = `scaleX(${percent(ok, services) / 100})`;
+  $('fleetAlerts').textContent = warn || crit ? `${crit} crit · ${warn} warn` : '0';
+  $('fleetAge').textContent = age < 60 ? `${age}s ago` : age < 3600 ? `${Math.floor(age / 60)}m ago` : `${Math.floor(age / 3600)}h ago`;
+  $('fleetTag').textContent = stale ? 'Checkmk · stale' : 'Checkmk · live';
+  $('fleetSummary').textContent = stale ? 'Telemetry outdated.' : healthy ? 'All systems operational.' : 'Systems require attention.';
+  dot.dataset.state = state;
+  dot.title = $('fleetSummary').textContent;
+  for (const h of fleet.hosts || []) {
+    rackRows.get(h?.name)?.setAttribute('data-state', String(h.state).toLowerCase());
+  }
+}
+statusFeed.subscribe((data) => { fleet = data; paintFleet(); });
+setInterval(paintFleet, 5000);
+
+fetch('data.json').then((r) => r.json()).then(({ kpis }) => {
+  const kpi = (key) => kpis.find((k) => k.key === key);
+  $('kpiServices').textContent = kpi('services').value;
+  $('kpiDomains').textContent = kpi('domains').value;
+  const japan = kpi('japan');
+  const day = 86400000;
+  const start = Date.parse(japan.target), end = Date.parse(japan.end);
+  const now = Date.now();
+  const days = now < start ? Math.ceil((start - now) / day) : now < end ? Math.ceil((end - now) / day) : Math.round((end - start) / day);
+  $('kpiJapan').textContent = `${days} d`;
+  $('kpiJapanSub').textContent = now < start ? japan.sub : now < end ? japan.subIn : japan.subAfter;
+}).catch(() => {});
 
 // ---- start-up: picks up from the intro's last frame ------------------------
 const POST = [

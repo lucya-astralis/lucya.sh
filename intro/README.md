@@ -1,15 +1,15 @@
 # Laptop intro
 
-Scroll-driven 3D intro in front of the start page: a laptop on black swings round
+Scroll-driven 3D intro in front of `concept.html`, and only there: a laptop on black swings round
 in one move and opens with its display lighting up, and the camera zooms in on the
-Panasonic logo. The site's own boot starts when the zoom lands, and scrolling stays
-stopped until the finished page has settled. It sits as a fixed overlay on an untouched page and removes itself
+Panasonic logo. The page's start-up begins when the zoom lands, and scrolling stays
+stopped until it has settled. It sits as a fixed overlay on an untouched page and removes itself
 completely afterwards.
 
 ## On / off
 
 `ENABLE_LAPTOP_INTRO` at the top of `gate.js`. Off, nothing else loads and the page
-behaves as before; remove both intro `<script>` tags in `index.html` to take it out
+behaves as before; remove both intro `<script>` tags in `concept.html` to take it out
 entirely. `gate.js` holds the page and the boot back until the intro ends, is
 skipped or fails.
 
