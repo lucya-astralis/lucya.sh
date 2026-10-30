@@ -177,8 +177,8 @@ def boot_screen():
     full.paste(mask, box)
     glow = full.filter(ImageFilter.GaussianBlur(70)).point(lambda v: int(v * 0.55))
     img = Image.new("RGB", (w, h), (0, 0, 0))
-    img.paste((70, 92, 190), (0, 0), glow)
-    img.paste((132, 150, 240), (0, 0), full)
+    img.paste((120, 124, 132), (0, 0), glow)
+    img.paste((232, 234, 238), (0, 0), full)
     img.save(HERE.parent.parent / "intro" / "boot-screen.webp", quality=92)
 
 

@@ -7,6 +7,7 @@ Writes stickers/*.png. Only needed when the source images change.
 import sys
 from pathlib import Path
 
+import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 OUT = Path(__file__).parent / "stickers"
@@ -22,7 +23,46 @@ SOURCES = [
     ("frieren_sticker_17_ijunk30_com_by_ijungakrom_dgz9udv-fullview.jpg", "frieren", 30, 16),
     ("st,small,507x507-pad,600x600,f8f8f8.jpg", "japan", 7, 0),
     ("st,small,507x507-pad,600x600,f8f8f8.u1.jpg", "jaxa", 7, 0),
+    ("kuromi.png", "kuromi", "ring", 0),
+    ("arasaka.jpg", "arasaka", "tag", 0),
 ]
+
+
+def cut_ring(img):
+    """For a sticker with a white edge on a grey ground with a drop shadow: everything
+    not white, reached from the border, is background. The white edge stops the fill."""
+    rgb = np.asarray(img.convert("RGB"), dtype=np.int16)
+    open_ = rgb.min(axis=2) < 238
+    seen = np.zeros(open_.shape, bool)
+    seen[0, :] = seen[-1, :] = seen[:, 0] = seen[:, -1] = True
+    seen &= open_
+    while True:
+        grown = seen.copy()
+        grown[1:, :] |= seen[:-1, :]
+        grown[:-1, :] |= seen[1:, :]
+        grown[:, 1:] |= seen[:, :-1]
+        grown[:, :-1] |= seen[:, 1:]
+        grown &= open_
+        if (grown == seen).all():
+            break
+        seen = grown
+    alpha = Image.fromarray(np.where(seen, 0, 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3))
+    out = img.convert("RGBA")
+    out.putalpha(alpha.filter(ImageFilter.GaussianBlur(0.8)))
+    return out
+
+
+def cut_tag(img, margin=13, radius=30):
+    """For a white-edged label on white: the outline comes from the dark print inside it."""
+    rgb = np.asarray(img.convert("L"))
+    ys, xs = np.nonzero(rgb < 90)
+    box = (xs.min() - margin, ys.min() - margin, xs.max() + margin, ys.max() + margin)
+    scale = 4
+    mask = Image.new("L", (img.width * scale, img.height * scale), 0)
+    ImageDraw.Draw(mask).rounded_rectangle([v * scale for v in box], radius * scale, fill=255)
+    out = img.convert("RGBA")
+    out.putalpha(mask.resize(img.size, Image.LANCZOS))
+    return out
 
 
 def cut(img, tolerance, edge):
@@ -61,8 +101,15 @@ def cut(img, tolerance, edge):
 
 src = Path(sys.argv[1])
 for name, out, tolerance, edge in SOURCES:
+    if not (src / name).exists():
+        continue
     img = Image.open(src / name)
-    result = cut(img, tolerance, edge) if tolerance else img.convert("RGBA")
+    if tolerance == "ring":
+        result = cut_ring(img)
+    elif tolerance == "tag":
+        result = cut_tag(img)
+    else:
+        result = cut(img, tolerance, edge) if tolerance else img.convert("RGBA")
     result = result.crop(result.getchannel("A").getbbox())
     result.thumbnail((1200, 1200), Image.LANCZOS)
     result.save(OUT / f"{out}.png")
