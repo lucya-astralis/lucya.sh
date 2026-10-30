@@ -1,6 +1,6 @@
 import {
   Color, CylinderGeometry, Group, InstancedMesh, Matrix4, Mesh,
-  MeshPhysicalMaterial, MeshStandardMaterial, PlaneGeometry, RoundedBoxGeometry,
+  MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, PlaneGeometry, RoundedBoxGeometry,
 } from '../vendor/three.bundle.min.js';
 import { Laptop } from './Laptop.js';
 
@@ -33,10 +33,8 @@ function keyboard() {
 }
 
 /** Placeholder built from rounded boxes, no external assets.
- *  @param screenTexture sRGB texture shown on the display
- *  @param envMap environment map; the panel takes it directly because
- *         envMapIntensity does not apply to scene.environment */
-export function createProceduralLaptop(screenTexture, envMap) {
+ *  @param screenTexture sRGB texture shown on the display */
+export function createProceduralLaptop(screenTexture) {
   const shell = new MeshPhysicalMaterial({
     color: new Color(0x8e9196), metalness: 0.9, roughness: 0.42,
     clearcoat: 0.25, clearcoatRoughness: 0.5,
@@ -69,15 +67,10 @@ export function createProceduralLaptop(screenTexture, envMap) {
   lidShell.position.set(0, 0, DEPTH / 2 - AXIS_INSET);
   lid.add(lidShell);
 
-  // Matte panel: barely any reflection and no tone mapping, so the texture
-  // lands on screen with the same colours the real page has at the handoff.
+  // unlit: the picture alone, so its black meets the boot splash clean
   const panel = new Mesh(
     new PlaneGeometry(SCREEN_W, SCREEN_H),
-    new MeshStandardMaterial({
-      color: new Color(0x000000), roughness: 0.82, metalness: 0,
-      emissive: new Color(0xffffff), emissiveMap: screenTexture,
-      envMap, envMapIntensity: 0.02, toneMapped: false,
-    }),
+    new MeshBasicMaterial({ map: screenTexture, toneMapped: false }),
   );
   panel.userData.size = { width: SCREEN_W, height: SCREEN_H };
   panel.rotation.x = Math.PI / 2; // normal -y, image top toward the lid's far edge

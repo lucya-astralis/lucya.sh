@@ -165,20 +165,15 @@ def bottom():
 
 
 def boot_screen():
-    """What the display shows: the mark alone, the size and place it has in the site's
-    boot splash, so the zoom lands on the very logo the boot goes on to build."""
+    """What the display shows: the machine starting up, logo a little above centre.
+    Black, so the zoom runs straight into the site's own boot splash."""
     w, h = 3840, 2560
-    mask = Image.open(HERE / "logos" / "lucya-mark.mask.png").getchannel("A")
+    mask = Image.open(HERE / "logos" / "panasonic.mask.png").getchannel("A")
     mask = mask.crop(mask.getbbox())
-    lw = int(w * 0.44)
+    lw = int(w * 0.3)
     mask = mask.resize((lw, lw * mask.height // mask.width), Image.LANCZOS)
-    box = ((w - lw) // 2, int(h * 0.47) - mask.height // 2)
-    full = Image.new("L", (w, h), 0)
-    full.paste(mask, box)
-    glow = full.filter(ImageFilter.GaussianBlur(70)).point(lambda v: int(v * 0.55))
     img = Image.new("RGB", (w, h), (0, 0, 0))
-    img.paste((120, 124, 132), (0, 0), glow)
-    img.paste((232, 234, 238), (0, 0), full)
+    img.paste((236, 238, 241), ((w - lw) // 2, int(h * 0.41) - mask.height // 2), mask)
     img.save(HERE.parent.parent / "intro" / "boot-screen.webp", quality=92)
 
 

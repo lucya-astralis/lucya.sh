@@ -25,6 +25,42 @@
 }
 .lintro__scroller::-webkit-scrollbar{ display:none; }
 
+/* while three.js and the model load */
+.lintro__load{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:22px;
+  font-family:"Proto Nerd Font Regular", ui-monospace, monospace;
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.62);
+}
+.lintro__load img{
+  width:min(34vw, 170px);
+  opacity:.9;
+  animation:lintro-breathe 1.8s ease-in-out infinite;
+}
+.lintro__bar{
+  position:relative;
+  width:min(46vw, 220px); height:2px;
+  overflow:hidden;
+  background:rgba(255,255,255,.14);
+}
+.lintro__bar i{
+  position:absolute; left:0; top:0; bottom:0;
+  width:0;
+  background:#e8eaee;
+  transition:width .25s ease;
+}
+/* before the first file lands there is nothing to count yet */
+.lintro__load:not(.is-measured) .lintro__bar i{
+  width:32%;
+  animation:lintro-sweep 1.2s ease-in-out infinite;
+}
+@keyframes lintro-breathe{ 0%,100%{ opacity:.5; } 50%{ opacity:1; } }
+@keyframes lintro-sweep{ from{ transform:translateX(-110%); } to{ transform:translateX(320%); } }
+
 .lintro__hint,
 .lintro__skip{
   position:absolute;

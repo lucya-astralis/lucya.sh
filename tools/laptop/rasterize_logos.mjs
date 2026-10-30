@@ -11,7 +11,7 @@ const WIDTH = 2400;
 const browser = await chromium.launch({ channel: 'chrome' });
 const page = await browser.newPage({ viewport: { width: WIDTH, height: 900 } });
 
-for (const name of ['panasonic', 'letsnote', 'lucya-mark']) {
+for (const name of ['panasonic', 'letsnote']) {
   const svg = (await readFile(join(here, `${name}.svg`), 'utf8')).replace(/<\?xml[^>]*\?>/, '').replace(/<!DOCTYPE[^>]*>/, '');
   await page.setContent(`<!doctype html><style>html,body{margin:0;background:transparent}
     svg{display:block;width:${WIDTH}px;height:auto}</style>${svg}`);

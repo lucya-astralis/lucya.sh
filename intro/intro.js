@@ -1,10 +1,10 @@
 import * as THREE from './vendor/three.bundle.min.js';
 import { gsap, ScrollTrigger } from './vendor/gsap.bundle.min.js';
-import { createProceduralLaptop } from './laptop/ProceduralLaptop.js?v=20261030-placed';
-import { createGltfLaptop } from './laptop/GltfLaptop.js?v=20261030-placed';
-import { TIMELINE } from './intro.timeline.js?v=20261030-placed';
+import { createProceduralLaptop } from './laptop/ProceduralLaptop.js?v=20261030-panel';
+import { createGltfLaptop } from './laptop/GltfLaptop.js?v=20261030-panel';
+import { TIMELINE } from './intro.timeline.js?v=20261030-panel';
 
-const SCREEN_URL = 'intro/boot-screen.webp?v=20261030-placed';
+const SCREEN_URL = 'intro/boot-screen.webp?v=20261030-panel';
 const VEC_KEYS = ['camPos', 'camTarget', 'camUp', 'rot', 'pos'];
 const FADE_MS = 600;  // the fade in intro.css
 const SETTLE_MS = 700; // the wheel has to rest this long before the page takes it
@@ -71,12 +71,16 @@ function flatten(keyframes) {
       start: keyframes[i].at,
       duration: key.at - keyframes[i].at,
       ease: key.ease,
+      cameraEase: key.cameraEase,
     };
   });
   return { flat, segments };
 }
 
-export async function runIntro(cover) {
+// files behind the bar: glTF, buffer, the model's textures and the display picture
+const EXPECTED_FILES = 11;
+
+export async function runIntro(cover, { skip, leave, load, report }) {
   const root = document.documentElement;
   const canvas = document.createElement('canvas');
   canvas.className = 'lintro__canvas';
@@ -90,6 +94,9 @@ export async function runIntro(cover) {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   gsap.registerPlugin(ScrollTrigger);
+  THREE.DefaultLoadingManager.onProgress = (url, loaded, total) => {
+    report(loaded / Math.max(total, EXPECTED_FILES));
+  };
   const texture = await loadTexture(renderer);
 
   const { scene, env } = buildScene(renderer);
@@ -97,9 +104,18 @@ export async function runIntro(cover) {
   const laptop = TIMELINE.model === 'gltf'
     ? await createGltfLaptop(texture, env.texture).catch((err) => {
       console.warn('laptop model failed, using the placeholder:', err);
-      return createProceduralLaptop(texture, env.texture);
+      return createProceduralLaptop(texture);
     })
-    : createProceduralLaptop(texture, env.texture);
+    : createProceduralLaptop(texture);
+  THREE.DefaultLoadingManager.onProgress = undefined;
+  // skipped while it was still loading
+  if (!cover.isConnected) {
+    laptop.dispose();
+    env.dispose();
+    renderer.dispose();
+    renderer.forceContextLoss();
+    return;
+  }
   const rig = laptop.root;
   scene.add(rig);
 
@@ -115,7 +131,11 @@ export async function runIntro(cover) {
   const tl = gsap.timeline({ paused: true, defaults: { ease: TIMELINE.ease } });
   for (const seg of segments) {
     if (seg.duration > 0) {
-      tl.to(state, { ...seg.to, duration: seg.duration, ease: seg.ease || TIMELINE.ease }, seg.start);
+      const ease = seg.ease || TIMELINE.ease;
+      const camera = Object.fromEntries(Object.entries(seg.to).filter(([key]) => key.startsWith('cam')));
+      const rest = Object.fromEntries(Object.entries(seg.to).filter(([key]) => !key.startsWith('cam')));
+      tl.to(state, { ...camera, duration: seg.duration, ease: seg.cameraEase || ease }, seg.start);
+      tl.to(state, { ...rest, duration: seg.duration, ease }, seg.start);
     }
   }
 
@@ -144,13 +164,11 @@ export async function runIntro(cover) {
     laptop.setPower(state.power);
     rig.updateMatrixWorld(true);
 
-    // unsteady until the picture has settled, like a tube warming up
-    const flicker = state.power < 1 ? 0.8 + 0.2 * Math.sin(t * 61) * Math.sin(t * 37) : 1;
     laptop.screenPose(screenC, screenN, fitUp);
     glow.position.copy(screenC).addScaledVector(screenN, 3);
     glow.target.position.copy(screenC).addScaledVector(screenN, 14).addScaledVector(fitUp, -16);
     glow.target.updateMatrixWorld();
-    glow.intensity = TIMELINE.glow * state.power * flicker;
+    glow.intensity = TIMELINE.glow * state.power;
 
     camPos.set(state.camPos0, state.camPos1, state.camPos2);
     camTarget.set(state.camTarget0, state.camTarget1, state.camTarget2);
@@ -191,6 +209,7 @@ export async function runIntro(cover) {
 
 
   // ---- DOM ----
+  load.remove();
   cover.classList.remove('lintro--cover');
   const scroller = document.createElement('div');
   scroller.className = 'lintro__scroller';
@@ -204,14 +223,9 @@ export async function runIntro(cover) {
   hint.className = 'lintro__hint';
   hint.setAttribute('aria-hidden', 'true');
   hint.textContent = 'Scroll ▼';
-  const skip = document.createElement('button');
-  skip.type = 'button';
-  skip.className = 'lintro__skip';
-  skip.textContent = 'Skip intro';
   cover.append(canvas, scroller, hint, skip);
 
-  // the panel navigation stands down while this class is set
-  root.classList.add('is-scrolllock');
+  // the panel navigation stands down while is-scrolllock is set (loader.js sets it)
   scroller.focus({ preventScroll: true });
 
   // ---- teardown ----
@@ -285,6 +299,7 @@ export async function runIntro(cover) {
   const onFocusIn = (e) => { if (!cover.contains(e.target)) finish(); };
   document.addEventListener('keydown', onKey);
   document.addEventListener('focusin', onFocusIn);
+  skip.removeEventListener('click', leave);
   skip.addEventListener('click', finish);
 
   // mpage.js swipes pages from document-level touch listeners

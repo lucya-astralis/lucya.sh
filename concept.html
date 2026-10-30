@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>lucya — concept</title>
+<meta name="description" content="Concept page for lucya.sh, continuing from the laptop intro." />
+<meta name="robots" content="noindex" />
+<link rel="icon" href="/favicon.ico" sizes="48x48" />
+<link rel="stylesheet" href="concept/concept.css?v=20261030-concept" />
+<script src="lite.js"></script>
+<script src="intro/gate.js?v=20261030-concept"></script>
+</head>
+<body>
+
+<div class="boot" id="boot" aria-hidden="true">
+  <div class="boot__panasonic"></div>
+  <ul class="boot__post" id="bootPost"></ul>
+  <div class="boot__mark"></div>
+</div>
+
+<nav class="island" aria-label="Sections">
+  <a class="island__home" href="#top" aria-label="Top"><span></span></a>
+  <a href="#about">About</a>
+  <a href="#inventory">Inventory</a>
+  <a href="#lid">Lid</a>
+  <a href="#work">Work</a>
+  <a href="#photos">Photos</a>
+  <a class="island__old" href="index.html?intro=off">Classic</a>
+</nav>
+
+<main id="top">
+
+  <header class="hero">
+    <p class="tag">Sysadmin · Bavaria</p>
+    <h1 class="hero__word"><span class="sr">lucya</span></h1>
+    <p class="hero__jp" lang="ja">ルシア</p>
+    <div class="hero__foot">
+      <p class="hero__lede">Building homelabs, reviving retro hardware, and running more servers than one bedroom should hold.</p>
+      <a class="pill" href="#inventory">See the rack<i>↓</i></a>
+    </div>
+  </header>
+
+  <section class="split rise" id="about">
+    <div>
+      <p class="tag">Off the terminal</p>
+      <h2>Things with a history.</h2>
+    </div>
+    <div class="split__body">
+      <p>Old computers, photographs and imaginary worlds: I like things with a history, whether I am bringing them back to life or inventing it.</p>
+      <p>The homelab is where I tinker; the camera is my excuse to go outside.</p>
+      <dl class="spec" id="spec"></dl>
+    </div>
+  </section>
+
+  <section class="inventory" id="inventory">
+    <div class="inventory__head rise">
+      <p class="tag">Hardware inventory</p>
+      <h2>What hums in the rack.</h2>
+    </div>
+    <div class="tray rise"><div class="glass"><ol class="rack" id="rack"></ol></div></div>
+  </section>
+
+  <section class="lid" id="lid">
+    <div class="lid__text rise">
+      <p class="tag">Behavioral index</p>
+      <h2>The lid says most of it.</h2>
+      <ul class="interests">
+        <li><b>Homelabs &amp; Servers</b> Racks, switches, servers. Everything that hums and beeps.</li>
+        <li><b>Space &amp; Astronomy</b> Elite: Dangerous, orbital mechanics, and anything past Low Earth Orbit.</li>
+        <li><b>Retro Tech</b> CRTs, old ThinkPads, and Apple hardware older than me.</li>
+        <li><b>Anime &amp; Music</b> City pop, vaporwave, J-rock. Mecha when it's Evangelion-shaped.</li>
+        <li><b>Web Tinkering</b> Interactive star charts, fictional government portals and small corners of the web.</li>
+      </ul>
+    </div>
+    <div class="deck rise" id="deck" role="img" aria-label="The laptop lid, covered in stickers around the Panasonic logo"></div>
+  </section>
+
+  <section class="work" id="work">
+    <div class="rise">
+      <p class="tag">Elsewhere</p>
+      <h2>Places to go next.</h2>
+    </div>
+    <div class="bento">
+      <a class="tray tray--wide rise" href="https://lucya.systems"><div class="glass"><span>01</span><h3>Projects &amp; Worlds</h3><p lang="ja">プロジェクト</p><em>lucya.systems ↗</em></div></a>
+      <a class="tray rise" href="https://images.lucya.sh"><div class="glass"><span>02</span><h3>Photo archive</h3><p lang="ja">写真アーカイブ</p><em>images.lucya.sh ↗</em></div></a>
+      <a class="tray rise" href="https://binbows.net"><div class="glass"><span>03</span><h3>Michaelsoft Binbows</h3><p lang="ja">ビンボウズ</p><em>binbows.net ↗</em></div></a>
+      <a class="tray tray--wide rise" href="https://gov.inter-astra.net"><div class="glass"><span>04</span><h3>Shinsei Concordia</h3><p>A science-fiction worldbuilding project: star charts, cities and institutions, from the ocean moon Orikaia Prime to the edge of the Expanse.</p><em>gov.inter-astra.net ↗</em></div></a>
+    </div>
+  </section>
+
+  <section class="photos" id="photos">
+    <div class="rise">
+      <p class="tag">Exhibit</p>
+      <h2>An excuse to go outside.</h2>
+    </div>
+    <div class="strip" id="strip" tabindex="0" aria-label="Photos, scrollable"></div>
+  </section>
+
+</main>
+
+<footer class="foot rise">
+  <p class="foot__mail"><a href="mailto:hi@lucya.sh">hi@lucya.sh</a></p>
+  <ul class="foot__links">
+    <li><a href="https://github.com/lucya-astralis">GitHub</a></li>
+    <li><a href="https://bsky.app/profile/lucya.systems">Bluesky</a></li>
+    <li><a href="https://instagram.com/lucya.systems">Instagram</a></li>
+    <li><a href="https://open.spotify.com/user/gadlps6tcin47iedm8uicp28t">Spotify</a></li>
+    <li><a href="https://status.lucya.systems">Status</a></li>
+  </ul>
+  <p class="foot__legal"><a href="legal.html">Impressum · Datenschutz</a> <span>Concept. The live site stays at <a href="index.html?intro=off">index.html</a>.</span></p>
+</footer>
+
+<script type="module" src="concept/concept.js?v=20261030-concept"></script>
+<script type="module" src="intro/loader.js?v=20261030-panel"></script>
+</body>
+</html>

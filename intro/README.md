@@ -1,9 +1,9 @@
 # Laptop intro
 
 Scroll-driven 3D intro in front of the start page: a laptop on black swings round
-in one move, its display wakes like a tube as the lid springs open, and the camera
-zooms into the mark on the display. The site's own boot starts when the zoom lands,
-and scrolling stays stopped until the finished page has settled. It sits as a fixed overlay on an untouched page and removes itself
+in one move and opens with its display lighting up, and the camera zooms in on the
+Panasonic logo. The site's own boot starts when the zoom lands, and scrolling stays
+stopped until the finished page has settled. It sits as a fixed overlay on an untouched page and removes itself
 completely afterwards.
 
 ## On / off
@@ -72,5 +72,4 @@ position and the distance between both axes. As on the real machine they work
 in turn: up to 180° only `lidPivot` rotates, from 180° to 360° it also swings
 around the base axis. With one axis the lid could not reach 360°.
 
-The screen material needs its texture as `emissiveMap`, `toneMapped: false` and a
-near-black `color`, or its colours will not match the page at the handoff.
+`screen` is replaced at load by an unlit `MeshBasicMaterial` plane in the same spot.
