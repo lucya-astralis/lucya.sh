@@ -30,6 +30,8 @@ JavaScript modules, which browsers do not load reliably from `file://` URLs.
 - `legal.html` / `legal.js`: bilingual legal page and language selection.
 - `concordia.js` / `planet-gl.js`: standalone planet visualization; currently
   not loaded by `index.html`.
+- `intro/`: optional 3D laptop intro with its own committed vendor bundles, see
+  `intro/README.md`. `package.json` is dev tooling for it only.
 - `data.json`: profile, KPI, ticker, and specification content.
 - `worker/`: Cloudflare Worker serving the terminal card for curl clients.
 - `server/`: server-side pullers that write JSON into the web root.
