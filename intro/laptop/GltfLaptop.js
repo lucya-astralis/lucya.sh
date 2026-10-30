@@ -36,7 +36,7 @@ export async function createGltfLaptop(screenTexture, envMap) {
     new MeshStandardMaterial({
       color: new Color(0x000000), roughness: 0.34, metalness: 0,
       emissive: new Color(0xffffff), emissiveMap: screenTexture,
-      envMap, envMapIntensity: 0.04, toneMapped: false,
+      envMap, envMapIntensity: 0.01, toneMapped: false,
     }),
   );
   screen.userData.size = { width: size.x * METRES_TO_CM, height: size.z * METRES_TO_CM };

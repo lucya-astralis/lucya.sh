@@ -1,15 +1,17 @@
 # Laptop intro
 
-Scroll-driven 3D intro in front of the start page: a convertible on black turns,
-runs through its 360° hinge and zooms until its display hands over to the real
-page. It sits as a fixed overlay on an untouched page and removes itself
+Scroll-driven 3D intro in front of the start page: a laptop on black swings round
+in one move, its display wakes like a tube as the lid springs open, and the camera
+zooms into the mark on the display. The site's own boot starts when the zoom lands,
+and scrolling stays stopped until the finished page has settled. It sits as a fixed overlay on an untouched page and removes itself
 completely afterwards.
 
 ## On / off
 
-`ENABLE_LAPTOP_INTRO` at the top of `loader.js`. Off, only that small file loads
-and the page behaves as before; remove the `<script>` in `index.html` to take it
-out entirely.
+`ENABLE_LAPTOP_INTRO` at the top of `gate.js`. Off, nothing else loads and the page
+behaves as before; remove both intro `<script>` tags in `index.html` to take it out
+entirely. `gate.js` holds the page and the boot back until the intro ends, is
+skipped or fails.
 
 - `?intro=off` disables it, `?intro=on` forces it past the flag, Lite and deep links.
 - It always skips on `prefers-reduced-motion` and without WebGL 2.
@@ -28,23 +30,12 @@ position so the plane covers the viewport at any aspect ratio.
 To look at a pose, open `/?intro=on` and scroll, or set `scrollTop` on
 `.lintro__scroller` in the console.
 
-## Regenerating the screenshot
-
-```sh
-npm install
-npm run intro:capture -- --url https://lucya.sh/
-```
-
-Without `--url` it serves the working tree, where the live cards stay empty.
-It writes `screen.webp` (3840×2560) and needs Chrome or Edge installed; the
-bundled Chromium cannot play the wallpaper video. Bump `?v=` in `intro.js` after.
-
 ## Updating three.js or GSAP
 
 The site has no build step, so the bundles in `vendor/` are committed.
 `npm run intro:vendor` rebuilds them. A new `THREE.*` used in the code has to be
 added to the export list in `scripts/vendor-intro.mjs`, or it is undefined at
-runtime. `npm install` is only needed for these two commands, never to serve the site.
+runtime. `npm install` is only needed for this and for the logo masks, never to serve the site.
 
 ## The model
 
@@ -83,10 +74,3 @@ around the base axis. With one axis the lid could not reach 360°.
 
 The screen material needs its texture as `emissiveMap`, `toneMapped: false` and a
 near-black `color`, or its colours will not match the page at the handoff.
-
-## Known limits
-
-The crossfade lands exactly only where the real page lays out like the
-screenshot. At 1920 px wide it lines up; narrower windows and phones show a
-double image during the fade, because the page reflows instead of scaling.
-Phones also see a crop of the desktop layout on the display.

@@ -36,17 +36,26 @@ import { initWeather } from './js/weather.js';
   // between the build finishing and the old 7.4s timer.
   const BOOT_READY_MS = LITE ? 1100 : 5400;
 
+  // The laptop intro runs before all of this: everything the visitor sees of
+  // the boot starts when it ends, and counts from there.
+  let bootZero = 0;
+  const afterIntro = (fn) => {
+    if (window.LUCYA_INTRO) window.addEventListener('lucya:intro-done', fn, { once: true });
+    else fn();
+  };
+  afterIntro(() => { bootZero = performance.now(); });
+
   // ---------- WALLPAPER VIDEO : single-instance handoff ------------
   // both <video> tags ship without src; the splash copy starts here,
   // the wallpaper copy takes over in finishSplash. never both at once,
   // and in lite mode neither ever loads a byte.
   const splashVideo = document.querySelector('.splash__video');
   const wallVideo = document.querySelector('.wallpaper-video');
-  if (!LITE && splashVideo && splashVideo.dataset.src){
+  if (!LITE && splashVideo && splashVideo.dataset.src) afterIntro(() => {
     splashVideo.src = splashVideo.dataset.src;
     splashVideo.autoplay = true;
     splashVideo.play?.().catch(() => {});
-  }
+  });
   document.addEventListener('visibilitychange', () => {
     if (!wallVideo || !wallVideo.src) return;
     if (document.hidden) wallVideo.pause();
@@ -144,14 +153,14 @@ import { initWeather } from './js/weather.js';
   // The bar is the boot's own clock, filling toward the handoff; the
   // counter beside it is page time. The stamp turns READY when the
   // page's load event is in — not on a timer.
-  (function bootClock(){
+  afterIntro(function bootClock(){
     const splashEl = document.getElementById('splash');
     const fill = document.getElementById('splashProgressFill');
     const elapsed = document.getElementById('splashElapsed');
     const stampEl = document.getElementById('splashStamp');
     // a 100ms timer, not rAF: a background tab throttles rAF to nothing
     const step = () => {
-      const t = performance.now();
+      const t = performance.now() - bootZero;
       if (elapsed) elapsed.textContent = (t / 1000).toFixed(1) + ' S';
       if (fill) fill.style.width = Math.min(100, t / BOOT_READY_MS * 100) + '%';
       if (t >= BOOT_READY_MS || splashEl?.classList.contains('is-done')) clearInterval(iv);
@@ -168,7 +177,7 @@ import { initWeather } from './js/weather.js';
     };
     if (document.readyState === 'complete') ready();
     else window.addEventListener('load', ready, { once: true });
-  })();
+  });
 
   // ---------- REVEAL : mark below-fold blocks (observer starts post-splash) ----------
   const revealSelectors = ['.about', '.interests', '.rack', '.buttons', '.friends', '.neofetch', '.spotify', '.photos', '.foot'];
@@ -179,7 +188,7 @@ import { initWeather } from './js/weather.js';
   document.body.style.overflow = 'hidden';
 
   // ---------- SPLASH LOGO BUILD ----------------------------------
-  (function splashLogoBuild(){
+  afterIntro(function splashLogoBuild(){
     const mainSvg = document.getElementById('splashLogoSvg');
     if (!mainSvg) return;
     const glitchLogo = document.getElementById('glitchLogo');
@@ -412,7 +421,7 @@ import { initWeather } from './js/weather.js';
         }
       }, 520);
     })();
-  })();
+  });
 
   // ---------- CLOCK ----------------------------------------------
   // the site's box lives in Bavaria, so "server time" == Europe/Berlin
@@ -860,9 +869,12 @@ import { initWeather } from './js/weather.js';
   };
   const skipBoot = () => finishSplash();
 
-  const bootTimer = setTimeout(finishSplash, BOOT_READY_MS);
-  window.addEventListener('keydown', skipBoot);
-  if (splashEl) splashEl.addEventListener('pointerdown', skipBoot);
+  let bootTimer;
+  afterIntro(() => {
+    bootTimer = setTimeout(finishSplash, BOOT_READY_MS);
+    window.addEventListener('keydown', skipBoot);
+    if (splashEl) splashEl.addEventListener('pointerdown', skipBoot);
+  });
   // The boot no longer shortens itself on a repeat visit, so skipping has to
   // be a real control and not just a hint: focusable, and reachable by anyone
   // who navigates by keyboard or screen reader rather than "any key".

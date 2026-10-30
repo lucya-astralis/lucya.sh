@@ -1,7 +1,7 @@
-/* Below the boot splash (9999), above everything the page has. */
+/* Above the boot splash (9999): the boot starts behind the canvas as it fades. */
 .lintro{
-  position:fixed; inset:0; z-index:9000;
-  transition:opacity .25s ease;
+  position:fixed; inset:0; z-index:10000;
+  transition:opacity .55s ease;
 }
 .lintro--cover{ background:#000; }
 .lintro.is-leaving{ opacity:0; }

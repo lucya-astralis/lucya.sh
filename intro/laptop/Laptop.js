@@ -19,6 +19,28 @@ import { Group, Vector3 } from '../vendor/three.bundle.min.js';
    work one after the other: up to 180 the lid turns on its own axis, from 180
    to 360 the lower axis in the base carries that whole axis around on a short
    link. That is what setHinge() does; `hinge` describes the geometry. */
+/* Makes a screen material wake like a tube: power 0 is dark, then a thin beam
+   runs out from the centre, tears open to the full picture, 1 is the plain image. */
+function crtPower(material) {
+  const power = { value: 1 };
+  material.onBeforeCompile = (shader) => {
+    shader.uniforms.uPower = power;
+    shader.fragmentShader = `uniform float uPower;\n${shader.fragmentShader}`.replace(
+      '#include <emissivemap_fragment>',
+      `#include <emissivemap_fragment>
+      {
+        vec2 c = abs(vEmissiveMapUv - 0.5) * 2.0;
+        float open = smoothstep(0.14, 0.62, uPower);
+        float reach = smoothstep(0.0, 0.2, uPower) * 1.1;
+        float beam = (1.0 - smoothstep(reach - 0.08, reach, c.x)) * (1.0 - smoothstep(0.42, 0.78, uPower));
+        totalEmissiveRadiance *= 1.0 - smoothstep(open, open + 0.012, c.y);
+        totalEmissiveRadiance += vec3(0.8, 0.88, 1.0) * beam * exp(-pow(c.y / (0.008 + open * 0.3), 2.0));
+      }`,
+    );
+  };
+  return power;
+}
+
 export class Laptop {
   /** @param hinge {{ y:number, z:number, link:number }} base axis and the
    *  distance between the two axes, in model space */
@@ -29,7 +51,8 @@ export class Laptop {
     this.lid = lid;
     this.screen = screen;
     this.hinge = hinge;
-    this.links = links;      // optional visible hinge parts, turn half the angle
+    this.links = links;      // optional visible hinge parts
+    this.power = crtPower(screen.material);
     this.root.add(base, lidPivot, ...links);
     this.setHinge(0);
   }
@@ -43,6 +66,11 @@ export class Laptop {
     );
     this.lidPivot.rotation.x = (-deg * Math.PI) / 180;
     for (const link of this.links) link.rotation.x = -lower;
+  }
+
+  /** 0 off, 1 on; see crtPower(). */
+  setPower(level) {
+    this.power.value = level;
   }
 
   /** World-space pose of the screen, for the camera fit. */

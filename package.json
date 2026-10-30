@@ -3,8 +3,7 @@
   "private": true,
   "description": "Dev tooling only. The site itself has no build step; see intro/README.md.",
   "scripts": {
-    "intro:vendor": "node scripts/vendor-intro.mjs",
-    "intro:capture": "node scripts/capture-screen.mjs"
+    "intro:vendor": "node scripts/vendor-intro.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.28.2",

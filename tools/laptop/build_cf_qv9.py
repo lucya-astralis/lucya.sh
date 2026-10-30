@@ -407,7 +407,7 @@ def build_materials():
     b.inputs["Specular IOR Level"].default_value = 0.3
     n = screen.node_tree.nodes
     tex = n.new("ShaderNodeTexImage")
-    tex.image = bpy.data.images.load(os.path.join(REPO, "intro", "screen.webp"), check_existing=True)
+    tex.image = bpy.data.images.load(os.path.join(REPO, "intro", "boot-screen.webp"), check_existing=True)
     link = screen.node_tree.links.new
     link(tex.outputs["Color"], b.inputs["Emission Color"])
     b.inputs["Emission Strength"].default_value = 1.1

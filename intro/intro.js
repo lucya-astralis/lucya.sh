@@ -1,12 +1,14 @@
 import * as THREE from './vendor/three.bundle.min.js';
 import { gsap, ScrollTrigger } from './vendor/gsap.bundle.min.js';
-import { createProceduralLaptop } from './laptop/ProceduralLaptop.js?v=20261030-stickers';
-import { createGltfLaptop } from './laptop/GltfLaptop.js?v=20261030-stickers';
-import { TIMELINE } from './intro.timeline.js?v=20261030-stickers';
+import { createProceduralLaptop } from './laptop/ProceduralLaptop.js?v=20261030-crt';
+import { createGltfLaptop } from './laptop/GltfLaptop.js?v=20261030-crt';
+import { TIMELINE } from './intro.timeline.js?v=20261030-crt';
 
-const SCREEN_URL = 'intro/screen.webp?v=20261030-stickers';
+const SCREEN_URL = 'intro/boot-screen.webp?v=20261030-crt';
 const VEC_KEYS = ['camPos', 'camTarget', 'camUp', 'rot', 'pos'];
-const QUIET_MS = 300; // at least the fade in intro.css
+const FADE_MS = 600;  // the fade in intro.css
+const SETTLE_MS = 700; // the wheel has to rest this long before the page takes it
+const SETTLE_CAP_MS = 2500;
 
 function loadTexture(renderer) {
   return new THREE.TextureLoader().loadAsync(SCREEN_URL).then((tex) => {
@@ -39,7 +41,7 @@ function buildScene(renderer) {
 function flatten(keyframes) {
   const state = {
     camPos: [0, 0, 0], camTarget: [0, 0, 0], camUp: [0, 1, 0],
-    rot: [0, 0, 0], pos: [0, 0, 0], hinge: 0, fit: 0,
+    rot: [0, 0, 0], pos: [0, 0, 0], hinge: 0, fit: 0, power: 0,
   };
   const read = (key, into) => {
     if (key.camera?.pos) into.camPos = key.camera.pos;
@@ -49,6 +51,7 @@ function flatten(keyframes) {
     if (key.laptop?.pos) into.pos = key.laptop.pos;
     if (key.hinge !== undefined) into.hinge = key.hinge;
     if (key.fit !== undefined) into.fit = key.fit;
+    if (key.power !== undefined) into.power = key.power;
   };
   read(keyframes[0], state);
   const flat = {};
@@ -56,6 +59,7 @@ function flatten(keyframes) {
     for (const k of VEC_KEYS) from[k].forEach((v, i) => { out[`${k}${i}`] = v; });
     out.hinge = from.hinge;
     out.fit = from.fit;
+    out.power = from.power;
     return out;
   };
   put(state, flat);
@@ -71,11 +75,6 @@ function flatten(keyframes) {
   });
   return { flat, segments };
 }
-
-const waitForBoot = () => new Promise((resolve) => {
-  if (document.body.classList.contains('is-ready')) resolve();
-  else window.addEventListener('lucya:ready', resolve, { once: true });
-});
 
 export async function runIntro(cover) {
   const root = document.documentElement;
@@ -105,6 +104,11 @@ export async function runIntro(cover) {
   scene.add(rig);
 
   const camera = new THREE.PerspectiveCamera(TIMELINE.fov, 1, 2, 600);
+
+  // The display's own light, falling on the keys as it wakes: a cone aimed down
+  // from the panel, so the glass in front of it catches no highlight of its own.
+  const glow = new THREE.SpotLight(0xc4d4ff, 0, 0, 1.1, 0.8, 1);
+  scene.add(glow, glow.target);
 
   const { flat, segments } = flatten(TIMELINE.keyframes);
   const state = flat;
@@ -137,7 +141,16 @@ export async function runIntro(cover) {
       state.rot2 * DEG,
     );
     laptop.setHinge(state.hinge);
+    laptop.setPower(state.power);
     rig.updateMatrixWorld(true);
+
+    // unsteady until the picture has settled, like a tube warming up
+    const flicker = state.power < 1 ? 0.8 + 0.2 * Math.sin(t * 61) * Math.sin(t * 37) : 1;
+    laptop.screenPose(screenC, screenN, fitUp);
+    glow.position.copy(screenC).addScaledVector(screenN, 3);
+    glow.target.position.copy(screenC).addScaledVector(screenN, 14).addScaledVector(fitUp, -16);
+    glow.target.updateMatrixWorld();
+    glow.intensity = TIMELINE.glow * state.power * flicker;
 
     camPos.set(state.camPos0, state.camPos1, state.camPos2);
     camTarget.set(state.camTarget0, state.camTarget1, state.camTarget2);
@@ -149,11 +162,6 @@ export async function runIntro(cover) {
     if (state.fit > 0) {
       // cover: the plane must overfill both axes, so the tighter one decides
       const dist = Math.min(screenSize.y, screenSize.x / aspect) / (2 * tanHalf);
-      laptop.screenPose(screenC, screenN, fitUp);
-      // A wide viewport crops the plane vertically. Crop from the bottom: the
-      // page's nav sits at the top edge, so it lines up with the real one.
-      const visible = 2 * dist * tanHalf;
-      screenC.addScaledVector(fitUp, (screenSize.y - visible) / 2);
       fitPos.copy(screenC).addScaledVector(screenN, dist);
       camPos.lerp(fitPos, state.fit);
       camTarget.lerp(screenC, state.fit);
@@ -174,14 +182,13 @@ export async function runIntro(cover) {
     dirty = true;
   }
 
-  // Shader compile and texture upload happen here, under the splash, so the
-  // first scroll does not stall on them.
+  // Shader compile and texture upload happen here, behind the black cover, so
+  // the first scroll does not stall on them.
   resize();
   applyPose(0);
   renderer.compile(scene, camera);
   renderer.render(scene, camera);
 
-  await waitForBoot();
 
   // ---- DOM ----
   cover.classList.remove('lintro--cover');
@@ -212,7 +219,6 @@ export async function runIntro(cover) {
   let raf = 0;
 
   function teardown() {
-    root.classList.remove('is-scrolllock');
     cover.remove();
     document.querySelector('link[href^="intro/intro.css"]')?.remove();
     laptop.dispose();
@@ -222,20 +228,40 @@ export async function runIntro(cover) {
     renderer.forceContextLoss();
   }
 
-  // Trackpad momentum outlives the intro. The faded overlay stays in place
-  // until the wheel goes quiet, or the tail of the gesture would scroll or flip
-  // the first panel the moment it appears.
-  function teardownWhenQuiet() {
-    let timer;
+  // The scroll that landed the zoom is still going. Left alone it runs on into
+  // the page and flips straight through every panel, so input stops here: the
+  // lock holds through the boot and lifts once the wheel has rested on the
+  // finished page. A new gesture after that is a deliberate one.
+  function holdScroll() {
+    let ready = false, timer;
     const release = () => {
-      window.removeEventListener('wheel', onWheel);
+      clearTimeout(timer);
       clearTimeout(cap);
-      teardown();
+      window.removeEventListener('wheel', stop, listen);
+      window.removeEventListener('touchmove', stop, listen);
+      window.removeEventListener('lucya:ready', onReady);
+      root.classList.remove('is-scrolllock');
     };
-    const onWheel = () => { clearTimeout(timer); timer = setTimeout(release, QUIET_MS); };
-    const cap = setTimeout(release, 1500);
-    timer = setTimeout(release, QUIET_MS);
-    window.addEventListener('wheel', onWheel, { passive: true });
+    const rest = () => {
+      clearTimeout(timer);
+      if (ready) timer = setTimeout(release, SETTLE_MS);
+    };
+    const stop = (e) => {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      rest();
+    };
+    let cap;
+    const onReady = () => {
+      ready = true;
+      cap = setTimeout(release, SETTLE_CAP_MS);
+      rest();
+    };
+    const listen = { capture: true, passive: false };
+    window.addEventListener('wheel', stop, listen);
+    window.addEventListener('touchmove', stop, listen);
+    if (document.body.classList.contains('is-ready')) onReady();
+    else window.addEventListener('lucya:ready', onReady, { once: true });
   }
 
   function finish() {
@@ -247,18 +273,16 @@ export async function runIntro(cover) {
     document.removeEventListener('keydown', onKey);
     trigger.kill();
     tl.kill();
+    // Fully zoomed in: the boot starts behind the canvas, which fades away over it.
+    window.lucyaIntroDone();
+    holdScroll();
     cover.classList.add('is-leaving');
-    teardownWhenQuiet();
+    setTimeout(teardown, FADE_MS);
   }
 
   const onKey = (e) => { if (e.key === 'Escape') finish(); };
-  // Tabbing into the page behind means the visitor is done with the intro. The
-  // boot's skip button is the exception: the same click that ended the boot
-  // focuses it right after this runs.
-  const onFocusIn = (e) => {
-    if (e.target.closest?.('#splash')) scroller.focus({ preventScroll: true });
-    else if (!cover.contains(e.target)) finish();
-  };
+  // tabbing into the page behind means the visitor is done with the intro
+  const onFocusIn = (e) => { if (!cover.contains(e.target)) finish(); };
   document.addEventListener('keydown', onKey);
   document.addEventListener('focusin', onFocusIn);
   skip.addEventListener('click', finish);
@@ -268,7 +292,6 @@ export async function runIntro(cover) {
     cover.addEventListener(type, (e) => e.stopPropagation(), { passive: true });
   }
 
-  const [fadeFrom, fadeTo] = TIMELINE.fade;
   const trigger = ScrollTrigger.create({
     scroller,
     trigger: track,
@@ -281,8 +304,6 @@ export async function runIntro(cover) {
     progress = tl.progress();
     dirty = true;
     hint.classList.toggle('is-gone', progress > 0.02);
-    const fade = Math.min(1, Math.max(0, (progress - fadeFrom) / (fadeTo - fadeFrom)));
-    canvas.style.opacity = String(1 - fade);
     if (progress >= 1) finish();
   });
 

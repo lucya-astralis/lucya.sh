@@ -7,7 +7,7 @@ import math
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 import layout as L
 import legends
@@ -164,6 +164,24 @@ def bottom():
     img.save(HERE / "print_bottom.png")
 
 
+def boot_screen():
+    """What the display shows: the mark alone, the size and place it has in the site's
+    boot splash, so the zoom lands on the very logo the boot goes on to build."""
+    w, h = 3840, 2560
+    mask = Image.open(HERE / "logos" / "lucya-mark.mask.png").getchannel("A")
+    mask = mask.crop(mask.getbbox())
+    lw = int(w * 0.44)
+    mask = mask.resize((lw, lw * mask.height // mask.width), Image.LANCZOS)
+    box = ((w - lw) // 2, int(h * 0.47) - mask.height // 2)
+    full = Image.new("L", (w, h), 0)
+    full.paste(mask, box)
+    glow = full.filter(ImageFilter.GaussianBlur(70)).point(lambda v: int(v * 0.55))
+    img = Image.new("RGB", (w, h), (0, 0, 0))
+    img.paste((70, 92, 190), (0, 0), glow)
+    img.paste((132, 150, 240), (0, 0), full)
+    img.save(HERE.parent.parent / "intro" / "boot-screen.webp", quality=92)
+
+
 def vpro_sticker():
     """The supplied Core i5 badge, relabelled: the machine's own says vPRO."""
     src = Image.open(HERE / "logos" / "intel-core-i5-10.png").convert("RGB")
@@ -307,6 +325,7 @@ lid()
 side_prints()
 bottom()
 vpro_sticker()
+boot_screen()
 f = L.FINISHES["silver"]
 flatten("decal_deck.png", f["paint"], f["ink"], "tex_deck.png")
 flatten("decal_deck.png", f["key"], f["legend"], "tex_keys.png")
