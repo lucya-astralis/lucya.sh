@@ -1,10 +1,10 @@
 import * as THREE from './vendor/three.bundle.min.js';
 import { gsap, ScrollTrigger } from './vendor/gsap.bundle.min.js';
-import { createProceduralLaptop } from './laptop/ProceduralLaptop.js?v=20261030-real';
-import { createGltfLaptop } from './laptop/GltfLaptop.js?v=20261030-real';
-import { TIMELINE } from './intro.timeline.js?v=20261030-real';
+import { createProceduralLaptop } from './laptop/ProceduralLaptop.js?v=20261030-stickers';
+import { createGltfLaptop } from './laptop/GltfLaptop.js?v=20261030-stickers';
+import { TIMELINE } from './intro.timeline.js?v=20261030-stickers';
 
-const SCREEN_URL = 'intro/screen.webp?v=20261030-real';
+const SCREEN_URL = 'intro/screen.webp?v=20261030-stickers';
 const VEC_KEYS = ['camPos', 'camTarget', 'camUp', 'rot', 'pos'];
 const QUIET_MS = 300; // at least the fade in intro.css
 

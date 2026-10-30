@@ -1,5 +1,10 @@
 """The side ports of the CF-QV9, measured off side-on photos (0.307 mm per px).
 
+Interiors follow the connector standards (USB-A tongue 11.5 x 1.84, USB-C 6.6 x 0.68
+with 24 contacts, HD-15 at 2.29 / 1.98), checked against the KiCad 3D library's STEP
+models. Those are reference only: the library's parts are through-hole sizes that
+would not fit an 11 mm body, and its CC-BY-SA licence would bind the published model.
+
 Each port is one cut into the base plus thin liner parts inside it. Everything
 is expressed in (y, z) offsets on the side wall; `s` is -1 for the left wall,
 +1 for the right. Left wall reads rear to front, right wall front to rear.
@@ -98,30 +103,54 @@ def build():
         parts.plate("black", pts, back)
 
         if kind == "usba":
-            parts.bar("blue", y, z + 0.55, 11.4, 1.8, at(0.7), back)
+            # tongue sits high in the shell, contact fingers along its underside
+            parts.bar("blue", y, z + 0.75, 11.5, 1.84, at(0.6), back)
+            for i, w in enumerate((1.0, 2.0, 2.0, 2.0, 1.0)):
+                parts.bar("gold", y - 4.4 + i * 2.2, z - 0.2, w * 0.82, 0.06, at(0.9), back)
+            for dy in (-3.6, 3.6):      # grounding springs punched out of the shell
+                parts.bar("metal", y + dy, z + 2.45, 2.0, 0.22, at(1.2), at(2.8))
+                parts.bar("metal", y + dy, z - 2.45, 2.0, 0.22, at(1.2), at(2.8))
         elif kind == "hdmi":
-            parts.bar("black", y, z + 0.5, 10.6, 1.3, at(0.8), back)
+            parts.bar("black", y, z + 0.55, 12.4, 1.1, at(0.8), back)
+            for i in range(10):
+                parts.bar("gold", y + (i - 4.5) * 1.0, z + 1.12, 0.5, 0.05, at(1.0), back)
+                parts.bar("gold", y + (i - 4.5) * 1.0 + 0.5, z - 0.02, 0.5, 0.05, at(1.0), back)
+            for dy in (-6.2, 6.2):
+                parts.bar("metal", y + dy, z + 2.2, 1.0, 0.18, at(1.0), at(2.6))
         elif kind == "usbc":
-            parts.bar("black", y, z, 6.4, 0.7, at(0.5), back)
+            parts.bar("black", y, z, 6.6, 0.68, at(0.45), back)
+            for i in range(12):
+                x = y + (i - 5.5) * 0.5
+                parts.bar("gold", x, z + 0.36, 0.26, 0.04, at(0.6), back)
+                parts.bar("gold", x, z - 0.36, 0.26, 0.04, at(0.6), back)
         elif kind == "dc":
-            parts.sleeve("metal", place(circle(1.0, 16), y, z), at(0.8), back)
-            parts.plate("metal", place(circle(1.0, 16), y, z), at(0.8))
+            parts.sleeve("black", place(circle(2.5, 32), y, z), at(0.2), back)
+            parts.sleeve("metal", place(circle(1.0, 16), y, z), at(0.9), back)
+            parts.plate("metal", place(circle(1.0, 16), y, z), at(0.9))
         elif kind == "lan":
+            parts.sleeve("black", place([(a * 0.93, b * 0.93) for a, b in RJ45], y, z), at(0.3), back)
             for i in range(8):
-                parts.bar("gold", y + (i - 3.5) * 1.05, z + 3.4, 0.5, 1.6, at(2.6), back)
-            parts.bar("metal", y - 5.6, z + 1.2, 1.2, 2.4, at(2.2), back)
-            parts.bar("metal", y + 5.6, z + 1.2, 1.2, 2.4, at(2.2), back)
+                parts.bar("gold", y + (i - 3.5) * 1.02, z + 3.2, 0.46, 1.9, at(1.6), back)
+            parts.bar("metal", y - 5.9, z + 1.0, 0.9, 2.6, at(1.8), back)
+            parts.bar("metal", y + 5.9, z + 1.0, 0.9, 2.6, at(1.8), back)
+            parts.bar("rubber", y, z - 2.6, 3.8, 0.5, at(2.0), back)
         elif kind == "vga":
             inner = place([(a * 0.9, b * 0.84) for a, b in VGA], y, z)
-            parts.plate("navy", inner, at(1.6))
-            for row, (count, dz, offset) in enumerate(((5, 2.3, 0), (5, 0, 0.6), (5, -2.3, 0))):
-                for i in range(count):
-                    hole = place(circle(0.5, 10), y + (i - 2) * 2.3 + offset - 0.3, z + dz)
-                    parts.plate("black", hole, at(1.55))
+            parts.sleeve("rubber", inner, at(0.3), at(1.5))
+            parts.plate("rubber", inner, at(1.5))
+            # HD-15: three rows of five, each row half a pitch along
+            for dz, offset in ((1.98, 0), (0, -1.14), (-1.98, 0)):
+                for i in range(5):
+                    hole = place(circle(0.5, 12), y + (i - 2) * 2.29 + offset + 0.3, z + dz)
+                    parts.plate("black", hole, at(1.47))
+                    parts.plate("gold", place(circle(0.26, 8), y + (i - 2) * 2.29 + offset + 0.3, z + dz), at(1.45))
         elif kind == "jack":
-            parts.sleeve("metal", place(circle(1.75, 24), y, z), at(0.1), back)
+            parts.sleeve("black", place(circle(1.75, 24), y, z), at(0.1), back)
+            parts.plate("metal", place(circle(1.1, 16), y, z), at(2.6))
+            parts.plate("black", place(circle(0.8, 16), y, z), at(2.58))
         elif kind == "sd":
             parts.bar("rubber", y, z + 0.5, 23, 0.5, at(1.4), back)
+            parts.bar("metal", y - 8.5, z - 0.6, 2.2, 0.3, at(1.2), back)
         elif kind == "lock":
             parts.plate("rubber", place(rrect(4.5, 2.9, 0.5), y + 0.4, z), s * (L.WIDTH / 2 - depth + 0.06))
     return cuts, parts

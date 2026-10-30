@@ -91,7 +91,18 @@ def texture(mat, name, normal_strength):
 bpy.data.materials["led"].node_tree.nodes["Principled BSDF"].inputs["Emission Strength"].default_value = 1
 
 texture(bpy.data.materials["magnesium paint"], "tex_deck.png", 1.0)
-texture(bpy.data.materials["magnesium paint lid"], "tex_lid.png", 1.0)
+lid_paint = bpy.data.materials["magnesium paint lid"]
+texture(lid_paint, "tex_lid.png", 1.0)
+
+# stickers and ink are not metal: roughness in green, metalness in blue
+nodes, links = lid_paint.node_tree.nodes, lid_paint.node_tree.links
+mr = nodes.new("ShaderNodeTexImage")
+mr.image = bpy.data.images.load(os.path.join(HERE, "tex_lid_mr.png"))
+mr.image.colorspace_settings.name = "Non-Color"
+split = nodes.new("ShaderNodeSeparateColor")
+links.new(mr.outputs["Color"], split.inputs[0])
+links.new(split.outputs[1], nodes["Principled BSDF"].inputs["Roughness"])
+links.new(split.outputs[2], nodes["Principled BSDF"].inputs["Metallic"])
 texture(bpy.data.materials["key cap"], "tex_keys.png", 0.3)
 
 bpy.context.view_layer.update()

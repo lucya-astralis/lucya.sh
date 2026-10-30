@@ -299,6 +299,53 @@ def add_decal(mat, bsdf, image_path, scale, loc):
     link(gloss.outputs[0], bsdf.inputs["Specular IOR Level"])
 
 
+def add_overlay(mat, bsdf, image_path, scale, loc):
+    """Lays an RGBA sheet over what add_decal built: vinyl stickers on the paint."""
+    n = mat.node_tree.nodes
+    link = mat.node_tree.links.new
+    tex = n.new("ShaderNodeTexImage")
+    tex.image = bpy.data.images.load(image_path, check_existing=True)
+    tex.extension = "CLIP"
+    coord = n.new("ShaderNodeTexCoord")
+    mapping = n.new("ShaderNodeMapping")
+    mapping.inputs["Scale"].default_value = (*scale, 1)
+    mapping.inputs["Location"].default_value = (*loc, 0)
+    link(coord.outputs["Object"], mapping.inputs["Vector"])
+    link(mapping.outputs[0], tex.inputs["Vector"])
+
+    normal = n.new("ShaderNodeSeparateXYZ")
+    link(coord.outputs["Normal"], normal.inputs[0])
+    facing = n.new("ShaderNodeMath")
+    facing.operation = "GREATER_THAN"
+    facing.inputs[1].default_value = 0.5
+    link(normal.outputs["Z"], facing.inputs[0])
+    alpha = n.new("ShaderNodeMath")
+    alpha.operation = "MULTIPLY"
+    link(tex.outputs["Alpha"], alpha.inputs[0])
+    link(facing.outputs[0], alpha.inputs[1])
+
+    colour = bsdf.inputs["Base Color"].links[0].from_socket
+    mix = n.new("ShaderNodeMix")
+    mix.data_type = "RGBA"
+    link(alpha.outputs[0], mix.inputs["Factor"])
+    link(colour, mix.inputs["A"])
+    link(tex.outputs["Color"], mix.inputs["B"])
+    link(mix.outputs["Result"], bsdf.inputs["Base Color"])
+
+    metal = n.new("ShaderNodeMix")
+    metal.data_type = "FLOAT"
+    metal.inputs["B"].default_value = 0
+    link(alpha.outputs[0], metal.inputs["Factor"])
+    link(bsdf.inputs["Metallic"].links[0].from_socket, metal.inputs["A"])
+    link(metal.outputs["Result"], bsdf.inputs["Metallic"])
+    rough = n.new("ShaderNodeMix")
+    rough.data_type = "FLOAT"
+    rough.inputs["B"].default_value = 0.33
+    link(alpha.outputs[0], rough.inputs["Factor"])
+    link(bsdf.inputs["Roughness"].links[0].from_socket, rough.inputs["A"])
+    link(rough.outputs["Result"], bsdf.inputs["Roughness"])
+
+
 def build_materials():
     m = {}
     w, d = L.WIDTH * MM, L.DEPTH * MM
@@ -314,6 +361,7 @@ def build_materials():
     fine_grain(m["lid"], b, grain=4800, strength=f["grain"])
     # lid-local: hinge at +y, far edge at -y, read from outside with the hinge down
     add_decal(m["lid"], b, os.path.join(HERE, "decal_lid.png"), (-1 / w, -1 / d), (0.5, AXIS_INSET / L.DEPTH))
+    add_overlay(m["lid"], b, os.path.join(HERE, "stickers_lid.png"), (-1 / w, -1 / d), (0.5, AXIS_INSET / L.DEPTH))
 
     m["key"], b = principled("key cap", f["key"], roughness=0.5)
     fine_grain(m["key"], b, grain=2500, strength=0.08)
@@ -330,7 +378,6 @@ def build_materials():
     m["port black"], _ = principled("port black", (0.006, 0.006, 0.006), roughness=0.55)
     m["port blue"], _ = principled("port blue", (0.01, 0.12, 0.62), roughness=0.4)
     m["port gold"], _ = principled("port gold", (0.9, 0.62, 0.22), metallic=1, roughness=0.25)
-    m["port navy"], _ = principled("port navy", (0.006, 0.009, 0.024), roughness=0.5)
     m["port rubber"], _ = principled("port rubber", (0.03, 0.03, 0.03), roughness=0.6)
     for name in ("left", "right", "bottom"):
         m["side " + name], b = principled("side print " + name, (0, 0, 0), roughness=0.5)
@@ -410,6 +457,9 @@ def build_base(root, m):
     boolean(base, well)
     bpy.data.objects.remove(well)
     finish(base, bevel=0.4)
+
+    # top case and bottom case meet here, all the way round
+    seam("case seam", base, dense(outline_rect(L.WIDTH, L.DEPTH, 8, 5)), 6.6, base_seam_skip(6.6), m["port black"])
 
     # the black groove the wheel ring floats in
     groove = new_object("wheel groove", revolve([(well_r + 0.05, h - 0.85), (L.PAD_INNER_R - 1, h - 0.85)],
@@ -528,56 +578,101 @@ def build_base(root, m):
     new_object("intel sticker", label, base).data.materials.append(m["sticker"])
 
     # pills on the deck: sensor up top, four stops along the front
-    pills = [(0, 92, 8, 2.6, h + 0.02)] + [(x, -87, 7.2, 3.8, h + 0.02) for x in (-124, -49, 14, 124)]
+    pills = [(0, 92, 8, 2.6, h + 0.02)] + [(x, -92.6, 7.1, 3.9, h + 0.16) for x in (-130, -49.2, 15.9, 129)]
     for x, y, w, d, z in pills:
         p = new_object("pill", prism(outline_rect(w, d, d / 2 - 0.01, d / 2 - 0.01, 6), z - 0.5, z + 0.08), base)
         for v in p.data.vertices:
             v.co.x += x * MM
             v.co.y += y * MM
         p.data.materials.append(m["pill"])
+        finish(p, bevel=0.14, segments=3)
     return base
+
+
+def rounded(poly, inset, radius, seg=7):
+    """Outline of a right-angled polygon (counter-clockwise), pushed `inset` inwards
+    and filleted: convex corners tighten by the inset, concave ones open up."""
+    out = []
+    n = len(poly)
+    for i in range(n):
+        a, b, c = Vector(poly[i - 1]), Vector(poly[i]), Vector(poly[(i + 1) % n])
+        p, q = (b - a).normalized(), (c - b).normalized()
+        left = Vector((-p.y, p.x)) + Vector((-q.y, q.x))
+        corner = b + left * inset
+        convex = p.x * q.y - p.y * q.x > 0
+        r = radius - inset if convex else radius + inset
+        centre = corner + (q - p) * r
+        for k in range(seg + 1):
+            t = k / seg * math.pi / 2
+            out.append(centre + (p * math.sin(t) - q * math.cos(t)) * r)
+    return out
+
+
+def dense(loop, step=1.5):
+    """Closed outline with no span longer than `step`."""
+    out = []
+    for i, a in enumerate(loop):
+        a, b = Vector(a), Vector(loop[(i + 1) % len(loop)])
+        count = max(1, int((b - a).length / step))
+        out += [a.lerp(b, k / count) for k in range(count)]
+    return out
+
+
+def seam(name, parent, loop, z, skip, material):
+    """The hairline where two shells of the case meet: a dark ribbon just off the
+    wall, broken where something interrupts it."""
+    n = len(loop)
+    verts, faces = [], []
+    for i, p in enumerate(loop):
+        t = loop[(i + 1) % n] - loop[i - 1]
+        out = Vector((t.y, -t.x)).normalized() * 0.05
+        verts += [(p.x + out.x, p.y + out.y, z - 0.12), (p.x + out.x, p.y + out.y, z + 0.12)]
+    for i in range(n):
+        j = (i + 1) % n
+        if not skip(*((loop[i] + loop[j]) / 2)):
+            faces.append((2 * i, 2 * j, 2 * j + 1, 2 * i + 1))
+    me = bpy.data.meshes.new(name)
+    me.from_pydata([tuple(c * MM for c in v) for v in verts], [], faces)
+    me.update()
+    new_object(name, me, parent).data.materials.append(material)
+
+
+def base_seam_skip(z):
+    def skip(x, y):
+        if abs(x) > L.WIDTH / 2 - 3:
+            for kind, wall, py, pz in ports.PORTS:
+                shape = ports.SHAPES[kind]
+                half_y = max(a for a, _ in shape)
+                half_z = max(b for _, b in shape)
+                if wall * x > 0 and abs(z - pz) < half_z + 0.25 and abs(y - py) < half_y + 0.6:
+                    return True
+        if y > L.DEPTH / 2 - 3:
+            return abs(abs(x) - L.HINGE_X) < L.HINGE_W / 2 + 1.5 or abs(x - 46) < 31
+        return False
+    return skip
 
 
 def add_collar(bm, key):
     """Dark outline on the well floor, a little wider than the cap."""
-    a, b = key["w"] / 2 + 0.42, key["h"] / 2 + 0.42
-    ring = []
-    for i in range(32):
-        t = 2 * math.pi * i / 32
-        c, s = math.cos(t), math.sin(t)
-        x = a * math.copysign(abs(c) ** (2 / 6), c)
-        y = b * math.copysign(abs(s) ** (2 / 6), s)
-        ring.append(bm.verts.new(((key["x"] + x) * MM, (key["y"] + y) * MM, 9.52 * MM)))
-    bm.faces.new(ring)
+    ring = rounded(key["poly"], -0.42, key["r"], 5)
+    bm.faces.new([bm.verts.new((v.x * MM, v.y * MM, 9.52 * MM)) for v in ring])
 
 
 def add_key(bm, key):
-    """Leaf-shaped isolation key: squircle outline, fuller lower edge, dished top."""
-    a, b = key["w"] / 2, key["h"] / 2
-    floor, top = 9.0, L.BASE_H - 0.15
-    seg = 64
-    n = 6.0
+    """One cap from its outline: straight skirt, soft shoulder, slightly dished top."""
+    top = L.BASE_H - 0.15
 
-    def outline(scale, z):
-        ring = []
-        for i in range(seg):
-            t = 2 * math.pi * i / seg
-            c, s = math.cos(t), math.sin(t)
-            x = a * scale * math.copysign(abs(c) ** (2 / n), c)
-            y = b * scale * math.copysign(abs(s) ** (2 / n), s)
-            y -= 0.28 * (1 - (x / a) ** 2) * (1 if s < 0 else 0)   # the leaf's belly
-            ring.append(bm.verts.new(((key["x"] + x) * MM, (key["y"] + y) * MM, z * MM)))
-        return ring
+    def ring(inset, z):
+        return [bm.verts.new((v.x * MM, v.y * MM, z * MM)) for v in rounded(key["poly"], inset, key["r"])]
 
-    rings = [outline(1.0, floor), outline(0.985, top - 0.45), outline(0.955, top - 0.1),
-             outline(0.91, top), outline(0.72, top - 0.1)]
+    rings = [ring(0.0, 9.0), ring(0.06, top - 0.55), ring(0.2, top - 0.16), ring(0.48, top - 0.02),
+             ring(0.8, top), ring(1.5, top - 0.1)]
+    count = len(rings[0])
     for lo, hi in zip(rings, rings[1:]):
-        for i in range(seg):
-            j = (i + 1) % seg
+        for i in range(count):
+            j = (i + 1) % count
             bm.faces.new((lo[i], lo[j], hi[j], hi[i]))
-    centre = bm.verts.new((key["x"] * MM, key["y"] * MM, (top - 0.14) * MM))
-    for i in range(seg):
-        bm.faces.new((rings[-1][i], rings[-1][(i + 1) % seg], centre))
+    bm.faces.new(rings[-1])
 
 
 def lid_height(x, y_from_hinge):
@@ -656,6 +751,8 @@ def build_lid(pivot, m):
     boolean(lid, col)
     finish(lid, bevel=0.45)
     lid.parent = pivot
+    loop = dense([(x, y - L.DEPTH / 2 + AXIS_INSET) for x, y in outline_rect(L.WIDTH, L.DEPTH, 8, 5)])
+    seam("lid seam", lid, loop, -1.2, lambda x, y: y > -2, m["port black"])
 
     # cover glass edge to edge: black around the image, the image plane just in front
     bezel = new_object("bezel", prism(pts, z - 0.0, z + 0.5, "bezel"), lid)
@@ -699,11 +796,17 @@ def build_hinges(root, base, lid, m):
         finish(link, bevel=0.3, segments=3)
         drive(link, "rotation_euler", 0, "-radians(max(h - 180, 0))")
 
-        screw = revolve([(1.9, 0), (1.9, 0.22), (1.3, 0.34), (0, 0.34)], (0, 0), "screw", 32)
+        # a single cross-head screw, centred across the block, level with the lid
+        z = 12.3 - AXIS_Z
+        screw = revolve([(2.5, 0), (2.5, 0.2), (2.2, 0.36), (1.4, 0.46), (0, 0.46)], (0, 0), "screw", 48)
         s = new_object("hinge screw", screw, link)
         s.rotation_euler = (math.radians(-90), 0, 0)
-        s.location = (0, 4.5 * MM, (LINK + 0.6) * MM)
-        s.data.materials.append(m["chrome"])
+        s.location = (0, 4.5 * MM, z * MM)
+        s.data.materials.append(m["port metal"])
+        s.data.shade_smooth()
+        for w, d in ((3.0, 0.55), (0.55, 3.0)):
+            cross = new_object("hinge screw cross", box(0, 4.97, z, w, 0.06, d, "cross"), link)
+            cross.data.materials.append(m["port black"])
         tab = new_object("hinge tab", box(0, 4.6, -3.7, 9, 0.5, 3.6, "hinge tab"), link)
         tab.data.materials.append(m["tab"])
         finish(tab, bevel=0.15, segments=2)
@@ -791,7 +894,10 @@ VIEWS = {
     "tablet": (360, 70, (0.28, -0.5, 0.48), (0.0, 0.0, 0.0)),
     "left":   (0, 110, (-0.95, 0.0, 0.012), (0.0, 0.0, 0.012)),
     "right":  (0, 110, (0.95, 0.0, 0.012), (0.0, 0.0, 0.012)),
-    "ports":  (112, 95, (-0.46, -0.1, 0.1), (-0.13, 0.03, 0.012)),
+    "ports":  (112, 150, (-0.5, -0.05, 0.06), (-0.13, 0.03, 0.006)),
+    "portsr": (112, 150, (0.5, 0.05, 0.06), (0.13, 0.03, 0.006)),
+    "enter":  (135, 120, (0.1, -0.06, 0.42), (0.1, 0.03, 0.01)),
+    "hinge":  (110, 150, (-0.18, 0.5, 0.08), (-0.104, 0.1, 0.012)),
     "bottom": (0, 70, (0.0, 0.05, 0.86), (0.0, 0.0, 0.0)),
     "back":   (0, 110, (0.0, 0.95, 0.012), (0.0, 0.0, 0.012)),
     "flat":   (180, 60, (0.0, -0.45, 0.62), (0.0, 0.06, 0.0)),

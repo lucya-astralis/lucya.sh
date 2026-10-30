@@ -129,7 +129,11 @@ def draw(d, key, at, px, ink):
         d.polygon([(cx, cy - s), (cx + s, cy), (cx + 0.45 * s, cy), (cx + 0.45 * s, cy + s),
                    (cx - 0.45 * s, cy + s), (cx - 0.45 * s, cy), (cx - s, cy)], outline=ink, width=int(0.14 * px))
     elif label == "Enter":
-        text("Enter", 0.1, 0.42, 3.4)
+        text("Enter", 0.12, 0.3, 3.4)
+        lx, ly = at(*key["leg"])
+        d.line((lx + 1.8 * px, ly - 2.4 * px, lx + 1.8 * px, ly + 1.4 * px, lx - 1.6 * px, ly + 1.4 * px),
+               fill=ink, width=int(0.28 * px), joint="curve")
+        d.polygon([(lx - 2.6 * px, ly + 1.4 * px), (lx - 1.4 * px, ly + 0.6 * px), (lx - 1.4 * px, ly + 2.2 * px)], fill=ink)
     elif label == "Fn":
         boxed("Fn", 0, 0, 7.0, 3.2, 2.6)
     elif label == "Ctrl":

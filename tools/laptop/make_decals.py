@@ -262,10 +262,44 @@ def side_prints():
 
     # the left wall reads rear to front, the right wall front to rear
     sheet([text(125 - 58, 3.0, "DC IN", 1.6), text(219 - 58, 2.8, "HDMI"), bolt(276 - 58, 4.0),
-           text(368 - 58, 6.5, "SS", 1.8), usb(378 - 58, 6.5), text(374 - 58, 3.4, "CHARGE", 1.6),
-           lan(506 - 58, 6.4), monitor(630 - 58, 5.2), headset(681 - 58, 5.8)]).save(HERE / "side_left.png")
+           text(368 - 58, 5.1, "SS", 1.8), usb(378 - 58, 5.1), text(374 - 58, 3.0, "CHARGE", 1.6),
+           lan(506 - 58, 4.6), monitor(630 - 58, 4.6), headset(681 - 58, 4.4)]).save(HERE / "side_left.png")
     sheet([text(332 - 58, 5.0, "SS", 1.8), usb(342 - 58, 5.0), text(408 - 58, 5.0, "SS", 1.8), usb(418 - 58, 5.0),
            text(640 - 58, 5.4, "SD", 2.0), text(640 - 58, 3.0, "XC", 2.0)]).save(HERE / "side_right.png")
+
+
+def stickers():
+    """Layer of the lid stickers, and the flattened lid the web export needs."""
+    w, h = int(L.WIDTH * PX), int(L.DEPTH * PX)
+    layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    for name, x, y, width, angle in L.STICKERS:
+        img = Image.open(HERE / "stickers" / f"{name}.png").convert("RGBA")
+        size = int(width * PX)
+        img = img.resize((size, size * img.height // img.width), Image.LANCZOS)
+        img = img.rotate(angle, resample=Image.BICUBIC, expand=True)
+        layer.alpha_composite(img, (int(x * PX - img.width / 2), int(y * PX - img.height / 2)))
+    clear = tuple(int(v * PX) for v in L.LOGO_CLEAR)
+    assert layer.getchannel("A").crop(clear).getbbox() is None, "a sticker covers the Panasonic logo"
+    layer.save(HERE / "stickers_lid.png")
+    return layer
+
+
+def lid_maps(layer):
+    """Burns the stickers into the web lid and writes its roughness/metal map:
+    vinyl and ink are dielectric, unlike the paint around them."""
+    size = Image.open(HERE / "tex_lid.png").size
+    small = layer.resize(size, Image.LANCZOS)
+    Image.alpha_composite(Image.open(HERE / "tex_lid.png").convert("RGBA"), small).convert("RGB").save(HERE / "tex_lid.png")
+
+    mr_size = (2048, 2048 * size[1] // size[0])
+    alpha = np.asarray(layer.getchannel("A").resize(mr_size, Image.LANCZOS), dtype=np.float32) / 255
+    ink = np.asarray(Image.open(HERE / "decal_lid.png").getchannel("R").resize(mr_size, Image.LANCZOS), dtype=np.float32) / 255
+    f = L.FINISHES["silver"]
+    plain = np.maximum(alpha, ink)
+    rough = f["roughness"] * (1 - alpha) + 0.33 * alpha
+    metal = f["metallic"] * (1 - plain)
+    mr = np.dstack((np.ones_like(rough), rough, metal))
+    Image.fromarray((mr * 255 + 0.5).astype(np.uint8)).save(HERE / "tex_lid_mr.png")
 
 
 deck()
@@ -277,5 +311,6 @@ f = L.FINISHES["silver"]
 flatten("decal_deck.png", f["paint"], f["ink"], "tex_deck.png")
 flatten("decal_deck.png", f["key"], f["legend"], "tex_keys.png")
 flatten("decal_lid.png", f["paint"], f["ink"], "tex_lid.png")
+lid_maps(stickers())
 grain_normal()
 print("decals written")

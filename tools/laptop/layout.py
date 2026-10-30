@@ -34,7 +34,7 @@ FINISHES = {
         "paint": (0.33, 0.315, 0.285), "metallic": 0.72, "roughness": 0.44, "specular": 0.5,
         "key": (0.3, 0.29, 0.27), "ink": (0.006, 0.006, 0.007), "legend": (0.05, 0.048, 0.045),
         "ring": (0.06, 0.056, 0.05), "pad": (0.33, 0.32, 0.29), "hinge": (0.36, 0.355, 0.345),
-        "pill": (0.035, 0.03, 0.026), "grain": 0.36, "sweep": (0.3, 0.3, 0.31),
+        "pill": (0.1, 0.095, 0.085), "grain": 0.36, "sweep": (0.3, 0.3, 0.31),
     },
     "black": {
         "paint": (0.016, 0.016, 0.018), "metallic": 0.45, "roughness": 0.46, "specular": 0.28,
@@ -43,6 +43,20 @@ FINISHES = {
         "pill": (0.02, 0.02, 0.02), "grain": 0.5, "sweep": (0.8, 0.8, 0.8),
     },
 }
+
+# On the lid, seen closed with the hinge at the bottom: file, centre x, y from the
+# top-left corner, width (mm), rotation. LOGO_CLEAR is kept free for the Panasonic mark.
+STICKERS = [
+    ("rei", 45, 74, 46, -3),
+    ("frieren", 232, 72, 40, 4),
+    ("eu", 96, 112, 34, 0),
+    ("pride", 178, 120, 40, -8),
+    ("esa", 44, 150, 40, 0),
+    ("jaxa", 122, 160, 52, 6),
+    ("japan", 186, 178, 58, -4),
+    ("potato", 238, 148, 26, 8),
+]
+LOGO_CLEAR = (108, 50, 165, 68)
 
 # Measured off a straight-on photo of the keys. Rows: photo y, cap height, then
 # (label, photo x0, x1). A photo px is SCALE_X / SCALE_Y mm.
@@ -83,6 +97,17 @@ def keys():
     for py, h, row in ROWS:
         for label, x0, x1 in row:
             add(label, x0, x1, py, h)
-    # the lower leg of the L-shaped Enter
-    add("", 1785, 1900, 382, 118)
+
+    def mm(px, py):
+        return KB_LEFT + (px - 22) * SCALE_X, 60.8 - (py - 170) * SCALE_Y
+
+    # Enter is one L-shaped cap, counter-clockwise from the bottom of the leg
+    enter = next(k for k in out if k["label"] == "Enter")
+    enter["poly"] = [mm(*p) for p in ((1785, 430), (1900, 430), (1900, 232), (1750, 232), (1750, 330), (1785, 330))]
+    enter["leg"] = mm(1845, 385)
+    for key in out:
+        if "poly" not in key:
+            x, y, a, b = key["x"], key["y"], key["w"] / 2, key["h"] / 2
+            key["poly"] = [(x - a, y - b), (x + a, y - b), (x + a, y + b), (x - a, y + b)]
+        key["r"] = min(2.7, key["h"] * 0.26)
     return out

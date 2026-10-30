@@ -54,6 +54,7 @@ runtime. `npm install` is only needed for these two commands, never to serve the
 also the fallback if the files fail to load. To rebuild the model:
 
 ```sh
+python tools/laptop/cut_stickers.py <folder>   # only for new sticker images
 node tools/laptop/rasterize_logos.mjs
 python tools/laptop/make_decals.py
 blender --background --python tools/laptop/build_cf_qv9.py

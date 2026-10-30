@@ -3,7 +3,7 @@
    behind the dynamic import below. */
 const ENABLE_LAPTOP_INTRO = true;
 
-const VERSION = '?v=20261030-real';
+const VERSION = '?v=20261030-stickers';
 
 // ?intro=on forces it past the flag, Lite and deep links; ?intro=off disables it.
 const override = new URLSearchParams(location.search).get('intro');
