@@ -1,0 +1,14 @@
+{
+  "name": "lucya.sh",
+  "private": true,
+  "description": "Dev tooling only. The site itself has no build step; see intro/README.md.",
+  "scripts": {
+    "intro:vendor": "node scripts/vendor-intro.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "gsap": "^3.15.0",
+    "playwright": "^1.64.1",
+    "three": "^0.187.0"
+  }
+}

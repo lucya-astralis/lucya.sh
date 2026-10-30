@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>lucya — concept</title>
+<meta name="description" content="Concept page for lucya.sh, continuing from the laptop intro." />
+<meta name="robots" content="noindex" />
+<link rel="icon" href="/favicon.ico" sizes="48x48" />
+<link rel="stylesheet" href="concept/concept.css?v=20261030-music" />
+<script src="lite.js"></script>
+<script src="intro/gate.js?v=20261030-music"></script>
+</head>
+<body>
+
+<div class="boot" id="boot" aria-hidden="true">
+  <div class="boot__panasonic"></div>
+  <ul class="boot__post" id="bootPost"></ul>
+  <div class="boot__mark"></div>
+</div>
+
+<nav class="island" aria-label="Sections">
+  <a class="island__home" href="#top" aria-label="Top"><span></span></a>
+  <a href="#telemetry">Live</a>
+  <a href="#about">About</a>
+  <a href="#inventory">Inventory</a>
+  <a href="#lid">Lid</a>
+  <a href="#spotify">Music</a>
+  <a href="#work">Work</a>
+  <a href="#photos">Photos</a>
+  <a class="island__old" href="index.html">Classic</a>
+  <span class="island__state" id="fleetDot" title="Awaiting telemetry"></span>
+</nav>
+
+<main id="top">
+
+  <header class="hero">
+    <p class="tag">Sysadmin · Bavaria</p>
+    <h1 class="hero__word"><span class="sr">lucya</span></h1>
+    <p class="hero__jp" lang="ja">ルシア</p>
+    <div class="hero__foot">
+      <p class="hero__lede">Building homelabs, reviving retro hardware, and running more servers than one bedroom should hold.</p>
+      <a class="pill" href="#inventory">See the rack<i>↓</i></a>
+    </div>
+  </header>
+
+  <section class="telemetry" id="telemetry">
+    <div class="rise">
+      <p class="tag" id="fleetTag">Checkmk · offline</p>
+      <h2 id="fleetSummary">Awaiting live telemetry.</h2>
+    </div>
+    <div class="metrics rise">
+      <div class="metric metric--wide">
+        <span>Hosts up</span>
+        <b id="fleetHosts">— / —</b>
+        <div class="meter"><i id="fleetHostsBar"></i></div>
+      </div>
+      <div class="metric metric--wide">
+        <span>Services OK</span>
+        <b id="fleetSvc">— / —</b>
+        <div class="meter"><i id="fleetSvcBar"></i></div>
+      </div>
+      <div class="metric">
+        <span>Alerts</span>
+        <b id="fleetAlerts">—</b>
+        <em id="fleetAge">awaiting probe</em>
+      </div>
+      <div class="metric">
+        <span>Japan</span>
+        <b id="kpiJapan">—</b>
+        <em id="kpiJapanSub">&nbsp;</em>
+      </div>
+      <div class="metric" id="wxMetric">
+        <span id="wxPlace">I'm in · —</span>
+        <b><span id="wxTime">—</span></b>
+        <em id="wxNow">Awaiting weather</em>
+        <em class="metric__sub"><span id="wxRange">— / —</span> · <span id="wxSun">Sun —</span> · <span id="wxOffset">—</span></em>
+        <div class="meter meter--sky" id="wxSky"><u id="wxDay"></u></div>
+      </div>
+      <div class="metric metric--wide">
+        <span>Self-hosted apps</span>
+        <b id="kpiServices">—</b>
+      </div>
+      <div class="metric metric--wide">
+        <span>Domains owned</span>
+        <b id="kpiDomains">—</b>
+      </div>
+    </div>
+  </section>
+
+  <section class="split rise" id="about">
+    <div>
+      <p class="tag">Off the terminal</p>
+      <h2>Things with a history.</h2>
+    </div>
+    <div class="split__body">
+      <p>Old computers, photographs and imaginary worlds: I like things with a history, whether I am bringing them back to life or inventing it.</p>
+      <p>The homelab is where I tinker; the camera is my excuse to go outside.</p>
+      <dl class="spec" id="spec"></dl>
+    </div>
+  </section>
+
+  <section class="inventory" id="inventory">
+    <div class="inventory__head rise">
+      <p class="tag">Hardware inventory</p>
+      <h2>What hums in the rack.</h2>
+    </div>
+    <div class="tray rise"><div class="glass"><ol class="rack" id="rack"></ol></div></div>
+    <div class="neofetch rise" id="neofetch">
+      <p class="tag">Neofetch · system info</p>
+      <div class="ntabs" id="nTabs"></div>
+      <div class="tray"><div class="glass"><div class="npanes" id="nPanes"></div></div></div>
+    </div>
+  </section>
+
+  <section class="lid" id="lid">
+    <div class="lid__text rise">
+      <p class="tag">Behavioral index</p>
+      <h2>The lid says most of it.</h2>
+      <ul class="interests">
+        <li><b>Homelabs &amp; Servers</b> Racks, switches, servers. Everything that hums and beeps.</li>
+        <li><b>Space &amp; Astronomy</b> Elite: Dangerous, orbital mechanics, and anything past Low Earth Orbit.</li>
+        <li><b>Retro Tech</b> CRTs, old ThinkPads, and Apple hardware older than me.</li>
+        <li><b>Anime &amp; Music</b> City pop, vaporwave, J-rock. Mecha when it's Evangelion-shaped.</li>
+        <li><b>Web Tinkering</b> Interactive star charts, fictional government portals and small corners of the web.</li>
+      </ul>
+    </div>
+    <div class="deck rise" id="deck" role="img" aria-label="The laptop lid, covered in stickers around the Panasonic logo"></div>
+  </section>
+
+  <section class="spotify" id="spotify">
+    <div class="rise">
+      <p class="tag"><span id="spotifyHeadMeta">Spotify · rotation · assorted</span></p>
+      <h2><span id="spotifyHeadName">Top songs</span></h2>
+      <p class="spotify__jp" id="spotifyHeadJp" lang="ja">最近のお気に入り</p>
+    </div>
+    <div class="spotify__card rise" id="spotifyCard" role="button" tabindex="0" aria-label="open audio manifest" aria-haspopup="dialog">
+      <span class="spotify__cover" id="spotifyCover"><img id="spotifyCoverImg" src="data:," alt="album cover" /></span>
+      <div class="spotify__meta">
+        <div class="spotify__label">
+          <span class="spotify__label-name" id="spotifyLabel">Now sampling · <span lang="ja">最近のお気に入り</span></span>
+          <span class="spotify__counter" id="spotifyCounter">01 / 12</span>
+        </div>
+        <h3 class="spotify__track" id="spotifyTrack">—</h3>
+        <div class="spotify__artist" id="spotifyArtist">—</div>
+        <div class="spotify__timeline" aria-hidden="true">
+          <span class="spotify__time" id="spotifyElapsed">00:00</span>
+          <div class="spotify__dots" id="spotifyDots" role="tablist" aria-label="track selector"></div>
+          <div class="spotify__progress" id="spotifyProgress" hidden><i></i></div>
+          <span class="spotify__time" id="spotifyTotal">00:05</span>
+        </div>
+        <div class="spotify__foot">
+          <span class="spotify__pill"><i></i> <span id="spotifyMode">Rotation</span></span>
+          <span class="spotify__hint">Open manifest ↗</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="manifest" id="spotifyManifest" role="dialog" aria-modal="true" aria-labelledby="manifestTitle" hidden>
+    <div class="manifest__backdrop" data-manifest-close></div>
+    <div class="manifest__sheet" role="document">
+      <div class="manifest__doc">
+        <span>DOC <b>05.A.MANIFEST</b></span>
+        <span>REV <b>FULL ROSTER</b></span>
+        <span class="stamp">APPENDIX</span>
+        <button class="manifest__close" type="button" data-manifest-close aria-label="close manifest">
+          <span aria-hidden="true">✕</span>
+        </button>
+      </div>
+
+      <div class="manifest__head">
+        <div class="section__slug">
+          <span class="ix">// 05.A</span>
+          <span class="name">AUDIO MANIFEST</span>
+          <span class="jp" id="manifestJp" lang="ja">お気に入り一覧</span>
+        </div>
+        <div class="section__meta">
+          <span class="mono" id="manifestMeta">TRACKS · ALBUMS · ARTISTS</span>
+        </div>
+      </div>
+
+      <!-- bento: the track list carries the height, the covers carry the
+           weight — three different densities instead of three columns -->
+      <div class="manifest__bento">
+        <div class="mbox mbox--tracks">
+          <h3 class="mbox__head mono">
+            <span class="mbox__ix">01</span>
+            <span class="mbox__name">TRACKS</span>
+            <span class="mbox__jp" lang="ja">トラック</span>
+            <b data-col-count="songs">0</b>
+          </h3>
+          <ul class="manifest__list" id="manifestList"></ul>
+        </div>
+
+        <div class="mbox mbox--albums">
+          <h3 class="mbox__head mono">
+            <span class="mbox__ix">02</span>
+            <span class="mbox__name">ALBUMS</span>
+            <span class="mbox__jp" lang="ja">アルバム</span>
+            <b data-col-count="albums">0</b>
+          </h3>
+          <ul class="mtiles" id="manifestAlbums"></ul>
+        </div>
+
+        <div class="mbox mbox--artists">
+          <h3 class="mbox__head mono">
+            <span class="mbox__ix">03</span>
+            <span class="mbox__name">ARTISTS</span>
+            <span class="mbox__jp" lang="ja">アーティスト</span>
+            <b data-col-count="artists">0</b>
+          </h3>
+          <ul class="mfaces" id="manifestArtists"></ul>
+        </div>
+      </div>
+
+      <div class="manifest__foot mono small">
+        <span class="dim">SRC <b>SPOTIFY · ROTATION</b></span>
+        <span class="dim">CLICK A TRACK TO JUMP · ESC TO CLOSE</span>
+      </div>
+    </div>
+  </div>
+  </section>
+
+  <section class="work" id="work">
+    <div class="rise">
+      <p class="tag">Elsewhere</p>
+      <h2>Places to go next.</h2>
+    </div>
+    <div class="bento">
+      <a class="tray tray--wide rise" href="https://lucya.systems"><div class="glass"><span>01</span><h3>Projects &amp; Worlds</h3><p lang="ja">プロジェクト</p><em>lucya.systems ↗</em></div></a>
+      <a class="tray rise" href="https://images.lucya.sh"><div class="glass"><span>02</span><h3>Photo archive</h3><p lang="ja">写真アーカイブ</p><em>images.lucya.sh ↗</em></div></a>
+      <a class="tray rise" href="https://binbows.net"><div class="glass"><span>03</span><h3>Michaelsoft Binbows</h3><p lang="ja">ビンボウズ</p><em>binbows.net ↗</em></div></a>
+      <a class="tray tray--wide rise" href="https://gov.inter-astra.net"><div class="glass"><span>04</span><h3>Shinsei Concordia</h3><p>A science-fiction worldbuilding project: star charts, cities and institutions, from the ocean moon Orikaia Prime to the edge of the Expanse.</p><em>gov.inter-astra.net ↗</em></div></a>
+    </div>
+  </section>
+
+  <section class="walls" id="buttons">
+    <div class="rise">
+      <p class="tag">88 × 31</p>
+      <h2>Collected on the way.</h2>
+    </div>
+    <div class="wall rise" id="buttonWall"></div>
+    <div class="walls__friends rise" id="friends">
+      <p class="tag">Friends</p>
+      <div class="wall" id="friendWall"></div>
+      <p class="walls__note">Wanna be here? Link mine &amp; tell me.</p>
+      <button type="button" class="friends__snippet" id="friendSnippet" title="click to copy">&lt;a href="https://lucya.sh"&gt;&lt;img src="https://lucya.sh/images/88x31%20buttons/lucya.gif" width="88" height="31" alt="lucya.sh"&gt;&lt;/a&gt;</button>
+    </div>
+  </section>
+
+  <section class="photos" id="photos">
+    <div class="rise">
+      <p class="tag">Exhibit</p>
+      <h2>An excuse to go outside.</h2>
+    </div>
+    <div class="strip" id="strip" tabindex="0" aria-label="Photos, scrollable"></div>
+  </section>
+
+</main>
+
+<footer class="foot rise">
+  <p class="foot__mail"><a href="mailto:hi@lucya.sh">hi@lucya.sh</a></p>
+  <ul class="foot__links">
+    <li><a href="https://github.com/lucya-astralis">GitHub</a></li>
+    <li><a href="https://bsky.app/profile/lucya.systems">Bluesky</a></li>
+    <li><a href="https://instagram.com/lucya.systems">Instagram</a></li>
+    <li><a href="https://open.spotify.com/user/gadlps6tcin47iedm8uicp28t">Spotify</a></li>
+    <li><a href="https://status.lucya.systems">Status</a></li>
+  </ul>
+  <p class="foot__legal"><a href="legal.html">Impressum · Datenschutz</a> <span>Concept. The live site stays at <a href="index.html">index.html</a>.</span></p>
+</footer>
+
+<script type="module" src="concept/concept.js?v=20261030-music"></script>
+<script type="module" src="intro/loader.js?v=20261030-panel"></script>
+</body>
+</html>
