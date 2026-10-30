@@ -1,6 +1,6 @@
 /* Pulls the laptop intro in when gate.js decided it runs. three.js and GSAP are
    behind the dynamic import, so nothing heavy loads otherwise. */
-const VERSION = '?v=20261030-silver';
+const VERSION = '?v=20261030-placed';
 
 if (window.LUCYA_INTRO) {
   window.LUCYA_INTRO_LOADING = true;

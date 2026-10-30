@@ -47,17 +47,19 @@ FINISHES = {
 # On the lid, seen closed with the hinge at the bottom: file, centre x, y from the
 # top-left corner, width (mm), rotation. LOGO_CLEAR is kept free for the Panasonic mark.
 STICKERS = [
-    ("rei", 45, 74, 46, -3),
+    # placed by hand, straight
+    ("rei", 30.6, 131, 56, 0),
+    ("arasaka", 33.6, 184, 62.4, 0),
+    ("japan", 244.8, 184, 49.5, 0),
+    # the rest, loosely
+    ("esa", 32, 58, 36, -6),
     ("frieren", 232, 72, 40, 4),
-    ("eu", 96, 112, 34, 0),
-    ("pride", 178, 120, 40, -8),
-    ("esa", 44, 150, 40, 0),
-    ("jaxa", 122, 160, 52, 6),
-    ("japan", 186, 178, 58, -4),
-    ("potato", 238, 148, 26, 8),
-    ("kuromi", 137, 106, 30, -4),
-    ("arasaka", 38, 184, 58, 0),
-    ("clawd", 240, 184, 44, -3),
+    ("eu", 84, 112, 32, 5),
+    ("kuromi", 128, 100, 30, -5),
+    ("pride", 176, 108, 38, -8),
+    ("potato", 234, 133, 24, 7),
+    ("jaxa", 112, 156, 50, 5),
+    ("clawd", 173, 168, 44, -4),
 ]
 LOGO_CLEAR = (108, 50, 165, 68)
 
