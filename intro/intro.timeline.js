@@ -23,7 +23,7 @@ export const TIMELINE = {
 
   // below this viewport aspect the camera backs off proportionally, so the
   // laptop still fits the width on a portrait phone
-  minAspect: 1.3,
+  minAspect: 1,
 
   // slow drift while the closed lid is seen from above
   idle: { until: 0.15, rotDeg: 1.6, seconds: 7 },

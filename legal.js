@@ -35,7 +35,7 @@
     const footMark = document.getElementById('foot-mark-text');
 
     // one place for every string the toggle has to swap
-    const STAND = '2026-08-22';
+    const STAND = '2026-10-31';
     const TEXT = {
         en: {
             title: 'Legal notice & privacy policy',

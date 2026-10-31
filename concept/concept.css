@@ -513,8 +513,10 @@ section{ padding:clamp(88px,15vh,190px) var(--gutter); }
 .foot__mail{ font-size:clamp(38px,8.6vw,136px); line-height:1; font-weight:500; letter-spacing:-.035em; }
 .foot__mail a{ transition:color .5s var(--spring); }
 .foot__mail a:hover{ color:var(--champagne); }
-.foot__links{ display:flex; flex-wrap:wrap; gap:8px 24px; margin:34px 0 0; padding:0; list-style:none; color:var(--dim); }
-.foot__links a:hover{ color:var(--ink); }
+.socials{ display:flex; flex-wrap:wrap; gap:8px; margin:34px 0 0; padding:0; list-style:none; }
+.socials a{ display:grid; place-items:center; width:46px; height:46px; border-radius:50%; background:rgba(255,255,255,.05); box-shadow:inset 0 0 0 1px var(--faint); transition:background .4s var(--spring), transform .4s var(--spring); }
+.socials a:hover{ background:rgba(255,255,255,.14); transform:translateY(-2px); }
+.socials img{ display:block; width:20px; height:20px; object-fit:contain; }
 .foot__legal{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px 24px; margin-top:56px; font-size:13px; color:var(--dim); }
 .foot__legal a{ text-decoration:underline; text-underline-offset:3px; }
 

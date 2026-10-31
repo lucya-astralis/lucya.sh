@@ -1,10 +1,10 @@
 import * as THREE from './vendor/three.bundle.min.js';
 import { gsap, ScrollTrigger } from './vendor/gsap.bundle.min.js';
-import { createProceduralLaptop } from './laptop/ProceduralLaptop.js?v=20261031-open';
-import { createGltfLaptop } from './laptop/GltfLaptop.js?v=20261031-open';
-import { TIMELINE } from './intro.timeline.js?v=20261031-open';
+import { createProceduralLaptop } from './laptop/ProceduralLaptop.js?v=20261031-phone';
+import { createGltfLaptop } from './laptop/GltfLaptop.js?v=20261031-phone';
+import { TIMELINE } from './intro.timeline.js?v=20261031-phone';
 
-const SCREEN_URL = 'intro/boot-screen.webp?v=20261031-open';
+const SCREEN_URL = 'intro/boot-screen.webp?v=20261031-phone';
 const VEC_KEYS = ['camPos', 'camTarget', 'camUp', 'rot', 'pos'];
 const FADE_MS = 600;  // the fade in intro.css
 const SETTLE_MS = 700; // the wheel has to rest this long before the page takes it

@@ -38,11 +38,25 @@
            from styles.css.
            ================================================================ */
 
+        :root {
+            --text: #ecebe7;
+            --text-dim: #9c9a93;
+            --text-ghost: #6d6b65;
+            --acc-cy: #d8d2c4;
+            --acc-mag: #a8a296;
+            --acc-amb: #d8d2c4;
+        }
+        html { background: #000; }
         body {
-            font-size: 14.5px;
+            background: #000;
+            font-family: "Space Grotesk", system-ui, sans-serif;
+            font-size: 15.5px;
             line-height: 1.65;
             min-height: 100vh;
+            cursor: auto;
         }
+        body::before, body::after { display: none; }
+        a, button { cursor: pointer; }
 
         .legal-wrap {
             position: relative;
@@ -96,7 +110,7 @@
             width: 52px;
             height: 52px;
             display: block;
-            filter: drop-shadow(0 0 12px rgba(91,138,255,.45));
+            filter: drop-shadow(0 0 12px rgba(216,210,196,.45));
             animation: logoPulse 4.2s ease-in-out infinite;
         }
         .legal-head__stamp {
@@ -116,8 +130,8 @@
             letter-spacing: .28em;
         }
         @keyframes logoPulse {
-            0%, 100% { filter: drop-shadow(0 0 8px rgba(91,138,255,.35)); }
-            50%      { filter: drop-shadow(0 0 16px rgba(91,138,255,.65)); }
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(216,210,196,.35)); }
+            50%      { filter: drop-shadow(0 0 16px rgba(216,210,196,.65)); }
         }
 
         /* Footer watermark */
@@ -130,7 +144,7 @@
             width: 22px;
             height: 22px;
             opacity: .55;
-            filter: drop-shadow(0 0 6px rgba(91,138,255,.4));
+            filter: drop-shadow(0 0 6px rgba(216,210,196,.4));
         }
         .legal-head__slug {
             font-family: "Proto Nerd Font Regular", monospace;
@@ -140,7 +154,7 @@
             color: var(--acc-cy);
         }
         .legal-head__title {
-            font-family: "Chakra Petch", "Space Grotesk", sans-serif;
+            font-family: "Space Grotesk", sans-serif;
             font-weight: 700;
             font-size: clamp(28px, 5vw, 56px);
             line-height: 1.05;
@@ -195,8 +209,8 @@
         .lang-toggle button:hover { color: var(--text); }
         .lang-toggle button[aria-pressed="true"] {
             color: var(--text);
-            background: rgba(91,138,255,.14);
-            box-shadow: inset 0 0 0 1px rgba(91,138,255,.35);
+            background: rgba(216,210,196,.14);
+            box-shadow: inset 0 0 0 1px rgba(216,210,196,.35);
         }
 
         /* Language gating */
@@ -208,8 +222,8 @@
         .domain-notice {
             margin-bottom: 40px;
             padding: 18px 22px;
-            background: rgba(91,138,255,.06);
-            border: 1px solid rgba(91,138,255,.25);
+            background: rgba(216,210,196,.06);
+            border: 1px solid rgba(216,210,196,.25);
             border-left: 3px solid var(--acc-cy);
         }
         .domain-notice .label {
@@ -323,11 +337,11 @@
             letter-spacing: .22em;
             color: var(--acc-cy);
             padding: 2px 7px;
-            border: 1px solid rgba(91,138,255,.3);
-            background: rgba(91,138,255,.08);
+            border: 1px solid rgba(216,210,196,.3);
+            background: rgba(216,210,196,.08);
         }
         .sec-head h2 {
-            font-family: "Chakra Petch", "Space Grotesk", sans-serif;
+            font-family: "Space Grotesk", sans-serif;
             font-weight: 600;
             font-size: clamp(20px, 2.3vw, 26px);
             color: var(--text);
@@ -355,7 +369,7 @@
         .legal-wrap a {
             color: var(--acc-cy);
             text-decoration: none;
-            border-bottom: 1px dashed rgba(91,138,255,.4);
+            border-bottom: 1px dashed rgba(216,210,196,.4);
             transition: color .12s ease, border-color .12s ease;
         }
         .legal-wrap a:hover {
@@ -437,7 +451,7 @@
         }
         .legal-foot a {
             color: var(--acc-cy);
-            border-bottom: 1px dashed rgba(91,138,255,.4);
+            border-bottom: 1px dashed rgba(216,210,196,.4);
         }
         .legal-foot a:hover { color: var(--text); border-bottom-color: var(--text); }
 
@@ -537,12 +551,10 @@
 <body data-lang="en">
 
     <!-- src/playback handled in legal.js (skipped entirely in lite mode) -->
-    <video class="wallpaper-video" muted loop playsinline preload="none" aria-hidden="true" data-src="images/wallpaper/f.mp4"></video>
-    <div class="wallpaper-overlay" aria-hidden="true"></div>
 
     <div class="legal-corners">
         <span class="tag"><b>LUCYA</b> · LEGAL</span>
-        <span class="tag">STAND · 2026-08-22</span>
+        <span class="tag">STAND · 2026-10-31</span>
     </div>
 
     <main class="legal-wrap">
@@ -557,7 +569,7 @@
             </div>
             <h1 class="legal-head__title" id="page-title">Legal notice &amp; privacy policy</h1>
             <div class="legal-head__row">
-                <span class="legal-head__sub" id="page-sub">private project · non-commercial · self-hosted · EU/DE · last updated 2026-08-22</span>
+                <span class="legal-head__sub" id="page-sub">private project · non-commercial · self-hosted · EU/DE · last updated 2026-10-31</span>
                 <div class="lang-toggle" role="group" aria-label="Language">
                     <button type="button" id="lang-en" aria-pressed="true">EN</button>
                     <button type="button" id="lang-de" aria-pressed="false">DE</button>
@@ -706,7 +718,7 @@
                 <p>This website sets <strong>no cookies at all</strong> — neither for tracking nor for any other purpose. Our CDN provider Cloudflare is configured so that it does not set cookies either (see section 05).</p>
                 <p>The site does use a small number of functional entries in your browser's <code>localStorage</code>, exclusively to remember a setting you made yourself. These entries stay on your device, are never transmitted to the server and contain no identifier:</p>
                 <ul class="plain">
-                    <li><code>lucya-lite</code> — stores whether you switched on "lite mode" (reduced version without background video, blur and animations). Values: <code>0</code> or <code>1</code>.</li>
+                    <li><code>lucya-lite</code> — stores whether you switched on "lite mode" (reduced version without the 3D intro, the moving planet, background video, blur and animations). Values: <code>0</code> or <code>1</code>.</li>
                     <li><code>lucya-lang</code> — stores the language you selected on this legal page. Values: <code>en</code> or <code>de</code>.</li>
                 </ul>
                 <p>The legal basis for this is § 25(2) no. 2 TDDDG (storage strictly necessary to provide a service explicitly requested by the user) and Art. 6(1)(f) GDPR. You can delete these entries at any time via your browser settings; the site then simply falls back to its defaults.</p>
@@ -762,8 +774,11 @@
                 <p>No connection to a third party is made for this, and the files contain no data about you. The requests appear in the server log files like any other request to this website (see "Server log files"). The legal basis is Art. 6(1)(f) GDPR — we have a legitimate interest in transparently displaying the operational status of our infrastructure.</p>
                 <p>The uptime history at <a href="https://status.lucya.systems" target="_blank" rel="noopener noreferrer">status.lucya.systems</a> is only linked, not embedded. It runs on our own infrastructure within the European Union; if you open it, the data listed under "Server log files" is processed there.</p>
 
+                <h3>3D intro and planet</h3>
+                <p>The laptop intro and the planet on the start page are drawn locally by your browser using WebGL. All files they need come from the same domain as the page. No connection to a third party is made, and nothing is stored or measured about your device. If your browser cannot run them, you have asked for reduced motion, or lite mode is on, the page is shown without them.</p>
+
                 <h3>Photo gallery (images.lucya.sh)</h3>
-                <p>The start page shows a teaser of our photo gallery. To do so, your browser requests a list of the most recent images from <a href="https://images.lucya.sh" target="_blank" rel="noopener noreferrer">images.lucya.sh</a> when the page loads and then loads the preview images from that host. Following the link opens the full gallery there.</p>
+                <p>The start page shows photos from two albums of our photo gallery. To do so, your browser requests the album lists from <a href="https://images.lucya.sh" target="_blank" rel="noopener noreferrer">images.lucya.sh</a> when the page loads and then loads the preview images from that host. Following a link opens the photo or album in the gallery there.</p>
                 <p>This host is operated by us on our own infrastructure within the European Union — it is not a third-party service. The following data may be processed in its server log files: IP address, browser type and version, operating system, referrer URL, time of the request, user agent string. The same storage duration applies as for the server log files described in section 04.</p>
                 <p>The legal basis is Art. 6(1)(f) GDPR — we have a legitimate interest in delivering images from a host optimised for that purpose instead of from the main server. Data is not passed on to third parties.</p>
 
@@ -781,7 +796,7 @@
                     <li>Microsoft Corporation</li>
                     <li>Advanced Micro Devices, Inc. (AMD)</li>
                     <li>CD Projekt Red (Cyberpunk 2077)</li>
-                    <li>Frontier Developments (Elite: Dangerous)</li>
+                    <li>Frontier Developments (Elite: Dangerous, DeLacy)</li>
                     <li>Cloud Imperium Games (Star Citizen)</li>
                     <li>Playground Games / Xbox Game Studios (Forza Horizon)</li>
                     <li>Sucker Punch Productions / Sony Interactive Entertainment (Ghost of Tsushima)</li>
@@ -789,6 +804,15 @@
                     <li>Hypergryph / Yostar (Arknights: Endfield)</li>
                     <li>Subset Games (FTL: Faster Than Light)</li>
                     <li>Maxim Karpenko (WorldBox)</li>
+                    <li>Panasonic Holdings Corporation (Let's note, Panasonic)</li>
+                    <li>Intel Corporation</li>
+                    <li>Proxmox Server Solutions GmbH</li>
+                    <li>khara, inc. (Evangelion)</li>
+                    <li>Sanrio Co., Ltd. (Kuromi)</li>
+                    <li>Kanehito Yamada, Tsukasa Abe / Shogakukan (Frieren)</li>
+                    <li>European Space Agency (ESA)</li>
+                    <li>Japan Aerospace Exploration Agency (JAXA)</li>
+                    <li>Anthropic PBC (Clawd)</li>
                     <li>and the respective developers and publishers of any other games or media shown</li>
                 </ul>
                 <p>Their usage on this website is entirely non-commercial and intended purely for aesthetic, nostalgic or referential purposes — to document personal interests, hardware, software and games. This site is not affiliated with, endorsed by, or officially connected to any of the mentioned brands, developers, publishers or companies.</p>
@@ -938,7 +962,7 @@
                 <p>Diese Website setzt <strong>überhaupt keine Cookies</strong> — weder zu Tracking- noch zu sonstigen Zwecken. Auch unser CDN-Dienstleister Cloudflare ist so konfiguriert, dass er keine Cookies setzt (siehe Abschnitt 05).</p>
                 <p>Die Seite verwendet einige wenige funktionale Einträge im <code>localStorage</code> deines Browsers, ausschließlich um eine von dir selbst getroffene Einstellung zu merken. Diese Einträge verbleiben auf deinem Gerät, werden nie an den Server übertragen und enthalten keine Kennung:</p>
                 <ul class="plain">
-                    <li><code>lucya-lite</code> — speichert, ob du den „Lite-Modus" aktiviert hast (reduzierte Fassung ohne Hintergrundvideo, Blur und Animationen). Werte: <code>0</code> oder <code>1</code>.</li>
+                    <li><code>lucya-lite</code> — speichert, ob du den „Lite-Modus" aktiviert hast (reduzierte Fassung ohne 3D-Intro, bewegten Planeten, Hintergrundvideo, Blur und Animationen). Werte: <code>0</code> oder <code>1</code>.</li>
                     <li><code>lucya-lang</code> — speichert die von dir gewählte Sprache dieser Rechtsseite. Werte: <code>en</code> oder <code>de</code>.</li>
                 </ul>
                 <p>Rechtsgrundlage ist § 25 Abs. 2 Nr. 2 TDDDG (unbedingt erforderlich für die Bereitstellung eines vom Nutzer ausdrücklich gewünschten Dienstes) und Art. 6 Abs. 1 lit. f DSGVO. Du kannst diese Einträge jederzeit über deine Browsereinstellungen löschen; die Seite fällt dann einfach auf ihre Standardwerte zurück.</p>
@@ -994,8 +1018,11 @@
                 <p>Dabei wird keine Verbindung zu Dritten aufgebaut, und die Dateien enthalten keine Daten über dich. Die Abrufe erscheinen wie jeder andere Aufruf dieser Website in den Server-Log-Dateien (siehe „Server-Log-Dateien“). Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO — wir haben ein berechtigtes Interesse, den Betriebszustand unserer Infrastruktur transparent anzuzeigen.</p>
                 <p>Der Uptime-Verlauf unter <a href="https://status.lucya.systems" target="_blank" rel="noopener noreferrer">status.lucya.systems</a> wird nur verlinkt, nicht eingebunden. Er läuft auf unserer eigenen Infrastruktur innerhalb der Europäischen Union; rufst du ihn auf, werden dort die unter „Server-Log-Dateien“ genannten Daten verarbeitet.</p>
 
+                <h3>3D-Intro und Planet</h3>
+                <p>Das Laptop-Intro und der Planet auf der Startseite werden lokal von deinem Browser per WebGL gezeichnet. Alle dafür nötigen Dateien kommen von derselben Domain wie die Seite. Es wird keine Verbindung zu Dritten aufgebaut, und über dein Gerät wird nichts gespeichert oder gemessen. Kann dein Browser sie nicht darstellen, hast du reduzierte Bewegung eingestellt oder ist der Lite-Modus aktiv, wird die Seite ohne sie angezeigt.</p>
+
                 <h3>Fotogalerie (images.lucya.sh)</h3>
-                <p>Auf der Startseite wird eine Vorschau unserer Fotogalerie angezeigt. Dazu ruft dein Browser beim Laden der Seite eine Liste der neuesten Bilder von <a href="https://images.lucya.sh" target="_blank" rel="noopener noreferrer">images.lucya.sh</a> ab und lädt anschließend die Vorschaubilder von diesem Host. Über den Link gelangst du zur vollständigen Galerie auf demselben Host.</p>
+                <p>Auf der Startseite werden Fotos aus zwei Alben unserer Fotogalerie angezeigt. Dazu ruft dein Browser beim Laden der Seite die Albumlisten von <a href="https://images.lucya.sh" target="_blank" rel="noopener noreferrer">images.lucya.sh</a> ab und lädt anschließend die Vorschaubilder von diesem Host. Über einen Link gelangst du zum Foto oder Album in der Galerie auf demselben Host.</p>
                 <p>Dieser Host wird von uns auf eigener Infrastruktur innerhalb der Europäischen Union betrieben — es handelt sich nicht um einen Drittanbieter. In dessen Server-Logfiles können folgende Daten verarbeitet werden: IP-Adresse, Browsertyp und Browserversion, Betriebssystem, Referrer-URL, Uhrzeit der Anfrage, User-Agent-String. Es gilt dieselbe Speicherdauer wie für die in Abschnitt 04 beschriebenen Server-Log-Dateien.</p>
                 <p>Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO — wir haben ein berechtigtes Interesse daran, Bilder von einem dafür optimierten Host statt vom Hauptserver auszuliefern. Eine Weitergabe an Dritte findet nicht statt.</p>
 
@@ -1013,7 +1040,7 @@
                     <li>Microsoft Corporation</li>
                     <li>Advanced Micro Devices, Inc. (AMD)</li>
                     <li>CD Projekt Red (Cyberpunk 2077)</li>
-                    <li>Frontier Developments (Elite: Dangerous)</li>
+                    <li>Frontier Developments (Elite: Dangerous, DeLacy)</li>
                     <li>Cloud Imperium Games (Star Citizen)</li>
                     <li>Playground Games / Xbox Game Studios (Forza Horizon)</li>
                     <li>Sucker Punch Productions / Sony Interactive Entertainment (Ghost of Tsushima)</li>
@@ -1021,6 +1048,15 @@
                     <li>Hypergryph / Yostar (Arknights: Endfield)</li>
                     <li>Subset Games (FTL: Faster Than Light)</li>
                     <li>Maxim Karpenko (WorldBox)</li>
+                    <li>Panasonic Holdings Corporation (Let's note, Panasonic)</li>
+                    <li>Intel Corporation</li>
+                    <li>Proxmox Server Solutions GmbH</li>
+                    <li>khara, inc. (Evangelion)</li>
+                    <li>Sanrio Co., Ltd. (Kuromi)</li>
+                    <li>Kanehito Yamada, Tsukasa Abe / Shogakukan (Frieren)</li>
+                    <li>European Space Agency (ESA)</li>
+                    <li>Japan Aerospace Exploration Agency (JAXA)</li>
+                    <li>Anthropic PBC (Clawd)</li>
                     <li>sowie die jeweiligen Entwickler:innen und Publisher anderer gezeigter Spiele oder Medien</li>
                 </ul>
                 <p>Die Nutzung auf dieser Website erfolgt ausschließlich nicht-kommerziell und dient rein ästhetischen, nostalgischen oder referenziellen Zwecken — zur Dokumentation persönlicher Interessen, Hardware, Software und Spiele. Diese Seite ist nicht mit den genannten Marken, Entwicklern, Publishern oder Unternehmen verbunden, wird nicht von ihnen unterstützt und steht in keiner offiziellen Beziehung zu ihnen.</p>
@@ -1032,7 +1068,7 @@
         <footer class="legal-foot">
             <span class="legal-foot__mark">
                 <img src="images/logo/lucya_logo.svg" alt="" aria-hidden="true" />
-                <span id="foot-mark-text">// end of document · last updated 2026-08-22</span>
+                <span id="foot-mark-text">// end of document · last updated 2026-10-31</span>
             </span>
             <a href="/">← back to lucya.sh</a>
         </footer>
