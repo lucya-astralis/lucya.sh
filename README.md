@@ -13,7 +13,7 @@ JavaScript modules, which browsers do not load reliably from `file://` URLs.
 
 ## Code map
 
-- `index.html` and `styles.css`: page markup and styling.
+- `classic.html` and `styles.css`: the previous site, kept at `/classic.html`, not indexed.
 - `lite.js`: synchronous, pre-paint device detection and saved Lite preference.
 - `script.js`: main entry point, boot sequence, clocks, shared status polling,
   profile data, and responsive layout setup.
@@ -28,12 +28,12 @@ JavaScript modules, which browsers do not load reliably from `file://` URLs.
   weather there), from `/weather.json`.
 - `setnav.js` / `mpage.js`: desktop panel navigation / phone page navigation.
 - `legal.html` / `legal.js`: bilingual legal page and language selection.
-- `concordia.js` / `planet-gl.js`: standalone planet visualization; currently
-  not loaded by `index.html`.
-- `concept.html` / `concept/`: the new concept page. It opens with the laptop intro
+- `planet-gl.js`: the planet behind the hero, shared with gov and terra. `concordia.js`: standalone orrery;
+  not loaded by `classic.html`.
+- `index.html` / `concept/`: the site. It opens with the laptop intro
   and reuses `js/systems.js`, `js/weather.js` and the same live JSON files.
 - `intro/`: 3D laptop intro with its own committed vendor bundles, see
-  `intro/README.md`. Only `concept.html` loads it. `package.json` is dev tooling for it.
+  `intro/README.md`. Only `index.html` loads it. `package.json` is dev tooling for it.
 - `data.json`: profile, KPI, ticker, and specification content.
 - `worker/`: Cloudflare Worker serving the terminal card for curl clients.
 - `server/`: server-side pullers that write JSON into the web root.

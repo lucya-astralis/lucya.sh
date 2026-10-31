@@ -1,5 +1,5 @@
 /* ============================================================================
-   LITE MODE — shared by index.html and legal.html.
+   LITE MODE — shared by index.html, classic.html and legal.html.
 
    Decides lite vs. full BEFORE first paint, so this MUST stay a render-blocking
    <script src="lite.js"></script> in <head> (no defer / no async) — otherwise

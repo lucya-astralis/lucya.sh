@@ -78,6 +78,16 @@ initSystems(statusFeed, scrambleTo, { fullSheet: true });
 initWeather();
 initSpotify(scrambleTo);
 
+// the manifest's first albums and artists beside the card; a click opens the whole sheet
+const peekFrom = (from, to, count, n) => {
+  const items = [...document.querySelectorAll(`#${from} > li`)];
+  document.getElementById(to).append(...items.slice(0, n).map((li) => li.cloneNode(true)));
+  document.getElementById(count).textContent = items.length;
+};
+peekFrom('manifestAlbums', 'peekAlbums', 'peekAlbumCount', 6);
+peekFrom('manifestArtists', 'peekArtists', 'peekArtistCount', 8);
+for (const peek of document.querySelectorAll('[data-peek]')) peek.addEventListener('click', () => document.getElementById('spotifyCard').click());
+
 const wallButton = (file, name, href) => {
   const el = document.createElement(href ? 'a' : 'span');
   el.className = 'b81';
@@ -109,12 +119,7 @@ const percent = (n, d) => (d > 0 ? Math.min(100, n / d * 100) : 0);
 let fleet = null;
 
 function paintFleet() {
-  const dot = $('fleetDot');
-  if (!fleet) {
-    dot.dataset.state = 'down';
-    dot.title = 'Awaiting telemetry';
-    return;
-  }
+  if (!fleet) return;
   const s = fleet.summary || fleet;
   const up = +s.hosts_up || 0, hosts = +s.hosts_total || 0;
   const ok = +s.services_ok || 0, warn = +s.services_warn || 0, crit = +s.services_crit || 0;
@@ -122,7 +127,6 @@ function paintFleet() {
   const age = Math.max(0, Math.floor(Date.now() / 1000) - Number(fleet.ts || 0));
   const stale = !(Number(fleet.ts) > 0) || age > 120;
   const healthy = hosts > 0 && services > 0 && up === hosts && ok === services && !warn && !crit;
-  const state = stale ? 'stale' : crit > 0 || (hosts > 0 && up === 0) ? 'dead' : healthy ? 'ok' : 'stale';
 
   $('fleetHosts').textContent = `${up} / ${hosts}`;
   $('fleetSvc').textContent = `${ok} / ${services}`;
@@ -132,8 +136,6 @@ function paintFleet() {
   $('fleetAge').textContent = age < 60 ? `${age}s ago` : age < 3600 ? `${Math.floor(age / 60)}m ago` : `${Math.floor(age / 3600)}h ago`;
   $('fleetTag').textContent = stale ? 'Checkmk · stale' : 'Checkmk · live';
   $('fleetSummary').textContent = stale ? 'Telemetry outdated.' : healthy ? 'All systems operational.' : 'Systems require attention.';
-  dot.dataset.state = state;
-  dot.title = $('fleetSummary').textContent;
   for (const h of fleet.hosts || []) {
     document.querySelector(`.ru[data-unit="${h?.name}"]`)?.setAttribute('data-live', String(h.state).toLowerCase());
   }

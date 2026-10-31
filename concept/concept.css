@@ -34,8 +34,6 @@ body::before{
     linear-gradient(to right,transparent calc(25.4% - .5px),rgba(255,255,255,.055) 25.4%,transparent calc(25.4% + .5px)),
     linear-gradient(to right,transparent calc(74.6% - .5px),rgba(255,255,255,.055) 74.6%,transparent calc(74.6% + .5px));
 }
-/* a few stars behind all of it, far enough down not to be noticed at first */
-body::after{ content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; background:url("stars.webp") center / cover no-repeat; opacity:.75; }
 a{ color:inherit; text-decoration:none; }
 h1,h2,h3,p{ margin:0; }
 h2{ font-size:clamp(34px,5.4vw,84px); line-height:1.02; font-weight:500; letter-spacing:-.025em; max-width:14ch; }
@@ -57,9 +55,8 @@ h2{ font-size:clamp(34px,5.4vw,84px); line-height:1.02; font-weight:500; letter-
 .boot{
   position:fixed; inset:0; z-index:40;
   background:#000;
-  transition:opacity .9s var(--spring), visibility 0s linear .9s;
 }
-.boot.is-done{ opacity:0; visibility:hidden; }
+.boot.is-done{ opacity:0; visibility:hidden; transition:opacity .9s var(--spring), visibility 0s linear .9s; }
 .boot__panasonic{
   position:absolute; left:50%;
   top:calc(50% - var(--plane) / 1.5 * .09 - 1px);
@@ -122,11 +119,6 @@ h2{ font-size:clamp(34px,5.4vw,84px); line-height:1.02; font-weight:500; letter-
   -webkit-mask:url("../images/logo/lucya_logo.svg") center / contain no-repeat;
           mask:url("../images/logo/lucya_logo.svg") center / contain no-repeat;
 }
-.island__old{ box-shadow:inset 0 0 0 1px var(--faint); margin-left:4px; }
-.island__state{ flex:none; width:8px; height:8px; margin:0 10px 0 8px; border-radius:50%; background:#57564f; transition:background .6s var(--spring); }
-.island__state[data-state="ok"]{ background:#5fd38a; box-shadow:0 0 8px rgba(95,211,138,.7); }
-.island__state[data-state="stale"]{ background:#e5c07b; }
-.island__state[data-state="dead"]{ background:#e0524d; box-shadow:0 0 8px rgba(224,82,77,.7); }
 
 /* ---- hero ---------------------------------------------------------------- */
 .hero{
@@ -140,13 +132,19 @@ h2{ font-size:clamp(34px,5.4vw,84px); line-height:1.02; font-weight:500; letter-
   --word-h:calc((100vw - var(--gutter) * 2) * .1405);
   --word-top:calc(var(--horizon) - var(--word-h) * .7);
 }
-.hero .tag{ position:absolute; left:var(--gutter); top:calc(var(--word-top) - 46px); }
 /* the planet goes under into the page instead of ending at the hero's edge */
 .hero__planet,.hero.is-still::before{
   position:absolute; inset:0; z-index:-1;
   width:100%; height:100%;
   -webkit-mask:linear-gradient(to bottom,#000 66%,transparent);
           mask:linear-gradient(to bottom,#000 66%,transparent);
+}
+/* the sky above the limb; gone before the hero ends, so no edge shows */
+.hero::after{
+  content:""; position:absolute; inset:0; z-index:-3; pointer-events:none;
+  background:url("stars.webp") center / cover no-repeat;
+  -webkit-mask:linear-gradient(to bottom,#000 45%,transparent 75%);
+          mask:linear-gradient(to bottom,#000 45%,transparent 75%);
 }
 .hero__planet{ opacity:0; translate:0 9%; transition:opacity 1.6s ease, translate 2.8s var(--spring); }
 .hero__planet.is-risen{ opacity:1; translate:0 0; }
@@ -191,12 +189,18 @@ section{ padding:clamp(88px,15vh,190px) var(--gutter); }
 .spec dt{ color:var(--dim); }
 .spec dd{ margin:0; color:var(--ink); }
 
-.metrics{ display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:1px; margin-top:clamp(36px,6vh,72px); border-radius:24px; overflow:hidden; background:rgba(255,255,255,.09); }
-.metric{ grid-column:span 2; display:flex; flex-direction:column; gap:6px; min-width:0; padding:clamp(18px,2.2vw,30px); background:#060606; }
-.metric--wide{ grid-column:span 3; }
-.metric span,.metric em{ font:400 11px/1.45 "JetBrains Mono",monospace; font-style:normal; color:var(--dim); }
-.metric > span{ text-transform:uppercase; letter-spacing:.14em; }
-.metric b{ font-size:clamp(30px,4vw,58px); line-height:1.05; font-weight:500; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+.telemetry{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.3fr); gap:clamp(24px,4vw,72px); align-items:end; padding-block:clamp(56px,10vh,110px); }
+.telemetry h2{ font-size:clamp(26px,3vw,44px); }
+.fleet__more{ display:inline-block; margin-top:12px; font:400 12px/1.4 "JetBrains Mono",monospace; color:var(--champagne); }
+.fleet{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(16px,2.4vw,36px); }
+.fleet__stat{ display:flex; flex-direction:column; gap:6px; min-width:0; }
+.fleet__stat span,.metric > span{ font:400 11px/1.4 "JetBrains Mono",monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--dim); }
+.fleet__stat b{ font-size:clamp(24px,2.6vw,38px); line-height:1.05; font-weight:500; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+.fleet__stat em,.metric em{ font:400 11px/1.5 "JetBrains Mono",monospace; font-style:normal; color:var(--dim); }
+
+.metrics{ grid-column:1 / -1; display:grid; grid-template-columns:minmax(0,2fr) repeat(3,minmax(0,1fr)); gap:clamp(16px,2.4vw,36px); padding-top:clamp(18px,2.4vh,26px); border-top:1px solid rgba(255,255,255,.09); }
+.metric{ display:flex; flex-direction:column; gap:6px; min-width:0; }
+.metric b{ font-size:clamp(24px,2.6vw,38px); line-height:1.05; font-weight:500; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
 .metric b span{ font:inherit; color:inherit; letter-spacing:inherit; }
 .metric__sub{ opacity:.75; }
 .meter{ position:relative; height:2px; margin-top:auto; background:rgba(255,255,255,.1); overflow:hidden; }
@@ -345,9 +349,10 @@ section{ padding:clamp(88px,15vh,190px) var(--gutter); }
 .deck img:hover{ transform:translate(-50%,-52%) rotate(calc(var(--r) * -1)) scale(1.07); }
 
 .spotify__jp{ margin-top:12px; font-family:"Noto Sans JP",sans-serif; color:var(--dim); letter-spacing:.2em; }
+.spotify__deck{ display:grid; grid-template-columns:minmax(0,1.7fr) minmax(0,1fr); gap:clamp(20px,3vw,48px); margin-top:clamp(36px,6vh,72px); }
 .spotify__card{
-  display:grid; grid-template-columns:clamp(150px,24vw,320px) minmax(0,1fr); gap:clamp(20px,3.4vw,52px); align-items:center;
-  margin-top:clamp(36px,6vh,72px); padding:clamp(14px,1.6vw,22px);
+  display:grid; grid-template-columns:clamp(110px,11vw,160px) minmax(0,1fr); gap:clamp(16px,1.8vw,26px); align-items:center;
+  padding:clamp(14px,1.4vw,18px);
   border-radius:24px;
   background:linear-gradient(170deg,#0d0d0e 0%,#050505 60%);
   box-shadow:0 0 0 1px rgba(255,255,255,.1);
@@ -360,9 +365,22 @@ section{ padding:clamp(88px,15vh,190px) var(--gutter); }
 .spotify__meta{ min-width:0; transition:opacity .3s var(--spring); }
 .spotify__cover.is-swap,.spotify__meta.is-swap{ opacity:0; }
 .spotify__label,.spotify__foot,.spotify__timeline{ display:flex; align-items:center; justify-content:space-between; gap:14px; font:400 11px/1.4 "JetBrains Mono",monospace; color:var(--dim); }
-.spotify__track{ margin:clamp(14px,2.4vw,30px) 0 6px; font-size:clamp(28px,4.6vw,68px); line-height:1.04; font-weight:500; letter-spacing:-.02em; overflow-wrap:anywhere; }
-.spotify__artist{ color:var(--dim); font-size:clamp(16px,1.5vw,21px); }
-.spotify__timeline{ margin:clamp(16px,2.4vw,30px) 0 16px; }
+.spotify__label-name{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.spotify__counter{ flex:none; }
+.spotify__track{ margin:12px 0 4px; font-size:clamp(20px,2vw,30px); line-height:1.04; font-weight:500; letter-spacing:-.02em; overflow-wrap:anywhere; }
+.spotify__artist{ color:var(--dim); font-size:15px; }
+.spotify__timeline{ margin:14px 0 10px; }
+.peek{ min-width:0; cursor:pointer; }
+.peek__head{ display:flex; justify-content:space-between; margin:0 0 10px; font:400 11px/1.4 "JetBrains Mono",monospace; letter-spacing:.1em; color:var(--dim); }
+.peek__head b{ font-weight:400; color:var(--ink); }
+.peek__albums,.peek__artists{ display:grid; gap:10px; margin:0; padding:0; list-style:none; }
+.peek__albums{ grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px 10px; }
+.peek__artists{ grid-template-columns:repeat(8,minmax(0,1fr)); }
+.spotify__main .peek{ margin-top:22px; }
+.peek .mface{ width:auto; min-width:0; }
+.peek .mface__img{ width:min(100%,62px); height:auto; aspect-ratio:1; }
+.peek .mtile__title,.peek .mface__name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.peek .mtile__year,.peek .mtile__artist,.peek .mface__tag{ display:none; }
 .spotify__dots{ display:flex; flex:1; gap:3px; min-width:0; }
 .spotify__dots > *{ flex:1; height:2px; min-width:0; padding:0; border:0; background:rgba(255,255,255,.14); cursor:pointer; }
 .spotify__dots > .is-active,.spotify__dots > .is-played{ background:var(--ink); }
@@ -506,12 +524,15 @@ section{ padding:clamp(88px,15vh,190px) var(--gutter); }
 
 @media (max-width:900px){
   .realm::after{ background:linear-gradient(to top,rgba(5,5,5,.94) 40%,rgba(5,5,5,.4)); }
-  .spotify__card{ grid-template-columns:minmax(0,1fr); }
+  .spotify__deck{ grid-template-columns:minmax(0,1fr); }
+  .peek{ display:none; }
   .manifest__bento{ grid-template-columns:minmax(0,1fr); }
   .mbox--tracks{ grid-row:auto; }
+  .telemetry{ grid-template-columns:minmax(0,1fr); }
   .metrics{ grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .metric,.metric--wide{ grid-column:span 1; }
-  #wxMetric{ grid-column:1 / -1; }
+  .fleet{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .fleet__stat:last-child{ grid-column:1 / -1; }
+    #wxMetric{ grid-column:1 / -1; }
   .neobay,.rackview{ grid-template-columns:minmax(0,1fr); }
   .rackphoto{ position:static; }
   .ntabs__grp{ margin-top:16px; padding:0; }
