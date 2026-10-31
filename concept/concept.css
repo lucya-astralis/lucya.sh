@@ -445,6 +445,8 @@ section{ padding:clamp(88px,15vh,190px) var(--gutter); }
 .spotify__open[hidden]{ display:none; }
 .spotify__pill{ display:inline-flex; align-items:center; gap:8px; }
 .spotify__pill i{ width:6px; height:6px; border-radius:50%; background:var(--champagne); }
+/* live says so once, at the pill: the heading above has already said the rest */
+.spotify__card.is-live .spotify__label{ display:none; }
 .spotify.is-live .spotify__pill i,.spotify__card.is-live .spotify__pill i{ background:#5fd38a; box-shadow:0 0 7px rgba(95,211,138,.7); }
 
 .manifest{ position:fixed; inset:0; z-index:35; display:grid; place-items:center; padding:clamp(12px,3vw,40px); }
@@ -635,6 +637,7 @@ section{ padding:clamp(88px,15vh,190px) var(--gutter); }
   .spotify__timeline,.spotify__foot{ grid-column:1 / -1; }
   .spotify__timeline{ margin:18px 0 12px; }
   .spotify__dots{ gap:5px; }
+  .wall{ justify-content:center; gap:10px 8px; }
   /* a 2px line in an 18px target */
   .spotify__dots > *{ --dot:rgba(255,255,255,.14); height:18px; margin-block:-8px; }
   .spotify__dots > .is-active,.spotify__dots > .is-played{ --dot:var(--ink); }

@@ -61,11 +61,11 @@ export function initSpotify(scrambleTo) {
     const modeEl = document.getElementById('spotifyMode');
     const progressEl = document.getElementById('spotifyProgress');
     const sectionEl = document.getElementById('spotify');
-    // section heading: "TOP SONGS" for the rotation, "LIVE" while playing
+    // section heading: "TOP SONGS" for the rotation, "NOW PLAYING" while playing
     const head = [
-      [document.getElementById('spotifyHeadName'), 'LIVE'],
+      [document.getElementById('spotifyHeadName'), 'Now playing'],
       [document.getElementById('spotifyHeadJp'), '再生中'],
-      [document.getElementById('spotifyHeadMeta'), 'SPOTIFY · LIVE · NOW PLAYING']
+      [document.getElementById('spotifyHeadMeta'), 'Spotify']
     ].filter(([el]) => el).map(([el, live]) => ({ el, live, rotation: el.textContent }));
 
     const fmtTime = sec => pad2(Math.floor(sec / 60)) + ':' + pad2(Math.floor(sec % 60));
