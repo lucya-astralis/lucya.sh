@@ -76,15 +76,29 @@ const statusFeed = (() => {
 
 // the pill under the nav follows the same track as the card
 const nowPill = document.getElementById('nowPill');
+const spotifyOpen = document.getElementById('spotifyOpen');
+// the card opens the manifest on any click or key; this link is the one exception
+for (const type of ['click', 'keydown']) spotifyOpen.addEventListener(type, (e) => e.stopPropagation());
+const readAlong = (el) => {
+  el.classList.remove('is-long');
+  const over = el.offsetWidth - el.parentElement.clientWidth;
+  if (over <= 1) return;
+  el.style.setProperty('--shift', `${-over}px`);
+  el.style.setProperty('--secs', `${(over / 26 + 2.5).toFixed(1)}s`);
+  el.classList.add('is-long');
+};
 window.addEventListener('lucya:track', ({ detail: track }) => {
   nowPill.classList.toggle('is-on', !!track);
+  const link = /^https:\/\/open\.spotify\.com\//.test(track?.url || '');
+  spotifyOpen.hidden = !link;
+  if (link) spotifyOpen.href = track.url;
   if (!track) return;
   nowPill.hidden = false;
-  nowPill.href = /^https:\/\/open\.spotify\.com\//.test(track.url || '') ? track.url : '#spotify';
   nowPill.title = `${track.title} — ${track.artist || ''}`;
   document.getElementById('nowPillCover').src = track.cover || 'images/profile/sociallinks/spotify_color.svg';
   document.getElementById('nowPillTitle').textContent = track.title;
   document.getElementById('nowPillArtist').textContent = track.artist || '';
+  requestAnimationFrame(() => ['nowPillTitle', 'nowPillArtist'].forEach((id) => readAlong(document.getElementById(id))));
 });
 
 const scrambleTo = createScrambler(!!window.LUCYA_LITE);
@@ -214,13 +228,14 @@ for (const [id, url, fallback] of ALBUMS) {
 // On a phone the bar is wider than the screen; it brings the current section
 // into view by itself instead of leaving that to a sideways swipe.
 const island = document.querySelector('.island');
+const islandLinks = island.querySelector('.island__links');
 const navLinks = new Map([...island.querySelectorAll('a[href^="#"]:not(.island__home)')]
   .map((a) => [document.querySelector(a.getAttribute('href')), a]).filter(([el]) => el));
 
 function markCurrent(link) {
   island.querySelector('.is-current')?.classList.remove('is-current');
   link.classList.add('is-current');
-  island.scrollTo({ left: link.offsetLeft - (island.clientWidth - link.offsetWidth) / 2, behavior: REDUCED ? 'auto' : 'smooth' });
+  islandLinks.scrollTo({ left: link.offsetLeft - (islandLinks.clientWidth - link.offsetWidth) / 2, behavior: REDUCED ? 'auto' : 'smooth' });
 }
 const spy = new IntersectionObserver((entries) => {
   for (const entry of entries) {

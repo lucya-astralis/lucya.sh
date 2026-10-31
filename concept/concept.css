@@ -109,14 +109,24 @@ h2{ font-size:clamp(34px,5.4vw,84px); line-height:1.02; font-weight:500; letter-
   backdrop-filter:blur(18px);
   -webkit-backdrop-filter:blur(18px);
   font-size:13px;
-  overflow-x:auto;
-  scrollbar-width:none;
 }
+/* only the links scroll: the logo sits outside them, so neither a swipe nor Safari's
+   bounce can move it, and they fade out before they reach it */
+.island__links{
+  position:relative;
+  display:flex; align-items:center; gap:2px;
+  flex:0 1 auto; min-width:0;
+  padding-inline:12px;
+  overflow-x:auto;
+  overscroll-behavior-x:none;
+  scrollbar-width:none;
+  -webkit-mask:linear-gradient(to right,transparent,#000 12px,#000 calc(100% - 12px),transparent);
+          mask:linear-gradient(to right,transparent,#000 12px,#000 calc(100% - 12px),transparent);
+}
+.island__links::-webkit-scrollbar{ display:none; }
 .island a{ padding:7px 13px; border-radius:999px; white-space:nowrap; color:var(--dim); transition:color .4s var(--spring), background .4s var(--spring); }
 .island a:hover,.island a.is-current{ color:var(--ink); background:rgba(255,255,255,.07); }
-/* stays put while the links scroll under it */
-.island__home{ position:sticky; left:0; z-index:1; flex:none; display:flex; padding:7px 10px !important; background:#0e0e0e; }
-.island .island__home:hover{ background:#0e0e0e; }
+.island__home{ flex:none; display:flex; padding:7px 10px !important; }
 .island__home span{
   width:30px; height:17px; background:var(--ink);
   -webkit-mask:url("../images/logo/lucya_logo.svg") center / contain no-repeat;
@@ -127,7 +137,7 @@ h2{ font-size:clamp(34px,5.4vw,84px); line-height:1.02; font-weight:500; letter-
 .nowpill{
   position:fixed; z-index:30; top:68px; left:50%;
   display:flex; align-items:center; gap:9px;
-  max-width:min(340px,calc(100vw - 24px));
+  max-width:min(250px,calc(100vw - 24px));
   padding:4px 14px 4px 4px;
   border-radius:999px;
   background:rgba(14,14,14,.72);
@@ -143,7 +153,11 @@ h2{ font-size:clamp(34px,5.4vw,84px); line-height:1.02; font-weight:500; letter-
 .nowpill.is-on{ opacity:1; transform:translate(-50%,0); }
 .nowpill img{ flex:none; width:30px; height:30px; border-radius:50%; object-fit:cover; background:#111; }
 .nowpill__text{ display:flex; flex-direction:column; min-width:0; }
-.nowpill__text b,.nowpill__text span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.nowpill__text b,.nowpill__text span{ display:block; overflow:hidden; white-space:nowrap; }
+.nowpill__text i{ display:inline-block; font-style:normal; }
+/* too long for the pill: it reads along, rests at each end, and comes back */
+.nowpill__text i.is-long{ animation:nowpill-read var(--secs) ease-in-out infinite alternate; }
+@keyframes nowpill-read{ 0%,18%{ transform:none; } 82%,100%{ transform:translateX(var(--shift)); } }
 .nowpill__text b{ font-weight:500; }
 .nowpill__text span{ color:var(--dim); font-size:11px; }
 
@@ -418,6 +432,8 @@ section{ padding:clamp(88px,15vh,190px) var(--gutter); }
 .spotify__progress{ position:relative; flex:1; height:2px; background:rgba(255,255,255,.14); }
 .spotify__progress[hidden]{ display:none; }
 .spotify__progress i{ position:absolute; inset:0 auto 0 0; width:var(--p,0); background:var(--ink); }
+.spotify__open{ white-space:nowrap; color:var(--ink); text-decoration:underline; text-underline-offset:3px; }
+.spotify__open[hidden]{ display:none; }
 .spotify__pill{ display:inline-flex; align-items:center; gap:8px; }
 .spotify__pill i{ width:6px; height:6px; border-radius:50%; background:var(--champagne); }
 .spotify.is-live .spotify__pill i,.spotify__card.is-live .spotify__pill i{ background:#5fd38a; box-shadow:0 0 7px rgba(95,211,138,.7); }
@@ -557,6 +573,7 @@ section{ padding:clamp(88px,15vh,190px) var(--gutter); }
 
 @media (max-width:900px){
   .realm::after{ background:linear-gradient(to top,rgba(5,5,5,.94) 40%,rgba(5,5,5,.4)); }
+  .spotify__card.is-live .spotify__hint{ display:none; }
   .spotify__deck{ grid-template-columns:minmax(0,1fr); }
   .peek{ display:none; }
   .manifest__bento{ grid-template-columns:minmax(0,1fr); }
@@ -577,7 +594,6 @@ section{ padding:clamp(88px,15vh,190px) var(--gutter); }
   main > *{ min-width:0; }
   .hero{ order:-2; }
   #about{ order:-1; }
-  .island__home{ order:-2; }
   .island a[href="#about"]{ order:-1; }
   .house,.house--flip{ grid-template-columns:minmax(0,1fr); }
   .house--flip img{ order:0; }
@@ -586,5 +602,7 @@ section{ padding:clamp(88px,15vh,190px) var(--gutter); }
   html{ scroll-behavior:auto; }
   .rise{ opacity:1; transform:none; transition:none; }
   .hero__planet{ translate:none; transition:none; }
+  .nowpill__text b,.nowpill__text span{ text-overflow:ellipsis; }
+  .nowpill__text i{ display:inline; animation:none !important; }
   .boot,.boot *{ transition:none !important; }
 }
