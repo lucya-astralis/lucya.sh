@@ -1,7 +1,7 @@
 import { rackData } from '../js/systems-data.js?v=20261031-kira';
 import { initSystems } from '../js/systems.js?v=20261031-rack';
 import { initWeather } from '../js/weather.js';
-import { initSpotify } from '../js/spotify.js?v=20261031-pill';
+import { initSpotify } from '../js/spotify.js?v=20261031-once';
 import { createScrambler } from '../js/text-scramble.js';
 import { buttons, friends } from './buttons.js';
 
