@@ -48,6 +48,7 @@ export function startPlanet(hero, canvas, reduced) {
 
   const dpr = Math.min(window.devicePixelRatio || 1, matchMedia('(pointer: coarse)').matches ? 1.25 : 1.5);
   let W = 0, H = 0, ready = false, shown = false, seen = true, moving = !reduced;
+  let clock = 0;   // its own time: it only passes while the planet is on show, so it never has to catch up
 
   planet.define('prime', { kind: 'terrestrial', maps: MAPS, flat: [5 / 255, 14 / 255, 33 / 255], cloud: true, frame: FRAME, atm: { halo: 0.42 } });
 
@@ -64,7 +65,7 @@ export function startPlanet(hero, canvas, reduced) {
     W = hero.clientWidth;
     H = hero.clientHeight;
     planet.resize(W, H, dpr);
-    draw(performance.now() / 1000);
+    draw(clock);
   };
   new ResizeObserver(resize).observe(hero);
 
@@ -78,8 +79,9 @@ export function startPlanet(hero, canvas, reduced) {
     if (!seen || now - scrolled < SCROLL_REST_MS) { last = 0; return; }
     if (now - last < FRAME_MS) return;
     if (last && ++count > 6 && now - last > SLOW_MS && ++late > 8) moving = false;
+    if (last) clock += (now - last) / 1000;
     last = now;
-    draw(now / 1000);
+    draw(clock);
   }
 
   // whichever comes last, the maps or the boot lifting, raises it

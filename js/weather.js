@@ -47,8 +47,8 @@ export function initWeather() {
 
   const tick = () => {
     const z = wx && wx.tz ? zoned(wx.tz) : null;
-    $('wxTime').textContent = z ? `${pad2(z.h)}:${pad2(z.m)}` : '—';
-    $('wxOffset').textContent = z ? z.offset : '—';
+    $('wxTime').textContent = z ? `${pad2(z.h)}:${pad2(z.m)}` : '-';
+    $('wxOffset').textContent = z ? z.offset : '-';
     // the tick is how far the location is through its day
     $('wxSky').style.setProperty('--now', z ? `${(z.h * 60 + z.m) / 14.4}%` : '0%');
     $('wxDay').style.visibility = z ? '' : 'hidden';
@@ -69,20 +69,20 @@ export function initWeather() {
 
   const render = () => {
     if (!wx) {
-      $('wxPlace').textContent = "I'M IN · —";
+      $('wxPlace').textContent = "I'M IN · -";
       $('wxNow').textContent = 'AWAITING WEATHER';
-      $('wxRange').textContent = '— / —';
-      $('wxSun').textContent = 'SUN —';
+      $('wxRange').textContent = '- / -';
+      $('wxSun').textContent = 'SUN -';
       $('wxSky').style.background = '';
       card.title = 'Where I am right now · no weather data available';
       tick();
       return;
     }
     const t = wx.today || {};
-    $('wxPlace').textContent = `I'M IN · ${String(wx.place || '—').toUpperCase()}`;
+    $('wxPlace').textContent = `I'M IN · ${String(wx.place || '-').toUpperCase()}`;
     $('wxNow').textContent = `${glyph(wx.code, wx.is_day)} ${Math.round(wx.temp_c)}°C ${String(wx.text || '').toUpperCase()}`;
-    $('wxRange').textContent = num(t.min_c) && num(t.max_c) ? `L ${deg(t.min_c)} / H ${deg(t.max_c)}` : '— / —';
-    $('wxSun').textContent = t.sunrise && t.sunset ? `SUN ${t.sunrise}–${t.sunset}` : 'SUN —';
+    $('wxRange').textContent = num(t.min_c) && num(t.max_c) ? `L ${deg(t.min_c)} / H ${deg(t.max_c)}` : '- / -';
+    $('wxSun').textContent = t.sunrise && t.sunset ? `SUN ${t.sunrise}–${t.sunset}` : 'SUN -';
     $('wxSky').style.background = sky(t.sunrise, t.sunset);
     const tip = [`Where I am right now: ${wx.place || 'unknown'}`];
     if (num(wx.feels_c)) tip.push(`feels like ${deg(wx.feels_c)}`);

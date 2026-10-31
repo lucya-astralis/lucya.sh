@@ -138,7 +138,7 @@ export function initSpotify(scrambleTo) {
       const s = songs[idx];
       swap(() => {
         cover.src = s.cover;
-        cover.alt = s.title + ' — ' + s.artist;
+        cover.alt = s.title + ' · ' + s.artist;
         scrambleTo(trackEl, s.title);
         artistEl.textContent = s.artist;
         counterEl.textContent = pad2(idx + 1) + ' / ' + pad2(songs.length);
@@ -456,7 +456,7 @@ export function initSpotify(scrambleTo) {
           // the puller sends no cover rather than a stale one; the logo beats
           // leaving the previous track's art up
           cover.src = t.cover || 'images/profile/sociallinks/spotify_color.svg';
-          cover.alt = t.title + ' — ' + t.artist;
+          cover.alt = t.title + ' · ' + t.artist;
           scrambleTo(trackEl, t.title);
           artistEl.textContent = t.artist || '';
           apply();

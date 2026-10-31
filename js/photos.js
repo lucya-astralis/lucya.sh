@@ -60,7 +60,7 @@ export function initPhotos(LITE) {
             data-src="${escHtml(big)}" data-src-fallback="${escHtml(thumb)}"
             data-caption="${escHtml(cap)}">
       <div class="photo-card__img-wrap">
-        <img src="${escHtml(thumb)}" alt="${escHtml(`${alb} — ${file}`)}" loading="lazy" decoding="async" />
+        <img src="${escHtml(thumb)}" alt="${escHtml(`${alb} · ${file}`)}" loading="lazy" decoding="async" />
         <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
       </div>
       <figcaption class="photo-card__cap">

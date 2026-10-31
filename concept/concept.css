@@ -12,7 +12,7 @@
   --magnesium:linear-gradient(150deg,#d6d1c6 0%,#a8a397 46%,#c6c1b5 100%);
   --spring:cubic-bezier(.32,.72,0,1);
   --calm:cubic-bezier(.22,.61,.36,1);
-  --gutter:max(clamp(16px,5vw,72px),calc((100vw - 1400px) / 2));   /* the content stops at 1400px; backgrounds run on */
+  --gutter:max(clamp(16px,5vw,72px),calc((100vw - 1400px) / 2),env(safe-area-inset-left),env(safe-area-inset-right));   /* the content stops at 1400px; backgrounds run on */
   /* the screen plane as the intro's camera ends on it: it covers the viewport */
   --plane:max(100vw,150vh);
 }
@@ -96,7 +96,7 @@ h2{ font-size:clamp(34px,5.4vw,84px); line-height:1.02; font-weight:500; letter-
 
 /* ---- floating nav -------------------------------------------------------- */
 .island{
-  position:fixed; z-index:30; top:18px; left:50%;
+  position:fixed; z-index:30; top:calc(18px + env(safe-area-inset-top)); left:50%;
   transform:translateX(-50%);
   display:flex; align-items:center; gap:2px;
   max-width:calc(100vw - 24px);
@@ -133,7 +133,7 @@ h2{ font-size:clamp(34px,5.4vw,84px); line-height:1.02; font-weight:500; letter-
 
 /* what is playing right now, hanging under the nav; only while something does */
 .nowpill{
-  position:fixed; z-index:30; top:68px; left:50%;
+  position:fixed; z-index:30; top:calc(68px + env(safe-area-inset-top)); left:50%;
   display:flex; align-items:center; gap:9px;
   max-width:min(250px,calc(100vw - 24px));
   padding:4px 14px 4px 4px;
@@ -164,14 +164,15 @@ h2{ font-size:clamp(34px,5.4vw,84px); line-height:1.02; font-weight:500; letter-
   position:relative;
   isolation:isolate;
   overflow:clip;
-  /* svh, not dvh: Safari's toolbar slides away mid-scroll, and with it the hero
-     would change height and carry the horizon, the logo and the planet along */
+  /* lvh: the whole screen, under Safari's bars too, and unlike dvh it stays put when
+     they slide away, so the horizon, the logo and the planet do not move with them */
   min-height:100vh;
-  min-height:100svh;
+  min-height:100lvh;
   padding:clamp(96px,14vh,150px) var(--gutter) clamp(28px,5vh,56px);
+  padding-bottom:calc(clamp(28px,5vh,56px) + 100lvh - 100svh);   /* the words stay clear of the bar */
   display:flex; flex-direction:column; justify-content:flex-end;
   --horizon:46vh;    /* hero-planet.js puts the limb here */
-  --horizon:46svh;
+  --horizon:46lvh;
   --word-h:calc((100vw - var(--gutter) * 2) * .1405);
   --word-top:calc(var(--horizon) - var(--word-h) * .7);
 }
@@ -583,7 +584,8 @@ section{ padding:clamp(88px,15vh,190px) var(--gutter); }
 .foot__legal a{ text-decoration:underline; text-underline-offset:3px; }
 
 /* entries: heavy and slow, resolved by an observer, never a scroll listener */
-.rise{ opacity:0; transform:translateY(46px); transition:opacity 1s var(--spring), transform 1.1s var(--spring); }
+.rise{ opacity:0; transform:translateY(22px); transition:opacity .8s ease, transform .9s var(--calm); }
+.rise:not(.is-in){ will-change:opacity,transform; }   /* its layer is ready before it moves */
 .rise.is-in{ opacity:1; transform:none; }
 
 @media (min-width:901px){
@@ -638,12 +640,49 @@ section{ padding:clamp(88px,15vh,190px) var(--gutter); }
   .spotify__timeline{ margin:18px 0 12px; }
   .spotify__dots{ gap:5px; }
   .wall{ justify-content:center; gap:10px 8px; }
+  /* two panels with nothing left over: the machines, then the rest, each row even */
+  .telemetry{ gap:18px; }
+  .fleet,.metrics{
+    grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px 12px;
+    padding:16px; border:0; border-radius:18px;
+    background:rgba(255,255,255,.035); box-shadow:inset 0 0 0 1px var(--faint);
+  }
+  .fleet__stat:last-child{ grid-column:auto; }
+  #wxMetric{ padding-bottom:16px; border-bottom:1px solid var(--faint); }
+  .fleet__stat span,.metric > span{ font-size:10px; letter-spacing:.06em; }
+  .fleet__stat b,.metric b{ font-size:21px; }
+  #wxMetric b{ font-size:32px; }
+  .metric,.fleet__stat{ justify-content:flex-start; }
   /* a 2px line in an 18px target */
   .spotify__dots > *{ --dot:rgba(255,255,255,.14); height:18px; margin-block:-8px; }
   .spotify__dots > .is-active,.spotify__dots > .is-played{ --dot:var(--ink); }
   .spotify__dots > *,.spotify__dots > .is-active,.spotify__dots > .is-played{ background:linear-gradient(var(--dot),var(--dot)) center / 100% 2px no-repeat; }
 }
+/* the numbers come in one after another, not as a block */
+.fleet > *,.metrics > *{ opacity:0; translate:0 16px; transition:opacity .7s ease var(--stagger,0s), translate .8s var(--calm) var(--stagger,0s); }
+.fleet.is-in > *,.metrics.is-in > *{ opacity:1; translate:none; }
+:is(.fleet,.metrics) > :nth-child(2){ --stagger:.09s; }
+:is(.fleet,.metrics) > :nth-child(3){ --stagger:.18s; }
+:is(.fleet,.metrics) > :nth-child(4){ --stagger:.27s; }
+
+/* Tied to the scroll itself, so the page moves with the hand instead of playing back
+   at it. Compositor only; a browser without these timelines simply goes without. */
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .hero__planet{ animation:hero-sink linear both; animation-timeline:scroll(root); animation-range:0 100lvh; }
+    /* the whole heading block moves as one: a lone h2 slides over the words around it */
+    :is(.fleet__lead,.inventory__head,.lid__text,.walls__say,.split > div:first-child,.spotify > .rise:first-child,.work > .rise:first-child,.photos > .rise:first-child){ animation:drift-up linear both; animation-timeline:view(); animation-range:entry 0% cover 40%; }
+    .photos{ overflow-x:clip; }
+    .strip{ animation:slide-in linear both; animation-timeline:view(); animation-range:entry 0% cover 45%; }
+    :is(.house,.realm,.deck,.neofetch,.rackphoto){ animation:settle linear both; animation-timeline:view(); animation-range:entry 0% cover 38%; }
+    @keyframes hero-sink{ to{ transform:translateY(16%) scale(1.05); } }
+    @keyframes drift-up{ from{ translate:0 30px; } }
+    @keyframes slide-in{ from{ transform:translateX(110px); } }
+    @keyframes settle{ from{ scale:.93; } }
+  }
+}
 @media (prefers-reduced-motion:reduce){
+  .fleet > *,.metrics > *{ opacity:1; translate:none; transition:none; }
   html{ scroll-behavior:auto; }
   .rise{ opacity:1; transform:none; transition:none; }
   .hero__planet{ translate:none; transition:none; }

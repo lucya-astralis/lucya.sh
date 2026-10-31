@@ -1,7 +1,7 @@
-import { rackData } from '../js/systems-data.js?v=20261031-kira';
-import { initSystems } from '../js/systems.js?v=20261031-rack';
-import { initWeather } from '../js/weather.js';
-import { initSpotify } from '../js/spotify.js?v=20261031-once';
+import { rackData } from '../js/systems-data.js?v=20261031-text';
+import { initSystems } from '../js/systems.js?v=20261031-text';
+import { initWeather } from '../js/weather.js?v=20261031-text';
+import { initSpotify } from '../js/spotify.js?v=20261031-text';
 import { createScrambler } from '../js/text-scramble.js';
 import { buttons, friends } from './buttons.js';
 
@@ -50,7 +50,7 @@ const seen = new IntersectionObserver((entries) => {
       seen.unobserve(entry.target);
     }
   }
-}, { rootMargin: '0px 0px -8% 0px' });
+}, { rootMargin: '0px 0px 8% 0px' });   // begins just below the fold: on a fast scroll it is under way as it arrives
 document.querySelectorAll('.rise').forEach((el) => seen.observe(el));
 
 // ---- live data, the same files and rules as the main page -----------------
@@ -94,7 +94,7 @@ window.addEventListener('lucya:track', ({ detail: track }) => {
   if (link) spotifyOpen.href = track.url;
   if (!track) return;
   nowPill.hidden = false;
-  nowPill.title = `${track.title} — ${track.artist || ''}`;
+  nowPill.title = `${track.title} · ${track.artist || ''}`;
   document.getElementById('nowPillCover').src = track.cover || 'images/profile/sociallinks/spotify_color.svg';
   document.getElementById('nowPillTitle').textContent = track.title;
   document.getElementById('nowPillArtist').textContent = track.artist || '';
@@ -247,7 +247,7 @@ navLinks.forEach((_, section) => spy.observe(section));
 // ---- start-up: picks up from the intro's last frame ------------------------
 // Loads behind the intro, near 800 KB of maps, so it is ready when the boot lifts;
 // it stays out of sight and draws nothing until show().
-const planet = import('./hero-planet.js?v=20261031-still')
+const planet = import('./hero-planet.js?v=20261031-clock')
   .then(({ startPlanet }) => startPlanet($('hero'), $('heroPlanet'), REDUCED))
   .catch((err) => {
     console.warn('[planet] standing in the render:', err);

@@ -571,19 +571,19 @@ import { initWeather } from './js/weather.js';
     const fill = (id, pct) => { document.getElementById(id).style.width = `${Math.min(100, Math.max(0, pct))}%`; };
     const nas = find('vega');
     const valid = number(nas?.fs_used_gib) && number(nas?.fs_total_gib) && nas.fs_total_gib > 0 && nas.fs_used_gib <= nas.fs_total_gib;
-    put('nasUsed', valid ? (nas.fs_used_gib / 1024).toFixed(2) : '—');
-    put('nasTotal', valid ? ` / ${(nas.fs_total_gib / 1024).toFixed(2)} TiB` : ' / — TiB');
+    put('nasUsed', valid ? (nas.fs_used_gib / 1024).toFixed(2) : '-');
+    put('nasTotal', valid ? ` / ${(nas.fs_total_gib / 1024).toFixed(2)} TiB` : ' /, TiB');
     put('nasFree', valid ? `${((nas.fs_total_gib - nas.fs_used_gib) / 1024).toFixed(2)} TiB FREE` : 'AWAITING TELEMETRY');
     fill('nasFill', valid ? nas.fs_used_gib / nas.fs_total_gib * 100 : 0);
     document.getElementById('nasFree').classList.toggle('kpi__sub--ok', valid && nas.fs_used_gib / nas.fs_total_gib < .85);
-    put('nasPct', valid ? `${(nas.fs_used_gib / nas.fs_total_gib * 100).toFixed(1)}% USED` : '—');
-    put('nasUp', number(nas?.uptime_s) ? `UP ${Math.floor(nas.uptime_s / 86400)}D ${Math.floor(nas.uptime_s % 86400 / 3600)}H` : 'UP —');
-    put('nasTemp', typeof nas?.temp_c === 'number' && Number.isFinite(nas.temp_c) ? `${nas.temp_c.toFixed(1)} °C` : '— °C');
+    put('nasPct', valid ? `${(nas.fs_used_gib / nas.fs_total_gib * 100).toFixed(1)}% USED` : '-');
+    put('nasUp', number(nas?.uptime_s) ? `UP ${Math.floor(nas.uptime_s / 86400)}D ${Math.floor(nas.uptime_s % 86400 / 3600)}H` : 'UP -');
+    put('nasTemp', typeof nas?.temp_c === 'number' && Number.isFinite(nas.temp_c) ? `${nas.temp_c.toFixed(1)} °C` : '- °C');
     for (const name of ['lynx', 'chimera']) {
       const host = find(name);
       const validRam = number(host?.mem_pct) && host.mem_pct <= 100;
-      put(`${name}Cpu`, number(host?.cpu_pct) ? `CPU ${host.cpu_pct.toFixed(1)}%` : 'CPU —');
-      put(`${name}Ram`, validRam ? `${host.mem_pct.toFixed(1)}%` : '—');
+      put(`${name}Cpu`, number(host?.cpu_pct) ? `CPU ${host.cpu_pct.toFixed(1)}%` : 'CPU -');
+      put(`${name}Ram`, validRam ? `${host.mem_pct.toFixed(1)}%` : '-');
       fill(`${name}Fill`, validRam ? host.mem_pct : 0);
     }
     for (const id of ['nasMetric', 'ramMetric']) {
@@ -766,7 +766,7 @@ import { initWeather } from './js/weather.js';
 
     const sample = () => {
       if (ov){ ov.dataset.state='down'; if(ovTag)ovTag.textContent='CHECKMK · OFFLINE';
-        $('ovRoom').hidden=true; if(ovHosts)ovHosts.textContent='— / —'; if(ovSvc)ovSvc.textContent='— / —'; if(ovHostsBar)ovHostsBar.style.width='0%'; if(ovSvcBar)ovSvcBar.style.width='0%'; $('ovSummary').textContent='AWAITING LIVE TELEMETRY'; $('ovAlerts').hidden=true; if(ovSrc)ovSrc.textContent='sample data'; if(ovAge)ovAge.textContent='awaiting probe'; }
+        $('ovRoom').hidden=true; if(ovHosts)ovHosts.textContent='- / -'; if(ovSvc)ovSvc.textContent='- / -'; if(ovHostsBar)ovHostsBar.style.width='0%'; if(ovSvcBar)ovSvcBar.style.width='0%'; $('ovSummary').textContent='AWAITING LIVE TELEMETRY'; $('ovAlerts').hidden=true; if(ovSrc)ovSrc.textContent='sample data'; if(ovAge)ovAge.textContent='awaiting probe'; }
     };
 
     const tickAge = () => {
@@ -921,7 +921,7 @@ import { initWeather } from './js/weather.js';
     btn.className = 'lite-toggle mono';
     btn.innerHTML = `LITE · <b>${LITE ? 'ON' : 'OFF'}</b>`;
     btn.title = LITE
-      ? 'lite mode: animations/video off for weak devices — click for the full experience'
+      ? 'lite mode: animations/video off for weak devices, click for the full experience'
       : 'click to switch to lite mode (less CPU/GPU/data)';
     btn.setAttribute('aria-pressed', String(LITE));
     btn.addEventListener('click', () => {
