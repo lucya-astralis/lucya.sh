@@ -18,5 +18,11 @@ for (const name of ['panasonic', 'letsnote']) {
   await page.locator('svg').screenshot({ path: join(here, `${name}.mask.png`), omitBackground: true });
 }
 
+// the Proxmox sticker: the logo on a white label
+await page.setContent(`<!doctype html><style>html,body{margin:0;background:transparent}
+  div{display:inline-block;padding:12px 18px;background:#fff;border-radius:24px}
+  svg{display:block;width:1000px;height:auto}</style><div>${(await readFile(join(here, 'proxmox.svg'), 'utf8')).replace(/<\?xml[^>]*\?>/, '').replace(/<!DOCTYPE[^>]*>/, '').replace(/<!--[\s\S]*?-->/g, '')}</div>`);
+await page.locator('div').screenshot({ path: join(here, '..', 'stickers', 'proxmox.png'), omitBackground: true });
+
 await browser.close();
 console.log('masks written');

@@ -1,10 +1,10 @@
 import * as THREE from './vendor/three.bundle.min.js';
 import { gsap, ScrollTrigger } from './vendor/gsap.bundle.min.js';
-import { createProceduralLaptop } from './laptop/ProceduralLaptop.js?v=20261030-panel';
-import { createGltfLaptop } from './laptop/GltfLaptop.js?v=20261030-panel';
-import { TIMELINE } from './intro.timeline.js?v=20261030-panel';
+import { createProceduralLaptop } from './laptop/ProceduralLaptop.js?v=20261031-light';
+import { createGltfLaptop } from './laptop/GltfLaptop.js?v=20261031-light';
+import { TIMELINE } from './intro.timeline.js?v=20261031-light';
 
-const SCREEN_URL = 'intro/boot-screen.webp?v=20261030-panel';
+const SCREEN_URL = 'intro/boot-screen.webp?v=20261031-light';
 const VEC_KEYS = ['camPos', 'camTarget', 'camUp', 'rot', 'pos'];
 const FADE_MS = 600;  // the fade in intro.css
 const SETTLE_MS = 700; // the wheel has to rest this long before the page takes it
@@ -25,13 +25,13 @@ function buildScene(renderer) {
   // reflections only: scene.background stays empty, the canvas clears to #000
   const env = pmrem.fromScene(room, 0.04);
   scene.environment = env.texture;
-  scene.environmentIntensity = 0.75;
+  scene.environmentIntensity = 0.5;
   room.dispose();
   pmrem.dispose();
 
-  const rim = new THREE.DirectionalLight(0xdfe8ff, 2.6);
+  const rim = new THREE.DirectionalLight(0xdfe8ff, 1.8);
   rim.position.set(-40, 30, -50);
-  const rim2 = new THREE.DirectionalLight(0xfff0e0, 1.4);
+  const rim2 = new THREE.DirectionalLight(0xfff0e0, 1.0);
   rim2.position.set(50, 20, -30);
   scene.add(rim, rim2);
   return { scene, env };

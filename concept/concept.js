@@ -1,5 +1,5 @@
-import { rackData } from '../js/systems-data.js?v=20261027-rack';
-import { initSystems } from '../js/systems.js?v=20261027-rack';
+import { rackData } from '../js/systems-data.js?v=20261031-kira';
+import { initSystems } from '../js/systems.js?v=20261031-kira';
 import { initWeather } from '../js/weather.js';
 import { initSpotify } from '../js/spotify.js?v=20261027-lang';
 import { createScrambler } from '../js/text-scramble.js';
@@ -56,6 +56,7 @@ const STICKERS = [
   ['rei', 30.6, 131, 56, 0], ['arasaka', 33.6, 184, 62.4, 0], ['japan', 244.8, 184, 49.5, 0],
   ['esa', 32, 58, 36, -6], ['frieren', 232, 72, 40, 4], ['eu', 84, 112, 32, 5], ['kuromi', 128, 100, 30, -5],
   ['pride', 176, 108, 38, -8], ['potato', 234, 133, 24, 7], ['jaxa', 112, 156, 50, 5], ['clawd', 173, 168, 44, -4],
+  ['proxmox', 184, 34, 62, -3], ['delacy', 72, 62, 30, -6],
 ];
 const deck = document.getElementById('deck');
 const logo = document.createElement('div');
@@ -68,15 +69,6 @@ for (const [name, x, y, width, rotation] of STICKERS) {
   img.loading = 'lazy';
   img.style.cssText = `left:${x / 2.73}%;top:${y / 2.092}%;width:${width / 2.73}%;--r:${rotation}deg`;
   deck.append(img);
-}
-
-const strip = document.getElementById('strip');
-for (const name of ['server', 'datacenter', 'iphone-crt', 'wald', 'lain', 'server-macbook', 'iphones', 'blahaj']) {
-  const img = new Image();
-  img.src = `images/photos/${name}.jpeg`;
-  img.alt = '';
-  img.loading = 'lazy';
-  strip.append(img);
 }
 
 const seen = new IntersectionObserver((entries) => {
@@ -189,6 +181,65 @@ fetch('data.json').then((r) => r.json()).then(({ kpis }) => {
   $('kpiJapan').textContent = `${days} d`;
   $('kpiJapanSub').textContent = now < start ? japan.sub : now < end ? japan.subIn : japan.subAfter;
 }).catch(() => {});
+
+// ---- photos, live from the gallery ----------------------------------------
+// Thumbs only: the gallery sends CORP: cross-origin on /thumb and not on /preview,
+// and originals run past 30 MB. A failed call leaves the local set standing.
+const GALLERY = 'https://images.lucya.sh';
+const ALBUMS = [
+  ['stripJapan', `${GALLERY}/api/showcase?album=japan_2026&limit=14`, []],
+  ['stripTech', `${GALLERY}/api/photos?album=tech&sort=date_desc&subtree=1&limit=14`,
+    ['server', 'datacenter', 'iphone-crt', 'wald', 'lain', 'server-macbook', 'iphones', 'blahaj']],
+];
+
+function photoCard(src, href, alt) {
+  const link = document.createElement(href ? 'a' : 'span');
+  if (href) {
+    link.href = href;
+    link.target = '_blank';
+    link.rel = 'noopener';
+  }
+  const img = new Image();
+  img.src = src;
+  img.alt = alt;
+  img.loading = 'lazy';
+  link.append(img);
+  return link;
+}
+
+for (const [id, url, fallback] of ALBUMS) {
+  const strip = document.getElementById(id);
+  const local = () => strip.append(...fallback.map((n) => photoCard(`images/photos/${n}.jpeg`, null, '')));
+  fetch(url, { mode: 'cors' })
+    .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`http ${r.status}`))))
+    .then(({ items }) => {
+      if (!Array.isArray(items) || !items.length) throw new Error('album empty');
+      strip.append(...items.map((it) => photoCard(it.urls.thumb_abs, it.urls.page_abs, it.album || '')));
+    })
+    .catch(() => {
+      if (fallback.length) local();
+      else strip.closest('.album').hidden = true;
+    });
+}
+
+// ---- nav: follows the page -------------------------------------------------
+// On a phone the bar is wider than the screen; it brings the current section
+// into view by itself instead of leaving that to a sideways swipe.
+const island = document.querySelector('.island');
+const navLinks = new Map([...island.querySelectorAll('a[href^="#"]:not(.island__home)')]
+  .map((a) => [document.querySelector(a.getAttribute('href')), a]).filter(([el]) => el));
+
+function markCurrent(link) {
+  island.querySelector('.is-current')?.classList.remove('is-current');
+  link.classList.add('is-current');
+  island.scrollTo({ left: link.offsetLeft - (island.clientWidth - link.offsetWidth) / 2, behavior: REDUCED ? 'auto' : 'smooth' });
+}
+const spy = new IntersectionObserver((entries) => {
+  for (const entry of entries) {
+    if (entry.isIntersecting) markCurrent(navLinks.get(entry.target));
+  }
+}, { rootMargin: '-45% 0px -50% 0px' });
+navLinks.forEach((_, section) => spy.observe(section));
 
 // ---- start-up: picks up from the intro's last frame ------------------------
 const POST = [

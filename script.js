@@ -1,6 +1,6 @@
 import { pad2, escHtml } from './js/utils.js';
 import { createScrambler } from './js/text-scramble.js';
-import { initSystems } from './js/systems.js?v=20261027-rack';
+import { initSystems } from './js/systems.js?v=20261031-kira';
 import { initSpotify } from './js/spotify.js?v=20261027-lang';
 import { initPhotos } from './js/photos.js';
 import { initWeather } from './js/weather.js';

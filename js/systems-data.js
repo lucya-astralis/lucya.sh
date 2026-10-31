@@ -254,6 +254,39 @@ export const neofetchData = [
                                   <span style="color: #e5c07b;">Locale:</span> <span style="color: #ffffff;">C</span>`
     },
     {
+      id: 'kira',
+      tab: 'kira',
+      group: 'mobile',
+      title: "kira.lucya.intra // panasonic let's note CF-QV9 / main laptop",
+      width: 1100,
+      // Silver-to-blue gradients echo the Let's note finish; same three blocks as aoi.
+      content: `                                        <span style="color:#83AED5;">lucya</span><span style="color:#A5AFBA;">@</span><span style="color:#83AED5;">kira</span>
+                                        <span style="color:#A5AFBA;">---------</span>
+
+                                        <span style="color:#F0F3F6;">▣ Hardware</span>
+<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#f0f3f6,#a8b8ca);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">├ Model </span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> Panasonic Let's note CF-QV9 (CFQV9-1)</span>
+<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#e7edf3,#9fb1c5);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">├ Screen</span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> 2880 x 1920 px @ 60 Hz in 12" (AUO116D) - 1.75x</span>
+<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#dfe8f0,#96aac0);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">├ CPU   </span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> Intel(R) Core(TM) i5-10310U (8) @ 2.21 GHz</span>
+<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#d6e2ed,#8da3bb);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">├ GPU   </span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> Intel(R) UHD Graphics (128.00 MiB) [Integrated]</span>
+<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#cddcea,#859cb6);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">├ Memory</span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> 12.90 GiB / 15.70 GiB (82%)</span>
+<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#c4d6e7,#7c95b1);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">├ Swap  </span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> 619.84 MiB / 2.88 GiB (21%)</span>
+<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#bcd1e4,#738eac);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">├ Disk  </span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> C:\\ - 150.67 GiB / 237.41 GiB (63%) - NTFS</span>
+<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#b3cbe1,#6a87a7);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">└ Charge</span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> 100% [AC Connected] - CF-VZSU1M</span>
+
+<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#aac5de,#6180a3);">/////////////////  /////////////////</span>    <span style="color:#A8C4DE;">▣ Software</span>
+<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#a1bfdb,#58799e);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">├ OS Ver</span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> Windows 11 Pro (26H1) x86_64</span>
+<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#99bad8,#4f7299);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">├ Kernel</span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> WIN32_NT 10.0.28000.3231</span>
+<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#90b4d5,#466b94);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">├ Uptime</span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> 7 hours, 58 mins</span>
+<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#87aed2,#3e648f);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">├ Shell </span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> Windows PowerShell 5.1.28000.2605</span>
+<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#7ea8cf,#355d8a);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">├ Term  </span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> Windows Terminal 1.24.12741.0</span>
+<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#76a3cc,#2c5685);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">├ Font  </span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> 0xProto Nerd Font (12pt) - Segoe UI (21pt)</span>
+<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#6d9dc9,#234f80);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">└ Theme </span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> Fluent - Custom #113864 - Dark</span>
+
+                                        <span style="color:#6D9DC9;">▣ Connectivity</span>
+                                        <span style="color:#83AED5;">├ Wi-Fi </span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> 192.168.11.11/24</span>
+                                        <span style="color:#83AED5;">└ Locale</span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> en_DE.CP437</span>`
+    },
+    {
       id: 'aoi',
       tab: 'aoi',
       group: 'mobile',
@@ -287,38 +320,6 @@ export const neofetchData = [
 <span style="color: #BD93F9;">                                  ├ DNS</span>    <span style="color: #BFBFBF;">-></span><span style="color: #F8F8F2;"> 192.168.178.1</span>
 <span style="color: #BD93F9;">                                  ├ Wi-Fi</span>  <span style="color: #BFBFBF;">-></span><span style="color: #F8F8F2;"> Varuna - 98% - 5 GHz - 802.11ac (Wi-Fi 5) - WPA2 Personal</span>
 <span style="color: #BD93F9;">                                  └ BT Ver</span> <span style="color: #BFBFBF;">-></span><span style="color: #F8F8F2;"> 5.2</span>`
-    },
-    {
-      id: 'kira',
-      tab: 'kira',
-      group: 'mobile',
-      title: "kira.lucya.intra // panasonic let's note CF-QV9 / main laptop / tablet",
-      width: 1100,
-      // Silver-to-blue gradients echo the Let's note finish.
-      content: `<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#f0f3f6,#a8b8ca);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">lucya</span><span style="color:#A5AFBA;">@</span><span style="color:#83AED5;">KIRA</span>
-<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#e7edf3,#9fb1c5);">/////////////////  /////////////////</span>    <span style="color:#A5AFBA;">----------</span>
-<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#dfe8f0,#96aac0);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">OS:</span> <span style="color:#F2F2F2;">Windows 11 Pro (26H1) x86_64</span>
-<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#d6e2ed,#8da3bb);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">Host:</span> <span style="color:#F2F2F2;">CFQV9-1 (001)</span>
-<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#cddcea,#859cb6);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">Kernel:</span> <span style="color:#F2F2F2;">WIN32_NT 10.0.28000.3231</span>
-<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#c4d6e7,#7c95b1);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">Uptime:</span> <span style="color:#F2F2F2;">7 hours, 58 mins</span>
-<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#bcd1e4,#738eac);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">Shell:</span> <span style="color:#F2F2F2;">Windows PowerShell 5.1.28000.2605</span>
-<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#b3cbe1,#6a87a7);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">Display (AUO116D):</span> <span style="color:#F2F2F2;">2880x1920 @ 1.75x in 12", 60 Hz [Built-in]</span>
-                                        <span style="color:#83AED5;">Window Manager:</span> <span style="color:#F2F2F2;">Desktop Window Manager 10.0.28000.2804</span>
-<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#aac5de,#6180a3);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">WM Theme:</span> <span style="color:#F2F2F2;">Custom - #113864 (System: Dark, Apps: Dark)</span>
-<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#a1bfdb,#58799e);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">Theme:</span> <span style="color:#F2F2F2;">Fluent</span>
-<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#99bad8,#4f7299);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">Icons:</span> <span style="color:#F2F2F2;">Recycle Bin</span>
-<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#90b4d5,#466b94);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">Font:</span> <span style="color:#F2F2F2;">Segoe UI (21pt) [Caption / Menu / Message / Status]</span>
-<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#87aed2,#3e648f);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">Cursor:</span> <span style="color:#F2F2F2;">default (32px)</span>
-<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#7ea8cf,#355d8a);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">Terminal:</span> <span style="color:#F2F2F2;">Windows Terminal 1.24.12741.0</span>
-<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#76a3cc,#2c5685);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">Terminal Font:</span> <span style="color:#F2F2F2;">0xProto Nerd Font (12pt)</span>
-<span class="nlogo--kira" style="background-image:linear-gradient(110deg,#6d9dc9,#234f80);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">CPU:</span> <span style="color:#F2F2F2;">Intel(R) Core(TM) i5-10310U (8) @ 2.21 GHz</span>
-                                        <span style="color:#83AED5;">GPU:</span> <span style="color:#F2F2F2;">Intel(R) UHD Graphics (128.00 MiB) [Integrated]</span>
-                                        <span style="color:#83AED5;">Memory:</span> <span style="color:#F2F2F2;">12.90 GiB / 15.70 GiB (82%)</span>
-                                        <span style="color:#83AED5;">Swap:</span> <span style="color:#F2F2F2;">619.84 MiB / 2.88 GiB (21%)</span>
-                                        <span style="color:#83AED5;">Disk (C:\\):</span> <span style="color:#F2F2F2;">150.67 GiB / 237.41 GiB (63%) - NTFS</span>
-                                        <span style="color:#83AED5;">Local IP (Wi-Fi):</span> <span style="color:#F2F2F2;">192.168.11.11/24</span>
-                                        <span style="color:#83AED5;">Battery (CF-VZSU1M):</span> <span style="color:#F2F2F2;">100% [AC Connected]</span>
-                                        <span style="color:#83AED5;">Locale:</span> <span style="color:#F2F2F2;">en_DE.CP437</span>`
     },
     {
       id: 'ceres',

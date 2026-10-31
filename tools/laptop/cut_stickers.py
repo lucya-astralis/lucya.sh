@@ -25,7 +25,44 @@ SOURCES = [
     ("st,small,507x507-pad,600x600,f8f8f8.u1.jpg", "jaxa", 7, 0),
     ("kuromi.png", "kuromi", "ring", 0),
     ("arasaka.jpg", "arasaka", "tag", 0),
+    ("Delacy.webp", "delacy", "contour", 16),
 ]
+
+
+def spread(mask, radius):
+    """Grows a boolean mask by a disc, in one go: PIL's MaxFilter is a square."""
+    y, x = np.ogrid[-radius:radius + 1, -radius:radius + 1]
+    disc = np.zeros(mask.shape)
+    disc[:2 * radius + 1, :2 * radius + 1] = x * x + y * y <= radius * radius
+    grown = np.fft.irfft2(np.fft.rfft2(mask.astype(float)) * np.fft.rfft2(disc), mask.shape)
+    return np.roll(grown, (-radius, -radius), (0, 1)) > 0.5
+
+
+def cut_contour(img, edge):
+    """For a logo with no sticker of its own: a white die-cut that follows its outline,
+    closed over the holes and small notches, the way a cutter would run around it."""
+    scale = 3
+    pad = 80
+    rgba = img.convert("RGBA")
+    rgba = rgba.resize((img.width * scale, img.height * scale), Image.LANCZOS)
+    canvas = Image.new("RGBA", (rgba.width + 2 * pad * scale, rgba.height + 2 * pad * scale), (255, 255, 255, 0))
+    canvas.paste(rgba, (pad * scale, pad * scale))
+    px = np.asarray(canvas, dtype=np.int16)
+    # the print is whatever is opaque and not white
+    art = (px[..., 3] > 127) & (px[..., :3].min(axis=2) < 200)
+    close = 28 * scale
+    shape = ~spread(~spread(art, edge * scale + close), close)
+    # holes the closing did not reach are backed too: only the outside stays clear
+    fill = Image.fromarray((shape * 255).astype(np.uint8)).convert("RGB")
+    ImageDraw.floodfill(fill, (0, 0), (255, 0, 254))
+    outside = np.asarray(fill)[..., 2] == 254
+    outline = Image.fromarray(np.where(outside, 0, 255).astype(np.uint8))
+    outline = outline.filter(ImageFilter.GaussianBlur(5)).point(lambda v: 255 if v > 127 else 0).filter(ImageFilter.GaussianBlur(1.2))
+    out = Image.new("RGB", canvas.size, (252, 252, 252))
+    out.paste(canvas.convert("RGB"), (0, 0), canvas.getchannel("A"))
+    out = out.convert("RGBA")
+    out.putalpha(outline)
+    return out.resize((canvas.width // 2, canvas.height // 2), Image.LANCZOS)
 
 
 def cut_ring(img):
@@ -108,6 +145,8 @@ for name, out, tolerance, edge in SOURCES:
         result = cut_ring(img)
     elif tolerance == "tag":
         result = cut_tag(img)
+    elif tolerance == "contour":
+        result = cut_contour(img, edge)
     else:
         result = cut(img, tolerance, edge) if tolerance else img.convert("RGBA")
     result = result.crop(result.getchannel("A").getbbox())

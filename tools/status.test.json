@@ -1,0 +1,31 @@
+{
+  "source": "test",
+  "summary": { "hosts_up": 4, "hosts_total": 4, "services_ok": 96, "services_warn": 0, "services_crit": 0, "services_total": 96 },
+  "hosts": [
+    {
+      "name": "lynx", "state": "up", "uptime_s": 1912300, "cpu_pct": 14.2, "load1": 0.86,
+      "mem_pct": 41.3, "mem_used_gib": 26.4, "mem_total_gib": 64, "temp_c": 46,
+      "fs_used_gib": 512, "fs_total_gib": 1863, "fs_pct": 27.5,
+      "svc_ok": 34, "svc_warn": 0, "svc_crit": 0
+    },
+    {
+      "name": "vega", "state": "up", "uptime_s": 3456000, "cpu_pct": 6.8, "load1": 0.41,
+      "mem_pct": 58.1, "mem_used_gib": 18.6, "mem_total_gib": 32, "temp_c": 39, "disk_temp_c": 34,
+      "fs_used_gib": 14336, "fs_total_gib": 29184, "fs_pct": 49.1,
+      "pools_ok": 2, "pools_total": 2, "disks_ok": 6, "disks_total": 6, "fans_ok": 3, "fans_total": 3,
+      "svc_ok": 28, "svc_warn": 0, "svc_crit": 0
+    },
+    {
+      "name": "chimera", "state": "up", "uptime_s": 871200, "cpu_pct": 22.5, "load1": 1.74,
+      "mem_pct": 63.7, "mem_used_gib": 40.8, "mem_total_gib": 64, "temp_c": 52,
+      "fs_used_gib": 871, "fs_total_gib": 1863, "fs_pct": 46.8,
+      "pools_ok": 1, "pools_total": 1, "fans_ok": 4, "fans_total": 4,
+      "svc_ok": 22, "svc_warn": 0, "svc_crit": 0
+    },
+    {
+      "name": "sw-01", "state": "up", "uptime_s": 7776000,
+      "ports_up": 14, "ports_monitored": 24, "traffic_bps": 184000000,
+      "svc_ok": 12, "svc_warn": 0, "svc_crit": 0
+    }
+  ]
+}

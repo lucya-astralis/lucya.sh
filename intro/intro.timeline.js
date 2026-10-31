@@ -18,7 +18,7 @@ export const TIMELINE = {
   scrub: 0.6,           // seconds the animation trails the scrollbar
   ease: 'power2.inOut', // default between keyframes
   fov: 30,
-  glow: 60,             // how much light the display throws on the keys
+  glow: 34,             // how much light the display throws on the keys
 
   // below this viewport aspect the camera backs off proportionally, so the
   // laptop still fits the width on a portrait phone
