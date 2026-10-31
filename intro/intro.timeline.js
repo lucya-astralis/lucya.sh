@@ -8,6 +8,7 @@
    laptop.rot / pos           the whole device (x, y, z)
    hinge                      0 closed, 180 flat, 360 tablet
    ease / cameraEase          cameraEase lets the camera move on its own curve
+   hingeEase                  and hingeEase the lid
    fit                        0 = use camera.*, 1 = the computed pose where the
                               screen plane exactly covers the viewport
    power                      display brightness, 0 off to 1 on
@@ -40,12 +41,15 @@ export const TIMELINE = {
     { at: 0.15 },
     {
       // one move: the camera drops early while the machine still shows its back,
-      // exhaust grille and all, then it swings round past its ports
+      // exhaust grille and all, then it swings round past its ports. The lid is
+      // already lifting by then, and runs straight on into the next stretch
       at: 0.5,
       camera: { pos: [0, 14, 74], target: [0, 3, 0], up: [0, 1, 0] },
       laptop: { rot: [0, 338, 0] },
+      hinge: 26,
       ease: 'power3.inOut',
       cameraEase: 'power3.out',
+      hingeEase: 'power2.in',
     },
     {
       // opens in one go, a little past where it stops, as the display wakes
@@ -55,6 +59,7 @@ export const TIMELINE = {
       hinge: 112,
       power: 1,
       ease: 'power2.inOut',
+      hingeEase: 'power2.out',
     },
     {
       // and eases back to 105, square to the camera. Pitched forward so the tilted

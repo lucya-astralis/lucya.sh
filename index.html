@@ -3,14 +3,13 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-
 <!-- Primary -->
 <title>lucya.sh — Sysadmin, Homelab &amp; Retro Tech</title>
 <meta name="description" content="Personal site of lucya, a sysadmin from Bavaria. Homelab &amp; servers, retro tech, space, anime and creative web projects." />
 <meta name="author" content="lucya" />
 <meta name="keywords" content="lucya, lucya.sh, sysadmin, homelab, Fachinformatiker, Bavaria, Bayern, Germany, personal site, web development, retro tech, anime" />
 <meta name="robots" content="index, follow, max-image-preview:large" />
-<meta name="theme-color" content="#0d1117" />
+<meta name="theme-color" content="#000000" />
 <meta name="color-scheme" content="dark" />
 <link rel="canonical" href="https://lucya.sh/" />
 
@@ -26,7 +25,7 @@
 <meta property="og:title" content="lucya.sh — Sysadmin, Homelab &amp; Retro Tech" />
 <meta property="og:description" content="Personal site of lucya, a sysadmin from Bavaria. Homelab &amp; servers, retro tech, space, anime and creative web projects." />
 <meta property="og:url" content="https://lucya.sh/" />
-<meta property="og:image" content="https://lucya.sh/images/card.jpg" />
+<meta property="og:image" content="https://lucya.sh/concept/card.jpg" />
 <meta property="og:image:alt" content="lucya - personal website" />
 <meta property="og:locale" content="en_US" />
 
@@ -34,18 +33,12 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="lucya.sh — Sysadmin, Homelab &amp; Retro Tech" />
 <meta name="twitter:description" content="Personal site of lucya, a sysadmin from Bavaria. Homelab &amp; servers, retro tech, space, anime and creative web projects." />
-<meta name="twitter:image" content="https://lucya.sh/images/card.jpg" />
+<meta name="twitter:image" content="https://lucya.sh/concept/card.jpg" />
 <meta name="twitter:image:alt" content="lucya - personal website" />
 
-<!-- Resource hints -->
-<link rel="preload" href="styles.css?v=20261031-dots" as="style" />
-<link rel="stylesheet" href="styles.css?v=20261031-dots" />
-
-<!-- LITE MODE: decide before first paint so html.lite styles apply everywhere.
-     auto-on for weak hardware / data-saver / reduced-motion; manual override
-     via the LITE toggle (localStorage) wins in both directions.
-     Shared logic lives in lite.js — must stay render-blocking (no defer/async). -->
+<link rel="stylesheet" href="concept/concept.css?v=20261031-go" />
 <script src="lite.js"></script>
+<script src="intro/gate.js?v=20261031-go"></script>
 
 <!-- Structured data: Person + WebSite -->
 <script type="application/ld+json">
@@ -78,701 +71,187 @@
   ]
 }
 </script>
+
+<!-- without scripts nothing lifts the boot screen or reveals the sections -->
+<noscript><style>.boot{ display:none; } .rise{ opacity:1; transform:none; }</style></noscript>
 </head>
 <body>
 
-<!-- src is attached by script.js after the splash hands off, so only one
-     copy of the video is ever decoding; in lite mode it never loads at all -->
-<video class="wallpaper-video" muted loop playsinline preload="none" aria-hidden="true" data-src="images/wallpaper/f.mp4"></video>
-<div class="wallpaper-overlay" aria-hidden="true"></div>
-
-<!-- ============================================================= -->
-<!-- SPLASH SCREEN                                                  -->
-<!-- ============================================================= -->
-<div id="splash" class="splash" aria-hidden="true">
-  <video class="splash__video" muted loop playsinline preload="none" aria-hidden="true" data-src="images/wallpaper/f.mp4"></video>
-  <div class="splash__bg"></div>
-  <div class="splash__vignette"></div>
-
-  <!-- the boot is a document like every section: same strip, form BT-00 -->
-  <div class="splash__head">
-    <div class="section__doc">
-      <span>DOC <b>00.BOOT</b></span>
-      <span>FORM <b>BT-00</b></span>
-      <span id="splashSession">SESSION <b>——</b></span>
-      <span class="splash__head-loc">BAVARIA · CET</span>
-      <span class="stamp stamp--warn" id="splashStamp"><span lang="ja">起動中</span> · BOOTING</span>
-    </div>
-  </div>
-
-  <!-- the live log: every file this page fetches, as it lands
-       (PerformanceObserver), plus the boot's own milestones -->
-  <ul class="splash__log" id="splashLog" aria-hidden="true"></ul>
-
-  <!-- the log, summed up: what has loaded so far, counted from the same
-       Resource Timing feed; the bar is the time until the handoff -->
-  <div class="splash__hs">
-    <div class="splash__hs-head">
-      <span>LOADING · ATLAS</span>
-      <span class="jp" lang="ja">読込中</span>
-      <span class="splash__hs-count" id="splashElapsed">0.0 S</span>
-    </div>
-    <dl class="splash__stats">
-      <div><dt>FILES</dt><dd id="bootFiles">0</dd></div>
-      <div><dt>TRANSFER</dt><dd id="bootBytes">0 KB</dd></div>
-      <div><dt>CACHED</dt><dd id="bootCached">0%</dd></div>
-      <div><dt>ISSUES</dt><dd id="bootIssues">0</dd></div>
-    </dl>
-    <div class="splash__hs-bar"><div class="splash__hs-fill" id="splashProgressFill"></div></div>
-    <button type="button" class="splash__skip" id="splashSkip">SKIP ▸ <span>ANY KEY</span></button>
-  </div>
-
-  <div class="splash__logo">
-    <div class="glitch-logo" id="glitchLogo">
-      <svg class="glitch-logo__svg glitch-logo__svg--m" id="splashLogoSvg" viewBox="0 0 964 543" xmlns="http://www.w3.org/2000/svg" aria-label="lucya">
-        <path id="pc-wing-l" class="piece" data-piece="wing-l" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/>
-        <path id="pc-wing-r" class="piece" data-piece="wing-r" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/>
-        <path id="pc-mid-l" class="piece" data-piece="mid-l" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/>
-        <path id="pc-mid-r" class="piece" data-piece="mid-r" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/>
-        <path id="pc-small-l" class="piece" data-piece="small-l" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/>
-        <path id="pc-small-r" class="piece" data-piece="small-r" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/>
-        <path id="pc-head" class="piece" data-piece="head" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/>
-        <path id="pc-tail" class="piece" data-piece="tail" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/>
-      </svg>
-      <div class="glitch-logo__rgb glitch-logo__rgb--r" id="rgbR" aria-hidden="true">
-        <svg class="glitch-logo__svg" viewBox="0 0 964 543" xmlns="http://www.w3.org/2000/svg">
-          <path class="piece piece--static" data-piece="wing-l" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/>
-          <path class="piece piece--static" data-piece="wing-r" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/>
-          <path class="piece piece--static" data-piece="mid-l" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/>
-          <path class="piece piece--static" data-piece="mid-r" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/>
-          <path class="piece piece--static" data-piece="small-l" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/>
-          <path class="piece piece--static" data-piece="small-r" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/>
-          <path class="piece piece--static" data-piece="head" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/>
-          <path class="piece piece--static" data-piece="tail" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/>
-        </svg>
-      </div>
-      <div class="glitch-logo__rgb glitch-logo__rgb--b" id="rgbB" aria-hidden="true">
-        <svg class="glitch-logo__svg" viewBox="0 0 964 543" xmlns="http://www.w3.org/2000/svg">
-          <path class="piece piece--static" data-piece="wing-l" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/>
-          <path class="piece piece--static" data-piece="wing-r" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/>
-          <path class="piece piece--static" data-piece="mid-l" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/>
-          <path class="piece piece--static" data-piece="mid-r" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/>
-          <path class="piece piece--static" data-piece="small-l" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/>
-          <path class="piece piece--static" data-piece="small-r" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/>
-          <path class="piece piece--static" data-piece="head" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/>
-          <path class="piece piece--static" data-piece="tail" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/>
-        </svg>
-      </div>
-    </div>
-    <div class="splash__label" data-text="LUCYA">
-      <span>LUCYA.SYSTEMS<span class="tm">™</span></span>
-      <span class="jp" lang="ja">ルシア・システムズ</span>
-    </div>
-  </div>
+<div class="boot" id="boot" aria-hidden="true">
+  <div class="boot__panasonic"></div>
+  <ul class="boot__post" id="bootPost"></ul>
+  <div class="boot__mark"></div>
 </div>
 
-
-<!-- ============================================================= -->
-<!-- NAVIGATION                                                     -->
-<!-- ============================================================= -->
-<header class="nav">
-  <div class="nav__inner">
-    <a class="nav__brand" href="#top">
-      <img src="images/logo/lucya_logo_text.svg" alt="lucya" />
-    </a>
-
-    <nav class="nav__links">
-      <a href="#profile">PROFILE <em>/ 01</em></a>
-      <a href="#about">ABOUT <em>/ 02</em></a>
-      <a href="#interests">INTERESTS <em>/ 03</em></a>
-      <a href="#rack">RACK <em>/ 04</em></a>
-      <a href="#systems">SYSTEMS <em>/ 05</em></a>
-    </nav>
-
-    <!-- the house: the main project, on every panel and on the phone -->
-    <a class="nav__house mono" href="https://lucya.systems" rel="noopener" title="lucya.systems — the house: Shinsei Concordia and the homelab">
-      <span class="nav__house-full">LUCYA.SYSTEMS</span><span class="nav__house-short">.SYSTEMS</span> <em aria-hidden="true">↗</em>
-    </a>
-
-    <div class="nav__status">
-      <span class="dot dot--ok"></span>
-      <span id="navTime" class="mono" title="server time · Europe/Berlin">00:00:00 SRV</span>
-    </div>
-  </div>
-</header>
-
-<!-- mobile page nav — fixed bottom bar; visible only <=768px where the
-     header links are hidden. mpage.js turns the page into one page per
-     tab here and rebuilds these links from its own page list. -->
-<nav class="mnav mono" aria-label="pages">
-  <a href="#profile"><em>01</em>Profile</a>
-  <a href="#about"><em>02</em>About</a>
-  <a href="#systems"><em>03</em>Systems</a>
-  <a href="#buttons"><em>04</em>Links</a>
+<nav class="island" aria-label="Sections">
+  <a class="island__home" href="#top" aria-label="Top"><span></span></a>
+  <a href="#telemetry">Live</a>
+  <a href="#about">About</a>
+  <a href="#inventory">Inventory</a>
+  <a href="#lid">Lid</a>
+  <a href="#spotify">Music</a>
+  <a href="#work">Links</a>
+  <a href="#buttons">Buttons</a>
+  <a href="#photos">Photos</a>
 </nav>
 
-<!-- ============================================================= -->
-<!-- LIVE TICKER                                                    -->
-<!-- ============================================================= -->
-<div class="ticker">
-  <div class="ticker__viewport" tabindex="0" aria-label="Host telemetry; focus to pause">
-    <div class="ticker__track" id="tickerTrack"><span class="ticker__item">Awaiting CheckMK data</span></div>
-  </div>
-  <span class="pride-tag ticker__pride" role="img" aria-label="Pastel rainbow pride flag" title="Pride"></span>
-  <a class="ticker__link mono" href="https://status.lucya.systems" target="_blank" rel="noopener">STATUS PAGE <span aria-hidden="true">↗</span></a>
-</div>
-
-<!-- ============================================================= -->
-<!-- KPI STRIP — annual-report style                                -->
-<!-- ============================================================= -->
-<aside class="kpibar" aria-label="key metrics">
-  <div class="kpibar__inner">
-    <div class="kpibar__main">
-      <div class="kpibar__head mono">
-        <span>TELEMETRY</span>
-        <span class="dim">FORM <b>KPI-A</b></span>
-      </div>
-      <div class="kpibar__grid" id="kpiGrid">
-        <!-- populated from data.json — fallback values below render if fetch fails -->
-        <div class="kpi kpi--telemetry kpi--trip" data-kpi="japan">
-          <span class="kpi__head mono"><span class="kpi__ix">01</span><span class="kpi__label">JAPAN</span><span class="kpi__jp" lang="ja">渡航</span><span class="kpi__meta" id="tripPct">—</span></span>
-          <span class="kpi__line"><span class="kpi__value" data-kpi-value>— <em>d</em></span><span class="kpi__sub mono kpi__sub--ok">UNTIL DEPARTURE</span></span>
-          <span class="metric-bar metric-bar--trip" aria-hidden="true"><i></i></span>
-          <span class="kpi__foot mono"><span id="tripDep">DEP —</span><span id="tripRet">RET —</span></span>
-        </div>
-        <div class="kpi kpi--telemetry kpi--wx" id="wxMetric" title="Where I am right now">
-          <span class="kpi__head mono"><span class="kpi__ix">02</span><span class="kpi__label"><span id="wxPlace">I'M IN · —</span></span><span class="kpi__jp" lang="ja">現在地</span><span class="kpi__meta" id="wxOffset">—</span></span>
-          <span class="kpi__line"><span class="kpi__value" id="wxTime">—</span><span class="kpi__sub mono" id="wxNow">AWAITING WEATHER</span></span>
-          <span class="metric-bar metric-bar--sky" id="wxSky" aria-hidden="true"><i id="wxDay"></i></span>
-          <span class="kpi__foot mono"><span id="wxRange">— / —</span><span id="wxSun">SUN —</span></span>
-        </div>
-        <div class="kpi kpi--telemetry kpi--disk" id="nasMetric">
-          <span class="kpi__head mono"><span class="kpi__ix">03</span><span class="kpi__label">NAS · VEGA</span><span class="kpi__jp" lang="ja">記憶域</span><span class="kpi__meta" id="nasPct">—</span></span>
-          <span class="kpi__line"><span class="storage-value"><b id="nasUsed">—</b><span id="nasTotal"> / — TiB</span></span><span class="kpi__sub mono" id="nasFree">AWAITING TELEMETRY</span></span>
-          <span class="metric-bar" aria-hidden="true"><i id="nasFill"></i></span>
-          <span class="kpi__foot mono"><span id="nasUp">UP —</span><span id="nasTemp">— °C</span></span>
-        </div>
-        <div class="kpi kpi--telemetry kpi--ram" id="ramMetric">
-          <span class="kpi__head mono"><span class="kpi__ix">04</span><span class="kpi__label">HYPERVISOR RAM</span><span class="kpi__jp" lang="ja">主記憶</span><span class="kpi__meta">2 HOSTS</span></span>
-          <span class="ram-row mono"><span>LYNX</span><span><i id="lynxCpu">CPU —</i><b id="lynxRam">—</b></span></span>
-          <span class="metric-bar" aria-hidden="true"><i id="lynxFill"></i></span>
-          <span class="ram-row mono"><span>CHIMERA</span><span><i id="chimeraCpu">CPU —</i><b id="chimeraRam">—</b></span></span>
-          <span class="metric-bar" aria-hidden="true"><i id="chimeraFill"></i></span>
-        </div>
-      </div>
-      <div class="kpibar__foot mono">
-        <span>// CLIENT-SIDE METRICS · NO TELEMETRY</span>
-        <span>FORM <b>KPI-A · REV 2026.Q2</b></span>
-      </div>
-    </div>
-
-    <!-- fleet overview — aggregate from CheckMK via status.json (counts only).
-         Reuses the .therm widget shell. Sample-labelled until the probe is live. -->
-    <section class="therm" id="thermal" data-state="sample" aria-label="fleet overview">
-      <div class="therm__head mono">
-        <span class="therm__title">
-          <span class="dot dot--ok" id="thermDot"></span>
-          SYSTEM STATUS
-          <span class="therm__room" id="ovRoom" hidden></span>
-        </span>
-        <span class="therm__tag" id="ovTag">CHECKMK · SAMPLE</span>
-      </div>
-
-      <div class="therm__summary mono" id="ovSummary" role="status">AWAITING LIVE TELEMETRY</div>
-      <div class="therm__body">
-        <div class="therm__primary">
-          <span class="therm__label mono">HOSTS UP</span>
-          <span class="therm__value"><b id="ovHosts">12 / 12</b></span>
-          <div class="therm__bar" data-band="ok">
-            <div class="therm__bar-fill" id="ovHostsBar" style="width:100%"></div>
-          </div>
-        </div>
-
-        <div class="therm__grid" id="ovAlerts" hidden>
-          <div class="therm__cell">
-            <span class="therm__label mono">WARNING</span>
-            <span class="therm__cell-val mono"><b id="ovWarn">1</b></span>
-            <span class="therm__cell-sub mono dim">SERVICES</span>
-          </div>
-          <div class="therm__cell">
-            <span class="therm__label mono">CRITICAL</span>
-            <span class="therm__cell-val mono"><b id="ovCrit">0</b></span>
-            <span class="therm__cell-sub mono dim">SERVICES</span>
-          </div>
-        </div>
-
-        <div class="therm__primary">
-          <span class="therm__label mono">SERVICES OK</span>
-          <span class="therm__value therm__value--sm"><b id="ovSvc">44 / 45</b></span>
-          <div class="therm__bar" data-band="ok">
-            <div class="therm__bar-fill" id="ovSvcBar" style="width:97%"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="therm__foot mono">
-        <span id="ovSrc">sample data</span>
-        <span class="therm__sep">·</span>
-        <span id="ovAge">awaiting probe</span>
-      </div>
-    </section>
-  </div>
-</aside>
-
-
-<!-- ============================================================= -->
-<!-- HERO / PROFILE                                                 -->
-<!-- ============================================================= -->
 <main id="top">
 
-<div class="layout">
-<div class="layout__main">
-
-<section class="hero" id="profile">
-  <div class="section__bg"></div>
-
-  <div class="section__doc">
-    <span>DOC <b>01.IDENTITY</b></span>
-    <span>REV <b>2026.05</b></span>
-    <span class="stamp stamp--ok">VERIFIED</span>
-    <span>SUBJECT <b>LUC-Y4</b></span>
-    <span>FORM <b>P-01A</b></span>
-  </div>
-
-  <div class="section__head">
-    <div class="section__slug">
-      <span class="ix">// 01</span>
-      <span class="name">IDENTITY</span>
-      <span class="jp" lang="ja">本人確認</span>
+  <header class="hero" id="hero">
+    <canvas class="hero__planet" id="heroPlanet" aria-hidden="true"></canvas>
+    <h1 class="hero__word"><span class="sr">lucya</span></h1>
+    <p class="hero__jp" lang="ja">ルシア</p>
+    <div class="hero__foot">
+      <p class="hero__lede">Building homelabs, reviving retro hardware, and running more servers than one bedroom should hold.</p>
+      <a class="pill" href="#inventory">See the rack<i>↓</i></a>
     </div>
-    <div class="section__meta">
-      <span class="mono">DIV. IDENTITY</span>
-      <span class="mono">FILE / PROFILE.DAT</span>
+  </header>
+
+  <section class="telemetry" id="telemetry">
+    <div class="fleet__lead rise">
+      <p class="tag" id="fleetTag">Checkmk · offline</p>
+      <h2 id="fleetSummary">Awaiting live telemetry.</h2>
+      <a class="fleet__more" href="https://lucya.systems">The full picture on lucya.systems ↗</a>
     </div>
-  </div>
-
-  <div class="hero__grid">
-
-    <!-- profile card -->
-    <aside class="pcard">
-      <div class="pcard__banner">
-        <img src="images/profile/profilebanner.webp" alt="" width="426" height="240" loading="lazy" decoding="async" />
+    <div class="fleet rise">
+      <div class="fleet__stat">
+        <span>Hosts up</span>
+        <b id="fleetHosts">— / —</b>
+        <div class="meter"><i id="fleetHostsBar"></i></div>
       </div>
+      <div class="fleet__stat">
+        <span>Services OK</span>
+        <b id="fleetSvc">— / —</b>
+        <div class="meter"><i id="fleetSvcBar"></i></div>
+      </div>
+      <div class="fleet__stat">
+        <span>Alerts</span>
+        <b id="fleetAlerts">—</b>
+        <em id="fleetAge">awaiting probe</em>
+      </div>
+    </div>
 
-      <div class="pcard__pfp">
-        <div class="pcard__pfp-ring">
-          <img class="pcard__pfp-img" src="images/profile/pfp/regra.webp" alt="" />
-          <img class="pcard__pfp-frame" src="images/profile/pfp/pfprahmen.webp" alt="" />
+    <div class="metrics rise">
+      <div class="metric" id="wxMetric">
+        <span id="wxPlace">I'm in · —</span>
+        <b><span id="wxTime">—</span></b>
+        <em id="wxNow">Awaiting weather</em>
+        <em class="metric__sub"><span id="wxRange">— / —</span> · <span id="wxSun">Sun —</span> · <span id="wxOffset">—</span></em>
+        <div class="meter meter--sky" id="wxSky"><u id="wxDay"></u></div>
+      </div>
+      <div class="metric">
+        <span>Japan</span>
+        <b id="kpiJapan">—</b>
+        <em id="kpiJapanSub">&nbsp;</em>
+      </div>
+      <div class="metric">
+        <span>Self-hosted apps</span>
+        <b id="kpiServices">—</b>
+      </div>
+      <div class="metric">
+        <span>Domains owned</span>
+        <b id="kpiDomains">—</b>
+      </div>
+    </div>
+  </section>
+
+  <section class="split rise" id="about">
+    <div>
+      <p class="tag">Off the terminal</p>
+      <h2>Things with a history.</h2>
+    </div>
+    <div class="split__body">
+      <p>Old computers, photographs and imaginary worlds: I like things with a history, whether I am bringing them back to life or inventing it.</p>
+      <p>The homelab is where I tinker; the camera is my excuse to go outside.</p>
+      <dl class="spec" id="spec"></dl>
+    </div>
+  </section>
+
+  <section class="inventory" id="inventory">
+    <div class="inventory__head rise">
+      <p class="tag">Hardware inventory</p>
+      <h2>What hums in the rack.</h2>
+    </div>
+    <div class="rackview rise" id="rackView">
+      <figure class="rackphoto">
+        <img src="concept/projects/rack.webp" width="1400" height="1400" alt="The homelab rack under violet light, its servers covered in stickers and keychains" loading="lazy" />
+        <figcaption><span>RACK-01</span><span id="rackCount">—</span></figcaption>
+      </figure>
+      <div class="rackside">
+        <div class="racklegend" id="rackLegend" role="group" aria-label="Filter by power state"></div>
+        <div class="unitlist">
+          <div id="rackExt"></div>
+          <div id="rackUnits" aria-label="Rack units"></div>
         </div>
-        <span class="pcard__status-dot" title="online"></span>
+        <aside class="rackinfo" id="rackInfo" aria-live="polite"></aside>
       </div>
+    </div>
+    <div class="neofetch rise" id="neofetch">
+      <p class="tag">Neofetch · system info</p>
+      <div class="neobay">
+        <div class="ntabs" id="nTabs"></div>
+        <div class="tray"><div class="glass"><div class="npanes" id="nPanes"></div></div></div>
+      </div>
+    </div>
+  </section>
 
-      <div class="pcard__body">
-        <div class="pcard__name">lucya</div>
-        <div class="pcard__handle">he/they/usb-c</div>
+  <section class="lid" id="lid">
+    <div class="lid__text rise">
+      <p class="tag">Behavioral index</p>
+      <h2>The lid says most of it.</h2>
+      <ul class="interests">
+        <li><b>Homelabs &amp; Servers</b> Racks, switches, servers. Everything that hums and beeps.</li>
+        <li><b>Space &amp; Astronomy</b> Elite: Dangerous, orbital mechanics, and anything past Low Earth Orbit.</li>
+        <li><b>Retro Tech</b> CRTs, old ThinkPads, and Apple hardware older than me.</li>
+        <li><b>Anime &amp; Music</b> City pop, vaporwave, J-rock. Mecha when it's Evangelion-shaped.</li>
+        <li><b>Web Tinkering</b> Interactive star charts, fictional government portals and small corners of the web.</li>
+      </ul>
+    </div>
+    <div class="deck rise" id="deck" role="img" aria-label="The laptop lid, covered in stickers around the Panasonic logo"></div>
+  </section>
 
-        <div class="pcard__badges">
-          <img src="images/profile/badges/apple.svg" alt="apple" title="apple" />
-          <img src="images/emoji/socks.webp" alt="uwu" title="uwu" />
-          <img src="images/profile/badges/astralt.png" alt="astra" title="astra" />
-          <img src="images/profile/badges/heart.png" alt="heart" title="♡" />
-          <img src="images/profile/badges/homelab.png" alt="homelab" title="homelab" />
-          <img src="images/profile/badges/ia.svg" alt="ia" title="inter-astra" />
-          <img src="images/profile/badges/my_computer.png" alt="my computer" title="my computer" />
-          <img src="images/profile/badges/siegel.webp" alt="siegel" title="certified" />
-          <img src="images/profile/badges/flag-bavaria.png" alt="bavaria" title="bavaria" />
+  <section class="spotify" id="spotify">
+    <div class="rise">
+      <p class="tag"><span id="spotifyHeadMeta">Spotify · rotation · assorted</span></p>
+      <h2><span id="spotifyHeadName">Top songs</span></h2>
+      <p class="spotify__jp" id="spotifyHeadJp" lang="ja">最近のお気に入り</p>
+    </div>
+    <div class="spotify__deck rise">
+    <div class="spotify__main">
+    <div class="spotify__card" id="spotifyCard" role="button" tabindex="0" aria-label="open audio manifest" aria-haspopup="dialog">
+      <span class="spotify__cover" id="spotifyCover"><img id="spotifyCoverImg" src="data:," alt="album cover" /></span>
+      <div class="spotify__meta">
+        <div class="spotify__label">
+          <span class="spotify__label-name" id="spotifyLabel">Now sampling · <span lang="ja">最近のお気に入り</span></span>
+          <span class="spotify__counter" id="spotifyCounter">01 / 12</span>
         </div>
-
-        <div class="pcard__bio">
-          <img src="images/emoji/sparkle.svg" alt="" class="inline-emoji" /> 
-          19y/o nerd &amp; sysadmin
-          <img src="images/emoji/femboyflag.webp" alt="" class="inline-emoji" />
-          <img src="images/emoji/flag_eu.svg" alt="" class="inline-emoji" />
+        <h3 class="spotify__track" id="spotifyTrack">—</h3>
+        <div class="spotify__artist" id="spotifyArtist">—</div>
+        <div class="spotify__timeline" aria-hidden="true">
+          <span class="spotify__time" id="spotifyElapsed">00:00</span>
+          <div class="spotify__dots" id="spotifyDots" role="tablist" aria-label="track selector"></div>
+          <div class="spotify__progress" id="spotifyProgress" hidden><i></i></div>
+          <span class="spotify__time" id="spotifyTotal">00:05</span>
         </div>
-
-        <div class="pcard__contact">
-          <a class="pcard__url pcard__url--mail" href="mailto:hi@lucya.sh">hi@lucya.sh</a>
-          <span class="pcard__discord mono">DISCORD <b>@lucya.systems</b></span>
-        </div>
-
-        <div class="pcard__socials">
-          <a href="https://github.com/lucya-astralis" title="github"><img src="images/profile/sociallinks/github.svg" alt="github" /></a>
-          <a href="https://bsky.app/profile/lucya.systems" title="bluesky"><img src="images/profile/sociallinks/bluesky.svg" alt="bluesky" /></a>
-          <a href="https://instagram.com/lucya.systems" title="instagram"><img src="images/profile/sociallinks/insta.svg" alt="instagram" /></a>
-          <a href="https://threads.net/lucya.systems" title="threads"><img src="images/profile/sociallinks/threads.svg" alt="threads" /></a>
-          <a href="https://x.com/lucya_systems" title="x"><img src="images/profile/sociallinks/x.svg" alt="x" /></a>
-          <a href="https://www.reddit.com/user/inter-astra/" title="reddit"><img src="images/profile/sociallinks/reddit.svg" alt="reddit" /></a>
-          <a href="https://open.spotify.com/user/gadlps6tcin47iedm8uicp28t" title="spotify"><img src="images/profile/sociallinks/spotify.svg" alt="spotify" /></a>
-          <a href="https://steamcommunity.com/id/lucya_systems/" title="steam"><img src="images/profile/sociallinks/steam.svg" alt="steam" /></a>
-          <a href="https://inara.cz/elite/cmdr/310217/" title="inara"><img src="images/profile/sociallinks/inara.svg" alt="inara" /></a>
-        </div>
-      </div>
-
-      <div class="pcard__pokewalk" aria-hidden="true">
-        <div class="pcard__pokewalk-track" id="pokewalkTrack"></div>
-      </div>
-
-      <div class="pcard__footer mono">
-        <span>ID · #0451-LUC</span>
-        <span>STATUS · ACTIVE</span>
-      </div>
-    </aside>
-
-
-    <!-- hero right column -->
-    <div class="hero__side">
-      <div class="hero__kicker mono">
-        <span class="dot dot--ok"></span>
-        <span>BROADCAST ONLINE · <span lang="ja">放送中</span></span>
-      </div>
-
-      <h1 class="hero__title hero__title--mark">
-        <span class="sr-only">lucya</span>
-        <span class="hero__wordmark" aria-hidden="true">
-          <span class="hero__wordmark-layer hero__wordmark-layer--main"></span>
-          <span class="hero__wordmark-layer hero__wordmark-layer--r" aria-hidden="true"></span>
-          <span class="hero__wordmark-layer hero__wordmark-layer--b" aria-hidden="true"></span>
-        </span>
-        <span class="hero__title-jp" lang="ja">ルシア</span>
-      </h1>
-
-      <p class="hero__tagline">
-        Sysadmin from Bavaria - building homelabs,
-        reviving retro hardware, and running more servers than one bedroom should hold.<img src="images/emoji/cat.webp" alt="" class="inline-emoji" />
-      </p>
-
-      <div class="hero__lower">
-        <nav class="site-grid" aria-label="my websites">
-          <div class="hero__stats-head mono"><span>ELSEWHERE</span><span class="hero__stats-cls">EXPLORE <b>01–04</b></span></div>
-          <a class="site-card site-card--lucya" href="https://lucya.systems">
-            <span class="site-card__number mono" aria-hidden="true">01</span>
-            <span class="site-card__main"><img class="site-card__logo" src="images/logo/lucya_logo.svg" alt="" loading="lazy" /><span class="site-card__text"><strong class="site-card__title">Projects &amp; Worlds</strong><span class="site-card__jp" lang="ja">プロジェクト</span></span></span>
-            <span class="site-card__sub mono"><span>LUCYA.SYSTEMS</span><span class="site-card__arrow" aria-hidden="true">↗</span></span>
-          </a>
-          <a class="site-card site-card--gallery" href="https://images.lucya.sh">
-            <span class="site-card__number mono" aria-hidden="true">02</span>
-            <span class="site-card__main"><img class="site-card__logo" src="images/projects/aperture.svg" alt="" loading="lazy" /><span class="site-card__text"><strong class="site-card__title">Photo archive</strong><span class="site-card__jp" lang="ja">写真アーカイブ</span></span></span>
-            <span class="site-card__sub mono"><span>IMAGES.LUCYA.SH</span><span class="site-card__arrow" aria-hidden="true">↗</span></span>
-          </a>
-          <a class="site-card site-card--binbows" href="https://binbows.net">
-            <span class="site-card__number mono" aria-hidden="true">03</span>
-            <span class="site-card__main"><img class="site-card__logo" src="images/projects/binbows-flag.svg" alt="" loading="lazy" /><span class="site-card__text"><strong class="site-card__title">Michaelsoft Binbows</strong><span class="site-card__jp" lang="ja">ビンボウズ</span></span></span>
-            <span class="site-card__sub mono"><span>BINBOWS.NET</span><span class="site-card__arrow" aria-hidden="true">↗</span></span>
-          </a>
-          <a class="site-card site-card--concordia" href="https://gov.inter-astra.net">
-            <span class="site-card__number mono" aria-hidden="true">04</span>
-            <span class="site-card__main"><img class="site-card__logo" src="images/projects/concordia-emblem.svg" alt="" loading="lazy" /><span class="site-card__text"><strong class="site-card__title">Shinsei Concordia</strong><span class="site-card__jp" lang="ja">新星コンコルディア</span></span></span>
-            <span class="site-card__sub mono"><span>GOV.INTER-ASTRA.NET</span><span class="site-card__arrow" aria-hidden="true">↗</span></span>
-          </a>
-        </nav>
-
-        <!-- SPEC SHEET PANEL — datasheet for the specimen.
-             Fallback rows mirror data.json (spec[]) — keep both in sync. -->
-        <div class="specsheet" aria-label="personal setup">
-          <div class="specsheet__head mono">
-            <span>PERSONAL SETUP</span>
-            <span class="specsheet__cls">FORM <b>DS-01</b></span>
-          </div>
-          <dl class="specsheet__list mono">
-            <div class="specsheet__row">
-              <dt>OPERATING SYS</dt>
-              <dd>MacOS / Linux</dd>
-            </div>
-            <div class="specsheet__row">
-              <dt>PRIMARY LANG</dt>
-              <dd>DE / EN</dd>
-            </div>
-            <div class="specsheet__row">
-              <dt>DISTRO PREFS</dt>
-              <dd>Arch · Debian · Fedora</dd>
-            </div>
-            <div class="specsheet__row">
-              <dt>SHELL</dt>
-              <dd>zsh / fish</dd>
-            </div>
-            <div class="specsheet__row">
-              <dt>EDITOR</dt>
-              <dd>nano / VIM</dd>
-            </div>
-            <div class="specsheet__row">
-              <dt>KEYBOARD</dt>
-              <dd>ISO · 65%</dd>
-            </div>
-            <div class="specsheet__row">
-              <dt>FAV ANIME</dt>
-              <dd>Evangelion / Frieren</dd>
-            </div>
-          </dl>
-          <div class="specsheet__foot mono">
-            <span>// END OF RECORD</span>
-            <span>1 OF 1</span>
-          </div>
+        <div class="spotify__foot">
+          <span class="spotify__pill"><i></i> <span id="spotifyMode">Rotation</span></span>
+          <span class="spotify__hint">Open manifest ↗</span>
         </div>
       </div>
-
-      <!-- frames the copy column only — .hero__side is position:relative,
-           so inset:0 stays on this block and never reaches the section
-           chrome (ticker / DOC bar) above it -->
-      <div class="hero__corner-brackets">
-        <span></span><span></span><span></span><span></span>
-      </div>
+    </div>
+    <!-- a first look at the manifest, from what spotify.js put there -->
+    <div class="peek" data-peek aria-hidden="true">
+      <p class="peek__head"><span>Artists</span><b id="peekArtistCount"></b></p>
+      <ul class="peek__artists" id="peekArtists"></ul>
+    </div>
+    </div>
+    <div class="peek" data-peek aria-hidden="true">
+      <p class="peek__head"><span>Albums</span><b id="peekAlbumCount"></b></p>
+      <ul class="peek__albums" id="peekAlbums"></ul>
+    </div>
     </div>
 
-  </div>
-</section>
-
-
-
-
-
-
-<!-- ============================================================= -->
-<!-- ABOUT                                                          -->
-<!-- ============================================================= -->
-<section class="about" id="about">
-  <div class="section__doc">
-    <span>DOC <b>02.PERSONNEL</b></span>
-    <span>REV <b>2026.05</b></span>
-    <span>FORM <b>P-02B</b></span>
-  </div>
-
-  <div class="section__head">
-    <div class="section__slug">
-      <span class="ix">// 02</span>
-      <span class="name">ABOUT</span>
-      <span class="jp" lang="ja">私について</span>
-    </div>
-    <div class="section__meta">
-      <span class="mono">DIV. PERSONNEL · FILE / ABOUT.TXT</span>
-    </div>
-  </div>
-
-  <div class="about__grid">
-    <div class="about__col">
-      <h3 class="h-sub">OFF THE TERMINAL <em lang="ja">日常</em></h3>
-      <p>
-        Old computers, photographs and imaginary worlds: I like things with
-        a history, whether I am bringing them back to life or inventing it.
-        The homelab is where I tinker; the camera is my excuse to go outside.
-      </p>
-    </div>
-
-    <div class="about__col">
-      <h3 class="h-sub">BEYOND THE HOMELAB <em lang="ja">創作</em></h3>
-      <p>
-        Shinsei Concordia<span class="tm">™</span> is my science-fiction worldbuilding project.
-        I build its star charts, cities and institutions as places you can
-        explore — from the ocean moon Orikaia Prime to the edge of the Expanse.
-        <img src="images/emoji/blahaj.webp" alt="blahaj" class="inline-emoji" />
-      </p>
-    </div>
-
-    <div class="about__marginal">
-      <div class="mono small dim">// NOTE 00A</div>
-      <div class="mono small">
-        Specimen is harmless unless<br />
-        separated from caffeine source.
-      </div>
-    </div>
-  </div>
-</section>
-
-
-
-
-
-
-<!-- ============================================================= -->
-<!-- INTERESTS + FUN FACTS                                          -->
-<!-- ============================================================= -->
-<section class="interests" id="interests">
-  <div class="section__doc">
-    <span>DOC <b>03.CULTURE</b></span>
-    <span>REV <b>2026.05</b></span>
-    <span class="stamp stamp--ok">INDEXED · 05 ENTRIES</span>
-    <span>FORM <b>BHV-03</b></span>
-  </div>
-
-  <div class="section__head">
-    <div class="section__slug">
-      <span class="ix">// 03</span>
-      <span class="name">INTERESTS</span>
-      <span class="jp" lang="ja">興味・豆知識</span>
-    </div>
-    <div class="section__meta">
-      <span class="mono">DIV. CULTURE · BEHAVIORAL INDEX</span>
-    </div>
-  </div>
-
-  <div class="interests__grid">
-    <article class="tile">
-      <span class="tile__tag">INT · 01</span>
-      <h4>Homelabs &amp; Servers</h4>
-      <p>Racks, switches, servers. Everything that hums and beeps.</p>
-      <span class="tile__jp" lang="ja">ホームラボ</span>
-    </article>
-    <article class="tile">
-      <span class="tile__tag">INT · 02</span>
-      <h4>Space &amp; Astronomy</h4>
-      <p>Elite: Dangerous, orbital mechanics, and anything past Low Earth Orbit.</p>
-      <span class="tile__jp" lang="ja">宇宙</span>
-    </article>
-    <article class="tile">
-      <span class="tile__tag">INT · 03</span>
-      <h4>Retro Tech</h4>
-      <p>CRTs, old ThinkPads, and Apple hardware older than me.</p>
-      <span class="tile__jp" lang="ja">レトロ</span>
-    </article>
-    <article class="tile">
-      <span class="tile__tag">INT · 04</span>
-      <h4>Anime &amp; Music</h4>
-      <p>City pop, vaporwave, J-rock. Mecha when it's Evangelion-shaped.</p>
-      <span class="tile__jp" lang="ja">アニメ</span>
-    </article>
-    <article class="tile">
-      <span class="tile__tag">INT · 05</span>
-      <h4>Web Tinkering</h4>
-      <p>Interactive star charts, fictional government portals and small corners of the web.</p>
-      <span class="tile__jp" lang="ja">ウェブ</span>
-    </article>
-  </div>
-
-  <div class="funfacts">
-    <h3 class="h-sub">FUN FACTS <em lang="ja">豆知識</em></h3>
-    <ul class="funfacts__list">
-      <li><span class="fx">01</span> Autistic + ADHD combo platter</li>
-      <li><span class="fx">02</span> Listens to music 24/7, silence is not an option</li>
-      <li><span class="fx">03</span> Likes minimal chaos, controlled complexity</li>
-      <li><span class="fx">04</span> POSIX enthusiast</li>
-      <li><span class="fx">05</span> CEO of <a class="funfacts__link" href="https://lucya.systems" target="_blank" rel="noopener">lucya.systems</a></li>
-      <li><span class="fx">06</span> Blahaj owner, certified.</li>
-    </ul>
-  </div>
-</section>
-
-
-<!-- ============================================================= -->
-<!-- NEOFETCH COLLECTION                                            -->
-<!-- ============================================================= -->
-<section class="neofetch" id="systems">
-  <div class="section__doc">
-    <span>DOC <b>05.INFRA</b></span>
-    <span>REV <b>2026.05</b></span>
-    <span class="stamp stamp--ok">HARDWARE INVENTORY</span>
-    <span>FORM <b>SYS-04</b></span>
-    <span>NEOFETCH · SYSTEM INFO</span>
-  </div>
-
-  <div class="section__head">
-    <div class="section__slug">
-      <span class="ix">// 05</span>
-      <span class="name">SYSTEMS</span>
-      <span class="jp" lang="ja">システム一覧</span>
-    </div>
-    <div class="section__meta">
-      <span class="mono">NEOFETCH · SYSTEM INFO</span>
-    </div>
-  </div>
-
-  <div class="neofetch__tabs" role="tablist" id="nTabs"></div>
-  <div class="neofetch__panes" id="nPanes"></div>
-</section>
-
-</div><!-- /layout__main -->
-<div class="layout__side">
-
-<!-- ============================================================= -->
-<!-- 88x31 BUTTONS                                                  -->
-<!-- ============================================================= -->
-<section class="buttons" id="buttons">
-  <div class="section__doc">
-    <span>DOC <b>03.A.ARCHIVE</b></span>
-    <span>REV <b>ROLLING</b></span>
-    <span class="stamp">EXHIBIT A</span>
-    <span>FORMAT <b>88×31 · GIF/PNG</b></span>
-    <span>NON-CANONICAL</span>
-  </div>
-
-  <div class="section__head">
-    <div class="section__slug">
-      <span class="ix">// 03.A</span>
-      <span class="name">BUTTONS</span>
-      <span class="jp" lang="ja">ボタン・コレクション</span>
-    </div>
-    <div class="section__meta">
-      <span class="mono">88 × 31 · FORMAT / GIF · PNG</span>
-    </div>
-  </div>
-
-  <div class="buttons__wall" id="buttonWall">
-    <!-- populated by JS from a static list so we only hit images we actually have -->
-  </div>
-
-  <div class="buttons__note mono small dim">
-    // Hover a button for the name. <span lang="ja">集めています。</span>
-  </div>
-</section>
-
-<!-- ============================================================= -->
-<!-- SPOTIFY WIDGET                                                 -->
-<!-- ============================================================= -->
-<section class="spotify" id="spotify">
-  <div class="section__doc">
-    <span>DOC <b>05.A.AUDIO</b></span>
-    <span>REV <b>MIXED · ROLLING</b></span>
-    <span class="stamp">APPENDIX A</span>
-    <span>FORM <b>BHV-AUD</b></span>
-    <span>NON-CRITICAL</span>
-  </div>
-
-  <div class="section__head">
-    <div class="section__slug">
-      <span class="ix">// 05.A</span>
-      <span class="name" id="spotifyHeadName">TOP SONGS</span>
-      <span class="jp" id="spotifyHeadJp" lang="ja">最近のお気に入り</span>
-    </div>
-    <div class="section__meta">
-      <span class="mono" id="spotifyHeadMeta">SPOTIFY · ROTATION · ASSORTED</span>
-    </div>
-  </div>
-
-  <div class="spotify__card" id="spotifyCard" role="button" tabindex="0" aria-label="open audio manifest" aria-haspopup="dialog">
-    <span class="spotify__cover" id="spotifyCover">
-      <img id="spotifyCoverImg" src="" alt="album cover" />
-      <span class="spotify__corner spotify__corner--tl" aria-hidden="true"></span>
-      <span class="spotify__corner spotify__corner--tr" aria-hidden="true"></span>
-      <span class="spotify__corner spotify__corner--bl" aria-hidden="true"></span>
-      <span class="spotify__corner spotify__corner--br" aria-hidden="true"></span>
-      <span class="spotify__scan" aria-hidden="true"></span>
-      <div class="spotify__bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
-    </span>
-
-    <div class="spotify__meta">
-      <div class="spotify__label mono">
-        <img src="images/profile/sociallinks/spotify_color.svg" alt="" />
-        <span class="spotify__label-name" id="spotifyLabel">NOW SAMPLING · <span lang="ja">最近のお気に入り</span></span>
-        <span class="spotify__counter mono" id="spotifyCounter">01 / 12</span>
-      </div>
-
-      <h3 class="spotify__track" id="spotifyTrack">—</h3>
-      <div class="spotify__artist" id="spotifyArtist">—</div>
-
-      <div class="spotify__timeline" aria-hidden="true">
-        <span class="spotify__time mono" id="spotifyElapsed">00:00</span>
-        <div class="spotify__dots" id="spotifyDots" role="tablist" aria-label="track selector"></div>
-        <div class="spotify__progress" id="spotifyProgress" hidden><i></i></div>
-        <span class="spotify__time mono" id="spotifyTotal">00:05</span>
-      </div>
-
-      <div class="spotify__foot mono small">
-        <span class="spotify__pill"><i></i> <span id="spotifyMode">ROTATION</span></span>
-        <span class="spotify__hint mono">▸ TAP FOR MANIFEST</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- AUDIO MANIFEST — full track list overlay -->
-  <div class="manifest" id="spotifyManifest" role="dialog" aria-modal="true" aria-labelledby="manifestTitle" hidden>
+    <div class="manifest" id="spotifyManifest" role="dialog" aria-modal="true" aria-labelledby="manifestTitle" hidden>
     <div class="manifest__backdrop" data-manifest-close></div>
     <div class="manifest__sheet" role="document">
       <div class="manifest__doc">
@@ -835,302 +314,88 @@
       </div>
     </div>
   </div>
-</section>
+  </section>
 
-<!-- ============================================================= -->
-<!-- FRIENDS — linked 88x31 buttons                                 -->
-<!-- ============================================================= -->
-<section class="friends" id="friends">
-  <div class="section__doc">
-    <span>DOC <b>03.B.LINKS</b></span>
-    <span>REV <b>ROLLING</b></span>
-    <span class="stamp">EXHIBIT B</span>
-    <span>FORMAT <b>88×31 · LINKED</b></span>
-    <span>TRUSTED</span>
-  </div>
-
-  <div class="section__head">
-    <div class="section__slug">
-      <span class="ix">// 03.B</span>
-      <span class="name">FRIENDS</span>
-      <span class="jp" lang="ja">ともだち</span>
-    </div>
-    <div class="section__meta">
-      <span class="mono">88 × 31 · OUTBOUND</span>
-    </div>
-  </div>
-
-  <div class="buttons__wall friends__wall" id="friendWall">
-    <!-- populated by JS -->
-  </div>
-
-  <div class="friends__note mono small dim">
-    // Wanna be here? Link mine &amp; tell me. <span lang="ja">友達募集中。</span>
-    <button type="button" class="friends__snippet" id="friendSnippet" title="click to copy">&lt;a href="https://lucya.sh"&gt;&lt;img src="https://lucya.sh/images/88x31%20buttons/lucya.gif" width="88" height="31" alt="lucya.sh"&gt;&lt;/a&gt;</button>
-  </div>
-</section>
-
-<!-- ============================================================= -->
-<!-- PHOTOS — teaser (full gallery now lives on images.lucya.sh)    -->
-<!-- pulled live from the gallery API; the static cards below are    -->
-<!-- the fallback for no-JS / offline / empty album.                 -->
-<!-- ============================================================= -->
-<section class="photos photos--teaser" id="photos">
-  <div class="section__doc">
-    <span>DOC <b>04.A.VISUAL</b></span>
-    <span>REV <b>2026.05</b></span>
-    <span class="stamp stamp--ok" id="photosCount">9 ASSETS · INDEXED</span>
-    <span>FORM <b>VIS-04A</b></span>
-  </div>
-
-  <div class="section__head">
-    <div class="section__slug">
-      <span class="ix">// 04.A</span>
-      <span class="name">PHOTOS</span>
-      <span class="jp" lang="ja">写真</span>
-    </div>
-    <div class="section__meta">
-      <span class="mono" id="photosMeta">SAMPLE · FULL ARCHIVE EXTERNAL</span>
-    </div>
-  </div>
-
-  <div class="photos__grid photos__grid--teaser" id="photosGrid"
-       data-api="https://images.lucya.sh" data-album="tech" data-limit="9">
-    <figure class="photo-card" data-src="images/photos/datacenter.jpeg" data-caption="DATACENTER // Complete homelab setup">
-      <div class="photo-card__img-wrap">
-        <img src="images/photos/datacenter.jpeg" alt="Complete homelab — full datacenter setup" loading="lazy" decoding="async" />
-        <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
-      </div>
-      <figcaption class="photo-card__cap">
-        <span class="photo-card__tag mono">PHOTO · 01</span>
-        <span class="photo-card__title">DATACENTER</span>
-      </figcaption>
-    </figure>
-
-    <figure class="photo-card" data-src="images/photos/server.jpeg" data-caption="SERVER + CRT // Rack server being set up">
-      <div class="photo-card__img-wrap">
-        <img src="images/photos/server.jpeg" alt="Rack server and CRT monitor on a bed — being set up" loading="lazy" decoding="async" />
-        <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
-      </div>
-      <figcaption class="photo-card__cap">
-        <span class="photo-card__tag mono">PHOTO · 02</span>
-        <span class="photo-card__title">SERVER + CRT</span>
-      </figcaption>
-    </figure>
-
-    <figure class="photo-card" data-src="images/photos/wald.jpeg" data-caption="LAN-PARTY // LAN party in the woods">
-      <div class="photo-card__img-wrap">
-        <img src="images/photos/wald.jpeg" alt="LAN party in the woods" loading="lazy" decoding="async" />
-        <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
-      </div>
-      <figcaption class="photo-card__cap">
-        <span class="photo-card__tag mono">PHOTO · 03</span>
-        <span class="photo-card__title">LAN-PARTY</span>
-      </figcaption>
-    </figure>
-
-    <figure class="photo-card" data-src="images/photos/wallserver.jpeg" data-caption="WALL SERVER // Server as wall decoration">
-      <div class="photo-card__img-wrap">
-        <img src="images/photos/wallserver.jpeg" alt="Server rack mounted as wall decoration" loading="lazy" decoding="async" />
-        <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
-      </div>
-      <figcaption class="photo-card__cap">
-        <span class="photo-card__tag mono">PHOTO · 04</span>
-        <span class="photo-card__title">WALL SERVER</span>
-      </figcaption>
-    </figure>
-
-    <figure class="photo-card" data-src="images/photos/iphone-crt.jpeg" data-caption="iPHONE + CRT // iPhone 17 on a CRT">
-      <div class="photo-card__img-wrap">
-        <img src="images/photos/iphone-crt.jpeg" alt="iPhone 17 connected to a CRT monitor" loading="lazy" decoding="async" />
-        <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
-      </div>
-      <figcaption class="photo-card__cap">
-        <span class="photo-card__tag mono">PHOTO · 05</span>
-        <span class="photo-card__title">iPHONE + CRT</span>
-      </figcaption>
-    </figure>
-
-    <figure class="photo-card" data-src="images/photos/iphones.jpeg" data-caption="iPHONE COLLECTION // Part of the collection">
-      <div class="photo-card__img-wrap">
-        <img src="images/photos/iphones.jpeg" alt="Part of the iPhone collection" loading="lazy" decoding="async" />
-        <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
-      </div>
-      <figcaption class="photo-card__cap">
-        <span class="photo-card__tag mono">PHOTO · 06</span>
-        <span class="photo-card__title">iPHONE COLLECTION</span>
-      </figcaption>
-    </figure>
-
-    <figure class="photo-card" data-src="images/photos/server-macbook.jpeg" data-caption="SERVER MACBOOK // MacBook running as a server">
-      <div class="photo-card__img-wrap">
-        <img src="images/photos/server-macbook.jpeg" alt="MacBook repurposed as a server" loading="lazy" decoding="async" />
-        <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
-      </div>
-      <figcaption class="photo-card__cap">
-        <span class="photo-card__tag mono">PHOTO · 07</span>
-        <span class="photo-card__title">SERVER MACBOOK</span>
-      </figcaption>
-    </figure>
-
-    <figure class="photo-card" data-src="images/photos/lain.jpeg" data-caption="LAIN // A tribute to the virtual world">
-      <div class="photo-card__img-wrap">
-        <img src="images/photos/lain.jpeg" alt="Lain, the protagonist of the anime 'Serial Experiments Lain'" loading="lazy" decoding="async" />
-        <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
-      </div>
-      <figcaption class="photo-card__cap">
-        <span class="photo-card__tag mono">PHOTO · 08</span>
-        <span class="photo-card__title">LAIN</span>
-      </figcaption>
-    </figure>
-
-    <figure class="photo-card" data-src="images/photos/blahaj.jpeg" data-caption="BLAHAJ // A cute plushie companion">
-      <div class="photo-card__img-wrap">
-        <img src="images/photos/blahaj.jpeg" alt="BLAHAJ, the cute plushie" loading="lazy" decoding="async" />
-        <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
-      </div>
-      <figcaption class="photo-card__cap">
-        <span class="photo-card__tag mono">PHOTO · 09</span>
-        <span class="photo-card__title">BLAHAJ</span>
-      </figcaption>
-    </figure>    
-  </div>
-
-  <a class="photos__cta" href="https://images.lucya.sh" target="_blank" rel="noopener">
-    <span class="photos__cta-label mono">
-      <span class="dot dot--ok"></span>
-      FULL ARCHIVE · <span lang="ja">完全アーカイブ</span>
-    </span>
-    <span class="photos__cta-url mono">images.lucya.sh ↗</span>
-    <span class="photos__cta-sub mono small dim">// the main gallery has moved · click to browse · photos © lucya, all rights reserved</span>
-  </a>
-</section>
-
-<!-- ============================================================= -->
-<!-- RACK — physical layout, interactive (built by script.js)       -->
-<!-- ============================================================= -->
-<section class="rack" id="rack">
-  <div class="section__doc">
-    <span>DOC <b>04.RACK</b></span>
-    <span>REV <b>2026.08</b></span>
-    <span class="stamp">LAYOUT</span>
-    <span>FORM <b>RCK-04</b></span>
-    <span>SITE · ATLAS</span>
-  </div>
-
-  <div class="section__head">
-    <div class="section__slug">
-      <span class="ix">// 04</span>
-      <span class="name">RACK</span>
-      <span class="jp" lang="ja">ラックレイアウト</span>
-    </div>
-    <div class="section__meta">
-      <span class="mono">ELEVATION · FRONT VIEW</span>
-    </div>
-  </div>
-
-  <div class="rackview" id="rackView">
-    <!-- the elevation itself, with the state filter above it -->
-    <div class="rackview__stack">
-      <div class="racklegend mono" id="rackLegend" role="group" aria-label="filter by power state"></div>
-
-      <!-- data-stagger: set-nav builds the units bottom-to-top on entry -->
-      <div class="rackframe" data-stagger="up">
-        <div class="rackframe__top mono">
-          <span>ON TOP · <span lang="ja">ラックのうえ</span></span>
-          <span class="dim">NON-RACKED</span>
-        </div>
-        <div class="rackframe__ext" id="rackExt"><!-- populated by JS --></div>
-
-        <div class="rackframe__cab">
-          <div class="rackframe__head mono">
-            <span>RACK-01</span>
-            <span class="dim" id="rackCount">—</span>
-          </div>
-          <div class="rackframe__body">
-            <div class="rackframe__rail" aria-hidden="true"></div>
-            <div class="rackframe__units" id="rackUnits" aria-label="rack units"><!-- populated by JS --></div>
-            <div class="rackframe__rail" aria-hidden="true"></div>
-          </div>
-          <div class="rackframe__foot mono">
-            <span>FRONT ELEVATION</span>
-            <span class="dim">NOT TO SCALE</span>
-          </div>
-        </div>
-      </div>
+  <section class="work" id="work">
+    <div class="rise">
+      <p class="tag">Elsewhere</p>
+      <h2>Places to go next.</h2>
     </div>
 
-    <!-- data sheet for the selected unit -->
-    <aside class="rackinfo" id="rackInfo" aria-live="polite"><!-- populated by JS --></aside>
-  </div>
-
-  <div class="rack__note mono small dim">
-    // Click a unit for its data sheet · ↑ ↓ to step through · <span lang="ja">えらんでください。</span>
-  </div>
-</section>
-
-
-</div><!-- /layout__side -->
-</div><!-- /layout -->
-
-<!-- ============================================================= -->
-<!-- FOOTER                                                         -->
-<!-- ============================================================= -->
-<footer class="foot">
-  <div class="foot__inner">
-    <div class="foot__logo">
-      <img src="images/logo/lucya_logo_text.svg" alt="lucya" />
-    </div>
-    <div class="foot__cols">
+    <a class="house rise" href="https://lucya.systems">
+      <img src="concept/projects/house.webp" alt="" loading="lazy" />
       <div>
-        <div class="foot__label mono">LUCYA.SYSTEMS<span class="tm">™</span></div>
-        <div class="mono small dim" lang="ja">ルシア・インダストリーズ 株式会社</div>
-        <div class="mono small dim">EST. 2007 · DE-BY · ATLAS</div>
-        <div class="mono small dim">REG. NO. 0451-LUC</div>
+        <span class="site__kicker">The house</span>
+        <h3>lucya.systems</h3>
+        <p>An independent home for worldbuilding, and the homelab it runs on.</p>
+        <em>lucya.systems ↗</em>
       </div>
+    </a>
+
+    <a class="realm rise" href="https://gov.inter-astra.net">
+      <img class="realm__city" src="concept/projects/gov.webp" alt="" loading="lazy" />
+      <span class="site__kicker">Reika II · Orikaia Prime</span>
+      <img class="realm__emblem" src="images/projects/concordia-emblem.svg" alt="" loading="lazy" />
+      <h3>Shinsei Concordia</h3>
+      <p>A science-fiction worldbuilding project: star charts, cities and institutions, from the ocean moon Orikaia Prime to the edge of the Expanse.</p>
+      <em>gov.inter-astra.net ↗</em>
+    </a>
+
+    <a class="house house--flip rise" href="https://binbows.net">
+      <img src="concept/projects/binbows.webp" alt="" loading="lazy" />
       <div>
-        <div class="foot__label mono">LEGAL</div>
-        <div class="mono small dim">Text, photos, logo &amp; Shinsei Concordia<span class="tm">™</span> © lucya.</div>
-        <div class="mono small dim">Other marks &amp; logos belong to their respective holders.</div>
-        <div class="mono small dim">No cookies. No tracking. No telemetry.</div>
-        <div class="mono small dim">Unauthorized retransmission prohibited.</div>
-        <div class="mono small foot__legal-links">
-          <a href="legal.html#impressum">Impressum</a>
-          <span class="dim"> · </span>
-          <a href="legal.html#datenschutz">Datenschutz</a>
-        </div>
+        <span class="site__kicker">Tribute</span>
+        <h3>Michaelsoft Binbows</h3>
+        <p>A tribute to a shop sign in Japan, with an OS that actually boots.</p>
+        <em>binbows.net ↗</em>
       </div>
-      <div>
-        <div class="foot__label mono">SIGNAL</div>
-        <div class="mono small">
-          <span class="dot dot--ok"></span> <span>operational</span>
-        </div>
-        <div class="mono small dim" title="server time · Europe/Berlin">SRV <span id="footTime">00:00:00</span> · <span lang="ja">通信中</span></div>
-        <div class="mono small dim">UPLINK · ATLAS · NOMINAL</div>
-      </div>
+    </a>
+  </section>
+
+  <section class="walls" id="buttons">
+    <div class="rise">
+      <p class="tag">88 × 31</p>
+      <h2>Collected on the way.</h2>
     </div>
-    <div class="foot__rule"></div>
-    <div class="foot__tiny mono">
-      <span>© <span id="thisYear">2026</span> LUCYA.SYSTEMS<span class="tm">™</span> · ALL RIGHTS RESERVED</span>
-      <span>DOC 0451-LUC · REV 2026.Q2 · PUBLIC RECORD</span>
-      <span>// BUILD 2.6.1-STABLE · KERNEL 7.0.1</span>
+    <div class="wall rise" id="buttonWall"></div>
+    <div class="walls__friends rise" id="friends">
+      <p class="tag">Friends</p>
+      <div class="wall" id="friendWall"></div>
+      <p class="walls__note">Wanna be here? Link mine &amp; tell me.</p>
+      <button type="button" class="friends__snippet" id="friendSnippet" title="click to copy">&lt;a href="https://lucya.sh"&gt;&lt;img src="https://lucya.sh/images/88x31%20buttons/lucya.gif" width="88" height="31" alt="lucya.sh"&gt;&lt;/a&gt;</button>
     </div>
-  </div>
-</footer>
+  </section>
+
+  <section class="photos" id="photos">
+    <div class="rise">
+      <p class="tag">Exhibit</p>
+      <h2>An excuse to go outside.</h2>
+    </div>
+    <div class="album rise">
+      <div class="album__head"><h3>Japan 2026</h3><span lang="ja">日本</span><a href="https://images.lucya.sh/album/japan_2026">Full album ↗</a></div>
+      <div class="strip" id="stripJapan" tabindex="0" aria-label="Japan 2026 photos, scrollable"></div>
+    </div>
+    <div class="album rise">
+      <div class="album__head"><h3>Tech</h3><a href="https://images.lucya.sh/album/tech">Full album ↗</a></div>
+      <div class="strip" id="stripTech" tabindex="0" aria-label="Tech photos, scrollable"></div>
+    </div>
+  </section>
 
 </main>
 
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Photo viewer">
-  <button class="lightbox__close" id="lightboxClose" aria-label="Close">✕</button>
-  <div class="lightbox__inner">
-    <img class="lightbox__img" id="lightboxImg" src="" alt="" />
-    <div class="lightbox__cap mono" id="lightboxCap"></div>
-  </div>
-</div>
+<footer class="foot rise">
+  <p class="foot__mail"><a href="mailto:hi@lucya.sh">hi@lucya.sh</a></p>
+  <ul class="foot__links">
+    <li><a href="https://github.com/lucya-astralis">GitHub</a></li>
+    <li><a href="https://bsky.app/profile/lucya.systems">Bluesky</a></li>
+    <li><a href="https://instagram.com/lucya.systems">Instagram</a></li>
+    <li><a href="https://open.spotify.com/user/gadlps6tcin47iedm8uicp28t">Spotify</a></li>
+    <li><a href="https://status.lucya.systems">Status</a></li>
+  </ul>
+  <p class="foot__legal"><a href="legal.html">Impressum · Datenschutz</a> <span><a href="classic.html">The old site</a> is still around.</span></p>
+</footer>
 
-<script type="module" src="script.js?v=20261027-house"></script>
-<script src="setnav.js?v=20261027-house"></script>
-<script src="mpage.js"></script>
+<script type="module" src="concept/concept.js?v=20261031-go"></script>
+<script type="module" src="intro/loader.js?v=20261031-open"></script>
 </body>
 </html>

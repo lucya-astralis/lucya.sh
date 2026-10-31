@@ -1,10 +1,10 @@
 import * as THREE from './vendor/three.bundle.min.js';
 import { gsap, ScrollTrigger } from './vendor/gsap.bundle.min.js';
-import { createProceduralLaptop } from './laptop/ProceduralLaptop.js?v=20261031-light';
-import { createGltfLaptop } from './laptop/GltfLaptop.js?v=20261031-light';
-import { TIMELINE } from './intro.timeline.js?v=20261031-light';
+import { createProceduralLaptop } from './laptop/ProceduralLaptop.js?v=20261031-open';
+import { createGltfLaptop } from './laptop/GltfLaptop.js?v=20261031-open';
+import { TIMELINE } from './intro.timeline.js?v=20261031-open';
 
-const SCREEN_URL = 'intro/boot-screen.webp?v=20261031-light';
+const SCREEN_URL = 'intro/boot-screen.webp?v=20261031-open';
 const VEC_KEYS = ['camPos', 'camTarget', 'camUp', 'rot', 'pos'];
 const FADE_MS = 600;  // the fade in intro.css
 const SETTLE_MS = 700; // the wheel has to rest this long before the page takes it
@@ -72,6 +72,7 @@ function flatten(keyframes) {
       duration: key.at - keyframes[i].at,
       ease: key.ease,
       cameraEase: key.cameraEase,
+      hingeEase: key.hingeEase,
     };
   });
   return { flat, segments };
@@ -133,9 +134,10 @@ export async function runIntro(cover, { skip, leave, load, report }) {
     if (seg.duration > 0) {
       const ease = seg.ease || TIMELINE.ease;
       const camera = Object.fromEntries(Object.entries(seg.to).filter(([key]) => key.startsWith('cam')));
-      const rest = Object.fromEntries(Object.entries(seg.to).filter(([key]) => !key.startsWith('cam')));
+      const rest = Object.fromEntries(Object.entries(seg.to).filter(([key]) => !key.startsWith('cam') && key !== 'hinge'));
       tl.to(state, { ...camera, duration: seg.duration, ease: seg.cameraEase || ease }, seg.start);
       tl.to(state, { ...rest, duration: seg.duration, ease }, seg.start);
+      tl.to(state, { hinge: seg.to.hinge, duration: seg.duration, ease: seg.hingeEase || ease }, seg.start);
     }
   }
 
