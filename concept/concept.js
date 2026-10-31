@@ -1,7 +1,7 @@
 import { rackData } from '../js/systems-data.js?v=20261031-kira';
 import { initSystems } from '../js/systems.js?v=20261031-rack';
 import { initWeather } from '../js/weather.js';
-import { initSpotify } from '../js/spotify.js?v=20261027-lang';
+import { initSpotify } from '../js/spotify.js?v=20261031-pill';
 import { createScrambler } from '../js/text-scramble.js';
 import { buttons, friends } from './buttons.js';
 
@@ -73,6 +73,19 @@ const statusFeed = (() => {
   setInterval(refresh, 30000);
   return { subscribe(fn) { subs.push(fn); fn(last); } };
 })();
+
+// the pill under the nav follows the same track as the card
+const nowPill = document.getElementById('nowPill');
+window.addEventListener('lucya:track', ({ detail: track }) => {
+  nowPill.classList.toggle('is-on', !!track);
+  if (!track) return;
+  nowPill.hidden = false;
+  nowPill.href = /^https:\/\/open\.spotify\.com\//.test(track.url || '') ? track.url : '#spotify';
+  nowPill.title = `${track.title} — ${track.artist || ''}`;
+  document.getElementById('nowPillCover').src = track.cover || 'images/profile/sociallinks/spotify_color.svg';
+  document.getElementById('nowPillTitle').textContent = track.title;
+  document.getElementById('nowPillArtist').textContent = track.artist || '';
+});
 
 const scrambleTo = createScrambler(!!window.LUCYA_LITE);
 initSystems(statusFeed, scrambleTo, { fullSheet: true });

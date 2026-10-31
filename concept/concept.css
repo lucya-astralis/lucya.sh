@@ -114,12 +114,38 @@ h2{ font-size:clamp(34px,5.4vw,84px); line-height:1.02; font-weight:500; letter-
 }
 .island a{ padding:7px 13px; border-radius:999px; white-space:nowrap; color:var(--dim); transition:color .4s var(--spring), background .4s var(--spring); }
 .island a:hover,.island a.is-current{ color:var(--ink); background:rgba(255,255,255,.07); }
-.island__home{ display:flex; padding:7px 10px !important; }
+/* stays put while the links scroll under it */
+.island__home{ position:sticky; left:0; z-index:1; flex:none; display:flex; padding:7px 10px !important; background:#0e0e0e; }
+.island .island__home:hover{ background:#0e0e0e; }
 .island__home span{
   width:30px; height:17px; background:var(--ink);
   -webkit-mask:url("../images/logo/lucya_logo.svg") center / contain no-repeat;
           mask:url("../images/logo/lucya_logo.svg") center / contain no-repeat;
 }
+
+/* what is playing right now, hanging under the nav; only while something does */
+.nowpill{
+  position:fixed; z-index:30; top:68px; left:50%;
+  display:flex; align-items:center; gap:9px;
+  max-width:min(340px,calc(100vw - 24px));
+  padding:4px 14px 4px 4px;
+  border-radius:999px;
+  background:rgba(14,14,14,.72);
+  box-shadow:inset 0 0 0 1px var(--faint);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  font-size:12px; line-height:1.25;
+  opacity:0; transform:translate(-50%,-6px);
+  transition:opacity .5s var(--spring), transform .5s var(--spring);
+}
+.nowpill[hidden]{ display:none; }
+.nowpill:not(.is-on){ pointer-events:none; }
+.nowpill.is-on{ opacity:1; transform:translate(-50%,0); }
+.nowpill img{ flex:none; width:30px; height:30px; border-radius:50%; object-fit:cover; background:#111; }
+.nowpill__text{ display:flex; flex-direction:column; min-width:0; }
+.nowpill__text b,.nowpill__text span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.nowpill__text b{ font-weight:500; }
+.nowpill__text span{ color:var(--dim); font-size:11px; }
 
 /* ---- hero ---------------------------------------------------------------- */
 .hero{
@@ -546,6 +572,13 @@ section{ padding:clamp(88px,15vh,190px) var(--gutter); }
   .ntabs__set{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px; }
   .ntab{ padding:9px 6px; background:rgba(255,255,255,.04); font-size:12px; text-align:center; }
   .split,.lid{ grid-template-columns:minmax(0,1fr); }
+  /* on a phone the person comes before the machines */
+  main{ display:flex; flex-direction:column; }
+  main > *{ min-width:0; }
+  .hero{ order:-2; }
+  #about{ order:-1; }
+  .island__home{ order:-2; }
+  .island a[href="#about"]{ order:-1; }
   .house,.house--flip{ grid-template-columns:minmax(0,1fr); }
   .house--flip img{ order:0; }
 }
