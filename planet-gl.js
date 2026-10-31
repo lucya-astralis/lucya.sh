@@ -16,10 +16,9 @@
  *     soft terminator (smoothstep(-0.06, 0.22, N·L)) and a faint blue night
  *     ambient; airless rock 0.015 + 1.15·N·L plus a thin lit limb; a gas giant
  *     0.025 + N·L under limb darkening pow(mu, 0.35);
- *   - the air: a blue haze that thickens toward the limb, a rim light
- *     pow(1-mu, 2.6) on the lit side, a faint warm band on the terminator, an
- *     amber back-rim on the dark limb, and a halo outside the disc,
- *     exp(-(r-1)/thickness), strongest where the star shines;
+ *   - the air: real single scattering along each line of sight, Rayleigh and Mie, so
+ *     the limb is a thin blue line falling off into black, the sun's light reaches
+ *     the ground reddened by its path, and the planet's shadow lies in the air;
  *   - the sea catches the star (a wide lobe and a hard glint), clouds are a
  *     layer of their own that shades the ground beneath and is lit by the star
  *     itself, never a texture painted into the ground;
@@ -116,12 +115,84 @@ const GLSL_LIGHT = `
 const vec3 AIR0 = vec3(0.35, 0.6, 1.0);
 vec3 airTint(vec3 air){ return air / max(max(air.r, air.g), max(air.b, 1e-4)) / AIR0; }
 
-// The air seen edge-on, past the limb (premultiplied). rr: the distance from the
-// centre in radii (> 1); nh: the unit direction from the centre, in the view plane.
-vec4 orkHalo(float rr, vec3 nh, vec3 sun, vec3 air, float thick, float amount){
-  float lit = smoothstep(-0.35, 0.6, dot(nh, sun));
-  float a = exp(-(rr - 1.0) / thick) * lit * amount;
-  return vec4(air * a, a);
+// The air, as air: single scattering along the line of sight (Nishita 1993; the same
+// integral as GPU Gems 2 ch. 16 and Scratchapixel's sky). Rayleigh takes the blue out of
+// the light and throws it to the side, so the limb is a thin blue line that falls off into
+// black; what comes through a long path is what is left, orange. Nothing here is painted.
+// One sample of the sun's path per step, closed form: Schueler's Chapman approximation
+// (GPU Pro 3), which also puts the planet's own shadow in the air.
+const vec3 RAYLEIGH = vec3(0.175, 0.41, 1.0);             // 680, 550, 440 nm, as lambda^-4
+const float AIR_TAU = 0.14;                                // an Earth's vertical optical depth in blue
+const float AIR_SUN = 34.0;                                // the star's light, in the display's units
+const float MIE_G = 0.78;
+const int AIR_STEPS = 6;                                   // each side of the point nearest the ground
+
+float airH(float thick){ return thick * 0.32; }            // a body's "thick" is a look; this is its scale height
+vec3 airBeta(vec3 air, float H, float k){
+  vec3 g = airTint(air);
+  vec3 t = RAYLEIGH * g * g;                               // another air scatters its own colour, not a paler blue
+  return t / max(t.b, max(t.r, t.g)) * AIR_TAU * k / H;
+}
+// the air in a column, in scale heights, from h (scale heights up) toward a light at cos chi
+float chapman(float X, float h, float c){
+  float a = sqrt(X + h);
+  if (c >= 0.0) return a / (a * c + 1.0) * exp(-h);
+  float x0 = sqrt(max(1.0 - c * c, 0.0)) * (X + h);
+  float c0 = sqrt(x0);
+  return 2.0 * c0 * exp(min(X - x0, 40.0)) - a / (1.0 - a * c) * exp(-h);
+}
+// what is left of the star's light at the ground, for the sun at cos chi = day
+vec3 orkSunT(float day, vec3 air, float thick, float k, float mie){
+  if (k <= 0.0) return vec3(1.0);
+  float H = airH(thick);
+  vec3 b = airBeta(air, H, k);
+  float m = mie * 0.3 * AIR_TAU * k / H;
+  return exp(-(b + m * 0.2) * H * chapman(1.0 / H, 0.0, day) * 1.8);   // a touch more than the integral: the orange should read
+}
+// The air along a ray, in radii from the body's centre: ro near the body, rd its direction,
+// tHit where it meets the ground (a large number if it misses). Returns the light it adds,
+// premultiplied, a: what it dims behind it; T: what comes through.
+vec4 orkAir(vec3 ro, vec3 rd, float tHit, vec3 sun, vec3 air, float thick, float k, float mie, float amount, out vec3 T){
+  T = vec3(1.0);
+  float H = airH(thick);
+  float top = 1.0 + 7.0 * H;
+  float b = dot(ro, rd), disc = b * b - dot(ro, ro) + top * top;
+  if (disc <= 0.0 || k <= 0.0) return vec4(0.0);
+  float s = sqrt(disc), tA = -b - s, tB = min(-b + s, tHit);
+  if (tB <= tA) return vec4(0.0);
+  // a grazing ray has all its air at one point on a long chord: the steps crowd toward it
+  float tc = clamp(-b, tA, tB);
+  vec3 betaR = airBeta(air, H, k);
+  float betaM = mie * 0.3 * AIR_TAU * k / H;
+  float X = 1.0 / H, odR = 0.0, odM = 0.0;
+  vec3 sumR = vec3(0.0), sumM = vec3(0.0);
+  float n = float(AIR_STEPS);
+  for (int i = 0; i < 2 * AIR_STEPS; i++) {
+    bool first = i < AIR_STEPS;
+    float x = first ? (n - float(i) - 0.5) / n : (float(i) - n + 0.5) / n;
+    float e = first ? tA : tB;
+    float t = tc + (e - tc) * x * x * x;
+    float ds = abs(e - tc) * 3.0 * x * x / n;
+    if (ds < 1e-6) continue;
+    vec3 P = ro + rd * t;
+    float r = length(P);
+    float h = max(r - 1.0, 0.0) / H;
+    float rho = exp(-h), rhoM = exp(-h * 5.0);
+    odR += rho * ds * 0.5;
+    odM += rhoM * ds * 0.5;
+    float col = chapman(X, h, dot(P, sun) / r) * H;
+    vec3 tr = exp(-(betaR * (odR + col) + betaM * (odM + col * 0.2)));
+    sumR += rho * tr * ds;
+    sumM += rhoM * tr * ds;
+    odR += rho * ds * 0.5;
+    odM += rhoM * ds * 0.5;
+  }
+  vec3 tau = betaR * odR + betaM * odM;
+  T = exp(-tau);
+  float c = dot(rd, sun);
+  vec3 L = sumR * betaR * 0.0597 * (1.0 + c * c) + sumM * betaM * min(hgp(MIE_G, c), 16.0) * 0.0796;
+  L = 1.0 - exp(-L * AIR_SUN * amount);
+  return vec4(L, 1.0 - dot(T, vec3(0.3333)));
 }
 
 
@@ -140,20 +211,21 @@ vec3 orkTone(vec3 c){
 // what the night side shows here, before the night's own fade.
 // air: the colour the air scatters (Rayleigh: blue for N2/O2, tan for CO2 and dust);
 // airK: how thick it is (1: an Earth's worth); mie: the share of dust and haze that
-// scatters forward instead, in white.
+// scatters forward instead, in white; thick: its height. The air between here and the
+// viewer is orkAir's; what this keeps of it is the star's light as it arrives, reddened.
 vec3 orkTerrestrial(vec3 albedo, vec3 n, vec3 nl, vec3 sun, vec3 v,
                     float wet, float c, float cs, float cv, vec3 gl3, vec3 lights,
-                    vec3 air, float airK, float mie, vec3 shL, vec3 shD){
+                    vec3 air, float airK, float mie, float thick, vec3 shL, vec3 shD){
   float day = dot(n, sun);
   float k = clamp(airK, 0.05, 1.5);
   // the terminator is as soft as the air is thick: scattered light carries past it
   float dayK = smoothstep(-0.06 * k, 0.04 + 0.18 * k, day);
-  float mu = max(dot(n, v), 0.0);
+  vec3 sunT = orkSunT(max(day, -0.2), air, thick, airK, mie);
   vec3 T = airTint(air);
   vec3 A = T * vec3(0.32, 0.56, 0.97);                 // what the air scatters, in the recipe's own units
   float w = 0.06 * k;
   float lam = max((dot(nl, sun) + w) / (1.0 + w), 0.0) * smoothstep(-0.1, 0.02, day + 0.06 * k);
-  vec3 col = albedo * (0.04 + 1.25 * lam) * (1.0 - 0.55 * cs * (1.0 - c)) + vec3(0.004, 0.009, 0.024) * (1.0 - dayK);
+  vec3 col = albedo * (0.02 + 1.25 * lam * sunT) * (1.0 - 0.55 * cs * (1.0 - c)) + vec3(0.004, 0.009, 0.024) * (1.0 - dayK);
   // open water: a rough mirror (two lobes of waves), Fresnel-brightened toward the limb, and the sky in it
   if (wet * (1.0 - c) * dayK > 0.002) {
     vec3 H = normalize(sun + v);
@@ -165,7 +237,7 @@ vec3 orkTerrestrial(vec3 albedo, vec3 n, vec3 nl, vec3 sun, vec3 v,
     float d1 = a1 * a1 / (PI * t1 * t1);
     float d2 = a2 * a2 / (PI * t2 * t2);
     float spec = (d1 + 0.35 * d2) * F * 0.5;
-    col += wet * (1.0 - c) * (vec3(1.0, 0.93, 0.8) * spec * dayK + A * F * 0.55 * (0.05 + 0.75 * max(day, 0.0)) * dayK);
+    col += wet * (1.0 - c) * (vec3(1.0, 0.93, 0.8) * sunT * spec * dayK + A * F * 0.55 * (0.05 + 0.75 * max(day, 0.0)) * dayK);
   }
   // glints of glass and rooftops: the same mirror, in points
   if (gl3.x + gl3.y + gl3.z > 0.0) {
@@ -176,23 +248,7 @@ vec3 orkTerrestrial(vec3 albedo, vec3 n, vec3 nl, vec3 sun, vec3 v,
   }
   // cloud: lit by the star itself, a little past the terminator (it stands above the ground)
   float cl = 0.08 + 1.1 * max((day + 0.06) / 1.06, 0.0);
-  col = mix(col, vec3(0.95, 0.96, 1.0) * cl * (0.45 + 0.55 * cv), c);
-  // the air in front of it: in-scattered light grows with the airmass along the line of sight,
-  // so the limb brightens smoothly; it is only lit where the star shines
-  float path = min(1.0 / max(mu, 0.05), 12.0);
-  float scat = 1.0 - exp(-0.075 * airK * path);
-  float sunl = smoothstep(-0.3, 0.5, day);
-  col = mix(col, A * (0.05 + 0.8 * max(day + 0.1, 0.0)), clamp(scat * 0.9, 0.0, 1.0) * dayK);
-  col += A * 0.35 * scat * sunl * smoothstep(0.0, 0.4, 1.0 - mu);
-  // Mie: dust and haze throw the light forward, so the limb glows most with the star behind the body
-  if (mie > 0.0 && sunl > 0.0) {
-    float scatM = 1.0 - exp(-0.06 * airK * path);
-    float ph = min(hgp(0.7, dot(-sun, v)) / 0.28, 6.0);
-    col += vec3(0.95, 0.9, 0.84) * mie * 0.22 * scatM * ph * sunl;
-  }
-  // twilight: the terminator band takes the colour the air does not scatter (red-orange over blue air)
-  vec3 dusk = (vec3(1.0) - T * vec3(0.35, 0.6, 1.0)) * vec3(0.75, 0.5, 0.1) + vec3(0.0, 0.0, 0.07);
-  if (abs(day) < 0.4) col += dusk * exp(-day * day / 0.004) * (0.06 + 0.2 * scat) * (1.0 - c * 0.5) * airK;
+  col = mix(col, vec3(0.95, 0.96, 1.0) * orkSunT(day + 0.03, air, thick, airK, mie) * cl * (0.45 + 0.55 * cv), c);
   float night = 1.0 - smoothstep(-0.02, 0.3, day);
   col += lights * night;
   col += vec3(0.05, 0.06, 0.08) * c * night;
@@ -223,7 +279,6 @@ vec3 orkGas(vec3 albedo, vec3 n, vec3 sun, vec3 v, float shade, vec3 air, float 
   float mu = max(dot(n, v), 0.0);
   float lam = max((day + 0.1) / 1.1, 0.0);
   vec3 col = albedo * (0.025 + lam) * pow(mu, 0.35) * shade;
-  col += air * pow(1.0 - mu, 4.0) * smoothstep(-0.2, 0.5, day) * 0.3 * airK;
   return col;
 }
 
@@ -718,7 +773,7 @@ vec3 shadeTerrestrial(vec3 n, vec3 sun, vec3 v, vec3 nb, vec3 lb, float pxr){
       lights = mapLights * (1.0 - 0.85 * c);
     }
   }
-  return orkTerrestrial(albedo, n, nl, sun, v, wet * uGlint, c, cs, cv, gl3, lights, uAir, uAirP.z, uMie, uShineCol * uShine.w * 1.25, uShine.xyz);
+  return orkTerrestrial(albedo, n, nl, sun, v, wet * uGlint, c, cs, cv, gl3, lights, uAir, uAirP.z, uMie, uAirP.x, uShineCol * uShine.w * 1.25, uShine.xyz);
 }
 
 // ---- rock and ice -----------------------------------------------------------------
@@ -886,7 +941,7 @@ float ringShadow(vec3 p, vec3 sun, float pxr_inv){
 }
 `;
 
-/** noise, fbm, the equirectangular lookup, and the Orikaia light (orkTerrestrial, orkRock, orkGas, orkStar, orkHalo, orkRing). No uniforms. */
+/** noise, fbm, the equirectangular lookup, and the Orikaia light (orkTerrestrial, orkRock, orkGas, orkStar, orkAir, orkRing). No uniforms. */
 export const PLANET_LIGHT_GLSL = GLSL_CORE + GLSL_RINGGEO + GLSL_LIGHT;
 /** the above, plus the ring's uniforms and ringAt(rr): for a caller that draws the ring itself */
 export const PLANET_RING_GLSL = PLANET_LIGHT_GLSL + GLSL_RING;
@@ -942,11 +997,17 @@ void main(){
     float shade = 1.0;
 #endif
     ball = vec4(planetColor(n, sun, v, nb, pxr, shade), 1.0) * edge;
+    if (uKind >= 2 && uAirP.y > 0.0) {
+      vec3 T;
+      vec4 air = orkAir(vec3(vP, 0.0), -v, -n.z, sun, uAir, uAirP.x, uAirP.z, uMie, uAirP.y, T);
+      ball.rgb = ball.rgb * T + air.rgb * edge;
+    }
   }
   vec4 under = vec4(0.0);
   if (uKind >= 2 && uAirP.y > 0.0 && d > 1.0 - 1.5 * pxr) {
-    // the air seen edge-on, past the limb (and under the limb's own anti-aliased edge)
-    under = orkHalo(max(d, 1.0), nh / max(d, 1e-4), sun, uAir, uAirP.x, uAirP.y);
+    // the air past the limb (and under the limb's own anti-aliased edge)
+    vec3 T;
+    under = orkAir(vec3(vP * max(d, 1.0) / max(d, 1e-4), 0.0), -v, 1e6, sun, uAir, uAirP.x, uAirP.z, uMie, uAirP.y, T);
   }
   vec4 front = vec4(0.0);
 #if !defined(KIND) || KIND == 3
@@ -1554,7 +1615,7 @@ export function createPlanetLayer(canvas) {
         gl.uniform3fv(u.uSun, norm(it.sun));
         gl.uniform1f(u.uAlpha, it.alpha ?? 1);
         const ringed = !!(it.ring && b.rings);
-        gl.uniform1f(u.uFrame, ringed ? Math.max(b.rings.outer * 1.02, 1.15) : b.atm.halo > 0 ? 1 + Math.min(b.atm.thick * 7, 0.5) : 1.02);
+        gl.uniform1f(u.uFrame, ringed ? Math.max(b.rings.outer * 1.02, 1.15) : b.atm.halo > 0 ? 1 + Math.min(b.atm.thick * 3.2, 0.5) : 1.02);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       }
     },
