@@ -1,8 +1,8 @@
 import {
   Color, CylinderGeometry, Group, InstancedMesh, Matrix4, Mesh,
   MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, PlaneGeometry, RoundedBoxGeometry,
-} from '../vendor/three.bundle.min.js?v=20261031-leds';
-import { Laptop } from './Laptop.js';
+} from '../vendor/three.bundle.min.js?v=20261031-leds2';
+import { Laptop } from './Laptop.js?v=20261031-leds2';
 
 // Roughly a CF-QV9: 12" 3:2 panel in a 27.5 x 20 cm footprint.
 const WIDTH = 27.5;
