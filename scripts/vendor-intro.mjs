@@ -13,7 +13,7 @@ await mkdir(out, { recursive: true });
 // to intro/*.js from THREE has to be listed here too.
 const entry = `
 export {
-  ACESFilmicToneMapping, Color, DefaultLoadingManager, DirectionalLight, Group, InstancedMesh, Matrix4, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, SpotLight, MeshStandardMaterial,
+  ACESFilmicToneMapping, AdditiveBlending, Box3, CanvasTexture, Color, DefaultLoadingManager, DirectionalLight, Group, InstancedMesh, Matrix4, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, SpotLight, MeshStandardMaterial,
   PMREMGenerator, PerspectiveCamera, PlaneGeometry, Scene, SRGBColorSpace,
   CylinderGeometry, TextureLoader, Vector3, WebGLRenderer,
 } from 'three';

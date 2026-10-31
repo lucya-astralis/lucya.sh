@@ -36,7 +36,7 @@
 <meta name="twitter:image" content="https://lucya.sh/concept/card.jpg" />
 <meta name="twitter:image:alt" content="lucya - personal website" />
 
-<link rel="stylesheet" href="concept/concept.css?v=20261031-wide" />
+<link rel="stylesheet" href="concept/concept.css?v=20261031-calm2" />
 <script src="lite.js"></script>
 <script src="intro/gate.js?v=20261031-pill"></script>
 
@@ -73,14 +73,13 @@
 </script>
 
 <!-- without scripts nothing lifts the boot screen or reveals the sections -->
-<noscript><style>.boot{ display:none; } .rise{ opacity:1; transform:none; }</style></noscript>
+<noscript><style>.boot{ display:none; } .rise{ opacity:1; transform:none; } body:not(.is-ready) :is(.hero__word,.hero__jp,.hero__foot,.island,.nowpill){ opacity:1; } .hero__planet{ opacity:1; translate:none; }</style></noscript>
 </head>
 <body>
 
 <div class="boot" id="boot" aria-hidden="true">
   <div class="boot__panasonic"></div>
-  <ul class="boot__post" id="bootPost"></ul>
-  <div class="boot__mark"></div>
+  <div class="boot__spin"><i></i><i></i><i></i><i></i><i></i></div>
 </div>
 
 <nav class="island" aria-label="Sections">
@@ -407,7 +406,7 @@
   <p class="foot__legal"><a href="legal.html">Impressum · Datenschutz</a> <span><a href="https://status.lucya.systems">Status</a> · <a href="classic.html">The old site</a> is still around.</span></p>
 </footer>
 
-<script type="module" src="concept/concept.js?v=20261031-widget"></script>
-<script type="module" src="intro/loader.js?v=20261031-phone"></script>
+<script type="module" src="concept/concept.js?v=20261031-calm"></script>
+<script type="module" src="intro/loader.js?v=20261031-leds"></script>
 </body>
 </html>

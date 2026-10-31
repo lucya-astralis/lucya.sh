@@ -1,4 +1,4 @@
-import { Group, Vector3 } from '../vendor/three.bundle.min.js';
+import { Group, Vector3 } from '../vendor/three.bundle.min.js?v=20261031-leds';
 
 /* The contract between the intro and any laptop model. intro.js only ever
    touches what is defined here, so a glTF can replace the placeholder by
@@ -22,7 +22,7 @@ import { Group, Vector3 } from '../vendor/three.bundle.min.js';
 export class Laptop {
   /** @param hinge {{ y:number, z:number, link:number }} base axis and the
    *  distance between the two axes, in model space */
-  constructor({ base, lidPivot, lid, screen, hinge, links = [] }) {
+  constructor({ base, lidPivot, lid, screen, hinge, links = [], leds = null }) {
     this.root = new Group();
     this.base = base;
     this.lidPivot = lidPivot;
@@ -30,11 +30,13 @@ export class Laptop {
     this.screen = screen;
     this.hinge = hinge;
     this.links = links;      // optional visible hinge parts
+    this.leds = leds;        // optional status lights, see setLeds()
     this.root.add(base, lidPivot, ...links);
     this.setHinge(0);
   }
 
   setHinge(deg) {
+    this.deg = deg;
     const lower = (Math.max(0, deg - 180) * Math.PI) / 180;
     this.lidPivot.position.set(
       0,
@@ -48,6 +50,19 @@ export class Laptop {
   /** Display brightness, 0 off to 1 on. */
   setPower(level) {
     this.screen.material.color.setScalar(level);
+  }
+
+  /** The status row at `seconds`. The lid shuts them away, and with it their halos,
+   *  which would spill past its edge. True when the picture has to be redrawn. */
+  setLeds(seconds) {
+    if (!this.leds) return false;
+    const open = Math.min(Math.max(this.deg - 6, 0) / 20, 1);
+    const on = this.leds.blink(seconds);
+    if (open === this.ledOpen && on === this.ledOn) return false;
+    this.ledOpen = open;
+    this.ledOn = on;
+    this.leds.show(open, on);
+    return open > 0;
   }
 
   /** World-space pose of the screen, for the camera fit. */

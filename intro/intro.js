@@ -1,12 +1,12 @@
-import * as THREE from './vendor/three.bundle.min.js';
+import * as THREE from './vendor/three.bundle.min.js?v=20261031-leds';
 import { gsap, ScrollTrigger } from './vendor/gsap.bundle.min.js';
-import { createProceduralLaptop } from './laptop/ProceduralLaptop.js?v=20261031-phone';
-import { createGltfLaptop } from './laptop/GltfLaptop.js?v=20261031-phone';
-import { TIMELINE } from './intro.timeline.js?v=20261031-phone';
+import { createProceduralLaptop } from './laptop/ProceduralLaptop.js?v=20261031-leds';
+import { createGltfLaptop } from './laptop/GltfLaptop.js?v=20261031-leds';
+import { TIMELINE } from './intro.timeline.js?v=20261031-leds';
+import { curve } from './curve.js?v=20261031-leds';
 
-const SCREEN_URL = 'intro/boot-screen.webp?v=20261031-phone';
-const VEC_KEYS = ['camPos', 'camTarget', 'camUp', 'rot', 'pos'];
-const FADE_MS = 600;  // the fade in intro.css
+const SCREEN_URL = 'intro/boot-screen.webp?v=20261031-leds';
+const FADE_MS = 1000;  // the fade in intro.css
 const SETTLE_MS = 700; // the wheel has to rest this long before the page takes it
 const SETTLE_CAP_MS = 2500;
 
@@ -34,48 +34,26 @@ function buildScene(renderer) {
   const rim2 = new THREE.DirectionalLight(0xfff0e0, 1.0);
   rim2.position.set(50, 20, -30);
   scene.add(rim, rim2);
-  return { scene, env };
+  return { scene, env, rims: [rim, rim2] };
 }
 
-/** Flattens the keyframes into one start state plus a tween per segment. */
-function flatten(keyframes) {
-  const state = {
-    camPos: [0, 0, 0], camTarget: [0, 0, 0], camUp: [0, 1, 0],
-    rot: [0, 0, 0], pos: [0, 0, 0], hinge: 0, fit: 0, power: 0,
-  };
-  const read = (key, into) => {
-    if (key.camera?.pos) into.camPos = key.camera.pos;
-    if (key.camera?.target) into.camTarget = key.camera.target;
-    if (key.camera?.up) into.camUp = key.camera.up;
-    if (key.laptop?.rot) into.rot = key.laptop.rot;
-    if (key.laptop?.pos) into.pos = key.laptop.pos;
-    if (key.hinge !== undefined) into.hinge = key.hinge;
-    if (key.fit !== undefined) into.fit = key.fit;
-    if (key.power !== undefined) into.power = key.power;
-  };
-  read(keyframes[0], state);
-  const flat = {};
-  const put = (from, out) => {
-    for (const k of VEC_KEYS) from[k].forEach((v, i) => { out[`${k}${i}`] = v; });
-    out.hinge = from.hinge;
-    out.fit = from.fit;
-    out.power = from.power;
-    return out;
-  };
-  put(state, flat);
-  const running = { ...state };
-  const segments = keyframes.slice(1).map((key, i) => {
-    read(key, running);
-    return {
-      to: put(running, {}),
-      start: keyframes[i].at,
-      duration: key.at - keyframes[i].at,
-      ease: key.ease,
-      cameraEase: key.cameraEase,
-      hingeEase: key.hingeEase,
-    };
-  });
-  return { flat, segments };
+/** One curve per number, each through the keyframes that set it. A key that leaves a
+ *  channel out does not touch it, so nothing is made to wait at a key. */
+function channels(keyframes) {
+  const knots = {};
+  const add = (name, at, value) => { (knots[name] ||= []).push([at, value]); };
+  const addVec = (name, at, vec) => vec?.forEach((v, i) => add(`${name}${i}`, at, v));
+  for (const key of keyframes) {
+    addVec('camPos', key.at, key.camera?.pos);
+    addVec('camTarget', key.at, key.camera?.target);
+    addVec('camUp', key.at, key.camera?.up);
+    addVec('rot', key.at, key.laptop?.rot);
+    addVec('pos', key.at, key.laptop?.pos);
+    for (const name of ['hinge', 'fit', 'power', 'light']) {
+      if (key[name] !== undefined) add(name, key.at, key[name]);
+    }
+  }
+  return Object.entries(knots).map(([name, list]) => [name, curve(list)]);
 }
 
 // files behind the bar: glTF, buffer, the model's textures and the display picture
@@ -100,7 +78,8 @@ export async function runIntro(cover, { skip, leave, load, report }) {
   };
   const texture = await loadTexture(renderer);
 
-  const { scene, env } = buildScene(renderer);
+  const { scene, env, rims } = buildScene(renderer);
+  const lightFull = { env: scene.environmentIntensity, rims: rims.map((rim) => rim.intensity) };
   // the placeholder needs no files, so it doubles as the fallback
   const laptop = TIMELINE.model === 'gltf'
     ? await createGltfLaptop(texture, env.texture).catch((err) => {
@@ -127,19 +106,13 @@ export async function runIntro(cover, { skip, leave, load, report }) {
   const glow = new THREE.SpotLight(0xc4d4ff, 0, 0, 1.1, 0.8, 1);
   scene.add(glow, glow.target);
 
-  const { flat, segments } = flatten(TIMELINE.keyframes);
-  const state = flat;
-  const tl = gsap.timeline({ paused: true, defaults: { ease: TIMELINE.ease } });
-  for (const seg of segments) {
-    if (seg.duration > 0) {
-      const ease = seg.ease || TIMELINE.ease;
-      const camera = Object.fromEntries(Object.entries(seg.to).filter(([key]) => key.startsWith('cam')));
-      const rest = Object.fromEntries(Object.entries(seg.to).filter(([key]) => !key.startsWith('cam') && key !== 'hinge'));
-      tl.to(state, { ...camera, duration: seg.duration, ease: seg.cameraEase || ease }, seg.start);
-      tl.to(state, { ...rest, duration: seg.duration, ease }, seg.start);
-      tl.to(state, { hinge: seg.to.hinge, duration: seg.duration, ease: seg.hingeEase || ease }, seg.start);
-    }
-  }
+  const curves = channels(TIMELINE.keyframes);
+  const state = {};
+  const pose = (t) => { for (const [name, at] of curves) state[name] = at(t); };
+  pose(0);
+  const tl = gsap.timeline({ paused: true });
+  const driver = { t: 0 };
+  tl.to(driver, { t: 1, duration: 1, ease: 'none', onUpdate: () => pose(driver.t) });
 
   const v = () => new THREE.Vector3();
   const [camPos, camTarget, camUp, fitPos, fitUp, screenC, screenN] = [v(), v(), v(), v(), v(), v(), v()];
@@ -171,6 +144,8 @@ export async function runIntro(cover, { skip, leave, load, report }) {
     glow.target.position.copy(screenC).addScaledVector(screenN, 14).addScaledVector(fitUp, -16);
     glow.target.updateMatrixWorld();
     glow.intensity = TIMELINE.glow * state.power;
+    scene.environmentIntensity = lightFull.env * state.light;
+    rims.forEach((rim, i) => { rim.intensity = lightFull.rims[i] * state.light; });
 
     camPos.set(state.camPos0, state.camPos1, state.camPos2);
     camTarget.set(state.camTarget0, state.camTarget1, state.camTarget2);
@@ -329,8 +304,9 @@ export async function runIntro(cover, { skip, leave, load, report }) {
 
   function frame(ms) {
     raf = requestAnimationFrame(frame);
+    if (laptop.setLeds(ms / 1000)) dirty = true;
     // rAF already stops in a hidden tab; past the idle window nothing moves
-    // unless the scrub does, so there is no reason to draw
+    // unless the scrub or a light does, so there is no reason to draw
     if (!dirty && progress >= TIMELINE.idle.until) return;
     dirty = false;
     applyPose(ms / 1000);

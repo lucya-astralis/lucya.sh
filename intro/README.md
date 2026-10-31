@@ -23,7 +23,7 @@ no import map: everything loads from `intro/`.
 ## Tuning
 
 Everything lives in `intro.timeline.js`: scroll length, easing, idle drift, fade
-range and the keyframes. A keyframe only states what changes, the rest holds.
+range and the keyframes. Each number runs on one curve through the keys that name it (`curve.js`), so motion passes through a key without stopping.
 The last pose is not typed in: `fit: 1` is computed from the screen's world
 position so the plane covers the viewport at any aspect ratio.
 
