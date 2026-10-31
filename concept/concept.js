@@ -28,6 +28,7 @@ const STICKERS = [
   ['esa', 32, 58, 36, -6], ['frieren', 232, 72, 40, 4], ['eu', 84, 112, 32, 5], ['kuromi', 128, 100, 30, -5],
   ['pride', 176, 108, 38, -8], ['potato', 234, 133, 24, 7], ['jaxa', 112, 156, 50, 5], ['clawd', 173, 168, 44, -4],
   ['proxmox', 184, 34, 62, -3], ['delacy', 72, 62, 30, -6],
+  ['inter-astra', 117, 33, 52, -2], ['uwu', 158, 141, 25, 6],
 ];
 const deck = document.getElementById('deck');
 const logo = document.createElement('div');
@@ -220,16 +221,19 @@ const POST = [
   ['Model', 'CF-QV9'], ['Host', 'kira'], ['CPU', 'Core i5-10310U'], ['Display', '12.0" 2880 × 1920'], ['Handing over', 'lucya.systems'],
 ];
 
+// Loads behind the intro, near 800 KB of maps, so it is ready when the boot lifts;
+// it stays out of sight and draws nothing until show().
+const planet = import('./hero-planet.js?v=20261031-steady')
+  .then(({ startPlanet }) => startPlanet($('hero'), $('heroPlanet'), REDUCED))
+  .catch((err) => {
+    console.warn('[planet] standing in the render:', err);
+    $('hero').classList.add('is-still');
+  });
+
 function ready() {
   document.body.classList.add('is-ready');
   window.dispatchEvent(new CustomEvent('lucya:ready'));
-  // not before now: its maps are near 800 KB, and the boot covers the hero anyway
-  import('./hero-planet.js?v=20261031-planet')
-    .then(({ startPlanet }) => startPlanet($('hero'), $('heroPlanet'), REDUCED))
-    .catch((err) => {
-      console.warn('[planet] standing in the render:', err);
-      $('hero').classList.add('is-still');
-    });
+  planet.then((p) => p?.show());
 }
 
 function startUp() {

@@ -26,6 +26,8 @@ SOURCES = [
     ("kuromi.png", "kuromi", "ring", 0),
     ("arasaka.jpg", "arasaka", "tag", 0),
     ("Delacy.webp", "delacy", "contour", 16),
+    ("uwu.jpg", "uwu", 7, 0),
+    ("logo-wordmark.png", "inter-astra", "label", 0),
 ]
 
 
@@ -102,6 +104,25 @@ def cut_tag(img, margin=13, radius=30):
     return out
 
 
+def cut_label(img, ground=(8, 10, 22), pad=70, radius=96, edge=22):
+    """For a logo with white lettering: it needs a dark label of its own, and a white
+    die-cut edge round that to stand off the silver lid."""
+    art = img.convert("RGBA")
+    art = art.crop(art.getchannel("A").getbbox())
+    w, h = art.width + 2 * (pad + edge), art.height + 2 * (pad + edge)
+    scale = 3
+    mask = Image.new("L", (w * scale, h * scale), 0)
+    ImageDraw.Draw(mask).rounded_rectangle([0, 0, w * scale - 1, h * scale - 1], (radius + edge) * scale, fill=255)
+    out = Image.new("RGB", (w, h), (252, 252, 252))
+    inner = Image.new("L", (w * scale, h * scale), 0)
+    ImageDraw.Draw(inner).rounded_rectangle([edge * scale, edge * scale, (w - edge) * scale - 1, (h - edge) * scale - 1], radius * scale, fill=255)
+    out.paste(ground, (0, 0), inner.resize((w, h), Image.LANCZOS))
+    out.paste(art, (pad + edge, pad + edge), art)
+    out = out.convert("RGBA")
+    out.putalpha(mask.resize((w, h), Image.LANCZOS))
+    return out
+
+
 def cut(img, tolerance, edge):
     """Flood-fills the background in from the border, so white inside the art stays."""
     scale = 2
@@ -147,6 +168,8 @@ for name, out, tolerance, edge in SOURCES:
         result = cut_tag(img)
     elif tolerance == "contour":
         result = cut_contour(img, edge)
+    elif tolerance == "label":
+        result = cut_label(img)
     else:
         result = cut(img, tolerance, edge) if tolerance else img.convert("RGBA")
     result = result.crop(result.getchannel("A").getbbox())

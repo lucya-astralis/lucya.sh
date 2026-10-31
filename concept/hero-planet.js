@@ -27,7 +27,7 @@ const ROLL = -12;
 const DAY_S = 420;              // one turn, seconds: it should barely seem to move
 const FRAME_MS = 50;            // the clouds need no more than 20 frames a second
 const SLOW_MS = 90;             // a frame gap past this and the planet holds still
-const PARALLAX = 0.22;
+const SCROLL_REST_MS = 180;      // no drawing until the page has held still this long
 
 // seen from far enough out to show the curve, its top where --horizon says in concept.css
 const place = (w, h) => {
@@ -43,11 +43,11 @@ export function startPlanet(hero, canvas, reduced) {
   }
   if (!planet) {
     hero.classList.add('is-still');
-    return;
+    return null;
   }
 
-  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-  let W = 0, H = 0, ready = false, seen = true, moving = !reduced;
+  const dpr = Math.min(window.devicePixelRatio || 1, matchMedia('(pointer: coarse)').matches ? 1.25 : 1.5);
+  let W = 0, H = 0, ready = false, shown = false, seen = true, moving = !reduced;
 
   planet.define('prime', { kind: 'terrestrial', maps: MAPS, flat: [5 / 255, 14 / 255, 33 / 255], cloud: true, frame: FRAME, atm: { halo: 0.42 } });
 
@@ -69,32 +69,35 @@ export function startPlanet(hero, canvas, reduced) {
   new ResizeObserver(resize).observe(hero);
 
   // a machine that cannot keep up keeps the planet it has: the page must not pay for it
-  let last = 0, late = 0, count = 0;
+  // the clouds can wait: a frame of this shader must never land on a scroll
+  let last = 0, late = 0, count = 0, scrolled = -Infinity;
+  addEventListener('scroll', () => { scrolled = performance.now(); }, { passive: true });
   function tick(now) {
     if (!moving) return;
     requestAnimationFrame(tick);
-    if (!seen) { last = 0; return; }
+    if (!seen || now - scrolled < SCROLL_REST_MS) { last = 0; return; }
     if (now - last < FRAME_MS) return;
     if (last && ++count > 6 && now - last > SLOW_MS && ++late > 8) moving = false;
     last = now;
     draw(now / 1000);
   }
 
+  // whichever comes last, the maps or the boot lifting, raises it
+  const rise = () => {
+    if (!ready || !shown || canvas.classList.contains('is-risen')) return;
+    canvas.classList.add('is-risen');
+    if (moving) requestAnimationFrame(tick);
+  };
   const loaded = () => {
     if (ready || !planet.allReady('prime')) return;
     ready = true;
-    resize();
-    canvas.classList.add('is-risen');
-    if (moving) requestAnimationFrame(tick);
+    resize();   // this first draw also compiles the shader, out of sight
+    rise();
   };
   planet.onLoad = loaded;
   loaded();
 
   new IntersectionObserver(([entry]) => { seen = entry.isIntersecting; }).observe(hero);
 
-  if (!reduced) {
-    const follow = () => { canvas.style.transform = `translate3d(0,${(scrollY * PARALLAX).toFixed(1)}px,0)`; };
-    addEventListener('scroll', follow, { passive: true });
-    follow();
-  }
+  return { show() { shown = true; rise(); } };
 }
