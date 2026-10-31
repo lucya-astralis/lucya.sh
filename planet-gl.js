@@ -681,14 +681,18 @@ vec3 shadeTerrestrial(vec3 n, vec3 sun, vec3 v, vec3 nb, vec3 lb, float pxr){
   // a cloud is shaded by the cloud toward the star, and lit on its sun-facing edge
   cv = clamp(cv + 0.8 * (c - cs), 0.0, 1.0);
 
-  // glints of glass and rooftop water, a point here and there, cells about a pixel
-  // across so they stay sharp at any distance
+  // glints of glass and rooftop water, a point here and there. Each is a soft point
+  // in a cell a few pixels across: at one pixel the turning world would land it on a
+  // different pixel every frame, and whole districts would sparkle
 #ifdef DETAIL
   if (uDetail > 0.5) {
-    float cell = max(pxPerUnit * 0.9, 40.0);
-    vec3 gc = floor(b * cell);
+    float cell = max(pxPerUnit / 3.5, 40.0);
+    vec3 gg = b * cell;
+    vec3 gc = floor(gg);
     float gh = hash(mod(gc, 1024.0) + 3.0);
-    float spark = step(0.965, gh) * smoothstep(0.12, 0.45, built) * (1.0 - wet * (1.0 - plat));
+    vec3 gp = gc + 0.2 + 0.6 * vec3(hash(mod(gc, 1024.0) + 13.0), hash(mod(gc, 1024.0) + 17.0), hash(mod(gc, 1024.0) + 19.0));
+    float gd = length(gg - gp) * pxPerUnit / cell;      // px to the point
+    float spark = step(0.8, gh) * exp(-gd * gd / 1.2) * smoothstep(0.12, 0.45, built) * (1.0 - wet * (1.0 - plat));
     gl3 = vec3(spark * (0.5 + 0.8 * hash(mod(gc, 1024.0) + 9.0)), smoothstep(0.1, 0.5, built), (1.0 - wet) * step(0.8, tone));
   }
 #endif
@@ -748,7 +752,7 @@ vec3 shadeTerrestrial(vec3 n, vec3 sun, vec3 v, vec3 nb, vec3 lb, float pxr){
             vec3 pt = ci + 0.15 + 0.7 * vec3(hash(cm), hash(cm + 11.0), hash(cm + 23.0));
             float dd = length(g - pt) * k;          // px to the candidate
             float keep = step(1.0 - min(dens * 1.3, 0.95), hash(cm + 5.0));
-            float size = 0.8 + 1.1 * hash(cm + 7.0);
+            float size = 1.15 + 0.9 * hash(cm + 7.0);        // under a pixel, a light flickers as it turns
             float bright = exp(-dd * dd / (size * size)) * keep * (0.35 + 0.65 * hash(cm + 31.0));
             vec3 hue = mix(sodium, led, step(0.62, hash(cm + 41.0)) * smoothstep(0.5, 0.9, dens));
             speck += hue * bright * w * 2.6;
