@@ -7,9 +7,9 @@
 <meta name="description" content="Concept page for lucya.sh, continuing from the laptop intro." />
 <meta name="robots" content="noindex" />
 <link rel="icon" href="/favicon.ico" sizes="48x48" />
-<link rel="stylesheet" href="concept/concept.css?v=20261031-lid" />
+<link rel="stylesheet" href="concept/concept.css?v=20261031-photo" />
 <script src="lite.js"></script>
-<script src="intro/gate.js?v=20261031-lid"></script>
+<script src="intro/gate.js?v=20261031-photo"></script>
 </head>
 <body>
 
@@ -106,11 +106,26 @@
       <p class="tag">Hardware inventory</p>
       <h2>What hums in the rack.</h2>
     </div>
-    <div class="tray rise"><div class="glass"><ol class="rack" id="rack"></ol></div></div>
+    <div class="rackview rise" id="rackView">
+      <figure class="rackphoto">
+        <img src="concept/projects/rack.webp" width="1400" height="1400" alt="The homelab rack under violet light, its servers covered in stickers and keychains" loading="lazy" />
+        <figcaption><span>RACK-01</span><span id="rackCount">—</span></figcaption>
+      </figure>
+      <div class="rackside">
+        <div class="racklegend" id="rackLegend" role="group" aria-label="Filter by power state"></div>
+        <div class="unitlist">
+          <div id="rackExt"></div>
+          <div id="rackUnits" aria-label="Rack units"></div>
+        </div>
+        <aside class="rackinfo" id="rackInfo" aria-live="polite"></aside>
+      </div>
+    </div>
     <div class="neofetch rise" id="neofetch">
       <p class="tag">Neofetch · system info</p>
-      <div class="ntabs" id="nTabs"></div>
-      <div class="tray"><div class="glass"><div class="npanes" id="nPanes"></div></div></div>
+      <div class="neobay">
+        <div class="ntabs" id="nTabs"></div>
+        <div class="tray"><div class="glass"><div class="npanes" id="nPanes"></div></div></div>
+      </div>
     </div>
   </section>
 
@@ -281,7 +296,7 @@
       <div class="album__head"><h3>Japan 2026</h3><span lang="ja">日本</span><a href="https://images.lucya.sh/album/japan_2026">Full album ↗</a></div>
       <div class="strip" id="stripJapan" tabindex="0" aria-label="Japan 2026 photos, scrollable"></div>
     </div>
-    <div class="album album--shift rise">
+    <div class="album rise">
       <div class="album__head"><h3>Tech</h3><a href="https://images.lucya.sh/album/tech">Full album ↗</a></div>
       <div class="strip" id="stripTech" tabindex="0" aria-label="Tech photos, scrollable"></div>
     </div>
@@ -301,7 +316,7 @@
   <p class="foot__legal"><a href="legal.html">Impressum · Datenschutz</a> <span>Concept. The live site stays at <a href="index.html">index.html</a>.</span></p>
 </footer>
 
-<script type="module" src="concept/concept.js?v=20261031-lid"></script>
+<script type="module" src="concept/concept.js?v=20261031-photo"></script>
 <script type="module" src="intro/loader.js?v=20261031-light"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 import { rackData } from '../js/systems-data.js?v=20261031-kira';
-import { initSystems } from '../js/systems.js?v=20261031-kira';
+import { initSystems } from '../js/systems.js?v=20261031-rack';
 import { initWeather } from '../js/weather.js';
 import { initSpotify } from '../js/spotify.js?v=20261027-lang';
 import { createScrambler } from '../js/text-scramble.js';
@@ -21,35 +21,6 @@ document.getElementById('spec').append(...SPEC.flatMap(([k, v]) => {
   dd.textContent = v;
   return [dt, dd];
 }));
-
-const rack = document.getElementById('rack');
-const rackRows = new Map();
-for (const host of rackData) {
-  if (!host.chassis) continue;
-  const li = document.createElement('li');
-  const name = document.createElement('b');
-  name.textContent = host.id;
-  li.append(name);
-  for (const text of [host.role, host.chassis, host.cpu || host.os || '']) {
-    const cell = document.createElement('span');
-    cell.textContent = text;
-    li.append(cell);
-  }
-  // a row opens its sheet in the neofetch terminal below, where it has one
-  const tab = host.neofetch || host.id;
-  li.tabIndex = 0;
-  li.addEventListener('click', () => openSheet(tab));
-  li.addEventListener('keydown', (e) => { if (e.key === 'Enter') openSheet(tab); });
-  rack.append(li);
-  rackRows.set(host.live || host.id, li);
-}
-
-function openSheet(id) {
-  const button = document.querySelector(`#nTabs .ntab[data-tab="${id}"]`);
-  if (!button) return;
-  button.click();
-  document.getElementById('neofetch').scrollIntoView({ block: 'start' });
-}
 
 // the same layout as the model's lid: file, x, y (mm from top left), width, rotation
 const STICKERS = [
@@ -102,9 +73,10 @@ const statusFeed = (() => {
   return { subscribe(fn) { subs.push(fn); fn(last); } };
 })();
 
-initSystems(statusFeed);
+const scrambleTo = createScrambler(!!window.LUCYA_LITE);
+initSystems(statusFeed, scrambleTo, { fullSheet: true });
 initWeather();
-initSpotify(createScrambler(!!window.LUCYA_LITE));
+initSpotify(scrambleTo);
 
 const wallButton = (file, name, href) => {
   const el = document.createElement(href ? 'a' : 'span');
@@ -163,7 +135,7 @@ function paintFleet() {
   dot.dataset.state = state;
   dot.title = $('fleetSummary').textContent;
   for (const h of fleet.hosts || []) {
-    rackRows.get(h?.name)?.setAttribute('data-state', String(h.state).toLowerCase());
+    document.querySelector(`.ru[data-unit="${h?.name}"]`)?.setAttribute('data-live', String(h.state).toLowerCase());
   }
 }
 statusFeed.subscribe((data) => { fleet = data; paintFleet(); });

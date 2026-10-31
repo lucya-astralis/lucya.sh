@@ -1,7 +1,7 @@
 import { escHtml } from './utils.js';
 import { neofetchData, rackData } from './systems-data.js?v=20261031-kira';
 
-export function initSystems(statusFeed, scrambleTo) {
+export function initSystems(statusFeed, scrambleTo, { fullSheet = false } = {}) {
   // ---------- NEOFETCH : real systems ----------------------------
   // raw content uses inline <span style="color:..."> and occasionally
   // malformed <span/> as closers — we sanitize on inject.
@@ -295,6 +295,14 @@ export function initSystems(statusFeed, scrambleTo) {
     // Kept to two lines on purpose: selecting a unit retunes the neofetch
     // terminal next door, which is where the full system info lives. A
     // taller sheet here would only push the elevation around on every click.
+    // Beside the elevation (fullSheet) there is room for the rest of the unit.
+    const sheetDetail = (unit) => {
+      const rows = [['OS', unit.os], ['CPU', unit.cpu], ['Memory', unit.mem]].filter(([, value]) => value);
+      return (rows.length ? `<dl class="rackinfo__spec">${rows.map(([key, value]) => `<dt>${key}</dt><dd>${escHtml(value)}</dd>`).join('')}</dl>` : '') +
+        (unit.note ? `<p class="rackinfo__note">${escHtml(unit.note)}</p>` : '') +
+        (unit.neofetch ? '<a class="rackinfo__more" href="#neofetch">Full sheet ↓</a>' : '');
+    };
+
     const renderInfo = (unit) => {
       rackInfoEl.dataset.state = unit.state;
       rackInfoEl.innerHTML = `
@@ -303,6 +311,7 @@ export function initSystems(statusFeed, scrambleTo) {
           <span class="rackinfo__badge"><span class="ru__led"></span>${escHtml(STATE_LABEL[unit.state])}</span>
         </div>
         <div class="rackinfo__role">${escHtml(unit.role)} · ${unit.ext ? 'not racked' : unit.u + 'U'} · ${escHtml(unit.chassis || 'spec pending')}</div>
+        ${fullSheet ? sheetDetail(unit) : ''}
       `;
       // plain text first: the scramble runs on rAF, which is paused while
       // the tab is in the background — the name must never render empty
