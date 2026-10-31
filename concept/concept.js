@@ -173,8 +173,6 @@ setInterval(paintFleet, 5000);
 
 fetch('data.json').then((r) => r.json()).then(({ kpis }) => {
   const kpi = (key) => kpis.find((k) => k.key === key);
-  $('kpiServices').textContent = kpi('services').value;
-  $('kpiDomains').textContent = kpi('domains').value;
   const japan = kpi('japan');
   const day = 86400000;
   const start = Date.parse(japan.target), end = Date.parse(japan.end);
