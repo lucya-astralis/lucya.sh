@@ -245,10 +245,6 @@ const spy = new IntersectionObserver((entries) => {
 navLinks.forEach((_, section) => spy.observe(section));
 
 // ---- start-up: picks up from the intro's last frame ------------------------
-const POST = [
-  ['Model', 'CF-QV9'], ['Host', 'kira'], ['CPU', 'Core i5-10310U'], ['Display', '12.0" 2880 × 1920'], ['Handing over', 'lucya.systems'],
-];
-
 // Loads behind the intro, near 800 KB of maps, so it is ready when the boot lifts;
 // it stays out of sight and draws nothing until show().
 const planet = import('./hero-planet.js?v=20261031-steady')
@@ -272,7 +268,6 @@ function startUp() {
     return;
   }
   root.classList.add('is-scrolllock');
-  const post = document.getElementById('bootPost');
   const timers = [];
   const at = (ms, fn) => timers.push(setTimeout(fn, ms));
 
@@ -291,16 +286,10 @@ function startUp() {
     window.addEventListener('keydown', end);
     boot.addEventListener('pointerdown', end);
   });
-  POST.forEach(([key, value], i) => at(420 + i * 240, () => {
-    const li = document.createElement('li');
-    li.innerHTML = '<span></span><b></b>';
-    li.firstChild.textContent = key;
-    li.lastChild.textContent = value;
-    post.append(li);
-    requestAnimationFrame(() => li.classList.add('is-on'));
-  }));
-  at(2050, () => boot.classList.add('is-mark'));
-  at(3300, end);
+  // the intro's own fade takes the first second of this
+  at(900, () => boot.classList.add('is-spin'));
+  at(3000, () => boot.classList.add('is-fade'));
+  at(4200, end);
 }
 
 // the intro's gate holds the page; without an intro the page starts by itself
