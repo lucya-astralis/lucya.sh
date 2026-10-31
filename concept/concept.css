@@ -11,7 +11,7 @@
   --champagne:#c9c3b6;
   --magnesium:linear-gradient(150deg,#d6d1c6 0%,#a8a397 46%,#c6c1b5 100%);
   --spring:cubic-bezier(.32,.72,0,1);
-  --gutter:clamp(16px,5vw,72px);
+  --gutter:max(clamp(16px,5vw,72px),calc((100vw - 1400px) / 2));   /* the content stops at 1400px; backgrounds run on */
   /* the screen plane as the intro's camera ends on it: it covers the viewport */
   --plane:max(100vw,150vh);
 }
@@ -116,17 +116,17 @@ h2{ font-size:clamp(34px,5.4vw,84px); line-height:1.02; font-weight:500; letter-
   position:relative;
   display:flex; align-items:center; gap:2px;
   flex:0 1 auto; min-width:0;
-  padding-inline:12px;
+  padding-inline:6px 12px;
   overflow-x:auto;
   overscroll-behavior-x:none;
   scrollbar-width:none;
-  -webkit-mask:linear-gradient(to right,transparent,#000 12px,#000 calc(100% - 12px),transparent);
-          mask:linear-gradient(to right,transparent,#000 12px,#000 calc(100% - 12px),transparent);
+  -webkit-mask:linear-gradient(to right,transparent,#000 6px,#000 calc(100% - 12px),transparent);
+          mask:linear-gradient(to right,transparent,#000 6px,#000 calc(100% - 12px),transparent);
 }
 .island__links::-webkit-scrollbar{ display:none; }
 .island a{ padding:7px 13px; border-radius:999px; white-space:nowrap; color:var(--dim); transition:color .4s var(--spring), background .4s var(--spring); }
 .island a:hover,.island a.is-current{ color:var(--ink); background:rgba(255,255,255,.07); }
-.island__home{ flex:none; display:flex; padding:7px 10px !important; }
+.island__home{ flex:none; display:flex; padding:7px 6px 7px 10px !important; }
 .island__home span{
   width:30px; height:17px; background:var(--ink);
   -webkit-mask:url("../images/logo/lucya_logo.svg") center / contain no-repeat;
