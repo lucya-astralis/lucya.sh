@@ -7,9 +7,9 @@
 <meta name="description" content="Concept page for lucya.sh, continuing from the laptop intro." />
 <meta name="robots" content="noindex" />
 <link rel="icon" href="/favicon.ico" sizes="48x48" />
-<link rel="stylesheet" href="concept/concept.css?v=20261030-cards" />
+<link rel="stylesheet" href="concept/concept.css?v=20261031-lid" />
 <script src="lite.js"></script>
-<script src="intro/gate.js?v=20261030-cards"></script>
+<script src="intro/gate.js?v=20261031-lid"></script>
 </head>
 <body>
 
@@ -26,7 +26,8 @@
   <a href="#inventory">Inventory</a>
   <a href="#lid">Lid</a>
   <a href="#spotify">Music</a>
-  <a href="#work">Work</a>
+  <a href="#work">Links</a>
+  <a href="#buttons">Buttons</a>
   <a href="#photos">Photos</a>
   <a class="island__old" href="index.html">Classic</a>
   <span class="island__state" id="fleetDot" title="Awaiting telemetry"></span>
@@ -226,35 +227,35 @@
       <p class="tag">Elsewhere</p>
       <h2>Places to go next.</h2>
     </div>
-    <div class="bento">
-      <a class="tray tray--wide rise" href="https://lucya.systems"><div class="glass card card--systems">
-        <span>01</span>
-        <img class="card__lockup" src="images/projects/lucya-lockup.svg" alt="" loading="lazy" />
-        <div class="card__logos">
-          <img src="images/projects/inter-astra.net.svg" alt="" loading="lazy" />
-          <img src="images/projects/astraos.app.svg" alt="" loading="lazy" />
-          <img src="images/projects/aizaku.com.svg" alt="" loading="lazy" />
-        </div>
-        <h3>Projects &amp; Worlds</h3><p lang="ja">プロジェクト</p><em>lucya.systems ↗</em>
-      </div></a>
-      <a class="tray rise" href="https://images.lucya.sh"><div class="glass card card--photo">
-        <img class="card__photo" src="images/photos/datacenter.jpeg" alt="" loading="lazy" />
-        <span>02</span>
-        <img class="card__aperture" src="images/projects/aperture.svg" alt="" loading="lazy" />
-        <h3>Photo archive</h3><p lang="ja">写真アーカイブ</p><em>images.lucya.sh ↗</em>
-      </div></a>
-      <a class="tray rise" href="https://binbows.net"><div class="glass card card--binbows">
-        <span>03</span>
-        <img class="card__flag" src="images/projects/binbows-flag.svg" alt="" loading="lazy" />
-        <h3>Michaelsoft Binbows</h3><p lang="ja">ビンボウズ</p><em>binbows.net ↗</em>
-      </div></a>
-      <a class="tray tray--wide rise" href="https://gov.inter-astra.net"><div class="glass card card--concordia">
-        <img class="card__planet" src="images/concordia/orikaia-prime-render-m.webp" alt="" loading="lazy" />
-        <span>04</span>
-        <img class="card__emblem" src="images/projects/concordia-emblem.svg" alt="" loading="lazy" />
-        <h3>Shinsei Concordia</h3><p>A science-fiction worldbuilding project: star charts, cities and institutions, from the ocean moon Orikaia Prime to the edge of the Expanse.</p><em>gov.inter-astra.net ↗</em>
-      </div></a>
-    </div>
+
+    <a class="house rise" href="https://lucya.systems">
+      <img src="concept/projects/house.webp" alt="" loading="lazy" />
+      <div>
+        <span class="site__kicker">The house</span>
+        <h3>lucya.systems</h3>
+        <p>An independent home for worldbuilding, and the homelab it runs on.</p>
+        <em>lucya.systems ↗</em>
+      </div>
+    </a>
+
+    <a class="realm rise" href="https://gov.inter-astra.net">
+      <img class="realm__planet" src="images/concordia/orikaia-prime-render-m.webp" alt="" loading="lazy" />
+      <span class="site__kicker">Reika II · Orikaia Prime</span>
+      <img class="realm__emblem" src="images/projects/concordia-emblem.svg" alt="" loading="lazy" />
+      <h3>Shinsei Concordia</h3>
+      <p>A science-fiction worldbuilding project: star charts, cities and institutions, from the ocean moon Orikaia Prime to the edge of the Expanse.</p>
+      <em>gov.inter-astra.net ↗</em>
+    </a>
+
+    <a class="house house--flip rise" href="https://binbows.net">
+      <img src="concept/projects/binbows.webp" alt="" loading="lazy" />
+      <div>
+        <span class="site__kicker">Tribute</span>
+        <h3>Michaelsoft Binbows</h3>
+        <p>A tribute to a shop sign in Japan, with an OS that actually boots.</p>
+        <em>binbows.net ↗</em>
+      </div>
+    </a>
   </section>
 
   <section class="walls" id="buttons">
@@ -276,7 +277,14 @@
       <p class="tag">Exhibit</p>
       <h2>An excuse to go outside.</h2>
     </div>
-    <div class="strip" id="strip" tabindex="0" aria-label="Photos, scrollable"></div>
+    <div class="album rise">
+      <div class="album__head"><h3>Japan 2026</h3><span lang="ja">日本</span><a href="https://images.lucya.sh/album/japan_2026">Full album ↗</a></div>
+      <div class="strip" id="stripJapan" tabindex="0" aria-label="Japan 2026 photos, scrollable"></div>
+    </div>
+    <div class="album album--shift rise">
+      <div class="album__head"><h3>Tech</h3><a href="https://images.lucya.sh/album/tech">Full album ↗</a></div>
+      <div class="strip" id="stripTech" tabindex="0" aria-label="Tech photos, scrollable"></div>
+    </div>
   </section>
 
 </main>
@@ -293,7 +301,7 @@
   <p class="foot__legal"><a href="legal.html">Impressum · Datenschutz</a> <span>Concept. The live site stays at <a href="index.html">index.html</a>.</span></p>
 </footer>
 
-<script type="module" src="concept/concept.js?v=20261030-cards"></script>
-<script type="module" src="intro/loader.js?v=20261030-panel"></script>
+<script type="module" src="concept/concept.js?v=20261031-lid"></script>
+<script type="module" src="intro/loader.js?v=20261031-light"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 import { escHtml } from './utils.js';
-import { neofetchData, rackData } from './systems-data.js?v=20261027-rack';
+import { neofetchData, rackData } from './systems-data.js?v=20261031-kira';
 
 export function initSystems(statusFeed, scrambleTo) {
   // ---------- NEOFETCH : real systems ----------------------------
@@ -27,7 +27,7 @@ export function initSystems(statusFeed, scrambleTo) {
       { id: 'mobile',  label: 'LAPTOP · MOBILE' }
     ];
     // which machine the section opens on, independent of group order
-    const NEOFETCH_DEFAULT = 'aoi';
+    const NEOFETCH_DEFAULT = 'kira';
 
     const buckets = NEOFETCH_GROUPS
       .map(g => ({ label: g.label, items: neofetchData.filter(e => e.group === g.id) }))
