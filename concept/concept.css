@@ -20,6 +20,7 @@
 html{ background:var(--black); scroll-behavior:smooth; scroll-padding-top:96px; }
 html.is-scrolllock{ overflow:hidden; }
 body{
+  position:relative;
   margin:0;
   background:var(--black);
   color:var(--ink);
@@ -29,7 +30,7 @@ body{
 }
 /* the lid's creases, drawn behind everything: the page sits on the machine */
 body::before{
-  content:""; position:fixed; inset:0; pointer-events:none;
+  content:""; position:absolute; inset:0; pointer-events:none;
   background:
     linear-gradient(to right,transparent calc(25.4% - .5px),rgba(255,255,255,.055) 25.4%,transparent calc(25.4% + .5px)),
     linear-gradient(to right,transparent calc(74.6% - .5px),rgba(255,255,255,.055) 74.6%,transparent calc(74.6% + .5px));
@@ -125,10 +126,14 @@ h2{ font-size:clamp(34px,5.4vw,84px); line-height:1.02; font-weight:500; letter-
   position:relative;
   isolation:isolate;
   overflow:clip;
-  min-height:100dvh;
+  /* svh, not dvh: Safari's toolbar slides away mid-scroll, and with it the hero
+     would change height and carry the horizon, the logo and the planet along */
+  min-height:100vh;
+  min-height:100svh;
   padding:clamp(96px,14vh,150px) var(--gutter) clamp(28px,5vh,56px);
   display:flex; flex-direction:column; justify-content:flex-end;
-  --horizon:46dvh;   /* hero-planet.js puts the limb here */
+  --horizon:46vh;    /* hero-planet.js puts the limb here */
+  --horizon:46svh;
   --word-h:calc((100vw - var(--gutter) * 2) * .1405);
   --word-top:calc(var(--horizon) - var(--word-h) * .7);
 }
