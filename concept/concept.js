@@ -247,7 +247,7 @@ navLinks.forEach((_, section) => spy.observe(section));
 // ---- start-up: picks up from the intro's last frame ------------------------
 // Loads behind the intro, near 800 KB of maps, so it is ready when the boot lifts;
 // it stays out of sight and draws nothing until show().
-const planet = import('./hero-planet.js?v=20261031-steady')
+const planet = import('./hero-planet.js?v=20261031-still')
   .then(({ startPlanet }) => startPlanet($('hero'), $('heroPlanet'), REDUCED))
   .catch((err) => {
     console.warn('[planet] standing in the render:', err);

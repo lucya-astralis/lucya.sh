@@ -1,7 +1,7 @@
 // Orikaia Prime rising behind the hero, drawn by the renderer of the Concordia set.
 // The sun stands behind the limb, so the words sit on the night side under one
 // lit arc. Where drawing is not an option, a render of the same view stands in.
-import { createPlanetLayer, faceMatrix } from '../planet-gl.js';
+import { createPlanetLayer, faceMatrix } from '../planet-gl.js?v=20261031-still';
 
 const MAPS = {
   day: 'images/concordia/orikaia-prime-day.webp',
