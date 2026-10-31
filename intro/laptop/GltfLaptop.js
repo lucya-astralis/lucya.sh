@@ -1,7 +1,7 @@
 import {
   AdditiveBlending, Box3, CanvasTexture, GLTFLoader, Mesh, MeshBasicMaterial, PlaneGeometry, SRGBColorSpace, Vector3,
-} from '../vendor/three.bundle.min.js?v=20261031-leds';
-import { Laptop } from './Laptop.js';
+} from '../vendor/three.bundle.min.js?v=20261031-leds2';
+import { Laptop } from './Laptop.js?v=20261031-leds2';
 
 // Separate .gltf + .bin + .webp on purpose: a .glb's embedded images go through
 // blob: URLs, which the site's CSP refuses.

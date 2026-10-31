@@ -1,4 +1,4 @@
-import { Group, Vector3 } from '../vendor/three.bundle.min.js?v=20261031-leds';
+import { Group, Vector3 } from '../vendor/three.bundle.min.js?v=20261031-leds2';
 
 /* The contract between the intro and any laptop model. intro.js only ever
    touches what is defined here, so a glTF can replace the placeholder by
