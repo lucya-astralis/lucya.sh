@@ -36,9 +36,9 @@
 <meta name="twitter:image" content="https://lucya.sh/concept/card.jpg" />
 <meta name="twitter:image:alt" content="lucya - personal website" />
 
-<link rel="stylesheet" href="concept/concept.css?v=20261031-svh" />
+<link rel="stylesheet" href="concept/concept.css?v=20261031-nav" />
 <script src="lite.js"></script>
-<script src="intro/gate.js?v=20261031-sticker"></script>
+<script src="intro/gate.js?v=20261031-pill"></script>
 
 <!-- Structured data: Person + WebSite -->
 <script type="application/ld+json">
@@ -94,6 +94,11 @@
   <a href="#buttons">Buttons</a>
   <a href="#photos">Photos</a>
 </nav>
+
+<a class="nowpill" id="nowPill" target="_blank" rel="noopener" hidden>
+  <img id="nowPillCover" src="data:," alt="" />
+  <span class="nowpill__text"><b id="nowPillTitle"></b><span id="nowPillArtist"></span></span>
+</a>
 
 <main id="top">
 
@@ -399,7 +404,7 @@
   <p class="foot__legal"><a href="legal.html">Impressum · Datenschutz</a> <span><a href="https://status.lucya.systems">Status</a> · <a href="classic.html">The old site</a> is still around.</span></p>
 </footer>
 
-<script type="module" src="concept/concept.js?v=20261031-sticker"></script>
+<script type="module" src="concept/concept.js?v=20261031-pill"></script>
 <script type="module" src="intro/loader.js?v=20261031-phone"></script>
 </body>
 </html>

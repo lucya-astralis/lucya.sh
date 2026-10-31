@@ -451,6 +451,7 @@ export function initSpotify(scrambleTo) {
         if (cardInView && !document.hidden) startLiveElapsed();
       };
       if (changed) {
+        window.dispatchEvent(new CustomEvent('lucya:track', { detail: t }));
         swap(() => {
           // the puller sends no cover rather than a stale one; the logo beats
           // leaving the previous track's art up
@@ -469,6 +470,7 @@ export function initSpotify(scrambleTo) {
       if (!live) return;
       live = null;
       liveKey = '';
+      window.dispatchEvent(new CustomEvent('lucya:track', { detail: null }));
       spotifyCard.classList.remove('is-live');
       if (sectionEl) sectionEl.classList.remove('is-live');
       head.forEach(h => scrambleTo(h.el, h.rotation));
