@@ -18,15 +18,15 @@ export const neofetchData = [
 <span style="color: #E57000;">      .+ooooooo+-<span/><span style="color: #e7e7e7;">'oNMMMMNo'<span/><span style="color: #E57000;">-+ooooooo+.          <span/><span style="color: #e7e7e7;">Shell: bash 5.2.37<span/>
 <span style="color: #E57000;">        -+ooooooo/.<span/><span style="color: #e7e7e7;">'sMMs'<span/><span style="color: #E57000;">./ooooooo+-            <span/><span style="color: #e7e7e7;">Terminal: termproxy<span/>
 <span style="color: #E57000;">          :oooooooo/<span/><span style="color: #e7e7e7;">'..'<span/><span style="color: #E57000;">/oooooooo:              <span/><span style="color: #e7e7e7;">CPU: Intel(R) Core(TM) i7-3615QM (8) @ 3.30 GHz <span class="nlive" data-live="temp"></span><span/>
-<span style="color: #E57000;">          :oooooooo/'<span/><span style="color: #e7e7e7;">..<span/><span style="color: #E57000;">'/oooooooo:              <span/><span style="color: #e7e7e7;">CPU Usage: <span class="nlive" data-live="cpu">—</span><span/>
+<span style="color: #E57000;">          :oooooooo/'<span/><span style="color: #e7e7e7;">..<span/><span style="color: #E57000;">'/oooooooo:              <span/><span style="color: #e7e7e7;">CPU Usage: <span class="nlive" data-live="cpu">-</span><span/>
 <span style="color: #E57000;">        -+ooooooo/.'<span/><span style="color: #e7e7e7;">sMMs<span/><span style="color: #E57000;">'./ooooooo+-            <span/><span style="color: #e7e7e7;">GPU: Intel 3rd Gen Core processor Graphics Controller<span/>
 <span style="color: #E57000;">      .+ooooooo+-'<span/><span style="color: #e7e7e7;">oNMMMMNo<span/><span style="color: #E57000;">'-+ooooooo+.          <span/><span style="color: #e7e7e7;">Memory: <span class="nlive" data-live="mem-used">12.66 GiB</span> / <span class="nlive" data-live="mem-total">15.53 GiB</span> (<span/><span class="nlive" data-live="mem-pct" style="color: #da0a0a;">82%<span/><span style="color: #e7e7e7;">)<span/>
 <span style="color: #E57000;">    ./ooooooo+- <span/><span style="color: #e7e7e7;">+NMMMMMMMMN+ <span/><span style="color: #E57000;">-+ooooooo/.        <span/><span style="color: #e7e7e7;">Swap: 124.55 MiB / 8.00 GiB (<span/><span style="color: #06e236;">2%<span/><span style="color: #e7e7e7;">)<span/>
 <span style="color: #E57000;">  '/oooooooo:'<span/><span style="color: #e7e7e7;">:mMMMMMMMMMMMMm:<span/><span style="color: #E57000;">':oooooooo/'      <span/><span style="color: #e7e7e7;">Disk (/): 21.41 GiB / 93.93 GiB (<span/><span style="color: #06e236;">23%<span/><span style="color: #e7e7e7;">) - ext4<span/>
 <span style="color: #E57000;">':oooooooo/'<span/><span style="color: #e7e7e7;">-hMMMMMMMyyMMMMMMMh-<span/><span style="color: #E57000;">'/oooooooo:'    <span/><span style="color: #e7e7e7;">Local IP (vmbr0): 192.168.178.252/24<span/>
 <span style="color: #E57000;">'-/+oo+/:'<span/><span style="color: #e7e7e7;">.yMMMMMMMh-  -hMMMMMMMy.<span/><span style="color: #E57000;">':/+oo+/-'    <span/><span style="color: #e7e7e7;">Locale: en_US.UTF-8<span/>
-<span style="color: #e7e7e7;">        'sMMMMMMMm:      :dMMMMMMMs'<span/>            <span style="color: #e7e7e7;">Storage (data): <span class="nlive" data-live="disk-used">—</span> / <span class="nlive" data-live="disk-total">—</span> (</span><span class="nlive" data-live="disk-pct">—</span><span style="color: #e7e7e7;">)</span>
-<span style="color: #e7e7e7;">       'hMMMMMMd/          /dMMMMMMh'<span/>           <span style="color: #e7e7e7;">Services: <span class="nlive" data-live="svc">—</span></span>
+<span style="color: #e7e7e7;">        'sMMMMMMMm:      :dMMMMMMMs'<span/>            <span style="color: #e7e7e7;">Storage (data): <span class="nlive" data-live="disk-used">-</span> / <span class="nlive" data-live="disk-total">-</span> (</span><span class="nlive" data-live="disk-pct">-</span><span style="color: #e7e7e7;">)</span>
+<span style="color: #e7e7e7;">       'hMMMMMMd/          /dMMMMMMh'<span/>           <span style="color: #e7e7e7;">Services: <span class="nlive" data-live="svc">-</span></span>
 <span style="color: #e7e7e7;">         '://:'              '://:'<span/> `
     },
     {
@@ -47,19 +47,19 @@ export const neofetchData = [
 <span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">Host:</span><span style="color:#e7e7e7;"> Synology DS918+ (4-bay)</span>
 <span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">Uptime:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="uptime">27 days, 13 hours, 47 mins</span></span>
 <span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">CPU:</span><span style="color:#e7e7e7;"> Intel Celeron J3455 (4) @ 1.50 GHz</span>
-<span style="color:#2074cf;">##</span><span style="color:#ffffff;">#######</span><span style="color:#2074cf;">####</span><span style="color:#ffffff;">#######</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#####</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span>   <span style="color:#44a9fe;">CPU Usage:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="cpu">—</span></span>
-<span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">####</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">########</span><span style="color:#ffffff;">###</span><span style="color:#2074cf;">###</span><span style="color:#ffffff;">###</span><span style="color:#2074cf;">##</span>   <span style="color:#44a9fe;">Memory:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="mem-used">—</span> / <span class="nlive" data-live="mem-total">8.00 GiB</span> (<span class="nlive" data-live="mem-pct">—</span>)</span>
+<span style="color:#2074cf;">##</span><span style="color:#ffffff;">#######</span><span style="color:#2074cf;">####</span><span style="color:#ffffff;">#######</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#####</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span>   <span style="color:#44a9fe;">CPU Usage:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="cpu">-</span></span>
+<span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">####</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">########</span><span style="color:#ffffff;">###</span><span style="color:#2074cf;">###</span><span style="color:#ffffff;">###</span><span style="color:#2074cf;">##</span>   <span style="color:#44a9fe;">Memory:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="mem-used">-</span> / <span class="nlive" data-live="mem-total">8.00 GiB</span> (<span class="nlive" data-live="mem-pct">-</span>)</span>
 <span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#####</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">######</span><span style="color:#2074cf;">###</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#</span><span style="color:#ffffff;">###</span><span style="color:#2074cf;">#</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span>   <span style="color:#44a9fe;">Volume 1 (SSD RAID 1):</span><span style="color:#e7e7e7;"> 502.7 GB / 884.2 GB (56%)</span>
 <span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">####</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#########</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">#</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span>   <span style="color:#44a9fe;">Volume 2 (HDD RAID 1):</span><span style="color:#e7e7e7;"> 1.7 TB / 3.5 TB (49%)</span>
 <span style="color:#2074cf;">##</span><span style="color:#ffffff;">#######</span><span style="color:#2074cf;">###</span><span style="color:#ffffff;">########</span><span style="color:#2074cf;">##</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">#####</span><span style="color:#ffffff;">##</span><span style="color:#2074cf;">##</span>   <span style="color:#44a9fe;">Drives:</span><span style="color:#e7e7e7;"> 2 x Samsung 870 EVO 1 TB - 34/35 °C</span>
 <span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">Drives:</span><span style="color:#e7e7e7;"> 2 x WD Red WD40EFRX 4 TB - 41/40 °C</span>
 <span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">Cache:</span><span style="color:#e7e7e7;"> HP SSD EX900 120 GB</span>
-<span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">Thermal:</span><span style="color:#e7e7e7;"> system <span class="nlive" data-live="temp-c">—</span> · drives <span class="nlive" data-live="disk-temp">—</span></span>
- <span style="color:#2074cf;">###############################</span>    <span style="color:#44a9fe;">Fan:</span><span style="color:#e7e7e7;"> Quiet Mode · <span class="nlive" data-live="fans">—</span></span>
+<span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">Thermal:</span><span style="color:#e7e7e7;"> system <span class="nlive" data-live="temp-c">-</span> · drives <span class="nlive" data-live="disk-temp">-</span></span>
+ <span style="color:#2074cf;">###############################</span>    <span style="color:#44a9fe;">Fan:</span><span style="color:#e7e7e7;"> Quiet Mode · <span class="nlive" data-live="fans">-</span></span>
   <span style="color:#2074cf;">#############################</span>     <span style="color:#44a9fe;">USB:</span><span style="color:#e7e7e7;"> Transcend StoreJet (external)</span>
-                                    <span style="color:#44a9fe;">Storage:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="disk-used">—</span> / <span class="nlive" data-live="disk-total">—</span> (<span class="nlive" data-live="disk-pct">—</span>)</span>
-                                    <span style="color:#44a9fe;">Health:</span><span style="color:#e7e7e7;"> disks <span class="nlive" data-live="disks">—</span> · pools <span class="nlive" data-live="pools">—</span></span>
-                                    <span style="color:#44a9fe;">Services:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="svc">—</span></span>
+                                    <span style="color:#44a9fe;">Storage:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="disk-used">-</span> / <span class="nlive" data-live="disk-total">-</span> (<span class="nlive" data-live="disk-pct">-</span>)</span>
+                                    <span style="color:#44a9fe;">Health:</span><span style="color:#e7e7e7;"> disks <span class="nlive" data-live="disks">-</span> · pools <span class="nlive" data-live="pools">-</span></span>
+                                    <span style="color:#44a9fe;">Services:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="svc">-</span></span>
                                     <span style="color:#44a9fe;">Network (bond1):</span><span style="color:#e7e7e7;"> 2000 Mbit/s full duplex - MTU 1500</span>
                                     <span style="color:#44a9fe;">Local IP:</span><span style="color:#e7e7e7;"> 192.168.178.xxx/xx</span>
                                     <span style="color:#44a9fe;">DNS:</span><span style="color:#e7e7e7;"> 192.168.178.xxx</span>
@@ -86,7 +86,7 @@ export const neofetchData = [
 <span style="color: #E57000;">        -+ooooooo/.</span><span style="color: #e7e7e7;">'sMMs'</span><span style="color: #E57000;">./ooooooo+-            </span><span style="color: #e7e7e7;">Display (VGA-1): 1024x768 @ 60 Hz</span>
 <span style="color: #E57000;">          :oooooooo/</span><span style="color: #e7e7e7;">'..'</span><span style="color: #E57000;">/oooooooo:              </span><span style="color: #e7e7e7;">Terminal: termproxy</span>
 <span style="color: #E57000;">          :oooooooo/'</span><span style="color: #e7e7e7;">..</span><span style="color: #E57000;">'/oooooooo:              </span><span style="color: #e7e7e7;">CPU: Intel(R) Xeon(R) D-1541 (16) @ 2.70 GHz <span class="nlive" data-live="temp"></span></span>
-<span style="color: #E57000;">        -+ooooooo/.'</span><span style="color: #e7e7e7;">sMMs</span><span style="color: #E57000;">'./ooooooo+-            </span><span style="color: #e7e7e7;">CPU Usage: <span class="nlive" data-live="cpu">—</span></span>
+<span style="color: #E57000;">        -+ooooooo/.'</span><span style="color: #e7e7e7;">sMMs</span><span style="color: #E57000;">'./ooooooo+-            </span><span style="color: #e7e7e7;">CPU Usage: <span class="nlive" data-live="cpu">-</span></span>
 <span style="color: #E57000;">      .+ooooooo+-'</span><span style="color: #e7e7e7;">oNMMMMNo</span><span style="color: #E57000;">'-+ooooooo+.          </span><span style="color: #e7e7e7;">GPU 1: ASPEED Technology, Inc. ASPEED Graphics Family</span>
 <span style="color: #E57000;">    ./ooooooo+- </span><span style="color: #e7e7e7;">+NMMMMMMMMN+ </span><span style="color: #E57000;">-+ooooooo/.        </span><span style="color: #e7e7e7;">GPU 2: NVIDIA Quadro M2000 [Discrete]</span>
 <span style="color: #E57000;">  '/oooooooo:'</span><span style="color: #e7e7e7;">:mMMMMMMMMMMMMm:</span><span style="color: #E57000;">':oooooooo/'      </span><span style="color: #e7e7e7;">Memory: <span class="nlive" data-live="mem-used">31.92 GiB</span> / <span class="nlive" data-live="mem-total">62.69 GiB</span> (</span><span class="nlive" data-live="mem-pct" style="color: #06e236;">51%</span><span style="color: #e7e7e7;">)</span>
@@ -95,8 +95,8 @@ export const neofetchData = [
 <span style="color: #e7e7e7;">        'sMMMMMMMm:      :dMMMMMMMs'</span>            <span style="color: #e7e7e7;">Disk (/rpool): 128.00 KiB / 427.05 GiB (</span><span style="color: #06e236;">0%</span><span style="color: #e7e7e7;">) - zfs</span>
 <span style="color: #e7e7e7;">       'hMMMMMMd/          /dMMMMMMh'</span>           <span style="color: #e7e7e7;">Local IP (vmbr0): 192.168.178.242/24</span>
 <span style="color: #e7e7e7;">         '://:'              '://:'</span>             <span style="color: #e7e7e7;">Locale: en_US.UTF-8</span>
-                                                <span style="color: #e7e7e7;">ZFS Pools: <span class="nlive" data-live="pools">—</span></span>
-                                                <span style="color: #e7e7e7;">Services: <span class="nlive" data-live="svc">—</span></span>`
+                                                <span style="color: #e7e7e7;">ZFS Pools: <span class="nlive" data-live="pools">-</span></span>
+                                                <span style="color: #e7e7e7;">Services: <span class="nlive" data-live="svc">-</span></span>`
     },
     {
       id: 'sw-01',
@@ -110,13 +110,13 @@ export const neofetchData = [
       content: `<span style="color:#2074cf;">  .--------------------------------.    </span><span style="color:#44a9fe;">lucya</span><span style="color:#8a8f98;">@</span><span style="color:#44a9fe;">sw-01</span>
 <span style="color:#2074cf;">  | [=][=][=][=][=][=][=][=]  o o  |    </span><span style="color:#8a8f98;">-----------</span>
 <span style="color:#2074cf;">  | [=][=][=][=][=][=][=][=]  o o  |    </span><span style="color:#44a9fe;">Host:</span><span style="color:#e7e7e7;"> Ubiquiti EdgeSwitch 48 Lite (ES-48-LITE)</span>
-<span style="color:#2074cf;">  '--------------------------------'    </span><span style="color:#44a9fe;">Uptime:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="uptime">—</span></span>
+<span style="color:#2074cf;">  '--------------------------------'    </span><span style="color:#44a9fe;">Uptime:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="uptime">-</span></span>
                                         <span style="color:#44a9fe;">Ports:</span><span style="color:#e7e7e7;"> 48 x GbE · 2 x SFP+ · 2 x SFP</span>
-                                        <span style="color:#44a9fe;">Ports up:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="ports">—</span> monitored</span>
-<span style="color:#8a8f98;">   EdgeSwitch 48 Lite                   </span><span style="color:#44a9fe;">Traffic:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="traffic">—</span></span>
-                                        <span style="color:#44a9fe;">Temperature:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="temp-c">—</span></span>
-                                        <span style="color:#44a9fe;">Fans:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="fans">—</span></span>
-                                        <span style="color:#44a9fe;">Services:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="svc">—</span></span>`
+                                        <span style="color:#44a9fe;">Ports up:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="ports">-</span> monitored</span>
+<span style="color:#8a8f98;">   EdgeSwitch 48 Lite                   </span><span style="color:#44a9fe;">Traffic:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="traffic">-</span></span>
+                                        <span style="color:#44a9fe;">Temperature:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="temp-c">-</span></span>
+                                        <span style="color:#44a9fe;">Fans:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="fans">-</span></span>
+                                        <span style="color:#44a9fe;">Services:</span><span style="color:#e7e7e7;"> <span class="nlive" data-live="svc">-</span></span>`
     },
     {
       id: 'esx-01',
@@ -494,14 +494,14 @@ export const rackData = [
       role: 'nas', chassis: 'Synology DS918+',
       os: 'DSM 7.3.1-86003 U1', cpu: 'Intel Celeron J3455 (4) @ 1.50 GHz',
       mem: '8.00 GiB', ip: '192.168.178.154/24', neofetch: 'vega',
-      note: 'Sits on top of the cabinet next to lynx. Four bays in two RAID 1 pairs — SSD volume plus HDD volume — on a 2 Gbit/s bond. Always on.'
+      note: 'Sits on top of the cabinet next to lynx. Four bays in two RAID 1 pairs: SSD volume plus HDD volume, on a 2 Gbit/s bond. Always on.'
     },
     {
       id: 'chimera', u: 1, state: 'on',
       role: 'hypervisor', chassis: 'Supermicro SYS-5018D-FN4T',
       os: 'Proxmox VE 9.2.4', cpu: 'Intel Xeon D-1541 (16) @ 2.70 GHz',
       mem: '62.69 GiB', ip: '192.168.178.242/24', neofetch: 'chimera',
-      note: 'Short-depth 1U board in a low-power SoC chassis — quiet enough to run around the clock.'
+      note: 'Short-depth 1U board in a low-power SoC chassis, quiet enough to run around the clock.'
     },
     {
       id: 'backup-01', u: 3, state: 'standby',
@@ -519,11 +519,11 @@ export const rackData = [
       role: 'virtualization host', chassis: 'IBM System x3650 M5',
       os: 'VMware ESXi 8.0U3e', cpu: '2 x Intel Xeon E5-2640 v3 (16) @ 2.60 GHz',
       mem: '335.31 GiB', ip: '10.0.3.2/8', neofetch: 'esx-02',
-      note: 'Second vSphere host. Booted when the lab needs the capacity — idle, the power draw is not worth it.'
+      note: 'Second vSphere host. Booted when the lab needs the capacity, idle otherwise: the power draw is not worth it.'
     },
     {
       id: 'sw-01', u: 1, state: 'on',
-      role: 'switch', chassis: 'Ubiquiti EdgeSwitch 48 Lite', neofetch: 'sw-01', note: 'Rack switch — everything in the cabinet hangs off it, so it stays up with lynx.'
+      role: 'switch', chassis: 'Ubiquiti EdgeSwitch 48 Lite', neofetch: 'sw-01', note: 'Rack switch: everything in the cabinet hangs off it, so it stays up with lynx.'
     },
     {
       id: 'esxi-01', u: 2, state: 'standby',

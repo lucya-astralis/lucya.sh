@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 
 <!-- Primary -->
-<title>lucya.sh — Sysadmin, Homelab &amp; Retro Tech</title>
+<title>lucya.sh, Sysadmin, Homelab &amp; Retro Tech</title>
 <meta name="description" content="Personal site of lucya, a sysadmin from Bavaria. Homelab &amp; servers, retro tech, space, anime and creative web projects." />
 <meta name="author" content="lucya" />
 <meta name="keywords" content="lucya, lucya.sh, sysadmin, homelab, Fachinformatiker, Bavaria, Bayern, Germany, personal site, web development, retro tech, anime" />
@@ -23,7 +23,7 @@
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="lucya.sh" />
-<meta property="og:title" content="lucya.sh — Sysadmin, Homelab &amp; Retro Tech" />
+<meta property="og:title" content="lucya.sh, Sysadmin, Homelab &amp; Retro Tech" />
 <meta property="og:description" content="Personal site of lucya, a sysadmin from Bavaria. Homelab &amp; servers, retro tech, space, anime and creative web projects." />
 <meta property="og:url" content="https://lucya.sh/" />
 <meta property="og:image" content="https://lucya.sh/images/card.jpg" />
@@ -32,7 +32,7 @@
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="lucya.sh — Sysadmin, Homelab &amp; Retro Tech" />
+<meta name="twitter:title" content="lucya.sh, Sysadmin, Homelab &amp; Retro Tech" />
 <meta name="twitter:description" content="Personal site of lucya, a sysadmin from Bavaria. Homelab &amp; servers, retro tech, space, anime and creative web projects." />
 <meta name="twitter:image" content="https://lucya.sh/images/card.jpg" />
 <meta name="twitter:image:alt" content="lucya - personal website" />
@@ -44,7 +44,7 @@
 <!-- LITE MODE: decide before first paint so html.lite styles apply everywhere.
      auto-on for weak hardware / data-saver / reduced-motion; manual override
      via the LITE toggle (localStorage) wins in both directions.
-     Shared logic lives in lite.js — must stay render-blocking (no defer/async). -->
+     Shared logic lives in lite.js, must stay render-blocking (no defer/async). -->
 <script src="lite.js"></script>
 
 <!-- Structured data: Person + WebSite -->
@@ -99,7 +99,7 @@
     <div class="section__doc">
       <span>DOC <b>00.BOOT</b></span>
       <span>FORM <b>BT-00</b></span>
-      <span id="splashSession">SESSION <b>——</b></span>
+      <span id="splashSession">SESSION <b>--</b></span>
       <span class="splash__head-loc">BAVARIA · CET</span>
       <span class="stamp stamp--warn" id="splashStamp"><span lang="ja">起動中</span> · BOOTING</span>
     </div>
@@ -190,7 +190,7 @@
     </nav>
 
     <!-- the house: the main project, on every panel and on the phone -->
-    <a class="nav__house mono" href="https://lucya.systems" rel="noopener" title="lucya.systems — the house: Shinsei Concordia and the homelab">
+    <a class="nav__house mono" href="https://lucya.systems" rel="noopener" title="lucya.systems, the house: Shinsei Concordia and the homelab">
       <span class="nav__house-full">LUCYA.SYSTEMS</span><span class="nav__house-short">.SYSTEMS</span> <em aria-hidden="true">↗</em>
     </a>
 
@@ -235,28 +235,28 @@
       <div class="kpibar__grid" id="kpiGrid">
         <!-- populated from data.json — fallback values below render if fetch fails -->
         <div class="kpi kpi--telemetry kpi--trip" data-kpi="japan">
-          <span class="kpi__head mono"><span class="kpi__ix">01</span><span class="kpi__label">JAPAN</span><span class="kpi__jp" lang="ja">渡航</span><span class="kpi__meta" id="tripPct">—</span></span>
-          <span class="kpi__line"><span class="kpi__value" data-kpi-value>— <em>d</em></span><span class="kpi__sub mono kpi__sub--ok">UNTIL DEPARTURE</span></span>
+          <span class="kpi__head mono"><span class="kpi__ix">01</span><span class="kpi__label">JAPAN</span><span class="kpi__jp" lang="ja">渡航</span><span class="kpi__meta" id="tripPct">-</span></span>
+          <span class="kpi__line"><span class="kpi__value" data-kpi-value>- <em>d</em></span><span class="kpi__sub mono kpi__sub--ok">UNTIL DEPARTURE</span></span>
           <span class="metric-bar metric-bar--trip" aria-hidden="true"><i></i></span>
-          <span class="kpi__foot mono"><span id="tripDep">DEP —</span><span id="tripRet">RET —</span></span>
+          <span class="kpi__foot mono"><span id="tripDep">DEP -</span><span id="tripRet">RET -</span></span>
         </div>
         <div class="kpi kpi--telemetry kpi--wx" id="wxMetric" title="Where I am right now">
-          <span class="kpi__head mono"><span class="kpi__ix">02</span><span class="kpi__label"><span id="wxPlace">I'M IN · —</span></span><span class="kpi__jp" lang="ja">現在地</span><span class="kpi__meta" id="wxOffset">—</span></span>
-          <span class="kpi__line"><span class="kpi__value" id="wxTime">—</span><span class="kpi__sub mono" id="wxNow">AWAITING WEATHER</span></span>
+          <span class="kpi__head mono"><span class="kpi__ix">02</span><span class="kpi__label"><span id="wxPlace">I'M IN · -</span></span><span class="kpi__jp" lang="ja">現在地</span><span class="kpi__meta" id="wxOffset">-</span></span>
+          <span class="kpi__line"><span class="kpi__value" id="wxTime">-</span><span class="kpi__sub mono" id="wxNow">AWAITING WEATHER</span></span>
           <span class="metric-bar metric-bar--sky" id="wxSky" aria-hidden="true"><i id="wxDay"></i></span>
-          <span class="kpi__foot mono"><span id="wxRange">— / —</span><span id="wxSun">SUN —</span></span>
+          <span class="kpi__foot mono"><span id="wxRange">- / -</span><span id="wxSun">SUN -</span></span>
         </div>
         <div class="kpi kpi--telemetry kpi--disk" id="nasMetric">
-          <span class="kpi__head mono"><span class="kpi__ix">03</span><span class="kpi__label">NAS · VEGA</span><span class="kpi__jp" lang="ja">記憶域</span><span class="kpi__meta" id="nasPct">—</span></span>
-          <span class="kpi__line"><span class="storage-value"><b id="nasUsed">—</b><span id="nasTotal"> / — TiB</span></span><span class="kpi__sub mono" id="nasFree">AWAITING TELEMETRY</span></span>
+          <span class="kpi__head mono"><span class="kpi__ix">03</span><span class="kpi__label">NAS · VEGA</span><span class="kpi__jp" lang="ja">記憶域</span><span class="kpi__meta" id="nasPct">-</span></span>
+          <span class="kpi__line"><span class="storage-value"><b id="nasUsed">-</b><span id="nasTotal"> /, TiB</span></span><span class="kpi__sub mono" id="nasFree">AWAITING TELEMETRY</span></span>
           <span class="metric-bar" aria-hidden="true"><i id="nasFill"></i></span>
-          <span class="kpi__foot mono"><span id="nasUp">UP —</span><span id="nasTemp">— °C</span></span>
+          <span class="kpi__foot mono"><span id="nasUp">UP -</span><span id="nasTemp">- °C</span></span>
         </div>
         <div class="kpi kpi--telemetry kpi--ram" id="ramMetric">
           <span class="kpi__head mono"><span class="kpi__ix">04</span><span class="kpi__label">HYPERVISOR RAM</span><span class="kpi__jp" lang="ja">主記憶</span><span class="kpi__meta">2 HOSTS</span></span>
-          <span class="ram-row mono"><span>LYNX</span><span><i id="lynxCpu">CPU —</i><b id="lynxRam">—</b></span></span>
+          <span class="ram-row mono"><span>LYNX</span><span><i id="lynxCpu">CPU -</i><b id="lynxRam">-</b></span></span>
           <span class="metric-bar" aria-hidden="true"><i id="lynxFill"></i></span>
-          <span class="ram-row mono"><span>CHIMERA</span><span><i id="chimeraCpu">CPU —</i><b id="chimeraRam">—</b></span></span>
+          <span class="ram-row mono"><span>CHIMERA</span><span><i id="chimeraCpu">CPU -</i><b id="chimeraRam">-</b></span></span>
           <span class="metric-bar" aria-hidden="true"><i id="chimeraFill"></i></span>
         </div>
       </div>
@@ -467,7 +467,7 @@
         </nav>
 
         <!-- SPEC SHEET PANEL — datasheet for the specimen.
-             Fallback rows mirror data.json (spec[]) — keep both in sync. -->
+             Fallback rows mirror data.json (spec[]), keep both in sync. -->
         <div class="specsheet" aria-label="personal setup">
           <div class="specsheet__head mono">
             <span>PERSONAL SETUP</span>
@@ -562,7 +562,7 @@
       <p>
         Shinsei Concordia<span class="tm">™</span> is my science-fiction worldbuilding project.
         I build its star charts, cities and institutions as places you can
-        explore — from the ocean moon Orikaia Prime to the edge of the Expanse.
+        explore, from the ocean moon Orikaia Prime to the edge of the Expanse.
         <img src="images/emoji/blahaj.webp" alt="blahaj" class="inline-emoji" />
       </p>
     </div>
@@ -754,8 +754,8 @@
         <span class="spotify__counter mono" id="spotifyCounter">01 / 12</span>
       </div>
 
-      <h3 class="spotify__track" id="spotifyTrack">—</h3>
-      <div class="spotify__artist" id="spotifyArtist">—</div>
+      <h3 class="spotify__track" id="spotifyTrack">-</h3>
+      <div class="spotify__artist" id="spotifyArtist">-</div>
 
       <div class="spotify__timeline" aria-hidden="true">
         <span class="spotify__time mono" id="spotifyElapsed">00:00</span>
@@ -796,7 +796,7 @@
       </div>
 
       <!-- bento: the track list carries the height, the covers carry the
-           weight — three different densities instead of three columns -->
+           weight, three different densities instead of three columns -->
       <div class="manifest__bento">
         <div class="mbox mbox--tracks">
           <h3 class="mbox__head mono">
@@ -898,7 +898,7 @@
        data-api="https://images.lucya.sh" data-album="tech" data-limit="9">
     <figure class="photo-card" data-src="images/photos/datacenter.jpeg" data-caption="DATACENTER // Complete homelab setup">
       <div class="photo-card__img-wrap">
-        <img src="images/photos/datacenter.jpeg" alt="Complete homelab — full datacenter setup" loading="lazy" decoding="async" />
+        <img src="images/photos/datacenter.jpeg" alt="Complete homelab, full datacenter setup" loading="lazy" decoding="async" />
         <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
       </div>
       <figcaption class="photo-card__cap">
@@ -909,7 +909,7 @@
 
     <figure class="photo-card" data-src="images/photos/server.jpeg" data-caption="SERVER + CRT // Rack server being set up">
       <div class="photo-card__img-wrap">
-        <img src="images/photos/server.jpeg" alt="Rack server and CRT monitor on a bed — being set up" loading="lazy" decoding="async" />
+        <img src="images/photos/server.jpeg" alt="Rack server and CRT monitor on a bed, being set up" loading="lazy" decoding="async" />
         <div class="photo-card__overlay"><span class="mono">EXPAND ↗</span></div>
       </div>
       <figcaption class="photo-card__cap">
@@ -1045,7 +1045,7 @@
         <div class="rackframe__cab">
           <div class="rackframe__head mono">
             <span>RACK-01</span>
-            <span class="dim" id="rackCount">—</span>
+            <span class="dim" id="rackCount">-</span>
           </div>
           <div class="rackframe__body">
             <div class="rackframe__rail" aria-hidden="true"></div>
