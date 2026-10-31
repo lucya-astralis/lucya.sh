@@ -221,6 +221,13 @@ const POST = [
 function ready() {
   document.body.classList.add('is-ready');
   window.dispatchEvent(new CustomEvent('lucya:ready'));
+  // not before now: its maps are near 800 KB, and the boot covers the hero anyway
+  import('./hero-planet.js?v=20261031-planet')
+    .then(({ startPlanet }) => startPlanet($('hero'), $('heroPlanet'), REDUCED))
+    .catch((err) => {
+      console.warn('[planet] standing in the render:', err);
+      $('hero').classList.add('is-still');
+    });
 }
 
 function startUp() {
