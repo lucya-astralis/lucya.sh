@@ -4,14 +4,48 @@
     {
       "name": "lucya-static",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8765", "--bind", "127.0.0.1"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8765",
+        "--bind",
+        "127.0.0.1"
+      ],
       "port": 8765
     },
     {
       "name": "lucya-lan",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["tools/dev_server.py", "8069", "0.0.0.0"],
+      "runtimeArgs": [
+        "tools/dev_server.py",
+        "8069",
+        "0.0.0.0"
+      ],
       "port": 8069
+    },
+    {
+      "name": "sc-gov",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8071",
+        "--directory",
+        "../sc/gov.inter-astra.net"
+      ],
+      "port": 8071
+    },
+    {
+      "name": "sc-terra",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8072",
+        "--directory",
+        "../sc/terra.inter-astra.net"
+      ],
+      "port": 8072
     }
   ]
 }

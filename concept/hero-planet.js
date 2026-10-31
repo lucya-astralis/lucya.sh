@@ -49,7 +49,7 @@ export function startPlanet(hero, canvas, reduced) {
   const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
   let W = 0, H = 0, ready = false, seen = true, moving = !reduced;
 
-  planet.define('prime', { kind: 'terrestrial', maps: MAPS, flat: [5 / 255, 14 / 255, 33 / 255], cloud: true, frame: FRAME });
+  planet.define('prime', { kind: 'terrestrial', maps: MAPS, flat: [5 / 255, 14 / 255, 33 / 255], cloud: true, frame: FRAME, atm: { halo: 0.42 } });
 
   const draw = (seconds) => {
     if (!ready || !W) return;
