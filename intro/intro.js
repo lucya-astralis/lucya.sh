@@ -7,8 +7,8 @@ import { curve } from './curve.js?v=20261031-leds2';
 
 const SCREEN_URL = 'intro/boot-screen.webp?v=20261031-leds2';
 const FADE_MS = 1000;  // the fade in intro.css
-const SETTLE_MS = 700; // the wheel has to rest this long before the page takes it
-const SETTLE_CAP_MS = 2500;
+const SETTLE_MS = 250; // the wheel has to rest this long before the page takes it
+const SETTLE_CAP_MS = 1000; // the logo flies in at 1.35 s, the page moves by then at the latest
 
 function loadTexture(renderer) {
   return new THREE.TextureLoader().loadAsync(SCREEN_URL).then((tex) => {
