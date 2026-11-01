@@ -40,6 +40,8 @@ if (window.LUCYA_INTRO) {
     cover.remove();
     css.remove();
     document.documentElement.classList.remove('is-scrolllock');
+    // no scroll stop follows from here, so the boot has to lift its own lock
+    window.LUCYA_INTRO = false;
     window.lucyaIntroDone();
   };
   skip.addEventListener('click', leave);
