@@ -5,6 +5,17 @@
    Sets window.LUCYA_INTRO. script.js starts its boot on 'lucya:intro-done', which
    window.lucyaIntroDone() fires when the intro ends, is skipped or fails. */
 (function () {
+  // A reload starts over: only a link that was followed keeps its #section.
+  var nav = performance.getEntriesByType('navigation')[0];
+  if (nav && nav.type === 'reload' && location.href.indexOf('#') !== -1) {
+    history.scrollRestoration = 'manual';
+    history.replaceState(null, '', location.pathname + location.search);
+    // the browser has taken the fragment by now and keeps to it until the page has loaded
+    window.addEventListener('load', function () {
+      scrollTo({ top: 0, behavior: 'instant' });
+    });
+  }
+
   var ENABLE_LAPTOP_INTRO = true;
 
   // ?intro=on forces it past the flag, Lite and deep links; ?intro=off disables it.
