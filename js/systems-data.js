@@ -12,7 +12,7 @@ export const neofetchData = [
 <span style="color: #e7e7e7;">       'hMMMMMMd/          /dMMMMMMh'<span/>           <span style="color: #E57000;">---------<span/>
 <span style="color: #e7e7e7;">        'sMMMMMMMd:      :mMMMMMMMs'<span/>            <span style="color: #e7e7e7;">OS: Proxmox VE 9.x.x x86_64<span/>
 <span style="color: #E57000;">'-/+oo+/:<span/><span style="color: #e7e7e7;">'.yMMMMMMMh-  -hMMMMMMMy.'<span/><span style="color: #E57000;">:/+oo+/-'    <span/><span style="color: #e7e7e7;">Host: Macmini6,2 (1.0)<span/>
-<span style="color: #E57000;">':oooooooo/<span/><span style="color: #e7e7e7;">'-hMMMMMMMyyMMMMMMMh-'<span/><span style="color: #E57000;">/oooooooo:'    <span/><span style="color: #e7e7e7;">Kernel: Linux 6.17.4-2-pve<span/>
+<span style="color: #E57000;">':oooooooo/<span/><span style="color: #e7e7e7;">'-hMMMMMMMyyMMMMMMMh-'<span/><span style="color: #E57000;">/oooooooo:'    <span/><span style="color: #e7e7e7;">Kernel: Linux 6.x.x-x-pve<span/>
 <span style="color: #E57000;">  '/oooooooo:<span/><span style="color: #e7e7e7;">':mMMMMMMMMMMMMm:'<span/><span style="color: #E57000;">:oooooooo/'      <span/><span style="color: #e7e7e7;">Uptime: <span class="nlive" data-live="uptime">23 days, 22 hours, 54 mins</span><span/>
 <span style="color: #E57000;">    ./ooooooo+-<span/><span style="color: #e7e7e7;"> +NMMMMMMMMN+ <span/><span style="color: #E57000;">-+ooooooo/.        <span/><span style="color: #e7e7e7;">Packages: 738 (dpkg)<span/>
 <span style="color: #E57000;">      .+ooooooo+-<span/><span style="color: #e7e7e7;">'oNMMMMNo'<span/><span style="color: #E57000;">-+ooooooo+.          <span/><span style="color: #e7e7e7;">Shell: bash 5.2.37<span/>
@@ -23,7 +23,7 @@ export const neofetchData = [
 <span style="color: #E57000;">      .+ooooooo+-'<span/><span style="color: #e7e7e7;">oNMMMMNo<span/><span style="color: #E57000;">'-+ooooooo+.          <span/><span style="color: #e7e7e7;">Memory: <span class="nlive" data-live="mem-used">12.66 GiB</span> / <span class="nlive" data-live="mem-total">15.53 GiB</span> (<span/><span class="nlive" data-live="mem-pct" style="color: #da0a0a;">82%<span/><span style="color: #e7e7e7;">)<span/>
 <span style="color: #E57000;">    ./ooooooo+- <span/><span style="color: #e7e7e7;">+NMMMMMMMMN+ <span/><span style="color: #E57000;">-+ooooooo/.        <span/><span style="color: #e7e7e7;">Swap: 124.55 MiB / 8.00 GiB (<span/><span style="color: #06e236;">2%<span/><span style="color: #e7e7e7;">)<span/>
 <span style="color: #E57000;">  '/oooooooo:'<span/><span style="color: #e7e7e7;">:mMMMMMMMMMMMMm:<span/><span style="color: #E57000;">':oooooooo/'      <span/><span style="color: #e7e7e7;">Disk (/): 21.41 GiB / 93.93 GiB (<span/><span style="color: #06e236;">23%<span/><span style="color: #e7e7e7;">) - ext4<span/>
-<span style="color: #E57000;">':oooooooo/'<span/><span style="color: #e7e7e7;">-hMMMMMMMyyMMMMMMMh-<span/><span style="color: #E57000;">'/oooooooo:'    <span/><span style="color: #e7e7e7;">Local IP (vmbr0): 192.168.178.252/24<span/>
+<span style="color: #E57000;">':oooooooo/'<span/><span style="color: #e7e7e7;">-hMMMMMMMyyMMMMMMMh-<span/><span style="color: #E57000;">'/oooooooo:'    <span/><span style="color: #e7e7e7;">Local IP (vmbr0): 192.168.178.xxx/xx<span/>
 <span style="color: #E57000;">'-/+oo+/:'<span/><span style="color: #e7e7e7;">.yMMMMMMMh-  -hMMMMMMMy.<span/><span style="color: #E57000;">':/+oo+/-'    <span/><span style="color: #e7e7e7;">Locale: en_US.UTF-8<span/>
 <span style="color: #e7e7e7;">        'sMMMMMMMm:      :dMMMMMMMs'<span/>            <span style="color: #e7e7e7;">Storage (data): <span class="nlive" data-live="disk-used">-</span> / <span class="nlive" data-live="disk-total">-</span> (</span><span class="nlive" data-live="disk-pct">-</span><span style="color: #e7e7e7;">)</span>
 <span style="color: #e7e7e7;">       'hMMMMMMd/          /dMMMMMMh'<span/>           <span style="color: #e7e7e7;">Services: <span class="nlive" data-live="svc">-</span></span>
@@ -40,7 +40,8 @@ export const neofetchData = [
       // DSM has no fastfetch, so this sheet is transcribed by hand from
       // Systemsteuerung > Info-Center (Allgemein / Speicher / Netzwerk).
       // Only what those pages actually show — the serial number and the MAC
-      // stay off a public page. The logo is the DSM app icon in ASCII.
+      // stay off a public page, like the host part of every address and the
+      // exact build of every server, on all sheets. The logo is the DSM app icon in ASCII.
       content: `  <span style="color:#2074cf;">#############################</span>     <span style="color:#44a9fe;">lucya</span><span style="color:#8a8f98;">@</span><span style="color:#44a9fe;">vega</span>
  <span style="color:#2074cf;">###############################</span>    <span style="color:#8a8f98;">----------</span>
 <span style="color:#2074cf;">#################################</span>   <span style="color:#44a9fe;">OS:</span><span style="color:#e7e7e7;"> DSM 7.x.x-xxxx</span>
@@ -77,9 +78,9 @@ export const neofetchData = [
       memTotal: 62.69,
       content: `<span style="color: #e7e7e7;">         .://:'              '://:.</span>             <span style="color: #E57000;">root</span><span style="color: #e7e7e7;">@</span><span style="color: #E57000;">chimera</span>
 <span style="color: #e7e7e7;">       'hMMMMMMd/          /dMMMMMMh'</span>           <span style="color: #E57000;">------------</span>
-<span style="color: #e7e7e7;">        'sMMMMMMMd:      :mMMMMMMMs'</span>            <span style="color: #e7e7e7;">OS: Proxmox VE 9.2.4 x86_64</span>
+<span style="color: #e7e7e7;">        'sMMMMMMMd:      :mMMMMMMMs'</span>            <span style="color: #e7e7e7;">OS: Proxmox VE 9.x.x x86_64</span>
 <span style="color: #E57000;">'-/+oo+/:</span><span style="color: #e7e7e7;">'.yMMMMMMMh-  -hMMMMMMMy.'</span><span style="color: #E57000;">:/+oo+/-'    </span><span style="color: #e7e7e7;">Host: SYS-5018D-FN4T (0123456789)</span>
-<span style="color: #E57000;">':oooooooo/</span><span style="color: #e7e7e7;">'-hMMMMMMMyyMMMMMMMh-'</span><span style="color: #E57000;">/oooooooo:'    </span><span style="color: #e7e7e7;">Kernel: Linux 7.0.14-5-pve</span>
+<span style="color: #E57000;">':oooooooo/</span><span style="color: #e7e7e7;">'-hMMMMMMMyyMMMMMMMh-'</span><span style="color: #E57000;">/oooooooo:'    </span><span style="color: #e7e7e7;">Kernel: Linux 7.x.x-x-pve</span>
 <span style="color: #E57000;">  '/oooooooo:</span><span style="color: #e7e7e7;">':mMMMMMMMMMMMMm:'</span><span style="color: #E57000;">:oooooooo/'      </span><span style="color: #e7e7e7;">Uptime: <span class="nlive" data-live="uptime">17 hours, 29 mins</span></span>
 <span style="color: #E57000;">    ./ooooooo+-</span><span style="color: #e7e7e7;"> +NMMMMMMMMN+ </span><span style="color: #E57000;">-+ooooooo/.        </span><span style="color: #e7e7e7;">Packages: 753 (dpkg)</span>
 <span style="color: #E57000;">      .+ooooooo+-</span><span style="color: #e7e7e7;">'oNMMMMNo'</span><span style="color: #E57000;">-+ooooooo+.          </span><span style="color: #e7e7e7;">Shell: bash 5.2.37</span>
@@ -93,7 +94,7 @@ export const neofetchData = [
 <span style="color: #E57000;">':oooooooo/'</span><span style="color: #e7e7e7;">-hMMMMMMMyyMMMMMMMh-</span><span style="color: #E57000;">'/oooooooo:'    </span><span style="color: #e7e7e7;">Swap: Disabled</span>
 <span style="color: #E57000;">'-/+oo+/:'</span><span style="color: #e7e7e7;">.yMMMMMMMh-  -hMMMMMMMy.</span><span style="color: #E57000;">':/+oo+/-'    </span><span style="color: #e7e7e7;">Disk (/): <span class="nlive" data-live="disk-used">3.13 GiB</span> / <span class="nlive" data-live="disk-total">430.18 GiB</span> (</span><span class="nlive" data-live="disk-pct" style="color: #06e236;">1%</span><span style="color: #e7e7e7;">) - zfs</span>
 <span style="color: #e7e7e7;">        'sMMMMMMMm:      :dMMMMMMMs'</span>            <span style="color: #e7e7e7;">Disk (/rpool): 128.00 KiB / 427.05 GiB (</span><span style="color: #06e236;">0%</span><span style="color: #e7e7e7;">) - zfs</span>
-<span style="color: #e7e7e7;">       'hMMMMMMd/          /dMMMMMMh'</span>           <span style="color: #e7e7e7;">Local IP (vmbr0): 192.168.178.242/24</span>
+<span style="color: #e7e7e7;">       'hMMMMMMd/          /dMMMMMMh'</span>           <span style="color: #e7e7e7;">Local IP (vmbr0): 192.168.178.xxx/xx</span>
 <span style="color: #e7e7e7;">         '://:'              '://:'</span>             <span style="color: #e7e7e7;">Locale: en_US.UTF-8</span>
                                                 <span style="color: #e7e7e7;">ZFS Pools: <span class="nlive" data-live="pools">-</span></span>
                                                 <span style="color: #e7e7e7;">Services: <span class="nlive" data-live="svc">-</span></span>`
@@ -126,9 +127,9 @@ export const neofetchData = [
       width: 750,
       content: `<span style="color:#8dc242;">          ---------===========++  </span>  <span style="color:#56b6c2;">root@esx-01</span>
 <span style="color:#8dc242;">         --------============+++  </span>  <span style="color:#56b6c2;">--------------------</span>
-<span style="color:#8dc242;">         -----             =+++++ </span>  <span style="color:#e5c07b;">OS:</span> <span style="color:#ffffff;">VMware ESXi-8.0U3e</span>
+<span style="color:#8dc242;">         -----             =+++++ </span>  <span style="color:#e5c07b;">OS:</span> <span style="color:#ffffff;">VMware ESXi-8.xUxx</span>
 <span style="color:#8dc242;">         -----   <span style="color:#fcba03;">::::::::</span>   <span style="color:#8dc242;">=++++ </span>  <span style="color:#e5c07b;">Host:</span> <span style="color:#ffffff;">PowerEdge R720</span>
-<span style="color:#8dc242;">   ----------=  <span style="color:#fcba03;">::::------</span>  <span style="color:#8dc242;">=++++ </span>  <span style="color:#e5c07b;">Kernel:</span> <span style="color:#ffffff;">VMkernel 24677879</span>
+<span style="color:#8dc242;">   ----------=  <span style="color:#fcba03;">::::------</span>  <span style="color:#8dc242;">=++++ </span>  <span style="color:#e5c07b;">Kernel:</span> <span style="color:#ffffff;">VMkernel xxxxxxxx</span>
 <span style="color:#8dc242;">  ---------===  <span style="color:#fcba03;">:::-------</span>  <span style="color:#8dc242;">=++++ </span>  <span style="color:#e5c07b;">Uptime:</span> <span style="color:#ffffff;">20 days 2 hours 11 mins</span>
 <span style="color:#8dc242;"> :-----         <span style="color:#fcba03;">::--------</span>  <span style="color:#8dc242;">=++++ </span>  <span style="color:#e5c07b;">Shell:</span> <span style="color:#ffffff;">BusyBox + ESXi Shell</span>
 <span style="color:#8dc242;"> :----          <span style="color:#fcba03;">:---------</span>  <span style="color:#8dc242;">=++++ </span>  <span style="color:#e5c07b;">Display:</span> <span style="color:#ffffff;">N/A (Headless)</span>
@@ -139,7 +140,7 @@ export const neofetchData = [
 <span style="color:#8dc242;"> =====   <span style="color:#fcba03;">::::----</span>   <span style="color:#8dc242;">-++++         </span>  <span style="color:#e5c07b;">Swap:</span> <span style="color:#ffffff;">0 B / 44.00 GiB</span>
 <span style="color:#8dc242;"> ======             =++++         </span>  <span style="color:#e5c07b;">Datastore (SSD1):</span> <span style="color:#ffffff;">47.69 GiB / 58.37 GiB (82%)</span>
 <span style="color:#8dc242;">  ======+++++++++++++++++         </span>  <span style="color:#e5c07b;">Datastore (HDD1):</span> <span style="color:#ffffff;">68.32 GiB / 1.82 TiB (4%)</span>
-<span style="color:#8dc242;">   ====+++++++++++++++++          </span>  <span style="color:#e5c07b;">Management IP:</span> <span style="color:#ffffff;">10.0.3.1/8</span>
+<span style="color:#8dc242;">   ====+++++++++++++++++          </span>  <span style="color:#e5c07b;">Management IP:</span> <span style="color:#ffffff;">10.0.3.xxx/xx</span>
                                     <span style="color:#e5c07b;">Locale:</span> <span style="color:#ffffff;">de-DE</span>`
     },
     {
@@ -150,9 +151,9 @@ export const neofetchData = [
       width: 750,
       content: `<span style="color:#FFB3BA;">          ---------===========++  </span>  <span style="color:#56b6c2;">root@esx-02</span>
 <span style="color:#FFCCB3;">         --------============+++  </span>  <span style="color:#56b6c2;">--------------------</span>
-<span style="color:#FFDAB3;">         -----             =+++++ </span>  <span style="color:#e5c07b;">OS:</span> <span style="color:#ffffff;">VMware ESXi-8.0U3e</span>
+<span style="color:#FFDAB3;">         -----             =+++++ </span>  <span style="color:#e5c07b;">OS:</span> <span style="color:#ffffff;">VMware ESXi-8.xUxx</span>
 <span style="color:#FFE8B3;">         -----   </span><span style="color:#FFFFB3;">::::::::</span><span style="color:#FFE8B3;">   =++++ </span>  <span style="color:#e5c07b;">Host:</span> <span style="color:#ffffff;">IBM System x3650 M5</span>
-<span style="color:#FFFFB3;">   ----------=  </span><span style="color:#E8FFB3;">::::------</span><span style="color:#FFFFB3;">  =++++ </span>  <span style="color:#e5c07b;">Kernel:</span> <span style="color:#ffffff;">VMkernel 24677879</span>
+<span style="color:#FFFFB3;">   ----------=  </span><span style="color:#E8FFB3;">::::------</span><span style="color:#FFFFB3;">  =++++ </span>  <span style="color:#e5c07b;">Kernel:</span> <span style="color:#ffffff;">VMkernel xxxxxxxx</span>
 <span style="color:#E8FFB3;">  ---------===  </span><span style="color:#CCFFB3;">:::-------</span><span style="color:#E8FFB3;">  =++++ </span>  <span style="color:#e5c07b;">Uptime:</span> <span style="color:#ffffff;">27 days 2 hours 11 mins</span>
 <span style="color:#CCFFB3;"> :-----         </span><span style="color:#B3FFB3;">::--------</span><span style="color:#CCFFB3;">  =++++ </span>  <span style="color:#e5c07b;">Shell:</span> <span style="color:#ffffff;">BusyBox + ESXi Shell</span>
 <span style="color:#B3FFB3;"> :----          </span><span style="color:#B3FFCC;">:---------</span><span style="color:#B3FFB3;">  =++++ </span>  <span style="color:#e5c07b;">Display:</span> <span style="color:#ffffff;">N/A (Headless)</span>
@@ -163,7 +164,7 @@ export const neofetchData = [
 <span style="color:#B3CCFF;"> =====   </span><span style="color:#CCB3FF;">::::----</span><span style="color:#B3CCFF;">   -++++         </span>  <span style="color:#e5c07b;">Swap:</span> <span style="color:#ffffff;">0 B / 44.00 GiB</span>
 <span style="color:#CCB3FF;"> ======             =++++         </span>  <span style="color:#e5c07b;">Datastore (SSD1):</span> <span style="color:#ffffff;">49.23 GiB / 58.37 GiB</span>
 <span style="color:#E8B3FF;">  ======+++++++++++++++++         </span>  <span style="color:#e5c07b;">Datastore (HDD1):</span> <span style="color:#ffffff;">248.22 GiB / 1.82 TiB</span>
-<span style="color:#FFB3E8;">   ====+++++++++++++++++          </span>  <span style="color:#e5c07b;">Management IP:</span> <span style="color:#ffffff;">10.0.3.2/8</span>
+<span style="color:#FFB3E8;">   ====+++++++++++++++++          </span>  <span style="color:#e5c07b;">Management IP:</span> <span style="color:#ffffff;">10.0.3.xxx/xx</span>
                                     <span style="color:#e5c07b;">Locale:</span> <span style="color:#ffffff;">de-DE</span>`
     },
     {
@@ -192,7 +193,7 @@ export const neofetchData = [
                                         <span style="color:#e5c07b;">Swap:</span> <span style="color:#ffffff;">0 B / 23.99 GiB (0%)</span>
                                         <span style="color:#e5c07b;">Disk (C:\\):</span> <span style="color:#ffffff;">65.60 GiB / 476.84 GiB (14%) - NTFS</span>
                                         <span style="color:#e5c07b;">Disk (D:\\):</span> <span style="color:#ffffff;">331.20 GiB / 931.39 GiB (36%) - NTFS</span>
-                                        <span style="color:#e5c07b;">Local IP (LAN-Verbindung 2):</span> <span style="color:#ffffff;">10.174.110.143/24</span>
+                                        <span style="color:#e5c07b;">Local IP (LAN-Verbindung 2):</span> <span style="color:#ffffff;">10.174.110.xxx/xx</span>
                                         <span style="color:#e5c07b;">Locale:</span> <span style="color:#ffffff;">de-DE</span>`
     },
     {
@@ -220,7 +221,7 @@ export const neofetchData = [
                                     <span style="color:#F9F1A5;">Memory:</span> <span style="color:#F2F2F2;">11.39 GiB / 31.89 GiB</span> [ <span style="color:#16C60C;">■■■■</span>------ ]
                                     <span style="color:#F9F1A5;">Disk (C:\\):</span> [ <span style="color:#16C60C;">■■■■■■■</span>--- ] <span style="color:#F2F2F2;">638 GiB / 930 GiB</span>
                                     <span style="color:#F9F1A5;">Locale:</span> <span style="color:#F2F2F2;">Japan - ja-JP</span>
-                                    <span style="color:#F9F1A5;">Local IP:</span> <span style="color:#F2F2F2;">192.168.200.5</span>`
+                                    <span style="color:#F9F1A5;">Local IP:</span> <span style="color:#F2F2F2;">192.168.200.xxx</span>`
     },
     {
       id: 'orcus',
@@ -250,7 +251,7 @@ export const neofetchData = [
                                   <span style="color: #e5c07b;">Memory:</span> <span style="color: #ffffff;">5.35 GiB / 8.00 GiB (67%)</span>
                                   <span style="color: #e5c07b;">Swap:</span> <span style="color: #ffffff;">Disabled</span>
                                   <span style="color: #e5c07b;">Disk (/):</span> <span style="color: #ffffff;">63.28 GiB / 111.60 GiB (57%) - apfs</span>
-                                  <span style="color: #e5c07b;">Local IP (en1):</span> <span style="color: #ffffff;">192.168.178.109/24</span>
+                                  <span style="color: #e5c07b;">Local IP (en1):</span> <span style="color: #ffffff;">192.168.178.xxx/xx</span>
                                   <span style="color: #e5c07b;">Locale:</span> <span style="color: #ffffff;">C</span>`
     },
     {
@@ -283,7 +284,7 @@ export const neofetchData = [
 <span class="nlogo--kira" style="background-image:linear-gradient(110deg,#6d9dc9,#234f80);">/////////////////  /////////////////</span>    <span style="color:#83AED5;">└ Theme </span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> Fluent - Custom #113864 - Dark</span>
 
                                         <span style="color:#6D9DC9;">▣ Connectivity</span>
-                                        <span style="color:#83AED5;">├ Wi-Fi </span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> 192.168.11.11/24</span>
+                                        <span style="color:#83AED5;">├ Wi-Fi </span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> 192.168.11.xxx/xx</span>
                                         <span style="color:#83AED5;">└ Locale</span>  <span style="color:#A5AFBA;">-></span><span style="color:#F2F2F2;"> en_DE.CP437</span>`
     },
     {
@@ -317,8 +318,8 @@ export const neofetchData = [
 <span style="color: #FF79C6;">                                  └ Apps</span>   <span style="color: #BFBFBF;">-></span><span style="color: #F8F8F2;"> Total: 150 - User: 84 - System: 66</span>
 
 <span style="color: #BD93F9;">                                  ᯤ Connectivity</span>
-<span style="color: #BD93F9;">                                  ├ DNS</span>    <span style="color: #BFBFBF;">-></span><span style="color: #F8F8F2;"> 192.168.178.1</span>
-<span style="color: #BD93F9;">                                  ├ Wi-Fi</span>  <span style="color: #BFBFBF;">-></span><span style="color: #F8F8F2;"> Varuna - 98% - 5 GHz - 802.11ac (Wi-Fi 5) - WPA2 Personal</span>
+<span style="color: #BD93F9;">                                  ├ DNS</span>    <span style="color: #BFBFBF;">-></span><span style="color: #F8F8F2;"> 192.168.178.xxx</span>
+<span style="color: #BD93F9;">                                  ├ Wi-Fi</span>  <span style="color: #BFBFBF;">-></span><span style="color: #F8F8F2;"> xxxxxx - 98% - 5 GHz - 802.11ac (Wi-Fi 5) - WPA2 Personal</span>
 <span style="color: #BD93F9;">                                  └ BT Ver</span> <span style="color: #BFBFBF;">-></span><span style="color: #F8F8F2;"> 5.2</span>`
     },
     {
@@ -349,7 +350,7 @@ export const neofetchData = [
                                   <span style="color: #e5c07b;">Disk (/):</span> <span style="color: #ffffff;">42.68 GiB / 233.47 GiB (18%) - apfs [Read-only]</span>
                                   <span style="color: #e5c07b;">Disk (/Volumes/Backup):</span> <span style="color: #ffffff;">161.35 GiB / 465.57 GiB (35%) - apfs [External]</span>
                                   <span style="color: #e5c07b;">Disk (/Volumes/Ceres):</span> <span style="color: #ffffff;">161.35 GiB / 465.57 GiB (35%) - apfs [External]</span>
-                                  <span style="color: #e5c07b;">Local IP (en0):</span> <span style="color: #ffffff;">192.168.11.38/24</span>
+                                  <span style="color: #e5c07b;">Local IP (en0):</span> <span style="color: #ffffff;">192.168.11.xxx/xx</span>
                                   <span style="color: #e5c07b;">Battery (bq20z451):</span> <span style="color: #ffffff;">74% [AC Connected, Charging]</span>
                                   <span style="color: #e5c07b;">Power Adapter:</span> <span style="color: #ffffff;">60W</span>
                                   <span style="color: #e5c07b;">Locale:</span> <span style="color: #ffffff;">en_US.UTF-8</span>`
@@ -384,7 +385,7 @@ export const neofetchData = [
                                         <span style="color:#e5c07b;">Swap:</span> 175,52 MiB / 1,94 GiB (<span style="color: #e5c07b;">9%</span>)
                                         <span style="color:#e5c07b;">Disk (C:\\):</span> 102,81 GiB / 118,14 GiB (<span style="color: #e5c07b;">87%</span>) - NTFS
                                         <span style="color:#e5c07b;">Disk (D:\\):</span> 101,03 GiB / 119,08 GiB (<span style="color: #e5c07b;">85%</span>) - NTFS [External]
-                                        <span style="color:#e5c07b;">Local IP (Wi-Fi):</span> 192.168.178.98/24
+                                        <span style="color:#e5c07b;">Local IP (Wi-Fi):</span> 192.168.178.xxx/xx
                                         <span style="color:#e5c07b;">Battery:</span> 100% [AC Connected]
                                         <span style="color:#e5c07b;">Locale:</span> en-DE`
     },
@@ -444,7 +445,7 @@ export const neofetchData = [
                                          <span style="color: #A277FF;">Memory:</span><span style="color: #EDECEE;"> 1.03 GiB / 7.62 GiB (13%)</span>
                                          <span style="color: #A277FF;">Swap:</span><span style="color: #EDECEE;"> 0 B / 4.00 GiB (0%)</span>
                                          <span style="color: #A277FF;">Disk (/):</span><span style="color: #EDECEE;"> 17.15 GiB / 163.00 GiB (11%) - ext4</span>
-                                         <span style="color: #A277FF;">Local IP (wlo1):</span><span style="color: #EDECEE;"> 192.168.178.167/24</span>
+                                         <span style="color: #A277FF;">Local IP (wlo1):</span><span style="color: #EDECEE;"> 192.168.178.xxx/xx</span>
                                          <span style="color: #A277FF;">Battery (Primary):</span><span style="color: #EDECEE;"> 89% (4 hours, 57 mins remaining) [Discharging]</span>
                                          <span style="color: #A277FF;">Locale:</span><span style="color: #EDECEE;"> de_DE.UTF-8</span>`
     },
@@ -475,7 +476,7 @@ export const neofetchData = [
                                     <span style="color:#F9F1A5;">Memory:</span> <span style="color:#F2F2F2;">2,72 GiB / 3,92 GiB (69%)</span>
                                     <span style="color:#F9F1A5;">Swap:</span> <span style="color:#F2F2F2;">138,64 MiB / 1,38 GiB (10%)</span>
                                     <span style="color:#F9F1A5;">Disk (C:\\):</span> <span style="color:#F2F2F2;">27,17 GiB / 57,48 GiB (47%) - NTFS</span>
-                                    <span style="color:#F9F1A5;">Local IP (WLAN):</span> <span style="color:#F2F2F2;">192.168.178.54/24</span>
+                                    <span style="color:#F9F1A5;">Local IP (WLAN):</span> <span style="color:#F2F2F2;">192.168.178.xxx/xx</span>
                                     <span style="color:#F9F1A5;">Battery (SR Real Battery):</span> <span style="color:#F2F2F2;">77% (3 hours, 56 mins remaining) [Discharging]</span>
                                     <span style="color:#F9F1A5;">Locale:</span> <span style="color:#F2F2F2;">de-DE</span>`
     },
@@ -486,28 +487,28 @@ export const rackData = [
       id: 'lynx', ext: true, u: 2, state: 'on',
       role: 'core hypervisor', chassis: 'Apple Mac mini (Macmini6,2)',
       os: 'Proxmox VE 9.x', cpu: 'Intel Core i7-3615QM (8) @ 3.30 GHz',
-      mem: '15.53 GiB', ip: '192.168.178.252/24', neofetch: 'lynx',
+      mem: '15.53 GiB', ip: '192.168.178.xxx/xx', neofetch: 'lynx',
       note: 'Sits on top of the cabinet. Runs the always-on core services, which is why it is the one machine that never gets powered down.'
     },
     {
       id: 'vega', ext: true, u: 3, state: 'on',
       role: 'nas', chassis: 'Synology DS918+',
-      os: 'DSM 7.3.1-86003 U1', cpu: 'Intel Celeron J3455 (4) @ 1.50 GHz',
-      mem: '8.00 GiB', ip: '192.168.178.154/24', neofetch: 'vega',
+      os: 'DSM 7.x.x-xxxx', cpu: 'Intel Celeron J3455 (4) @ 1.50 GHz',
+      mem: '8.00 GiB', ip: '192.168.178.xxx/xx', neofetch: 'vega',
       note: 'Sits on top of the cabinet next to lynx. Four bays in two RAID 1 pairs: SSD volume plus HDD volume, on a 2 Gbit/s bond. Always on.'
     },
     {
       id: 'chimera', u: 1, state: 'on',
       role: 'hypervisor', chassis: 'Supermicro SYS-5018D-FN4T',
-      os: 'Proxmox VE 9.2.4', cpu: 'Intel Xeon D-1541 (16) @ 2.70 GHz',
-      mem: '62.69 GiB', ip: '192.168.178.242/24', neofetch: 'chimera',
+      os: 'Proxmox VE 9.x', cpu: 'Intel Xeon D-1541 (16) @ 2.70 GHz',
+      mem: '62.69 GiB', ip: '192.168.178.xxx/xx', neofetch: 'chimera',
       note: 'Short-depth 1U board in a low-power SoC chassis, quiet enough to run around the clock.'
     },
     {
       id: 'backup-01', u: 3, state: 'standby',
       role: 'cold backup', chassis: 'Lenovo ThinkStation C20x (4269A55)',
       os: 'Windows 7 Professional', cpu: 'Intel Xeon X5690 (12) @ 3.47 GHz',
-      mem: '23.99 GiB', ip: '10.174.110.143/24', neofetch: 'backup-01',
+      mem: '23.99 GiB', ip: '10.174.110.xxx/xx', neofetch: 'backup-01',
       note: 'Cold backup: powered off between runs and woken only to take a copy, so the data sits offline the rest of the time.'
     },
     {
@@ -517,8 +518,8 @@ export const rackData = [
     {
       id: 'esxi-02', u: 2, state: 'standby',
       role: 'virtualization host', chassis: 'IBM System x3650 M5',
-      os: 'VMware ESXi 8.0U3e', cpu: '2 x Intel Xeon E5-2640 v3 (16) @ 2.60 GHz',
-      mem: '335.31 GiB', ip: '10.0.3.2/8', neofetch: 'esx-02',
+      os: 'VMware ESXi 8.x', cpu: '2 x Intel Xeon E5-2640 v3 (16) @ 2.60 GHz',
+      mem: '335.31 GiB', ip: '10.0.3.xxx/xx', neofetch: 'esx-02',
       note: 'Second vSphere host. Booted when the lab needs the capacity, idle otherwise: the power draw is not worth it.'
     },
     {
@@ -528,8 +529,8 @@ export const rackData = [
     {
       id: 'esxi-01', u: 2, state: 'standby',
       role: 'virtualization host', chassis: 'Dell PowerEdge R720',
-      os: 'VMware ESXi 8.0U3e', cpu: '2 x Intel Xeon E5-2670 (32) @ 3.60 GHz',
-      mem: '863.94 GiB', ip: '10.0.3.1/8', neofetch: 'esx-01',
+      os: 'VMware ESXi 8.x', cpu: '2 x Intel Xeon E5-2670 (32) @ 3.60 GHz',
+      mem: '863.94 GiB', ip: '10.0.3.xxx/xx', neofetch: 'esx-01',
       note: 'Booted on demand for lab work, then shut down again.'
     },
     {

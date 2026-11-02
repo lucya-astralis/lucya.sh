@@ -391,6 +391,11 @@ a.seal:hover{ rotate:0deg; scale:1.08; }
 }
 .ntab:hover{ color:var(--ink); }
 .ntab.is-active{ background:rgba(255,255,255,.09); color:var(--ink); }
+/* the machines in daily use: brighter, with a mark after the name */
+.ntab--main{ background:rgba(255,255,255,.05); color:var(--ink); font-weight:500; }
+.ntab--main::after{ content:""; display:inline-block; width:5px; height:5px; margin-left:7px; border-radius:50%; background:var(--champagne); vertical-align:.14em; }
+.ntab--main:hover{ background:rgba(255,255,255,.08); }
+.ntab--main.is-active{ background:rgba(255,255,255,.14); }
 
 .nterm{ display:none; }
 .nterm.is-active{ display:block; }
@@ -788,9 +793,11 @@ html.lite .mstage__glow{ display:none; }
     #wxMetric{ grid-column:1 / -1; }
   .neobay,.rackview{ grid-template-columns:minmax(0,1fr); }
   .rackphoto{ position:static; }
-  .ntabs__grp{ margin-top:16px; padding:0; }
-  .ntabs__set{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px; }
-  .ntab{ padding:9px 6px; background:rgba(255,255,255,.04); font-size:12px; text-align:center; }
+  .ntabs__grp{ margin-top:13px; padding:0; }
+  .ntabs__set{ flex-direction:row; flex-wrap:wrap; gap:4px; }
+  .ntab{ width:auto; padding:9px 13px; border-radius:999px; background:rgba(255,255,255,.04); font-size:12px; }
+  .ntab--main{ background:rgba(255,255,255,.09); box-shadow:inset 0 0 0 1px rgba(255,255,255,.16); }
+  .ntab--main.is-active{ background:rgba(255,255,255,.18); box-shadow:inset 0 0 0 1px rgba(255,255,255,.32); }
   .lid{ grid-template-columns:minmax(0,1fr); }
   .who{ grid-template-columns:minmax(0,1fr); }
   .who__id{ grid-template-columns:130px minmax(0,1fr); align-items:center; gap:22px; }
