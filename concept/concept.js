@@ -49,7 +49,7 @@ for (const [name, x, y, width, rotation] of STICKERS) {
 }
 number(deck.querySelectorAll('img'));
 
-const seen =new IntersectionObserver((entries) => {
+const seen = new IntersectionObserver((entries) => {
   for (const entry of entries) {
     if (entry.isIntersecting) {
       entry.target.classList.add('is-in');
@@ -58,6 +58,17 @@ const seen =new IntersectionObserver((entries) => {
   }
 }, { rootMargin: '0px 0px 8% 0px' });   // begins just below the fold: on a fast scroll it is under way as it arrives
 document.querySelectorAll('.rise').forEach((el) => seen.observe(el));
+
+// a thing's own entrance is there to be watched: it waits for the thing itself, at the fold
+const arrived = new IntersectionObserver((entries) => {
+  for (const entry of entries) {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-here');
+      arrived.unobserve(entry.target);
+    }
+  }
+});
+document.querySelectorAll('.unitlist,.rackphoto,.neobay,.who__pfp,.deck,.stamps,.walls__set,.strip').forEach((el) => arrived.observe(el));
 
 // ---- live data, the same files and rules as the main page -----------------
 // /status.json is polled once and shared; null means no probe, and everything
