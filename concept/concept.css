@@ -862,18 +862,18 @@ html.lite .mstage__glow{ display:none; }
 
 /* Words only rise. Things arrive the way they do in life: the rack powers up from the
    top, the terminal prints, stickers land, seals are pressed on, prints develop. Keyed
-   to the .is-in of the .rise around them, so nothing here runs on a scroll. */
+   to .is-here, which waits for the thing itself, so nothing here runs on a scroll. */
 @media (prefers-reduced-motion:no-preference){
-  html:not(.lite) .rackview.is-in .ru{ animation:ru-wake .7s linear calc(var(--i,0) * 80ms + .35s) backwards; }
-  html:not(.lite) .rackview.is-in .rackphoto img{ animation:room-lights 1.6s ease-out .1s backwards; }
+  html:not(.lite) .unitlist.is-here .ru{ animation:ru-wake .7s linear calc(var(--i,0) * 80ms + .35s) backwards; }
+  html:not(.lite) .rackphoto.is-here img{ animation:room-lights 1.6s ease-out .1s backwards; }
   html:not(.lite) :is(.ru[data-state="standby"],.rackinfo[data-state="standby"]) .ru__led{ animation:sleep-light 5.4s ease-in-out calc(var(--i,0) * -1.3s) infinite; }
-  html:not(.lite) .neofetch.is-in .nterm.is-active .nterm__body{ animation:print .8s steps(26) backwards; }
-  html:not(.lite) .who__id.is-in .who__pfp{ animation:press-on .9s var(--spring) .2s backwards; }
-  html:not(.lite) .deck.is-in img{ animation:stick .55s var(--spring) calc(var(--i,0) * 65ms + .25s) backwards; }
+  html:not(.lite) .neobay.is-here .nterm.is-active .nterm__body{ animation:print .8s steps(26) backwards; }
+  html:not(.lite) .who__pfp.is-here{ animation:press-on .9s var(--spring) .2s backwards; }
+  html:not(.lite) .deck.is-here img{ animation:stick .55s var(--spring) calc(var(--i,0) * 65ms + .25s) backwards; }
   html:not(.lite) .deck img:nth-of-type(even){ --tip:-9deg; }
-  html:not(.lite) .metrics.is-in .seal{ animation:stamp .4s ease-in calc(var(--i,0) * 90ms + .5s) backwards; }
-  html:not(.lite) .walls__set.is-in .b81{ animation:b81-on .36s steps(3) calc(var(--i,0) * 22ms + .15s) backwards; }
-  html:not(.lite) .strip img:not(.is-dev),html:not(.lite) .album:not(.is-in) .strip img{ filter:sepia(.4) contrast(.6) brightness(1.4); }
+  html:not(.lite) .stamps.is-here .seal{ animation:stamp .4s ease-in calc(var(--i,0) * 90ms + .5s) backwards; }
+  html:not(.lite) .walls__set.is-here .b81{ animation:b81-on .36s steps(3) calc(var(--i,0) * 22ms + .15s) backwards; }
+  html:not(.lite) .strip img:not(.is-dev),html:not(.lite) .strip:not(.is-here) img{ filter:sepia(.4) contrast(.6) brightness(1.4); }
   html:not(.lite) .strip img{ transition:transform .9s var(--spring), filter 2.4s var(--calm) calc(min(var(--i,0),5) * 140ms); }
   @keyframes ru-wake{ 0%{ opacity:0; } 18%{ opacity:.8; } 30%{ opacity:.12; } 46%{ opacity:.9; } 58%{ opacity:.35; } }
   @keyframes room-lights{ 0%{ filter:brightness(.22) saturate(.5); } 12%{ filter:brightness(.85) saturate(.8); } 20%{ filter:brightness(.34) saturate(.6); } }
