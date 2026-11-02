@@ -52,6 +52,11 @@ export function initWeather() {
     // the tick is how far the location is through its day
     $('wxSky').style.setProperty('--now', z ? `${(z.h * 60 + z.m) / 14.4}%` : '0%');
     $('wxDay').style.visibility = z ? '' : 'hidden';
+    // the same moment for whatever else follows the sun there
+    const rise = pct(wx?.today?.sunrise), set = pct(wx?.today?.sunset);
+    if (z && rise !== null && set !== null && rise < set) {
+      window.dispatchEvent(new CustomEvent('lucya:sky', { detail: { now: (z.h * 60 + z.m) / 1440, rise: rise / 100, set: set / 100 } }));
+    }
   };
 
   // the sky band: night, amber at sunrise and sunset, blue day between

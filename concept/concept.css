@@ -9,6 +9,8 @@
   --dim:rgba(236,235,231,.56);
   --faint:rgba(236,235,231,.12);
   --champagne:#c9c3b6;
+  --lamp:#f2e3bf;
+  --lamp-glow:rgba(242,227,191,.5);
   --magnesium:linear-gradient(150deg,#d6d1c6 0%,#a8a397 46%,#c6c1b5 100%);
   --spring:cubic-bezier(.32,.72,0,1);
   --calm:cubic-bezier(.22,.61,.36,1);
@@ -353,10 +355,13 @@ a.seal:hover{ rotate:0deg; scale:1.08; }
 .ru.is-dim{ opacity:.25; }
 .ru__name{ display:flex; align-items:center; gap:10px; min-width:0; font:500 14px/1.2 "Space Grotesk",sans-serif; color:var(--ink); white-space:nowrap; }
 .ru__u{ flex:none; white-space:nowrap; }
-.ru__led,.rackchip__led{ flex:none; display:inline-block; width:6px; height:6px; border-radius:50%; background:#555; }
-[data-state="on"] > .ru__name .ru__led,[data-state="on"] .rackinfo__badge .ru__led,.rackchip[data-state="on"] .rackchip__led{ background:#5fd38a; box-shadow:0 0 7px rgba(95,211,138,.7); }
-[data-state="standby"] > .ru__name .ru__led,[data-state="standby"] .rackinfo__badge .ru__led,.rackchip[data-state="standby"] .rackchip__led{ background:#e5c07b; }
-.ru[data-live="down"] .ru__led{ background:#e0524d; box-shadow:none; }
+/* a light pipe in the front panel: lit through, half lit asleep, dark in reserve. The
+   shape carries the state, so it needs no traffic light; red is kept for a real failure */
+.ru__led,.rackchip__led{ flex:none; display:inline-block; width:3px; height:13px; border-radius:1.5px; box-shadow:inset 0 0 0 1px rgba(255,255,255,.16); }
+.rackchip__led{ height:11px; }
+[data-state="on"] > .ru__name .ru__led,[data-state="on"] .rackinfo__badge .ru__led,.rackchip[data-state="on"] .rackchip__led{ background:var(--lamp); box-shadow:0 0 8px var(--lamp-glow); }
+[data-state="standby"] > .ru__name .ru__led,[data-state="standby"] .rackinfo__badge .ru__led,.rackchip[data-state="standby"] .rackchip__led{ background:linear-gradient(to top,var(--lamp) 45%,rgba(255,255,255,.1) 45%); box-shadow:none; }
+.ru[data-live="down"] .ru__led{ background:#e0524d; box-shadow:none; animation:none !important; }
 
 .racklegend{ display:flex; flex-wrap:wrap; gap:6px; }
 .rackchip{ display:inline-flex; align-items:center; gap:8px; padding:7px 12px; border:0; border-radius:999px; background:rgba(255,255,255,.06); color:var(--dim); font:400 11px/1 "JetBrains Mono",monospace; cursor:pointer; transition:color .3s, opacity .3s; }
@@ -403,7 +408,7 @@ a.seal:hover{ rotate:0deg; scale:1.08; }
 .nterm__dot{ flex:none; width:9px; height:9px; border-radius:50%; background:rgba(255,255,255,.14); }
 .nterm__title{ min-width:0; margin-left:8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .nterm__live{ margin-left:auto; flex:none; }
-.nterm__live[data-state="on"]{ color:#5fd38a; }
+.nterm__live[data-state="on"]{ color:var(--lamp); }
 .nterm__live[data-state="warn"]{ color:#e5c07b; }
 .nterm__live[data-state="crit"],.nterm__live[data-state="down"]{ color:#e0524d; }
 .nterm[data-live-state="on"] .nlive{ border-bottom:1px dotted rgba(236,235,231,.4); }
@@ -539,7 +544,7 @@ html.lite .spotify__aura{ display:none; }
 .spotify__pill i{ width:6px; height:6px; border-radius:50%; background:var(--champagne); }
 /* the label says what is on; "live" itself only once, at the pill */
 .spotify__card.is-live .spotify__counter{ display:none; }
-.spotify.is-live .spotify__pill i,.spotify__card.is-live .spotify__pill i{ background:#5fd38a; box-shadow:0 0 7px rgba(95,211,138,.7); }
+.spotify.is-live .spotify__pill i,.spotify__card.is-live .spotify__pill i{ width:3px; height:12px; border-radius:1.5px; background:var(--lamp); box-shadow:0 0 8px var(--lamp-glow); }
 
 .manifest{ position:fixed; inset:0; z-index:35; display:grid; place-items:center; padding:clamp(12px,3vw,40px); }
 .manifest[hidden]{ display:none; }
@@ -573,7 +578,7 @@ html.lite .mstage__glow{ display:none; }
 .mstage__art img{ display:block; width:100%; height:100%; object-fit:cover; }
 .mstage__label{ display:flex; align-items:center; gap:8px; margin-top:18px; font:400 11px/1.4 "JetBrains Mono",monospace; letter-spacing:.1em; color:var(--dim); }
 .mstage__label i{ flex:none; width:6px; height:6px; border-radius:50%; background:var(--champagne); }
-.mstage.is-live .mstage__label i{ background:#5fd38a; box-shadow:0 0 7px rgba(95,211,138,.7); }
+.mstage.is-live .mstage__label i{ width:3px; height:12px; border-radius:1.5px; background:var(--lamp); box-shadow:0 0 8px var(--lamp-glow); }
 .mstage__title{ margin:8px 0 4px; font-size:clamp(22px,2.4vw,32px); line-height:1.08; font-weight:500; letter-spacing:-.02em; overflow-wrap:anywhere; }
 .mstage__artist{ color:var(--dim); font-size:15px; line-height:1.35; }
 .mstage__facts{ margin:14px 0 0; font:400 11px/1.45 "JetBrains Mono",monospace; }
@@ -655,7 +660,7 @@ html.lite .mstage__glow{ display:none; }
 .walls__join{ margin-top:clamp(30px,5vh,48px); }
 .walls__note{ color:var(--dim); }
 .friends__snippet{ display:block; max-width:100%; margin-top:10px; padding:12px 14px; border:0; border-radius:12px; background:rgba(255,255,255,.05); color:var(--dim); font:400 11px/1.5 "JetBrains Mono",monospace; text-align:left; overflow-wrap:anywhere; cursor:pointer; }
-.friends__snippet.is-copied{ color:#5fd38a; }
+.friends__snippet.is-copied{ color:var(--lamp); }
 
 .site__kicker{ font:400 11px/1.4 "JetBrains Mono",monospace; letter-spacing:.06em; color:var(--champagne); }
 .house{
@@ -854,6 +859,31 @@ html.lite .mstage__glow{ display:none; }
 :is(.fleet,.metrics) > :nth-child(2){ --stagger:.09s; }
 :is(.fleet,.metrics) > :nth-child(3){ --stagger:.18s; }
 :is(.fleet,.metrics) > :nth-child(4){ --stagger:.27s; }
+
+/* Words only rise. Things arrive the way they do in life: the rack powers up from the
+   top, the terminal prints, stickers land, seals are pressed on, prints develop. Keyed
+   to the .is-in of the .rise around them, so nothing here runs on a scroll. */
+@media (prefers-reduced-motion:no-preference){
+  html:not(.lite) .rackview.is-in .ru{ animation:ru-wake .7s linear calc(var(--i,0) * 80ms + .35s) backwards; }
+  html:not(.lite) .rackview.is-in .rackphoto img{ animation:room-lights 1.6s ease-out .1s backwards; }
+  html:not(.lite) :is(.ru[data-state="standby"],.rackinfo[data-state="standby"]) .ru__led{ animation:sleep-light 5.4s ease-in-out calc(var(--i,0) * -1.3s) infinite; }
+  html:not(.lite) .neofetch.is-in .nterm.is-active .nterm__body{ animation:print .8s steps(26) backwards; }
+  html:not(.lite) .who__id.is-in .who__pfp{ animation:press-on .9s var(--spring) .2s backwards; }
+  html:not(.lite) .deck.is-in img{ animation:stick .55s var(--spring) calc(var(--i,0) * 65ms + .25s) backwards; }
+  html:not(.lite) .deck img:nth-of-type(even){ --tip:-9deg; }
+  html:not(.lite) .metrics.is-in .seal{ animation:stamp .4s ease-in calc(var(--i,0) * 90ms + .5s) backwards; }
+  html:not(.lite) .walls__set.is-in .b81{ animation:b81-on .36s steps(3) calc(var(--i,0) * 22ms + .15s) backwards; }
+  html:not(.lite) .strip img:not(.is-dev),html:not(.lite) .album:not(.is-in) .strip img{ filter:sepia(.4) contrast(.6) brightness(1.4); }
+  html:not(.lite) .strip img{ transition:transform .9s var(--spring), filter 2.4s var(--calm) calc(min(var(--i,0),5) * 140ms); }
+  @keyframes ru-wake{ 0%{ opacity:0; } 18%{ opacity:.8; } 30%{ opacity:.12; } 46%{ opacity:.9; } 58%{ opacity:.35; } }
+  @keyframes room-lights{ 0%{ filter:brightness(.22) saturate(.5); } 12%{ filter:brightness(.85) saturate(.8); } 20%{ filter:brightness(.34) saturate(.6); } }
+  @keyframes sleep-light{ 0%,100%{ opacity:.14; } 50%{ opacity:1; } }
+  @keyframes print{ from{ clip-path:inset(0 0 100% 0); } to{ clip-path:inset(0); } }
+  @keyframes press-on{ from{ opacity:0; rotate:-17deg; scale:1.14; } }
+  @keyframes stick{ from{ opacity:0; transform:translate(-50%,-62%) rotate(calc(var(--r) + var(--tip,9deg))) scale(1.28); filter:drop-shadow(0 14px 12px rgba(0,0,0,.3)); } }
+  @keyframes stamp{ from{ opacity:0; scale:1.7; } 70%{ opacity:1; scale:.92; } }
+  @keyframes b81-on{ from{ opacity:0; filter:contrast(2.2) brightness(1.6); } }
+}
 
 /* Tied to the scroll itself, so the page moves with the hand instead of playing back
    at it. Compositor only; a browser without these timelines simply goes without. */

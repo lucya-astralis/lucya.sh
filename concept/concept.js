@@ -1,6 +1,6 @@
 import { rackData } from '../js/systems-data.js?v=20261102-fetch';
-import { initSystems } from '../js/systems.js?v=20261102-mark';
-import { initWeather } from '../js/weather.js?v=20261031-text';
+import { initSystems } from '../js/systems.js?v=20261102-lamps';
+import { initWeather } from '../js/weather.js?v=20261102-sky';
 import { initSpotify } from '../js/spotify.js?v=20261102-classic';
 import { initShelves } from '../js/shelves.js?v=20261102-media';
 import { shelves } from '../js/media-data.js?v=20261102-media';
@@ -11,6 +11,8 @@ import { seasons } from './seasons.js';
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const root = document.documentElement;
 const boot = document.getElementById('boot');
+// their place in a set, for entries that arrive one after another
+const number = (els) => els.forEach((el, i) => el.style.setProperty('--i', i));
 
 // ---- content, read from the same data as the live site -------------------
 const SPEC = [
@@ -45,8 +47,9 @@ for (const [name, x, y, width, rotation] of STICKERS) {
   img.style.cssText = `left:${x / 2.73}%;top:${y / 2.092}%;width:${width / 2.73}%;--r:${rotation}deg`;
   deck.append(img);
 }
+number(deck.querySelectorAll('img'));
 
-const seen = new IntersectionObserver((entries) => {
+const seen =new IntersectionObserver((entries) => {
   for (const entry of entries) {
     if (entry.isIntersecting) {
       entry.target.classList.add('is-in');
@@ -62,6 +65,7 @@ document.querySelectorAll('.rise').forEach((el) => seen.observe(el));
 const statusFeed = (() => {
   const subs = [];
   let last = null;
+  const every = 30000;
   const refresh = async () => {
     try {
       const r = await fetch(`/status.json?t=${Date.now()}`, { cache: 'no-store' });
@@ -73,8 +77,8 @@ const statusFeed = (() => {
     subs.forEach((fn) => fn(last));
   };
   refresh();
-  setInterval(refresh, 30000);
-  return { subscribe(fn) { subs.push(fn); fn(last); } };
+  setInterval(refresh, every);
+  return { every, subscribe(fn) { subs.push(fn); fn(last); } };
 })();
 
 // the pill under the nav follows the same track as the card
@@ -137,6 +141,7 @@ const wallButton = (file, name, href) => {
 };
 document.getElementById('buttonWall').append(...buttons.map(([file, name]) => wallButton(file, name)));
 document.getElementById('friendWall').append(...friends.map(([file, name, href]) => wallButton(file, name, href)));
+number(document.querySelectorAll('.walls__set .b81'));
 const snippet = document.getElementById('friendSnippet');
 snippet.addEventListener('click', () => {
   navigator.clipboard?.writeText(snippet.textContent.trim()).then(() => {
@@ -221,6 +226,7 @@ function photoCard(src, href, alt) {
     link.rel = 'noopener';
   }
   const img = new Image();
+  img.addEventListener('load', () => img.classList.add('is-dev'), { once: true });   // a print can only develop once it is there
   img.src = src;
   img.alt = alt;
   img.loading = 'lazy';
@@ -230,12 +236,16 @@ function photoCard(src, href, alt) {
 
 for (const [id, url, fallback] of ALBUMS) {
   const strip = document.getElementById(id);
-  const local = () => strip.append(...fallback.map((n) => photoCard(`images/photos/${n}.jpeg`, null, '')));
+  const local = () => {
+    strip.append(...fallback.map((n) => photoCard(`images/photos/${n}.jpeg`, null, '')));
+    number(strip.querySelectorAll('img'));
+  };
   fetch(url, { mode: 'cors' })
     .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`http ${r.status}`))))
     .then(({ items }) => {
       if (!Array.isArray(items) || !items.length) throw new Error('album empty');
       strip.append(...items.map((it) => photoCard(it.urls.thumb_abs, it.urls.page_abs, it.album || '')));
+      number(strip.querySelectorAll('img'));
     })
     .catch(() => {
       if (fallback.length) local();
@@ -271,6 +281,7 @@ fetch(`${GALLERY}/api/album/japan_2026`, { mode: 'cors' })
       li.append(seal);
       return li;
     }));
+    number($('wxStamps').querySelectorAll('.seal'));
     $('wxStamps').hidden = false;
   })
   .catch(() => {});
@@ -298,12 +309,13 @@ navLinks.forEach((_, section) => spy.observe(section));
 // ---- start-up: picks up from the intro's last frame ------------------------
 // Loads behind the intro, near 800 KB of maps, so it is ready when the boot lifts;
 // it stays out of sight and draws nothing until show().
-const planet = import('./hero-planet.js?v=20261031-clock')
+const planet = import('./hero-planet.js?v=20261102-sky')
   .then(({ startPlanet }) => startPlanet($('hero'), $('heroPlanet'), REDUCED))
   .catch((err) => {
     console.warn('[planet] standing in the render:', err);
     $('hero').classList.add('is-still');
   });
+window.addEventListener('lucya:sky', ({ detail }) => planet.then((p) => p?.sky(detail)));
 
 function ready() {
   document.body.classList.add('is-ready');
