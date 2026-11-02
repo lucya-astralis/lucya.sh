@@ -114,6 +114,7 @@ h2{ font-size:clamp(34px,5.4vw,84px); line-height:1.02; font-weight:500; letter-
   position:relative;
   display:flex; align-items:center; gap:2px;
   flex:0 1 auto; min-width:0;
+  margin-left:-4px;
   padding-inline:6px 12px;
   overflow-x:auto;
   overscroll-behavior-x:none;
@@ -124,9 +125,11 @@ h2{ font-size:clamp(34px,5.4vw,84px); line-height:1.02; font-weight:500; letter-
 .island__links::-webkit-scrollbar{ display:none; }
 .island a{ padding:7px 13px; border-radius:999px; white-space:nowrap; color:var(--dim); transition:color .4s var(--spring), background .4s var(--spring); }
 .island a:hover,.island a.is-current{ color:var(--ink); background:rgba(255,255,255,.07); }
-.island__home{ flex:none; display:flex; padding:7px 6px 7px 10px !important; }
+/* the logo wears the same pill as the current link, so it reads as part of the bar */
+.island__home{ flex:none; align-self:stretch; display:flex; align-items:center; padding:0 14px !important; background:rgba(255,255,255,.07); }
+.island a.island__home:hover{ background:rgba(255,255,255,.13); }
 .island__home span{
-  width:30px; height:17px; background:var(--ink);
+  width:26px; height:15px; background:var(--ink);
   -webkit-mask:url("../images/logo/lucya_logo.svg") center / contain no-repeat;
           mask:url("../images/logo/lucya_logo.svg") center / contain no-repeat;
 }
