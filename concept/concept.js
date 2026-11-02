@@ -1,7 +1,7 @@
 import { rackData } from '../js/systems-data.js?v=20261031-text';
 import { initSystems } from '../js/systems.js?v=20261031-text';
 import { initWeather } from '../js/weather.js?v=20261031-text';
-import { initSpotify } from '../js/spotify.js?v=20261102-media';
+import { initSpotify } from '../js/spotify.js?v=20261102-classic';
 import { initShelves } from '../js/shelves.js?v=20261102-media';
 import { shelves } from '../js/media-data.js?v=20261102-media';
 import { createScrambler } from '../js/text-scramble.js';

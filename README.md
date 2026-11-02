@@ -13,10 +13,7 @@ JavaScript modules, which browsers do not load reliably from `file://` URLs.
 
 ## Code map
 
-- `classic.html` and `styles.css`: the previous site, kept at `/classic.html`, not indexed.
 - `lite.js`: synchronous, pre-paint device detection and saved Lite preference.
-- `script.js`: main entry point, boot sequence, clocks, shared status polling,
-  profile data, and responsive layout setup.
 - `js/utils.js`: text escaping and number formatting.
 - `js/text-scramble.js`: shared animated text renderer.
 - `js/systems-data.js`: hardware snapshots and rack inventory; whitespace in
@@ -24,17 +21,14 @@ JavaScript modules, which browsers do not load reliably from `file://` URLs.
 - `js/systems.js`: hardware tabs, live host readings, and interactive rack.
 - `js/music-data.js`: tracks, albums and artists. New tracks go here, sorted by
   release date (newest first), with title, credits, date and length from Spotify.
-- `js/spotify.js`: music rotation and the library dialog (the old manifest in
-  `classic.html`).
+- `js/spotify.js`: music rotation and the library dialog.
 - `js/media-data.js` / `js/shelves.js`: the games, TV shows and films tabs. A
   shelf with no items shows as "soon" until it has some.
-- `js/photos.js`: gallery feed and photo lightbox, with static HTML fallback.
 - `js/weather.js`: "I'm in" KPI card (where I am right now: local time and
   weather there), from `/weather.json`.
-- `setnav.js` / `mpage.js`: desktop panel navigation / phone page navigation.
-- `legal.html` / `legal.js`: bilingual legal page and language selection.
-- `planet-gl.js`: the planet behind the hero, shared with gov and terra. `concordia.js`: standalone orrery;
-  not loaded by `classic.html`.
+- `legal.html` / `legal.js` / `styles.css`: bilingual legal page, language
+  selection and its base styles.
+- `planet-gl.js`: the planet behind the hero, shared with gov and terra. `concordia.js`: standalone orrery.
 - `index.html` / `concept/`: the site. It opens with the laptop intro
   and reuses `js/systems.js`, `js/weather.js` and the same live JSON files.
 - `intro/`: 3D laptop intro with its own committed vendor bundles, see
@@ -44,31 +38,15 @@ JavaScript modules, which browsers do not load reliably from `file://` URLs.
 - `server/`: server-side pullers that write JSON into the web root.
 - `tools/`: asset generation scripts.
 
-Feature modules expose initialization functions. The entry point calls them in
-order and passes the shared status feed and text renderer explicitly. Keep
-`lite.js` render-blocking in the head; the other page initialization must finish
-before `DOMContentLoaded`, when navigation builds its panels.
+Feature modules expose initialization functions. `concept/concept.js` calls
+them in order and passes the shared status feed and text renderer explicitly.
+Keep `lite.js` render-blocking in the head.
 
 `/status.json` is produced by the server-side CheckMK puller and is intentionally
 not committed. `/nowplaying.json` works the same way: `server/spotify-nowplaying.py`
 writes it while Spotify plays, and the music card falls back to the favourites
 rotation when nothing plays or the file is older than 90s. It reads the
 account's playback, so any device counts (phone, desktop, speakers).
-
-## Boot
-
-The boot runs on every load (5.4s, 1.1s in Lite) and any key, tap or the
-skip button ends it. It is a document like every section (`DOC 00.BOOT`,
-form BT-00) with the mark building in the centre. Nothing on it is made up:
-
-- the log (top-left, from 1100px wide) lists every file the page fetches as
-  it lands, read from the Resource Timing feed: type, name, size or CACHE,
-  load time, and MISS/ERR for 4xx/5xx (a missing `nowplaying.json` is IDLE —
-  nothing is playing), plus milestones (DOM ready, fonts, page loaded);
-- the figures under the mark sum the same feed: files, bytes transferred,
-  share served from cache, issues;
-- the bar is the boot's clock toward the handoff, and the stamp turns from
-  BOOTING to READY on the page's load event.
 
 ## Languages and caching
 

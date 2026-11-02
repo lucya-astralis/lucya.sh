@@ -1,22 +1,3 @@
-// ---------- WALLPAPER VIDEO ----------------------------------------
-// the <video> ships without src; in lite mode it never loads a byte.
-// pausing while the tab is hidden keeps it off the decoder.
-(function () {
-    const video = document.querySelector('.wallpaper-video');
-
-    if (video && !window.LUCYA_LITE && video.dataset.src) {
-        video.src = video.dataset.src;
-        video.autoplay = true;
-        if (video.play) video.play().catch(function () {});
-    }
-
-    document.addEventListener('visibilitychange', function () {
-        if (!video || !video.src) return;
-        if (document.hidden) video.pause();
-        else video.play().catch(function () {});
-    });
-})();
-
 // ---------- LANGUAGE TOGGLE ----------------------------------------
 // Both language versions sit in the DOM and are gated by CSS. That means
 // section ids would collide, so only ONE block ever carries them: the EN

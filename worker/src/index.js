@@ -137,7 +137,7 @@ function yearsMonthsSince(since, now) {
   return `${y}y ${String(m).padStart(2, '0')}m`;
 }
 
-// mirrors the JAPAN kpi in script.js: count to target, then to end, then done
+// mirrors the JAPAN kpi on the site: count to target, then to end, then done
 function japan(k, now) {
   const toStart = daysUntil(k.target, now);
   if (toStart > 0) return `trip in ${toStart}d · ${k.target}`;
