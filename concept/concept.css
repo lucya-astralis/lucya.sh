@@ -538,6 +538,7 @@ html.lite .spotify__aura{ display:none; }
 .manifest__backdrop{ position:absolute; inset:0; background:rgba(0,0,0,.76); }
 .manifest__sheet{
   --pad:clamp(18px,2.8vw,38px);
+  --safe-top:0px;
   position:relative;
   width:min(1180px,100%); max-height:100%;
   overflow:hidden auto; overscroll-behavior:contain;
@@ -758,10 +759,11 @@ html.lite .mstage__glow{ display:none; }
   .posters{ grid-auto-columns:112px; margin-inline:calc(var(--gutter) * -1); padding-inline:var(--gutter); scroll-padding-inline:var(--gutter); scrollbar-width:none; }
   .posters::-webkit-scrollbar{ display:none; }
   /* no backdrop to speak of on a small screen, so it stays reachable while the sheet scrolls */
-  .manifest__close{ position:sticky; top:12px; right:auto; display:grid; margin:0 0 -30px auto; background:#1c1c1c; box-shadow:none; color:var(--ink); }
+  .manifest__close{ position:sticky; top:calc(var(--safe-top) + 12px - var(--pad)); right:auto; display:grid; margin:0 0 -30px auto; background:#1c1c1c; box-shadow:none; color:var(--ink); }
   /* the stage folds into a strip that stays above the list while it scrolls */
   .manifest__stage{ grid-template-columns:minmax(0,1fr); gap:14px; }
-  .mstage{ z-index:2; display:grid; grid-template-columns:92px minmax(0,1fr); gap:14px; align-items:center; margin:0 calc(var(--pad) * -1); padding:12px var(--pad); background:#080808; box-shadow:0 1px 0 rgba(255,255,255,.08); }
+  /* a sticky offset counts from inside the sheet's padding, so -pad is the sheet's very top */
+  .mstage{ top:calc(var(--pad) * -1); z-index:2; display:grid; grid-template-columns:92px minmax(0,1fr); gap:14px; align-items:center; margin:0 calc(var(--pad) * -1); padding:calc(var(--safe-top) + 12px) var(--pad) 12px; background:#080808; box-shadow:0 1px 0 rgba(255,255,255,.08); }
   .mstage__glow{ display:none; }
   .mstage__art{ width:100%; border-radius:10px; box-shadow:0 0 0 1px rgba(255,255,255,.08); }
   .mstage__txt{ min-width:0; padding-right:36px; }
@@ -800,7 +802,7 @@ html.lite .mstage__glow{ display:none; }
 }
 @media (max-width:560px){
   .manifest{ padding:0; }
-  .manifest__sheet{ width:100%; height:100%; border-radius:0; padding-bottom:max(var(--pad),env(safe-area-inset-bottom)); }
+  .manifest__sheet{ --safe-top:env(safe-area-inset-top,0px); width:100%; height:100%; border-radius:0; padding-bottom:max(var(--pad),env(safe-area-inset-bottom)); }
   .manifest__row{ grid-template-columns:20px 42px minmax(0,1fr) 36px; gap:10px; padding-inline:4px; }
   .manifest__length{ display:none; }
   /* the cover keeps the title company; everything that needs the width gets all of it */
