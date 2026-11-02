@@ -1,5 +1,5 @@
-import { rackData } from '../js/systems-data.js?v=20261031-text';
-import { initSystems } from '../js/systems.js?v=20261031-text';
+import { rackData } from '../js/systems-data.js?v=20261102-fetch';
+import { initSystems } from '../js/systems.js?v=20261102-mark';
 import { initWeather } from '../js/weather.js?v=20261031-text';
 import { initSpotify } from '../js/spotify.js?v=20261102-classic';
 import { initShelves } from '../js/shelves.js?v=20261102-media';

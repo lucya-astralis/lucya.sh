@@ -1,5 +1,5 @@
 import { escHtml } from './utils.js';
-import { neofetchData, rackData } from './systems-data.js?v=20261031-kira';
+import { neofetchData, rackData } from './systems-data.js?v=20261102-fetch';
 
 export function initSystems(statusFeed, scrambleTo, { fullSheet = false } = {}) {
   // ---------- NEOFETCH : real systems ----------------------------
@@ -26,11 +26,16 @@ export function initSystems(statusFeed, scrambleTo, { fullSheet = false } = {}) 
       { id: 'desktop', label: 'DESKTOP' },
       { id: 'mobile',  label: 'LAPTOP · MOBILE' }
     ];
+    // the machines in daily use lead their category and carry a mark
+    const NEOFETCH_MAIN = ['kira', 'aoi', 'vanta', 'chimera'];
     // which machine the section opens on, independent of group order
     const NEOFETCH_DEFAULT = 'kira';
 
+    const isMain = e => NEOFETCH_MAIN.includes(e.id);
+    const mainsFirst = items => [...items.filter(isMain), ...items.filter(e => !isMain(e))];
+
     const buckets = NEOFETCH_GROUPS
-      .map(g => ({ label: g.label, items: neofetchData.filter(e => e.group === g.id) }))
+      .map(g => ({ label: g.label, items: mainsFirst(neofetchData.filter(e => e.group === g.id)) }))
       .filter(b => b.items.length);
     const loose = neofetchData.filter(e => !NEOFETCH_GROUPS.some(g => g.id === e.group));
     if (loose.length) buckets.push({ label: 'OTHER', items: loose });
@@ -53,7 +58,7 @@ export function initSystems(statusFeed, scrambleTo, { fullSheet = false } = {}) 
       bucket.items.forEach(entry => {
         const open = entry.id === openId;
         const btn = document.createElement('button');
-        btn.className = 'ntab' + (open ? ' is-active' : '');
+        btn.className = 'ntab' + (isMain(entry) ? ' ntab--main' : '') + (open ? ' is-active' : '');
         btn.dataset.tab = entry.id;
         btn.textContent = entry.tab;
         set.appendChild(btn);
