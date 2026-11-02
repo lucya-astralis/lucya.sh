@@ -279,11 +279,6 @@ export async function runIntro(cover, { skip, leave, load, report }) {
   skip.removeEventListener('click', leave);
   skip.addEventListener('click', finish);
 
-  // mpage.js swipes pages from document-level touch listeners
-  for (const type of ['touchstart', 'touchend']) {
-    cover.addEventListener(type, (e) => e.stopPropagation(), { passive: true });
-  }
-
   const trigger = ScrollTrigger.create({
     scroller,
     trigger: track,

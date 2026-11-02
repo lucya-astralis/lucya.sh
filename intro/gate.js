@@ -2,7 +2,7 @@
    render-blocking script right after lite.js: it holds the page and the boot
    splash back, which has to happen before either can flash.
 
-   Sets window.LUCYA_INTRO. script.js starts its boot on 'lucya:intro-done', which
+   Sets window.LUCYA_INTRO. concept.js starts its boot on 'lucya:intro-done', which
    window.lucyaIntroDone() fires when the intro ends, is skipped or fails. */
 (function () {
   // A reload starts over: only a link that was followed keeps its #section.

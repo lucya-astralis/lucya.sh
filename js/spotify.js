@@ -6,9 +6,7 @@ export function initSpotify(scrambleTo) {
   const spotifyCard = document.getElementById('spotifyCard');
   if (spotifyCard) {
     const INTERVAL_MS = 5000;
-    const coverWrap = document.getElementById('spotifyCover');
     const cover = document.getElementById('spotifyCoverImg');
-    const meta = spotifyCard.querySelector('.spotify__meta');
     const trackEl = document.getElementById('spotifyTrack');
     const artistEl = document.getElementById('spotifyArtist');
     const counterEl = document.getElementById('spotifyCounter');
@@ -19,7 +17,6 @@ export function initSpotify(scrambleTo) {
     const modeEl = document.getElementById('spotifyMode');
     const progressEl = document.getElementById('spotifyProgress');
     const sectionEl = document.getElementById('spotify');
-    // only the new site has these; classic.html keeps its fade through black
     const coverNext = document.getElementById('spotifyCoverNext');
     const aura = document.getElementById('spotifyAura');
     const auraNext = document.getElementById('spotifyAuraNext');
@@ -86,29 +83,12 @@ export function initSpotify(scrambleTo) {
       elapsedRaf = requestAnimationFrame(step);
     };
 
-    // cross-fade: fade out, swap content, fade in. A newer swap supersedes a
-    // pending one, so a rotation tick can't land on top of a live track.
-    let swapId = 0;
-    const swap = (fn) => {
-      const id = ++swapId;
-      if (coverNext) { fn(); return; }   // the art crossfades by itself, the text changes in place
-      coverWrap.classList.add('is-swap');
-      meta.classList.add('is-swap');
-      setTimeout(() => {
-        if (id !== swapId) return;
-        fn();
-        coverWrap.classList.remove('is-swap');
-        meta.classList.remove('is-swap');
-      }, 300);
-    };
-
     // the next cover fades in over the current one once it is decoded, so the
     // card never shows an empty frame; a newer track supersedes one on its way
     let artId = 0;
     let artFade = [];
     const setArt = async (src, alt) => {
       cover.alt = alt;
-      if (!coverNext) { cover.src = src; return; }
       const place = () => { cover.src = src; aura.src = src; };
       if (still || cover.getAttribute('src') === 'data:,') { place(); return; }
       const id = ++artId;
@@ -132,15 +112,14 @@ export function initSpotify(scrambleTo) {
 
     const setArtist = (text) => {
       artistEl.textContent = text;
-      if (coverNext && !still) {
+      if (!still) {
         artistEl.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.22,.61,.36,1)' });
       }
     };
 
     // the release line and the link, for whichever track the card shows
     const setDetails = (s, url) => {
-      if (sourceEl) sourceEl.textContent = s ? s.album + ' · ' + s.date.slice(0, 4) : '';
-      if (!openEl) return;
+      sourceEl.textContent = s ? s.album + ' · ' + s.date.slice(0, 4) : '';
       const link = /^https:\/\/open\.spotify\.com\//.test(url || '');
       openEl.hidden = !link;
       if (link) openEl.href = url;
@@ -158,21 +137,19 @@ export function initSpotify(scrambleTo) {
     let onAfterRender = null;
     const render = () => {
       const s = songs[idx];
-      swap(() => {
-        setArt(s.cover, s.title + ' · ' + s.artist);
-        scrambleTo(trackEl, s.title);
-        setArtist(s.artist);
-        setDetails(s, s.url);
-        counterEl.textContent = pad2(idx + 1) + ' / ' + pad2(songs.length);
-        dotEls.forEach((d, i) => {
-          d.classList.toggle('is-active', i === idx);
-          d.classList.toggle('is-played', i < idx);
-        });
-        restartTick();
-        startElapsed();
-        preloadNext();
-        if (onAfterRender) onAfterRender();
+      setArt(s.cover, s.title + ' · ' + s.artist);
+      scrambleTo(trackEl, s.title);
+      setArtist(s.artist);
+      setDetails(s, s.url);
+      counterEl.textContent = pad2(idx + 1) + ' / ' + pad2(songs.length);
+      dotEls.forEach((d, i) => {
+        d.classList.toggle('is-active', i === idx);
+        d.classList.toggle('is-played', i < idx);
       });
+      restartTick();
+      startElapsed();
+      preloadNext();
+      if (onAfterRender) onAfterRender();
     };
 
     let timer = 0;
@@ -217,12 +194,11 @@ export function initSpotify(scrambleTo) {
       const albumList = document.getElementById('manifestAlbums');
       const artistList = document.getElementById('manifestArtists');
       const metaEl = document.getElementById('manifestMeta');
-      // the stage only exists on the new site; classic.html keeps its old sheet
       const stage = document.getElementById('manifestStage');
       const stagePart = (name) => stage.querySelector('[data-stage="' + name + '"]');
       const fmtLength = (sec) => Math.floor(sec / 60) + ':' + pad2(sec % 60);
       const fmtDate = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
-      const linked = (html, url) => stage && url ? '<a class="mlink" href="' + url + '" target="_blank" rel="noopener">' + html + '</a>' : html;
+      const linked = (html, url) => url ? '<a class="mlink" href="' + url + '" target="_blank" rel="noopener">' + html + '</a>' : html;
 
       // tracks — dense list, the only interactive one (jumps the rotation)
       const trackFrag = document.createDocumentFragment();
@@ -237,11 +213,9 @@ export function initSpotify(scrambleTo) {
               '<span class="manifest__title">' + escHtml(s.title) + '</span>' +
               '<span class="manifest__artist">' + escHtml(s.artist) + '</span>' +
             '</span>' +
-            (stage
-              ? '<span class="manifest__album">' + escHtml(s.album) + '</span>' +
-                '<span class="manifest__year">' + s.date.slice(0, 4) + '</span>' +
-                '<span class="manifest__length">' + fmtLength(s.sec) + '</span>'
-              : '<span class="manifest__status mono" aria-hidden="true"></span>') +
+            '<span class="manifest__album">' + escHtml(s.album) + '</span>' +
+            '<span class="manifest__year">' + s.date.slice(0, 4) + '</span>' +
+            '<span class="manifest__length">' + fmtLength(s.sec) + '</span>' +
           '</button>';
         trackFrag.appendChild(li);
       });
@@ -257,10 +231,9 @@ export function initSpotify(scrambleTo) {
             '<span class="mtile__art">' +
               '<img src="' + a.cover + '" alt="" loading="lazy" decoding="async" />' +
               '<span class="mtile__corner" aria-hidden="true"></span>' +
-              (a.note && !stage ? '<span class="mtile__year mono">' + escHtml(a.note) + '</span>' : '') +
               '<span class="mtile__txt">' +
                 '<span class="mtile__title">' + escHtml(a.title) + '</span>' +
-                '<span class="mtile__artist">' + escHtml(stage ? a.artist + ' · ' + a.note : a.artist) + '</span>' +
+                '<span class="mtile__artist">' + escHtml(a.artist + ' · ' + a.note) + '</span>' +
               '</span>' +
             '</span>', a.url);
           frag.appendChild(li);
@@ -328,16 +301,14 @@ export function initSpotify(scrambleTo) {
       };
 
       const markActive = () => {
-        const shown = stage ? shownIdx() : idx;
+        const shown = shownIdx();
         manifestList.querySelectorAll('.manifest__row').forEach((r) => {
-          const on = parseInt(r.dataset.idx, 10) === shown && (!!stage || !live);
+          const on = parseInt(r.dataset.idx, 10) === shown;
           r.classList.toggle('is-active', on);
           if (on) r.setAttribute('aria-current', 'true');
           else r.removeAttribute('aria-current');
-          const st = r.querySelector('.manifest__status');
-          if (st) st.textContent = on ? '▸ PLAYING' : '';
         });
-        if (stage) paintStage(shown);
+        paintStage(shown);
       };
 
       // songs is newest first, so its index is the date order
@@ -425,7 +396,7 @@ export function initSpotify(scrambleTo) {
         layoutSweep();
         manifest.classList.add('is-open');
         lockScroll();
-        sheetOpen = !!stage;
+        sheetOpen = true;
         updateRunState();
         markActive();
         const first = manifestList.querySelector('.manifest__row.is-active') || manifestList.querySelector('.manifest__row');
@@ -463,7 +434,6 @@ export function initSpotify(scrambleTo) {
         const row = e.target.closest('.manifest__row[data-idx]');
         if (!row) return;
         const i = parseInt(row.dataset.idx, 10);
-        if (!stage) { jumpTo(i); closeManifest(); return; }
         // the sheet stays up; the card behind it follows unless a track is live
         picked = i;
         if (live) markActive();
@@ -553,22 +523,19 @@ export function initSpotify(scrambleTo) {
       }
       const apply = () => {
         if (totalEl) totalEl.textContent = fmtTime(liveTotal);
-        // the swap delay moved the playhead on; measure from liveBase again
         syncProgress((performance.now() - liveBase) / 1000);
         if (cardInView && !document.hidden) startLiveElapsed();
       };
       if (changed) {
         window.dispatchEvent(new CustomEvent('lucya:track', { detail: t }));
-        swap(() => {
-          // the puller sends no cover rather than a stale one; the logo beats
-          // leaving the previous track's art up
-          setArt(t.cover || 'images/profile/sociallinks/spotify_color.svg', t.title + ' · ' + t.artist);
-          scrambleTo(trackEl, t.title);
-          setArtist(t.artist || '');
-          setDetails(songs.find((s) => s.url === t.url), t.url);
-          apply();
-          if (onAfterRender) onAfterRender();
-        });
+        // the puller sends no cover rather than a stale one; the logo beats
+        // leaving the previous track's art up
+        setArt(t.cover || 'images/profile/sociallinks/spotify_color.svg', t.title + ' · ' + t.artist);
+        scrambleTo(trackEl, t.title);
+        setArtist(t.artist || '');
+        setDetails(songs.find((s) => s.url === t.url), t.url);
+        apply();
+        if (onAfterRender) onAfterRender();
       } else {
         apply();
       }

@@ -1,5 +1,5 @@
 /* ============================================================================
-   LITE MODE — shared by index.html, classic.html and legal.html.
+   LITE MODE — shared by index.html and legal.html.
 
    Decides lite vs. full BEFORE first paint, so this MUST stay a render-blocking
    <script src="lite.js"></script> in <head> (no defer / no async) — otherwise
@@ -7,8 +7,7 @@
 
    Auto-on ONLY for genuinely weak hardware (<= 2 GB RAM or <= 2 cores) or
    data-saver; a manual override in localStorage('lucya-lite') wins in both
-   directions (toggled by the LITE chip built in script.js). Exposes
-   window.LUCYA_LITE and sets <html class="lite">.
+   directions. Exposes window.LUCYA_LITE and sets <html class="lite">.
 
    NOTE: prefers-reduced-motion does NOT force lite here — reduced motion is
    handled independently by a dedicated @media block in styles.css that kills
