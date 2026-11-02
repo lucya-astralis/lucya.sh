@@ -4,6 +4,7 @@ import { initWeather } from '../js/weather.js?v=20261031-text';
 import { initSpotify } from '../js/spotify.js?v=20261031-text';
 import { createScrambler } from '../js/text-scramble.js';
 import { buttons, friends } from './buttons.js';
+import { seasons } from './seasons.js';
 
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const root = document.documentElement;
@@ -144,6 +145,9 @@ snippet.addEventListener('click', () => {
 
 const $ = (id) => document.getElementById(id);
 const percent = (n, d) => (d > 0 ? Math.min(100, n / d * 100) : 0);
+const DAY = 86400000;
+// the trip keeps Japan's clock: dates and the gallery's stops carry no zone
+const jst = (t) => Date.parse(t.length > 10 ? `${t}+09:00` : `${t}T00:00:00+09:00`);
 let fleet = null;
 
 function paintFleet() {
@@ -174,12 +178,27 @@ setInterval(paintFleet, 5000);
 fetch('data.json').then((r) => r.json()).then(({ kpis }) => {
   const kpi = (key) => kpis.find((k) => k.key === key);
   const japan = kpi('japan');
-  const day = 86400000;
-  const start = Date.parse(japan.target), end = Date.parse(japan.end);
+  const start = jst(japan.target), end = jst(japan.end);
   const now = Date.now();
-  const days = now < start ? Math.ceil((start - now) / day) : now < end ? Math.ceil((end - now) / day) : Math.round((end - start) / day);
-  $('kpiJapan').textContent = `${days} d`;
-  $('kpiJapanSub').textContent = now < start ? japan.sub : now < end ? japan.subIn : japan.subAfter;
+  const total = Math.round((end - start) / DAY);
+  if (now < start) {
+    $('kpiJapan').textContent = `${Math.ceil((start - now) / DAY)} d`;
+    $('kpiJapanSub').textContent = japan.sub;
+  } else if (now < end) {
+    const today = Math.floor((now - start) / DAY) + 1;
+    $('kpiJapan').innerHTML = `${today}<small lang="ja">日目</small>`;
+    $('kpiJapanSub').textContent = `OF ${total} · ${Math.ceil((end - now) / DAY)} LEFT`;
+    $('tripBar').style.transform = `scaleX(${(now - start) / (end - start)})`;
+    const local = new Date(now + 9 * 3600000);
+    const [, name, reading, meaning] = seasons.findLast(([from]) => from <= (local.getUTCMonth() + 1) * 100 + local.getUTCDate());
+    $('wxSeason').textContent = name;
+    $('wxSeasonEn').textContent = meaning;
+    $('wxSeasonLine').title = `${reading} · one of the 72 micro-seasons of the old calendar`;
+    $('wxRoad').hidden = false;
+  } else {
+    $('kpiJapan').innerHTML = `${total}<small lang="ja">日</small>`;
+    $('kpiJapanSub').textContent = `おかえり · ${japan.subAfter}`;
+  }
 }).catch(() => {});
 
 // ---- photos, live from the gallery ----------------------------------------
@@ -221,6 +240,38 @@ for (const [id, url, fallback] of ALBUMS) {
       else strip.closest('.album').hidden = true;
     });
 }
+
+// ---- the trip's stamps ------------------------------------------------------
+// One seal per stop, the way stations hand them out. Collected ones link to
+// their album, the ones still ahead stay an outline. A side trip outranks the
+// stop it leaves from, so only one seal is ever the current one.
+fetch(`${GALLERY}/api/album/japan_2026`, { mode: 'cors' })
+  .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`http ${r.status}`))))
+  .then(({ trip }) => {
+    const sides = trip.side_trips || [];
+    const stops = [...trip.stops, ...sides].sort((a, b) => jst(a.start) - jst(b.start));
+    const now = Date.now();
+    const inside = (s) => jst(s.start) <= now && now < jst(s.end);
+    const current = sides.find(inside) || trip.stops.find(inside);
+    $('wxStamps').append(...stops.map((s) => {
+      const li = document.createElement('li');
+      const seal = document.createElement(s.href ? 'a' : 'span');
+      if (s.href) {
+        seal.href = GALLERY + s.href;
+        seal.target = '_blank';
+        seal.rel = 'noopener';
+      }
+      seal.className = `seal${s.jp.length > 2 ? ' seal--long' : ''}${s === current ? ' is-here' : now < jst(s.start) ? ' is-ahead' : ''}`;
+      seal.lang = 'ja';
+      seal.textContent = s.jp;
+      const from = s.start_h || s.arrive_h;
+      seal.title = `${s.city} · ${from}${s.end_h ? ` – ${s.end_h}` : ''}`;
+      li.append(seal);
+      return li;
+    }));
+    $('wxStamps').hidden = false;
+  })
+  .catch(() => {});
 
 // ---- nav: follows the page -------------------------------------------------
 // On a phone the bar is wider than the screen; it brings the current section
