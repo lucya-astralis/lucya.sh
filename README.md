@@ -22,7 +22,12 @@ JavaScript modules, which browsers do not load reliably from `file://` URLs.
 - `js/systems-data.js`: hardware snapshots and rack inventory; whitespace in
   snapshot templates is significant for ASCII art.
 - `js/systems.js`: hardware tabs, live host readings, and interactive rack.
-- `js/spotify.js`: music rotation and the music manifest dialog.
+- `js/music-data.js`: tracks, albums and artists. New tracks go here, sorted by
+  release date (newest first), with title, credits, date and length from Spotify.
+- `js/spotify.js`: music rotation and the library dialog (the old manifest in
+  `classic.html`).
+- `js/media-data.js` / `js/shelves.js`: the games, TV shows and films tabs. A
+  shelf with no items shows as "soon" until it has some.
 - `js/photos.js`: gallery feed and photo lightbox, with static HTML fallback.
 - `js/weather.js`: "I'm in" KPI card (where I am right now: local time and
   weather there), from `/weather.json`.

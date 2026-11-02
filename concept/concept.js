@@ -1,7 +1,9 @@
 import { rackData } from '../js/systems-data.js?v=20261031-text';
 import { initSystems } from '../js/systems.js?v=20261031-text';
 import { initWeather } from '../js/weather.js?v=20261031-text';
-import { initSpotify } from '../js/spotify.js?v=20261031-text';
+import { initSpotify } from '../js/spotify.js?v=20261102-media';
+import { initShelves } from '../js/shelves.js?v=20261102-media';
+import { shelves } from '../js/media-data.js?v=20261102-media';
 import { createScrambler } from '../js/text-scramble.js';
 import { buttons, friends } from './buttons.js';
 import { seasons } from './seasons.js';
@@ -78,7 +80,7 @@ const statusFeed = (() => {
 // the pill under the nav follows the same track as the card
 const nowPill = document.getElementById('nowPill');
 const spotifyOpen = document.getElementById('spotifyOpen');
-// the card opens the manifest on any click or key; this link is the one exception
+// the card opens the library on any click or key; this link is the one exception
 for (const type of ['click', 'keydown']) spotifyOpen.addEventListener(type, (e) => e.stopPropagation());
 const readAlong = (el) => {
   el.classList.remove('is-long');
@@ -90,9 +92,6 @@ const readAlong = (el) => {
 };
 window.addEventListener('lucya:track', ({ detail: track }) => {
   nowPill.classList.toggle('is-on', !!track);
-  const link = /^https:\/\/open\.spotify\.com\//.test(track?.url || '');
-  spotifyOpen.hidden = !link;
-  if (link) spotifyOpen.href = track.url;
   if (!track) return;
   nowPill.hidden = false;
   nowPill.title = `${track.title} · ${track.artist || ''}`;
@@ -106,11 +105,14 @@ const scrambleTo = createScrambler(!!window.LUCYA_LITE);
 initSystems(statusFeed, scrambleTo, { fullSheet: true });
 initWeather();
 initSpotify(scrambleTo);
+initShelves(shelves, document.getElementById('shelfTabs'), document.getElementById('shelfPanels'));
 
 // the manifest's first albums and artists beside the card; a click opens the whole sheet
 const peekFrom = (from, to, count, n) => {
   const items = [...document.querySelectorAll(`#${from} > li`)];
   document.getElementById(to).append(...items.slice(0, n).map((li) => li.cloneNode(true)));
+  // the peek is a way into the sheet; its copies are not links of their own
+  for (const a of document.querySelectorAll(`#${to} a`)) a.removeAttribute('href');
   document.getElementById(count).textContent = items.length;
 };
 peekFrom('manifestAlbums', 'peekAlbums', 'peekAlbumCount', 6);

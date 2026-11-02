@@ -36,7 +36,7 @@
 <meta name="twitter:image" content="https://lucya.sh/concept/card.jpg" />
 <meta name="twitter:image:alt" content="lucya - personal website" />
 
-<link rel="stylesheet" href="concept/concept.css?v=20261102-rows" />
+<link rel="stylesheet" href="concept/concept.css?v=20261102-media" />
 <script src="lite.js"></script>
 <script src="intro/gate.js?v=20261101-skip"></script>
 
@@ -240,122 +240,112 @@
 
   <section class="spotify" id="spotify">
     <div class="rise">
-      <p class="tag">Music · games</p>
+      <p class="tag">Music · games · TV · film</p>
       <h2>Media</h2>
       <p class="spotify__jp" lang="ja">メディア</p>
     </div>
     <div class="spotify__deck rise">
-    <div class="spotify__main">
-    <div class="spotify__card" id="spotifyCard" role="button" tabindex="0" aria-label="open audio manifest" aria-haspopup="dialog">
-      <span class="spotify__cover" id="spotifyCover"><img id="spotifyCoverImg" src="data:," alt="album cover" /></span>
+    <div class="spotify__card" id="spotifyCard" role="button" tabindex="0" aria-label="open music library" aria-haspopup="dialog">
+      <span class="spotify__aura" aria-hidden="true"><img id="spotifyAura" src="data:," alt="" /><img id="spotifyAuraNext" src="data:," alt="" /></span>
+      <span class="spotify__cover" id="spotifyCover"><img id="spotifyCoverImg" src="data:," alt="album cover" decoding="sync" /><img id="spotifyCoverNext" src="data:," alt="" aria-hidden="true" /></span>
       <div class="spotify__meta">
         <div class="spotify__label">
           <span class="spotify__label-name" id="spotifyLabel">Now sampling · <span lang="ja">最近のお気に入り</span></span>
-          <span class="spotify__counter" id="spotifyCounter">01 / 12</span>
+          <span class="spotify__counter" id="spotifyCounter">01 / 16</span>
         </div>
         <h3 class="spotify__track" id="spotifyTrack">-</h3>
         <div class="spotify__artist" id="spotifyArtist">-</div>
-        <div class="spotify__timeline" aria-hidden="true">
+        <div class="spotify__source" id="spotifySource"></div>
+        <div class="spotify__timeline">
+          <button class="spotify__step" id="spotifyPrev" type="button" aria-label="previous track">‹</button>
           <span class="spotify__time" id="spotifyElapsed">00:00</span>
           <div class="spotify__dots" id="spotifyDots" role="tablist" aria-label="track selector"></div>
           <div class="spotify__progress" id="spotifyProgress" hidden><i></i></div>
           <span class="spotify__time" id="spotifyTotal">00:05</span>
+          <button class="spotify__step" id="spotifyNext" type="button" aria-label="next track">›</button>
         </div>
         <div class="spotify__foot">
           <span class="spotify__pill"><i></i> <span id="spotifyMode">Rotation</span></span>
-          <a class="spotify__open" id="spotifyOpen" target="_blank" rel="noopener" hidden>Open on Spotify ↗</a>
-          <span class="spotify__hint">Open manifest ↗</span>
+          <span class="spotify__links">
+            <a class="spotify__open" id="spotifyOpen" target="_blank" rel="noopener" hidden>Spotify ↗</a>
+            <span class="spotify__hint">Library ↗</span>
+          </span>
         </div>
       </div>
     </div>
-    <!-- a first look at the manifest, from what spotify.js put there -->
-    <div class="peek" data-peek aria-hidden="true">
-      <p class="peek__head"><span>Artists</span><b id="peekArtistCount"></b></p>
-      <ul class="peek__artists" id="peekArtists"></ul>
-    </div>
-    </div>
+    <!-- a first look at the library, from what spotify.js put there -->
     <div class="spotify__side">
       <div class="peek" data-peek aria-hidden="true">
         <p class="peek__head"><span>Albums</span><b id="peekAlbumCount"></b></p>
         <ul class="peek__albums" id="peekAlbums"></ul>
       </div>
-      <div class="games">
-        <p class="peek__head"><span>Games</span><b>9</b></p>
-        <ul class="games__list">
-        <li><img src="images/game_images/ED.webp" alt="Elite: Dangerous" title="Elite: Dangerous" width="170" height="256" loading="lazy" decoding="async" /></li>
-        <li><img src="images/game_images/starcitizen.webp" alt="Star Citizen" title="Star Citizen" width="170" height="256" loading="lazy" decoding="async" /></li>
-        <li><img src="images/game_images/cyberpunk.webp" alt="Cyberpunk 2077" title="Cyberpunk 2077" width="170" height="256" loading="lazy" decoding="async" /></li>
-        <li><img src="images/game_images/ghost.webp" alt="Ghost of Tsushima" title="Ghost of Tsushima" width="170" height="256" loading="lazy" decoding="async" /></li>
-        <li><img src="images/game_images/forzahorizon6.webp" alt="Forza Horizon 6" title="Forza Horizon 6" width="170" height="256" loading="lazy" decoding="async" /></li>
-        <li><img src="images/game_images/hsr.webp" alt="Honkai: Star Rail" title="Honkai: Star Rail" width="170" height="256" loading="lazy" decoding="async" /></li>
-        <li><img src="images/game_images/endfield.webp" alt="Arknights: Endfield" title="Arknights: Endfield" width="170" height="256" loading="lazy" decoding="async" /></li>
-        <li><img src="images/game_images/ftl.webp" alt="FTL: Faster Than Light" title="FTL: Faster Than Light" width="170" height="256" loading="lazy" decoding="async" /></li>
-        <li><img src="images/game_images/worldbox.webp" alt="WorldBox" title="WorldBox" width="170" height="256" loading="lazy" decoding="async" /></li>
-        </ul>
+      <div class="peek" data-peek aria-hidden="true">
+        <p class="peek__head"><span>Artists</span><b id="peekArtistCount"></b></p>
+        <ul class="peek__artists" id="peekArtists"></ul>
       </div>
     </div>
+    </div>
+
+    <!-- games, tv shows and films; the shelves come from js/media-data.js -->
+    <div class="shelves rise">
+      <div class="msort shelves__tabs" id="shelfTabs" role="tablist" aria-label="Games, TV shows and films"></div>
+      <div id="shelfPanels"></div>
     </div>
 
     <div class="manifest" id="spotifyManifest" role="dialog" aria-modal="true" aria-labelledby="manifestTitle" hidden>
     <div class="manifest__backdrop" data-manifest-close></div>
     <div class="manifest__sheet" role="document">
-      <div class="manifest__doc">
-        <span>DOC <b>05.A.MANIFEST</b></span>
-        <span>REV <b>FULL ROSTER</b></span>
-        <span class="stamp">APPENDIX</span>
-        <button class="manifest__close" type="button" data-manifest-close aria-label="close manifest">
-          <span aria-hidden="true">✕</span>
-        </button>
-      </div>
+      <button class="manifest__close" type="button" data-manifest-close aria-label="close library">
+        <span aria-hidden="true">✕</span>
+      </button>
 
       <div class="manifest__head">
-        <div class="section__slug">
-          <span class="ix">// 05.A</span>
-          <span class="name">AUDIO MANIFEST</span>
-          <span class="jp" id="manifestJp" lang="ja">お気に入り一覧</span>
+        <div>
+          <h2 id="manifestTitle">Library</h2>
+          <p class="spotify__jp" id="manifestJp" lang="ja">お気に入り一覧</p>
         </div>
-        <div class="section__meta">
-          <span class="mono" id="manifestMeta">TRACKS · ALBUMS · ARTISTS</span>
-        </div>
+        <span class="manifest__counts" id="manifestMeta">TRACKS · ALBUMS · ARTISTS</span>
       </div>
 
-      <!-- bento: the track list carries the height, the covers carry the
-           weight — three different densities instead of three columns -->
-      <div class="manifest__bento">
-        <div class="mbox mbox--tracks">
-          <h3 class="mbox__head mono">
-            <span class="mbox__ix">01</span>
-            <span class="mbox__name">TRACKS</span>
-            <span class="mbox__jp" lang="ja">トラック</span>
-            <b data-col-count="songs">0</b>
-          </h3>
+      <!-- the stage holds one track at full size, the list beside it picks it -->
+      <div class="manifest__stage">
+        <aside class="mstage" id="manifestStage">
+          <img class="mstage__glow" data-stage="glow" src="data:," alt="" aria-hidden="true" />
+          <span class="mstage__art"><img data-stage="cover" src="data:," alt="" /></span>
+          <div class="mstage__txt">
+            <p class="mstage__label"><i></i><span data-stage="label"></span></p>
+            <h3 class="mstage__title" data-stage="title"></h3>
+            <p class="mstage__artist" data-stage="artist"></p>
+            <dl class="mstage__facts" data-stage="facts">
+              <div><dt>Album</dt><dd data-stage="album"></dd></div>
+              <div><dt>Released</dt><dd data-stage="date"></dd></div>
+              <div><dt>Length</dt><dd data-stage="length"></dd></div>
+            </dl>
+            <a class="mstage__open" data-stage="open" target="_blank" rel="noopener" hidden>Open on Spotify ↗</a>
+          </div>
+        </aside>
+
+        <div class="mbox">
+          <div class="mbox__head">
+            <h3>Tracks <b data-col-count="songs">0</b></h3>
+            <div class="msort" role="group" aria-label="Sort tracks">
+              <button type="button" data-sort="date" aria-pressed="true">Newest</button>
+              <button type="button" data-sort="artist" aria-pressed="false">Artist</button>
+              <button type="button" data-sort="title" aria-pressed="false">A–Z</button>
+            </div>
+          </div>
           <ul class="manifest__list" id="manifestList"></ul>
         </div>
-
-        <div class="mbox mbox--albums">
-          <h3 class="mbox__head mono">
-            <span class="mbox__ix">02</span>
-            <span class="mbox__name">ALBUMS</span>
-            <span class="mbox__jp" lang="ja">アルバム</span>
-            <b data-col-count="albums">0</b>
-          </h3>
-          <ul class="mtiles" id="manifestAlbums"></ul>
-        </div>
-
-        <div class="mbox mbox--artists">
-          <h3 class="mbox__head mono">
-            <span class="mbox__ix">03</span>
-            <span class="mbox__name">ARTISTS</span>
-            <span class="mbox__jp" lang="ja">アーティスト</span>
-            <b data-col-count="artists">0</b>
-          </h3>
-          <ul class="mfaces" id="manifestArtists"></ul>
-        </div>
       </div>
 
-      <div class="manifest__foot mono small">
-        <span class="dim">SRC <b>SPOTIFY · ROTATION</b></span>
-        <span class="dim">CLICK A TRACK TO JUMP · ESC TO CLOSE</span>
+      <div class="mbox mbox--shelf">
+        <div class="mbox__head"><h3>Albums <b data-col-count="albums">0</b></h3></div>
+        <ul class="mtiles" id="manifestAlbums"></ul>
+      </div>
+
+      <div class="mbox mbox--shelf">
+        <div class="mbox__head"><h3>Artists <b data-col-count="artists">0</b></h3></div>
+        <ul class="mfaces" id="manifestArtists"></ul>
       </div>
     </div>
   </div>
@@ -449,7 +439,7 @@
   <p class="foot__legal"><a href="legal.html">Impressum · Datenschutz</a> <span><a href="https://status.lucya.systems">Status</a> · <a href="classic.html">The old site</a> is still around.</span></p>
 </footer>
 
-<script type="module" src="concept/concept.js?v=20261102-japan"></script>
+<script type="module" src="concept/concept.js?v=20261102-media"></script>
 <script type="module" src="intro/loader.js?v=20261101-lock"></script>
 </body>
 </html>
