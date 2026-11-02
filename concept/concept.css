@@ -293,21 +293,23 @@ section{ padding:clamp(88px,15vh,190px) var(--gutter); }
    up: these use the system's mincho, not the subset, and cost no font bytes */
 #wxMetric{ --jp-serif:"Yu Mincho","YuMincho","Hiragino Mincho ProN","Noto Serif CJK JP","Noto Serif JP",serif; --vermilion:#d0482f; }
 .wx__trip small{ margin-left:2px; font:600 .5em/1 var(--jp-serif); letter-spacing:.04em; color:var(--champagne); }
-.wx__road{ display:flex; flex-direction:column; gap:12px; margin-top:12px; padding-top:14px; border-top:1px solid rgba(255,255,255,.09); }
+/* one row beside the stamps, so the card stays level with the fleet next to it */
+.wx__road{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px 16px; margin-top:14px; }
 .wx__road[hidden]{ display:none; }
-.wx__season{ display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 12px; margin:0; }
-.wx__season span{ font:600 19px/1.3 var(--jp-serif); letter-spacing:.14em; color:var(--ink); }
+.wx__road .meter{ flex:0 0 100%; order:1; margin-top:0; }
+.wx__season{ display:flex; flex-direction:column; gap:1px; min-width:0; margin:0; }
+.wx__season span{ font:600 17px/1.25 var(--jp-serif); letter-spacing:.14em; color:var(--ink); }
 .wx__season em{ letter-spacing:.06em; text-transform:uppercase; }
-.stamps{ display:flex; flex-wrap:wrap; gap:8px; margin:0; padding:0; list-style:none; }
+.stamps{ display:flex; flex-wrap:wrap; gap:6px; margin:0; padding:0; list-style:none; }
 .stamps[hidden]{ display:none; }
 .seal{
-  display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:4px;
-  writing-mode:vertical-rl; white-space:nowrap; font:700 12px/1.05 var(--jp-serif); color:var(--vermilion);
+  display:flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:4px;
+  writing-mode:vertical-rl; white-space:nowrap; font:700 11.5px/1.05 var(--jp-serif); color:var(--vermilion);
   box-shadow:inset 0 0 0 1.5px var(--vermilion); rotate:-2.5deg; transition:rotate .4s var(--spring), scale .4s var(--spring);
 }
 .stamps li:nth-child(even) .seal{ rotate:2deg; }
 .stamps li:nth-child(3n) .seal{ rotate:-1deg; }
-.seal--long{ font-size:10px; letter-spacing:-.04em; }
+.seal--long{ font-size:9.5px; letter-spacing:-.04em; }
 a.seal:hover{ rotate:0deg; scale:1.08; }
 .seal.is-here{ color:#0b0b0c; background:var(--vermilion); }
 .seal.is-ahead{ color:var(--dim); box-shadow:inset 0 0 0 1px var(--faint); }
@@ -661,9 +663,11 @@ a.seal:hover{ rotate:0deg; scale:1.08; }
     background:linear-gradient(170deg,#0d0d0e 0%,#050505 60%);
     box-shadow:0 0 0 1px rgba(255,255,255,.1);
   }
-  .fleet{ grid-template-columns:repeat(3,minmax(0,1fr)); align-content:center; }
+  /* three rows, label against value: the same height as the card beside it, with nothing to pad */
+  .fleet{ grid-template-columns:minmax(0,1fr); align-content:space-between; }
+  .fleet__stat{ display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:baseline; gap:6px 16px; }
   .metrics{ grid-template-columns:minmax(0,1fr); align-content:center; }
-  .fleet__stat .meter{ margin-top:10px; }
+  .fleet__stat .meter,.fleet__stat em{ grid-column:1 / -1; margin-top:0; }
 }
 @media (min-width:1100px){
   .peek__albums{ grid-template-columns:repeat(6,minmax(0,1fr)); }
