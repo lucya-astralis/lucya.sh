@@ -29,6 +29,17 @@ const FRAME_MS = 50;            // the clouds need no more than 20 frames a seco
 const SLOW_MS = 90;             // a frame gap past this and the planet holds still
 const SCROLL_REST_MS = 180;      // no drawing until the page has held still this long
 
+// Where the star stands for a moment of the day where I am, each given as a part of the
+// day. It never comes round to the front, the words need the night side: day opens the
+// arc and swings it along the limb, night narrows it until the lights carry the world.
+const sunAt = ({ now, rise, set }) => {
+  const up = now >= rise && now < set;
+  const p = ((now - (up ? rise : set) + 1) % 1) / (up ? set - rise : 1 - (set - rise));
+  const height = Math.sin(Math.PI * p) * (up ? 1 : -1);   // 1 at noon, -1 at midnight
+  const along = up ? 2 * p - 1 : 1 - 2 * p;               // dawn at the left of the limb, dusk at the right
+  return [along * 0.72, -0.5 - height * 0.22, -0.66 + height * 0.26];
+};
+
 // seen from far enough out to show the curve, its top where --horizon says in concept.css
 const place = (w, h) => {
   const r = Math.max(w * 1.15, h * 0.8);
@@ -49,6 +60,7 @@ export function startPlanet(hero, canvas, reduced) {
   const dpr = Math.min(window.devicePixelRatio || 1, matchMedia('(pointer: coarse)').matches ? 1.25 : 1.5);
   let W = 0, H = 0, ready = false, shown = false, seen = true, moving = !reduced;
   let clock = 0;   // its own time: it only passes while the planet is on show, so it never has to catch up
+  let sun = SUN, goal = SUN, placed = false;   // the drawn render's light until the weather says where I am
 
   planet.define('prime', { kind: 'terrestrial', maps: MAPS, flat: [5 / 255, 14 / 255, 33 / 255], cloud: true, frame: FRAME, atm: { halo: 0.42 } });
 
@@ -57,7 +69,7 @@ export function startPlanet(hero, canvas, reduced) {
     const { cx, cy, r } = place(W, H);
     const spin = (seconds / DAY_S) * Math.PI * 2;
     planet.draw([{
-      id: 'prime', cx: cx * dpr, cy: cy * dpr, r: r * dpr, sun: SUN, toBody: faceMatrix(...SEIKI_TO, ROLL, spin), dpr,
+      id: 'prime', cx: cx * dpr, cy: cy * dpr, r: r * dpr, sun, toBody: faceMatrix(...SEIKI_TO, ROLL, spin), dpr,
     }], seconds);
   };
 
@@ -81,6 +93,7 @@ export function startPlanet(hero, canvas, reduced) {
     if (last && ++count > 6 && now - last > SLOW_MS && ++late > 8) moving = false;
     if (last) clock += (now - last) / 1000;
     last = now;
+    sun = sun.map((v, i) => v + (goal[i] - v) * 0.04);
     draw(clock);
   }
 
@@ -101,5 +114,15 @@ export function startPlanet(hero, canvas, reduced) {
 
   new IntersectionObserver(([entry]) => { seen = entry.isIntersecting; }).observe(hero);
 
-  return { show() { shown = true; rise(); } };
+  return {
+    show() { shown = true; rise(); },
+    // on show it eases there; unseen or holding still it simply is there, once
+    sky(moment) {
+      goal = sunAt(moment);
+      if (placed || (moving && canvas.classList.contains('is-risen'))) return;
+      placed = true;
+      sun = goal;
+      draw(clock);
+    },
+  };
 }

@@ -288,6 +288,38 @@ export function initSystems(statusFeed, scrambleTo, { fullSheet = false } = {}) 
     });
 
     const unitEls = Array.from(document.querySelectorAll('#rackExt .ru, #rackUnits .ru'));
+    unitEls.forEach((el, i) => el.style.setProperty('--i', i));   // they wake from the top down
+
+    // ---- drive lights ----
+    // Each poll writes the next stretch of flicker for every host that reported in, more
+    // of it the busier the host. No fresh figure, no flicker: the lamp just stands.
+    const flicker = (load, span) => {
+      const marks = Array.from({ length: 6 + Math.round(load * 18) }, () => Math.random() * (span - 300)).sort((a, b) => a - b);
+      const frames = [{ offset: 0, opacity: 1 }];
+      let free = 0;
+      for (const at of marks) {
+        if (at < free) continue;
+        for (const [dt, opacity] of [[0, 1], [30, .25], [90, 1], [130, .4], [190, 1]]) frames.push({ offset: (at + dt) / span, opacity });
+        free = at + 190;
+      }
+      frames.push({ offset: 1, opacity: 1 });
+      return frames;
+    };
+    if (!window.LUCYA_LITE && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const running = new Map();
+      statusFeed.subscribe((data) => {
+        const fresh = data && Date.now() / 1000 - Number(data.ts || 0) <= 120;
+        const hosts = (fresh && data.hosts) || [];
+        unitEls.forEach(el => {
+          running.get(el)?.cancel();
+          running.delete(el);
+          const h = hosts.find(x => x?.name === el.dataset.unit);
+          if (String(h?.state).toLowerCase() !== 'up') return;
+          const load = Math.min(1, (Number(h.cpu_pct) || 0) / 100);
+          running.set(el, el.querySelector('.ru__led').animate(flicker(load, statusFeed.every), { duration: statusFeed.every }));
+        });
+      });
+    }
 
     const countEl = document.getElementById('rackCount');
     if (countEl) {
