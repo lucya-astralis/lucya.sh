@@ -454,10 +454,11 @@ a.seal:hover{ rotate:0deg; scale:1.08; }
 .deck img:hover{ transform:translate(-50%,-52%) rotate(calc(var(--r) * -1)) scale(1.07); }
 
 .spotify__jp{ margin-top:12px; font-family:"Noto Sans JP",sans-serif; color:var(--dim); letter-spacing:.2em; }
-.spotify__deck{ display:grid; grid-template-columns:minmax(0,min(540px,50%)) minmax(0,1fr); gap:clamp(20px,3vw,48px); margin-top:clamp(36px,6vh,72px); }
+.spotify__deck{ display:grid; grid-template-columns:minmax(0,1.08fr) minmax(0,1fr); gap:clamp(20px,3vw,48px); margin-top:clamp(36px,6vh,72px); }
 .spotify__card{
-  display:grid; grid-template-columns:clamp(110px,11vw,160px) minmax(0,1fr); gap:clamp(16px,1.8vw,26px); align-items:center;
-  padding:clamp(14px,1.4vw,18px);
+  position:relative; isolation:isolate; overflow:hidden;
+  display:grid; grid-template-columns:minmax(0,42%) minmax(0,1fr); gap:clamp(18px,2vw,28px); align-items:stretch;
+  padding:clamp(14px,1.5vw,20px);
   border-radius:24px;
   background:linear-gradient(170deg,#0d0d0e 0%,#050505 60%);
   box-shadow:0 0 0 1px rgba(255,255,255,.1);
@@ -465,36 +466,60 @@ a.seal:hover{ rotate:0deg; scale:1.08; }
   transition:box-shadow .5s var(--spring);
 }
 .spotify__card:hover{ box-shadow:0 0 0 1px rgba(255,255,255,.26); }
-.spotify__cover{ display:block; aspect-ratio:1; border-radius:14px; overflow:hidden; background:#111; transition:opacity .3s var(--spring); }
-.spotify__cover img{ display:block; width:100%; height:100%; object-fit:cover; }
-.spotify__meta{ min-width:0; transition:opacity .3s var(--spring); }
-.spotify__cover.is-swap,.spotify__meta.is-swap,.spotify__meta.is-swap > *{ opacity:0; }
+/* the cover's colour in the card; still images, so only their opacity ever moves */
+.spotify__aura{ position:absolute; inset:-30%; z-index:-1; opacity:.2; pointer-events:none; transition:opacity .8s var(--calm); }
+.spotify__card.is-live .spotify__aura{ opacity:.34; }
+html.lite .spotify__aura{ display:none; }
+.spotify__aura img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:blur(56px) saturate(1.25); }
+#spotifyAuraNext,#spotifyCoverNext{ opacity:0; }
+.spotify__cover{ position:relative; display:block; aspect-ratio:1; align-self:center; border-radius:14px; overflow:hidden; background:#111; box-shadow:0 10px 30px rgba(0,0,0,.4); }
+.spotify__cover img{ position:absolute; inset:0; display:block; width:100%; height:100%; object-fit:cover; }
+.spotify__meta{ display:flex; flex-direction:column; min-width:0; }
 .spotify__label,.spotify__foot,.spotify__timeline{ display:flex; align-items:center; justify-content:space-between; gap:14px; font:400 11px/1.4 "JetBrains Mono",monospace; color:var(--dim); }
 .spotify__label-name{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.spotify__counter{ flex:none; }
-.spotify__track{ margin:12px 0 4px; font-size:clamp(20px,2vw,30px); line-height:1.04; font-weight:500; letter-spacing:-.02em; overflow-wrap:anywhere; }
-.spotify__artist{ color:var(--dim); font-size:15px; }
-.spotify__timeline{ margin:14px 0 10px; }
+.spotify__counter{ flex:none; font-variant-numeric:tabular-nums; }
+.spotify__track{ margin:14px 0 6px; font-size:clamp(24px,2.7vw,40px); line-height:1.04; font-weight:500; letter-spacing:-.02em; overflow-wrap:anywhere; }
+.spotify__artist{ color:rgba(236,235,231,.74); font-size:16px; line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.spotify__source{ min-height:1.45em; margin-top:6px; font:400 11px/1.45 "JetBrains Mono",monospace; color:var(--dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+/* pinned to the bottom, level with the cover's lower edge */
+.spotify__timeline{ gap:10px; margin:auto 0 12px; padding-top:14px; }
+.spotify__step{ flex:none; width:28px; height:28px; margin:-6px -6px; padding:0; border:0; border-radius:50%; background:none; color:var(--dim); font:400 18px/1 "JetBrains Mono",monospace; cursor:pointer; transition:color .2s,background .2s; }
+.spotify__step:hover{ background:rgba(255,255,255,.1); color:var(--ink); }
+/* the rotation has no clock to show, a live track has no steps to take */
+.spotify__card:not(.is-live) .spotify__time,.spotify__card.is-live .spotify__step{ display:none; }
+.spotify__links{ display:inline-flex; gap:16px; }
 .peek{ min-width:0; cursor:pointer; }
 .peek__head{ display:flex; justify-content:space-between; margin:0 0 10px; font:400 11px/1.4 "JetBrains Mono",monospace; letter-spacing:.1em; color:var(--dim); }
 .peek__head b{ font-weight:400; color:var(--ink); }
 .peek__albums,.peek__artists{ display:grid; gap:10px; margin:0; padding:0; list-style:none; }
-.peek__albums{ grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px 10px; }
+.peek__albums{ grid-template-columns:repeat(6,minmax(0,1fr)); gap:12px 10px; }
 .peek__artists{ grid-template-columns:repeat(8,minmax(0,1fr)); }
-.spotify__main .peek{ margin-top:22px; }
-.spotify__side{ display:grid; grid-template-columns:minmax(0,1fr); gap:22px; align-content:start; min-width:0; }
-/* covers only, one row: the name is on the cover anyway */
-.games__list{ display:grid; grid-template-columns:repeat(9,minmax(0,1fr)); gap:8px; margin:0; padding:0; list-style:none; }
-.games__list img{ display:block; width:100%; height:auto; aspect-ratio:170 / 256; object-fit:cover; border-radius:6px; background:#111; transition:transform .5s var(--spring); }
-.games__list img:hover{ transform:translateY(-3px); }
+/* top and bottom edges level with the player beside it */
+.spotify__side{ display:grid; grid-template-columns:minmax(0,1fr); gap:22px; align-content:space-between; min-width:0; }
 .peek .mface{ width:auto; min-width:0; }
 .peek .mface__img{ width:min(100%,62px); height:auto; aspect-ratio:1; }
 .peek .mtile__title,.peek .mface__name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .peek .mtile__year,.peek .mtile__artist,.peek .mface__tag{ display:none; }
+/* one row of nine; a longer shelf scrolls instead of growing the page */
+.shelves{ --gap:12px; margin-top:clamp(32px,5vh,56px); }
+.shelves__tabs{ margin-bottom:14px; font:400 11px/1.4 "JetBrains Mono",monospace; }
+.shelves__tabs button span{ margin-left:3px; opacity:.6; }
+.shelves__tabs button:disabled{ cursor:default; opacity:.55; }
+.shelves__tabs button:disabled:hover{ color:var(--dim); }
+.posters{ display:grid; grid-auto-flow:column; grid-auto-columns:calc((100% - 8 * var(--gap)) / 9); gap:var(--gap); margin:0; padding:4px 0 2px; list-style:none; overflow-x:auto; scroll-snap-type:x proximity; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.2) transparent; }
+.posters[hidden]{ display:none; }
+.poster{ min-width:0; scroll-snap-align:start; }
+.poster img{ display:block; width:100%; height:auto; aspect-ratio:2 / 3; object-fit:cover; border-radius:10px; background:#111; transition:transform .5s var(--spring); }
+.poster:hover img{ transform:translateY(-3px); }
+.poster__title{ display:block; margin-top:8px; overflow:hidden; font-size:13px; line-height:1.25; color:var(--dim); text-overflow:ellipsis; white-space:nowrap; transition:color .2s; }
+.poster:hover .poster__title{ color:var(--ink); }
 .spotify__dots{ display:flex; flex:1; gap:4px; min-width:0; }
 .spotify__dots[hidden]{ display:none; }
-.spotify__dots > *{ flex:1; height:2px; min-width:0; padding:0; border:0; background:rgba(255,255,255,.14); cursor:pointer; }
-.spotify__dots > .is-active,.spotify__dots > .is-played{ background:var(--ink); }
+.spotify__dots > *{ position:relative; flex:1; height:2px; min-width:0; padding:0; border:0; background:rgba(255,255,255,.14); cursor:pointer; }
+/* the current segment fills over the track's turn */
+.spotify__dots > *::after{ content:""; position:absolute; inset:0; background:var(--ink); transform:scaleX(0); transform-origin:left; }
+.spotify__dots > .is-played::after{ transform:none; }
+.spotify__dots > .is-active::after{ animation:live-tick var(--spotify-interval,5s) linear forwards; }
 .spotify__progress{ position:relative; flex:1; height:2px; background:rgba(255,255,255,.14); }
 .spotify__progress[hidden]{ display:none; }
 .spotify__progress i{ position:absolute; inset:0; background:var(--ink); transform:scaleX(0); transform-origin:left; }
@@ -502,7 +527,7 @@ a.seal:hover{ rotate:0deg; scale:1.08; }
 @keyframes live-tick{ to{ transform:scaleX(1); } }
 .spotify__open{ white-space:nowrap; color:var(--ink); text-decoration:underline; text-underline-offset:3px; }
 .spotify__open[hidden]{ display:none; }
-.spotify__pill{ display:inline-flex; align-items:center; gap:8px; }
+.spotify__pill{ display:inline-flex; align-items:center; gap:8px; text-transform:uppercase; letter-spacing:.06em; }
 .spotify__pill i{ width:6px; height:6px; border-radius:50%; background:var(--champagne); }
 /* the label says what is on; "live" itself only once, at the pill */
 .spotify__card.is-live .spotify__counter{ display:none; }
@@ -510,51 +535,104 @@ a.seal:hover{ rotate:0deg; scale:1.08; }
 
 .manifest{ position:fixed; inset:0; z-index:35; display:grid; place-items:center; padding:clamp(12px,3vw,40px); }
 .manifest[hidden]{ display:none; }
-.manifest__backdrop{ position:absolute; inset:0; background:rgba(0,0,0,.72); }
+.manifest__backdrop{ position:absolute; inset:0; background:rgba(0,0,0,.76); }
 .manifest__sheet{
+  --pad:clamp(18px,2.8vw,38px);
   position:relative;
   width:min(1180px,100%); max-height:100%;
-  overflow:auto; overscroll-behavior:contain;
-  padding:clamp(18px,2.6vw,34px);
+  overflow:hidden auto; overscroll-behavior:contain;
+  padding:var(--pad);
   border-radius:24px;
-  background:#070707;
+  background:linear-gradient(170deg,#0d0d0e 0%,#050505 60%);
   box-shadow:0 0 0 1px rgba(255,255,255,.12);
   scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.2) transparent;
 }
-.manifest__doc,.manifest__foot{ display:flex; flex-wrap:wrap; gap:6px 18px; align-items:center; font:400 10px/1.5 "JetBrains Mono",monospace; letter-spacing:.1em; color:var(--dim); }
-.manifest__doc b,.manifest__foot b{ font-weight:400; color:var(--ink); }
-.manifest__close{ margin-left:auto; width:32px; height:32px; border:0; border-radius:50%; background:rgba(255,255,255,.08); color:var(--ink); cursor:pointer; }
-.manifest__head{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 20px; margin:22px 0; }
-.section__slug{ display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 12px; }
-.section__slug .ix{ font:400 11px/1 "JetBrains Mono",monospace; color:var(--dim); }
-.section__slug .name{ font-size:clamp(24px,3vw,38px); font-weight:500; letter-spacing:-.015em; }
-.section__slug .jp{ color:var(--dim); font-size:13px; }
-.manifest__head .mono{ font:400 11px/1.5 "JetBrains Mono",monospace; color:var(--dim); }
-.manifest__bento{ display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:14px; }
-.mbox{ min-width:0; padding:14px; border-radius:16px; box-shadow:inset 0 0 0 1px rgba(255,255,255,.08); }
-.mbox--tracks{ grid-row:span 2; }
-.mbox__head{ display:flex; gap:10px; align-items:baseline; margin:0 0 12px; font:400 11px/1.4 "JetBrains Mono",monospace; color:var(--dim); }
-.mbox__head b{ margin-left:auto; font-weight:400; color:var(--ink); }
+/* on the content's right edge, level with the sort control below it */
+.manifest__close{ position:absolute; top:calc(var(--pad) + 8px); right:var(--pad); z-index:3; display:grid; place-items:center; width:30px; height:30px; padding:0; border:0; border-radius:50%; background:none; box-shadow:inset 0 0 0 1px var(--faint); color:var(--dim); font-size:12px; cursor:pointer; transition:color .2s,background .2s; }
+.manifest__close:hover{ background:var(--ink); color:#000; }
+.manifest__head{ display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:6px 24px; margin:0 0 clamp(22px,3.6vh,34px); padding-right:46px; }
+.manifest__head h2{ display:inline; font-size:clamp(30px,3.4vw,46px); }
+.manifest__head .spotify__jp{ display:inline; margin:0 0 0 12px; font-size:13px; }
+.manifest__counts{ font:400 11px/1.5 "JetBrains Mono",monospace; letter-spacing:.1em; color:var(--dim); }
+
+.manifest__stage{ display:grid; grid-template-columns:minmax(0,320px) minmax(0,1fr); gap:clamp(24px,3.4vw,48px); align-items:start; }
+.mstage{ position:sticky; top:0; min-width:0; isolation:isolate; }
+/* the cover's own colour behind it; a still image, so it costs one raster per track */
+.mstage__glow{ position:absolute; top:-6%; left:-6%; z-index:-1; width:112%; aspect-ratio:1; object-fit:cover; filter:blur(60px) saturate(1.3); opacity:.3; pointer-events:none; }
+html.lite .mstage__glow{ display:none; }
+.mstage__art{ display:block; width:min(100%,44vh); aspect-ratio:1; border-radius:16px; overflow:hidden; background:#111; box-shadow:0 0 0 1px rgba(255,255,255,.08),0 18px 44px rgba(0,0,0,.45); }
+.mstage__art img{ display:block; width:100%; height:100%; object-fit:cover; }
+.mstage__label{ display:flex; align-items:center; gap:8px; margin-top:18px; font:400 11px/1.4 "JetBrains Mono",monospace; letter-spacing:.1em; color:var(--dim); }
+.mstage__label i{ flex:none; width:6px; height:6px; border-radius:50%; background:var(--champagne); }
+.mstage.is-live .mstage__label i{ background:#5fd38a; box-shadow:0 0 7px rgba(95,211,138,.7); }
+.mstage__title{ margin:8px 0 4px; font-size:clamp(22px,2.4vw,32px); line-height:1.08; font-weight:500; letter-spacing:-.02em; overflow-wrap:anywhere; }
+.mstage__artist{ color:var(--dim); font-size:15px; line-height:1.35; }
+.mstage__facts{ margin:14px 0 0; font:400 11px/1.45 "JetBrains Mono",monospace; }
+.mstage__facts[hidden]{ display:none; }
+.mstage__facts div{ display:grid; grid-template-columns:72px minmax(0,1fr); gap:10px; padding:6px 0; border-top:1px solid rgba(255,255,255,.08); }
+.mstage__facts dt{ color:var(--dim); }
+.mstage__facts dd{ margin:0; overflow-wrap:anywhere; }
+.mstage__open{ display:inline-block; margin-top:12px; padding:8px 14px; border-radius:999px; font:400 11px/1.4 "JetBrains Mono",monospace; white-space:nowrap; box-shadow:inset 0 0 0 1px rgba(255,255,255,.16); transition:background .2s,color .2s; }
+.mstage__open:hover{ background:var(--ink); color:#000; }
+.mstage__open[hidden]{ display:none; }
+
+.mbox{ min-width:0; }
+.mbox--shelf{ margin-top:clamp(28px,4.4vh,44px); padding-top:clamp(18px,2.6vh,24px); border-top:1px solid rgba(255,255,255,.08); }
+.mbox__head{ display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:30px; margin:0 0 12px; font:400 11px/1.4 "JetBrains Mono",monospace; letter-spacing:.1em; color:var(--dim); }
+.mbox__head h3{ font:inherit; letter-spacing:inherit; }
+.mbox__head b{ margin-left:8px; font-weight:400; color:var(--ink); }
+.msort{ display:inline-flex; gap:2px; padding:2px; border-radius:999px; box-shadow:inset 0 0 0 1px var(--faint); }
+.msort button{ padding:5px 11px; border:0; border-radius:999px; background:none; color:var(--dim); font:inherit; letter-spacing:.04em; cursor:pointer; transition:color .2s,background .2s; }
+.msort button:hover{ color:var(--ink); }
+.msort button[aria-pressed="true"],.msort button[aria-selected="true"]{ background:var(--ink); color:#000; }
+
 .manifest__list,.mtiles,.mfaces{ margin:0; padding:0; list-style:none; }
 .manifest__item{ border-top:1px solid rgba(255,255,255,.06); }
-.manifest__row{ display:flex; align-items:center; gap:12px; width:100%; padding:7px 4px; border:0; border-radius:8px; background:none; color:inherit; font:inherit; text-align:left; cursor:pointer; }
-.manifest__row:hover,.manifest__row.is-active{ background:rgba(255,255,255,.06); }
-.manifest__thumb{ flex:none; width:38px; height:38px; border-radius:6px; overflow:hidden; }
+.manifest__item:first-child{ border-top:0; }
+.manifest__row{ display:grid; grid-template-columns:22px 42px minmax(0,1.3fr) minmax(0,1fr) 38px 34px; align-items:center; gap:12px; width:100%; padding:6px 8px; border:0; border-radius:10px; background:none; color:inherit; font:inherit; text-align:left; cursor:pointer; transition:background .16s; }
+.manifest__row:hover{ background:rgba(255,255,255,.05); }
+.manifest__row.is-active{ background:rgba(255,255,255,.09); }
+.manifest__idx,.manifest__year,.manifest__length{ font:400 11px/1.4 "JetBrains Mono",monospace; color:var(--dim); font-variant-numeric:tabular-nums; }
+.manifest__year,.manifest__length{ text-align:right; }
+.manifest__row.is-active .manifest__idx{ color:var(--ink); }
+.manifest__thumb{ display:block; width:42px; height:42px; border-radius:7px; overflow:hidden; background:#111; }
 .manifest__thumb img{ display:block; width:100%; height:100%; object-fit:cover; }
-.manifest__title{ font-size:14px; }
-.manifest__artist,.manifest__status{ font:400 11px/1.4 "JetBrains Mono",monospace; color:var(--dim); }
-.manifest__artist{ margin-left:10px; }
-.manifest__status{ margin-left:auto; }
-.manifest__foot{ justify-content:space-between; margin-top:16px; }
-.mtiles{ display:grid; grid-template-columns:repeat(auto-fill,minmax(112px,1fr)); gap:10px; }
-.mtile img{ display:block; width:100%; aspect-ratio:1; object-fit:cover; border-radius:8px; }
-.mtile__title{ display:block; margin-top:6px; font-size:13px; line-height:1.25; }
-.mtile__artist,.mface__tag{ display:block; font:400 10px/1.4 "JetBrains Mono",monospace; color:var(--dim); }
-.mfaces{ display:flex; flex-wrap:wrap; gap:12px; }
-.mface{ width:86px; text-align:center; }
-.mface__img{ display:block; width:66px; height:66px; margin:0 auto 6px; border-radius:50%; overflow:hidden; }
+.manifest__txt{ min-width:0; }
+.manifest__title,.manifest__artist,.manifest__album{ display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.manifest__title{ font-size:15px; line-height:1.3; }
+.manifest__artist{ color:var(--dim); font-size:12.5px; line-height:1.35; }
+.manifest__album{ color:var(--dim); font-size:13px; }
+
+.mlink{ display:block; }
+.mtiles{ display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:16px 14px; }
+.mtile img{ display:block; width:100%; aspect-ratio:1; object-fit:cover; border-radius:10px; background:#111; transition:transform .5s var(--spring); }
+.mlink:hover img{ transform:translateY(-3px); }
+.mtile__title{ display:block; margin-top:8px; font-size:13px; line-height:1.25; }
+.mtile__artist,.mface__tag{ display:block; margin-top:2px; font:400 10px/1.4 "JetBrains Mono",monospace; color:var(--dim); }
+.mfaces{ display:grid; grid-template-columns:repeat(8,minmax(0,1fr)); gap:16px 10px; }
+.mface{ min-width:0; text-align:center; }
+.mface__img{ display:block; width:min(100%,84px); aspect-ratio:1; margin:0 auto 8px; border-radius:50%; overflow:hidden; background:#111; }
 .mface__img img{ display:block; width:100%; height:100%; object-fit:cover; }
-.mface__name{ display:block; font-size:12px; line-height:1.25; }
+.mface__name{ display:block; font-size:13px; line-height:1.25; }
+
+@media (prefers-reduced-motion:no-preference){
+  html:not(.lite) .manifest.is-open .manifest__backdrop{ animation:sheet-fade .24s ease; }
+  html:not(.lite) .manifest.is-open .manifest__sheet{ animation:sheet-rise .5s var(--spring); }
+  html:not(.lite) .manifest.is-open:not(.is-sorted) :is(.mstage,.manifest__item,.mtile,.mface){ animation:sheet-fade .36s var(--calm) var(--d,0s) backwards; }
+  html:not(.lite) .manifest.is-closing .manifest__backdrop{ animation:sheet-fade .16s ease reverse forwards; }
+  html:not(.lite) .manifest.is-closing .manifest__sheet{ animation:sheet-rise .17s ease reverse forwards; }
+}
+@media (prefers-reduced-motion:no-preference){
+  /* what changes when a track goes live or stops, and a tab's posters coming in one by one */
+  html:not(.lite) :is(.spotify__dots,.spotify__progress,.spotify__time,.spotify__step){ animation:sheet-fade .5s var(--calm); }
+  html:not(.lite) .poster{ animation:poster-in .55s var(--spring) calc(var(--i,0) * 32ms) backwards; }
+}
+@media (prefers-reduced-motion:reduce){
+  .spotify__dots > .is-active::after{ animation:none; transform:none; }
+}
+@keyframes poster-in{ from{ opacity:0; transform:translateY(14px); } }
+@keyframes sheet-fade{ from{ opacity:0; } }
+@keyframes sheet-rise{ from{ opacity:0; transform:translateY(18px) scale(.985); } }
 
 .wall{
   display:grid; grid-template-columns:repeat(auto-fill,88px); justify-content:space-between; gap:12px 10px;
@@ -669,19 +747,35 @@ a.seal:hover{ rotate:0deg; scale:1.08; }
   .metrics{ grid-template-columns:minmax(0,1fr); align-content:center; }
   .fleet__stat .meter,.fleet__stat em{ grid-column:1 / -1; margin-top:0; }
 }
-@media (min-width:1100px){
-  .peek__albums{ grid-template-columns:repeat(6,minmax(0,1fr)); }
+@media (max-width:1100px){
+  .manifest__row{ grid-template-columns:22px 42px minmax(0,1fr) 38px 34px; }
+  .manifest__album{ display:none; }
 }
 @media (max-width:900px){
   .realm::after{ background:linear-gradient(to top,rgba(5,5,5,.94) 40%,rgba(5,5,5,.4)); }
-  .spotify__card.is-live .spotify__hint{ display:none; }
   .spotify__deck{ grid-template-columns:minmax(0,1fr); }
-  .peek{ display:none; }
-  .spotify__side{ gap:0; }
-  .games__list{ grid-auto-flow:column; grid-template-columns:none; grid-auto-columns:72px; overflow-x:auto; margin-inline:calc(var(--gutter) * -1); padding-inline:var(--gutter); scrollbar-width:none; }
-  .games__list::-webkit-scrollbar{ display:none; }
-  .manifest__bento{ grid-template-columns:minmax(0,1fr); }
-  .mbox--tracks{ grid-row:auto; }
+  .spotify__side{ display:none; }
+  .posters{ grid-auto-columns:112px; margin-inline:calc(var(--gutter) * -1); padding-inline:var(--gutter); scroll-padding-inline:var(--gutter); scrollbar-width:none; }
+  .posters::-webkit-scrollbar{ display:none; }
+  /* no backdrop to speak of on a small screen, so it stays reachable while the sheet scrolls */
+  .manifest__close{ position:sticky; top:12px; right:auto; display:grid; margin:0 0 -30px auto; background:#1c1c1c; box-shadow:none; color:var(--ink); }
+  /* the stage folds into a strip that stays above the list while it scrolls */
+  .manifest__stage{ grid-template-columns:minmax(0,1fr); gap:14px; }
+  .mstage{ z-index:2; display:grid; grid-template-columns:92px minmax(0,1fr); gap:14px; align-items:center; margin:0 calc(var(--pad) * -1); padding:12px var(--pad); background:#080808; box-shadow:0 1px 0 rgba(255,255,255,.08); }
+  .mstage__glow{ display:none; }
+  .mstage__art{ width:100%; border-radius:10px; box-shadow:0 0 0 1px rgba(255,255,255,.08); }
+  .mstage__txt{ min-width:0; padding-right:36px; }
+  .mstage__label{ margin-top:0; }
+  .mstage__title{ margin:4px 0 2px; font-size:19px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; overflow-wrap:normal; }
+  .mstage__artist{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; }
+  .mstage__facts{ margin-top:4px; }
+  .mstage__facts dt,.mstage__facts div:not(:first-child){ display:none; }
+  .mstage__facts div{ display:block; padding:0; border:0; }
+  .mstage__facts dd{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--dim); }
+  .mstage__open{ margin-top:6px; padding:0; box-shadow:none; text-decoration:underline; text-underline-offset:3px; }
+  .mstage__open:hover{ background:none; color:var(--ink); }
+  .mtiles{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .mfaces{ grid-template-columns:repeat(4,minmax(0,1fr)); }
   .telemetry{ grid-template-columns:minmax(0,1fr); }
   .metrics{ grid-template-columns:repeat(2,minmax(0,1fr)); }
   .fleet{ grid-template-columns:repeat(2,minmax(0,1fr)); }
@@ -705,18 +799,24 @@ a.seal:hover{ rotate:0deg; scale:1.08; }
   .house--flip img{ order:0; }
 }
 @media (max-width:560px){
+  .manifest{ padding:0; }
+  .manifest__sheet{ width:100%; height:100%; border-radius:0; padding-bottom:max(var(--pad),env(safe-area-inset-bottom)); }
+  .manifest__row{ grid-template-columns:20px 42px minmax(0,1fr) 36px; gap:10px; padding-inline:4px; }
+  .manifest__length{ display:none; }
   /* the cover keeps the title company; everything that needs the width gets all of it */
   .spotify__card{
-    grid-template-columns:96px minmax(0,1fr); grid-template-rows:auto auto 1fr auto auto;
+    grid-template-columns:104px minmax(0,1fr); grid-template-rows:auto auto auto 1fr auto auto;
     gap:0 14px; padding:14px;
   }
   .spotify__meta{ display:contents; }
-  .spotify__meta > *{ transition:opacity .3s var(--spring); }
-  .spotify__cover{ grid-row:1 / 4; }
-  .spotify__label,.spotify__track,.spotify__artist{ grid-column:2; }
-  .spotify__track{ margin:8px 0 4px; font-size:21px; }
+  .spotify__cover{ grid-row:1 / 5; align-self:start; }
+  .spotify__label,.spotify__track,.spotify__artist,.spotify__source{ grid-column:2; }
+  /* two lines held open, so a long title doesn't move the page on every turn */
+  .spotify__track{ min-height:2.08em; margin:8px 0 4px; font-size:21px; }
+  .spotify__artist{ font-size:14px; }
+  .spotify__source{ margin-top:2px; }
   .spotify__timeline,.spotify__foot{ grid-column:1 / -1; }
-  .spotify__timeline{ margin:18px 0 12px; }
+  .spotify__timeline{ margin:14px 0 12px; padding-top:0; }
   .spotify__dots{ gap:5px; }
   .wall{ justify-content:center; gap:10px 8px; }
   /* two panels with nothing left over: the machines, then the rest, each row even */
@@ -733,9 +833,8 @@ a.seal:hover{ rotate:0deg; scale:1.08; }
   #wxMetric b{ font-size:32px; }
   .metric,.fleet__stat{ justify-content:flex-start; }
   /* a 2px line in an 18px target */
-  .spotify__dots > *{ --dot:rgba(255,255,255,.14); height:18px; margin-block:-8px; }
-  .spotify__dots > .is-active,.spotify__dots > .is-played{ --dot:var(--ink); }
-  .spotify__dots > *,.spotify__dots > .is-active,.spotify__dots > .is-played{ background:linear-gradient(var(--dot),var(--dot)) center / 100% 2px no-repeat; }
+  .spotify__dots > *{ height:18px; margin-block:-8px; background:linear-gradient(rgba(255,255,255,.14),rgba(255,255,255,.14)) center / 100% 2px no-repeat; }
+  .spotify__dots > *::after{ inset:8px 0; }
 }
 /* the numbers come in one after another, not as a block */
 .fleet > *,.metrics > *{ opacity:0; translate:0 16px; transition:opacity .7s ease var(--stagger,0s), translate .8s var(--calm) var(--stagger,0s); }

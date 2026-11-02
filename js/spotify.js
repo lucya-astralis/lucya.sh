@@ -1,52 +1,10 @@
 import { pad2, escHtml } from './utils.js';
+import { songs, albums, artists } from './music-data.js?v=20261102-library';
 
 export function initSpotify(scrambleTo) {
   // ---------- SPOTIFY TOP SONGS ROTATION -------------------------
   const spotifyCard = document.getElementById('spotifyCard');
   if (spotifyCard) {
-    const SONG_DIR = 'images/spotify_widget/songs/';
-    const ALBUM_DIR = 'images/spotify_widget/albums/';
-    const ARTIST_DIR = 'images/spotify_widget/artists/';
-
-    const songs = [
-      { title: "Rebirth", artist: "SHIMA", cover: SONG_DIR + "rebirth.jpeg" },
-      { title: "Infohazard", artist: "Ninajirachi", cover: SONG_DIR + "cover4.webp" },
-      { title: "Affection Addiction", artist: "VocaloKAT, Aku P", cover: SONG_DIR + "affection.jpeg" },
-      { title: "Evergreen Misery", artist: "MOTHICA", cover: SONG_DIR + "mothica.jpeg" },
-      { title: "Slide", artist: "MRJay", cover: SONG_DIR + "slide.jpeg" },
-      { title: "one last thing", artist: "vinter", cover: SONG_DIR + "vinter.jpg" },
-      { title: "Heaven", artist: "Allison Wonderland, Ninajirachi", cover: SONG_DIR + "cover1.webp" },
-      { title: "Flesh without Blood", artist: "Grimes", cover: SONG_DIR + "artangels.webp" },
-      { title: "Delicate Weapon", artist: "Grimes", cover: SONG_DIR + "CPv2.jpg" },
-      { title: "FORTUNE", artist: "SAKUREYE", cover: SONG_DIR + "fortune.jpg" },
-      { title: "Darling Game Over Love", artist: "MAIKI P", cover: SONG_DIR + "maikip.jpg" },
-      { title: "Elevate", artist: "Sub Focus", cover: SONG_DIR + "cover3.jpeg" },
-      { title: "Battery Death", artist: "Ninajirachi", cover: SONG_DIR + "cover4.webp" },
-      { title: "Ghostlight", artist: "Skeler, Veela", cover: SONG_DIR + "Ghostlight.jpeg" },
-      { title: "THE BADDEST", artist: "K/DA", cover: SONG_DIR + "the_baddest.jpg" }
-    ];
-
-    // fav albums + artists — `note` is the year badge on the album tiles.
-    // genre lines are the descriptions the artists/their labels use; see the
-    // sources noted in the commit rather than guessing new ones.
-    const albums = [
-      { title: "I Love My Computer", artist: "Ninajirachi", note: "2025", cover: ALBUM_DIR + "i_love_my_computer.webp" },
-      { title: "Escape Cycle", artist: "Darci", note: "2023", cover: ALBUM_DIR + "escapecycle.jpeg" },
-      { title: "Call for Help", artist: "Pearly Drops", note: "2020", cover: ALBUM_DIR + "callforhelp.jpeg" },
-      { title: "Miss Anthropocene", artist: "Grimes", note: "2020", cover: ALBUM_DIR + "missantropocene.jpeg" },
-      { title: "Art Angels", artist: "Grimes", note: "2015", cover: ALBUM_DIR + "artangels.webp" },
-      { title: "Hysteria", artist: "Def Leppard", note: "1987", cover: ALBUM_DIR + "hysteriy.jpeg" }
-    ];
-    const artists = [
-      { title: "Ninajirachi", artist: "girl edm · electro house", cover: ARTIST_DIR + "ninajirachi.jpeg" },
-      { title: "Grimes", artist: "art pop · synth-pop", cover: ARTIST_DIR + "grimes.jpeg" },
-      { title: "REZZ", artist: "midtempo bass", cover: ARTIST_DIR + "rezz.jpeg" },
-      { title: "Skeler", artist: "hardwave · wave", cover: ARTIST_DIR + "skeler.jpeg" },
-      { title: "Reol", artist: "j-pop · electropop", cover: ARTIST_DIR + "reol.jpeg" },
-      { title: "Exyl", artist: "electro house · glitch hop", cover: ARTIST_DIR + "exyl.jpeg" },
-      { title: "TheFatRat", artist: "glitch hop", cover: ARTIST_DIR + "thefatrat.jpeg" },
-      { title: "DARCI", artist: "wave · trap soul", cover: ARTIST_DIR + "darci.jpeg" }
-    ];
     const INTERVAL_MS = 5000;
     const coverWrap = document.getElementById('spotifyCover');
     const cover = document.getElementById('spotifyCoverImg');
@@ -61,6 +19,13 @@ export function initSpotify(scrambleTo) {
     const modeEl = document.getElementById('spotifyMode');
     const progressEl = document.getElementById('spotifyProgress');
     const sectionEl = document.getElementById('spotify');
+    // only the new site has these; classic.html keeps its fade through black
+    const coverNext = document.getElementById('spotifyCoverNext');
+    const aura = document.getElementById('spotifyAura');
+    const auraNext = document.getElementById('spotifyAuraNext');
+    const sourceEl = document.getElementById('spotifySource');
+    const openEl = document.getElementById('spotifyOpen');
+    const still = !!window.LUCYA_LITE || matchMedia('(prefers-reduced-motion: reduce)').matches;
     // section heading: "TOP SONGS" for the rotation, "NOW PLAYING" while playing
     const head = [
       [document.getElementById('spotifyHeadName'), 'Now playing'],
@@ -97,6 +62,9 @@ export function initSpotify(scrambleTo) {
     let elapsedRaf = 0;
     // the track from /nowplaying.json while something plays, else null
     let live = null;
+    // the library sheet holds the rotation still; its row, while one is chosen
+    let sheetOpen = false;
+    let picked = null;
 
     const stopElapsed = () => { if (elapsedRaf) cancelAnimationFrame(elapsedRaf); elapsedRaf = 0; };
     const startElapsed = () => {
@@ -123,6 +91,7 @@ export function initSpotify(scrambleTo) {
     let swapId = 0;
     const swap = (fn) => {
       const id = ++swapId;
+      if (coverNext) { fn(); return; }   // the art crossfades by itself, the text changes in place
       coverWrap.classList.add('is-swap');
       meta.classList.add('is-swap');
       setTimeout(() => {
@@ -133,26 +102,73 @@ export function initSpotify(scrambleTo) {
       }, 300);
     };
 
+    // the next cover fades in over the current one once it is decoded, so the
+    // card never shows an empty frame; a newer track supersedes one on its way
+    let artId = 0;
+    let artFade = [];
+    const setArt = async (src, alt) => {
+      cover.alt = alt;
+      if (!coverNext) { cover.src = src; return; }
+      const place = () => { cover.src = src; aura.src = src; };
+      if (still || cover.getAttribute('src') === 'data:,') { place(); return; }
+      const id = ++artId;
+      const incoming = new Image();
+      incoming.src = src;
+      await incoming.decode().catch(() => {});
+      if (id !== artId) return;
+      artFade.forEach((a) => a.cancel());
+      coverNext.src = auraNext.src = src;
+      const timing = { duration: 800, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'forwards' };
+      artFade = [
+        coverNext.animate([{ opacity: 0, transform: 'scale(1.05)' }, { opacity: 1, transform: 'none' }], timing),
+        auraNext.animate([{ opacity: 0 }, { opacity: 1 }], timing)
+      ];
+      try { await Promise.all(artFade.map((a) => a.finished)); } catch (_) { return; }
+      if (id !== artId) return;
+      place();
+      await cover.decode().catch(() => {});
+      if (id === artId) artFade.forEach((a) => a.cancel());
+    };
+
+    const setArtist = (text) => {
+      artistEl.textContent = text;
+      if (coverNext && !still) {
+        artistEl.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.22,.61,.36,1)' });
+      }
+    };
+
+    // the release line and the link, for whichever track the card shows
+    const setDetails = (s, url) => {
+      if (sourceEl) sourceEl.textContent = s ? s.album + ' · ' + s.date.slice(0, 4) : '';
+      if (!openEl) return;
+      const link = /^https:\/\/open\.spotify\.com\//.test(url || '');
+      openEl.hidden = !link;
+      if (link) openEl.href = url;
+    };
+
+    // restart the tick animation by re-adding the active class
+    const restartTick = () => {
+      const active = dotEls[idx];
+      if (!active) return;
+      active.classList.remove('is-active');
+      void active.offsetWidth;
+      active.classList.add('is-active');
+    };
+
     let onAfterRender = null;
     const render = () => {
       const s = songs[idx];
       swap(() => {
-        cover.src = s.cover;
-        cover.alt = s.title + ' · ' + s.artist;
+        setArt(s.cover, s.title + ' · ' + s.artist);
         scrambleTo(trackEl, s.title);
-        artistEl.textContent = s.artist;
+        setArtist(s.artist);
+        setDetails(s, s.url);
         counterEl.textContent = pad2(idx + 1) + ' / ' + pad2(songs.length);
         dotEls.forEach((d, i) => {
           d.classList.toggle('is-active', i === idx);
           d.classList.toggle('is-played', i < idx);
         });
-        // restart the tick animation by re-adding the active class
-        const active = dotEls[idx];
-        if (active){
-          active.classList.remove('is-active');
-          void active.offsetWidth;
-          active.classList.add('is-active');
-        }
+        restartTick();
         startElapsed();
         preloadNext();
         if (onAfterRender) onAfterRender();
@@ -182,6 +198,13 @@ export function initSpotify(scrambleTo) {
       jumpTo(parseInt(t.dataset.idx, 10));
     });
 
+    [['spotifyPrev', -1], ['spotifyNext', 1]].forEach(([id, step]) => {
+      const b = document.getElementById(id);
+      if (!b) return;
+      b.addEventListener('click', (e) => { e.stopPropagation(); jumpTo(idx + step); });
+      b.addEventListener('keydown', (e) => e.stopPropagation());
+    });
+
     // ---------- MANIFEST : tracks / albums / artists overlay -------
     const manifest = document.getElementById('spotifyManifest');
     const manifestList = document.getElementById('manifestList');
@@ -194,6 +217,12 @@ export function initSpotify(scrambleTo) {
       const albumList = document.getElementById('manifestAlbums');
       const artistList = document.getElementById('manifestArtists');
       const metaEl = document.getElementById('manifestMeta');
+      // the stage only exists on the new site; classic.html keeps its old sheet
+      const stage = document.getElementById('manifestStage');
+      const stagePart = (name) => stage.querySelector('[data-stage="' + name + '"]');
+      const fmtLength = (sec) => Math.floor(sec / 60) + ':' + pad2(sec % 60);
+      const fmtDate = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+      const linked = (html, url) => stage && url ? '<a class="mlink" href="' + url + '" target="_blank" rel="noopener">' + html + '</a>' : html;
 
       // tracks — dense list, the only interactive one (jumps the rotation)
       const trackFrag = document.createDocumentFragment();
@@ -208,7 +237,11 @@ export function initSpotify(scrambleTo) {
               '<span class="manifest__title">' + escHtml(s.title) + '</span>' +
               '<span class="manifest__artist">' + escHtml(s.artist) + '</span>' +
             '</span>' +
-            '<span class="manifest__status mono" aria-hidden="true"></span>' +
+            (stage
+              ? '<span class="manifest__album">' + escHtml(s.album) + '</span>' +
+                '<span class="manifest__year">' + s.date.slice(0, 4) + '</span>' +
+                '<span class="manifest__length">' + fmtLength(s.sec) + '</span>'
+              : '<span class="manifest__status mono" aria-hidden="true"></span>') +
           '</button>';
         trackFrag.appendChild(li);
       });
@@ -220,16 +253,16 @@ export function initSpotify(scrambleTo) {
         albums.forEach((a) => {
           const li = document.createElement('li');
           li.className = 'mtile';
-          li.innerHTML =
+          li.innerHTML = linked(
             '<span class="mtile__art">' +
               '<img src="' + a.cover + '" alt="" loading="lazy" decoding="async" />' +
               '<span class="mtile__corner" aria-hidden="true"></span>' +
-              (a.note ? '<span class="mtile__year mono">' + escHtml(a.note) + '</span>' : '') +
+              (a.note && !stage ? '<span class="mtile__year mono">' + escHtml(a.note) + '</span>' : '') +
               '<span class="mtile__txt">' +
                 '<span class="mtile__title">' + escHtml(a.title) + '</span>' +
-                '<span class="mtile__artist">' + escHtml(a.artist) + '</span>' +
+                '<span class="mtile__artist">' + escHtml(stage ? a.artist + ' · ' + a.note : a.artist) + '</span>' +
               '</span>' +
-            '</span>';
+            '</span>', a.url);
           frag.appendChild(li);
         });
         albumList.appendChild(frag);
@@ -241,12 +274,12 @@ export function initSpotify(scrambleTo) {
         artists.forEach((a) => {
           const li = document.createElement('li');
           li.className = 'mface';
-          li.innerHTML =
+          li.innerHTML = linked(
             '<span class="mface__img"><img src="' + a.cover + '" alt="" loading="lazy" decoding="async" /></span>' +
             '<span class="mface__txt">' +
               '<span class="mface__name">' + escHtml(a.title) + '</span>' +
               '<span class="mface__tag">' + escHtml(a.artist) + '</span>' +
-            '</span>';
+            '</span>', a.url);
           frag.appendChild(li);
         });
         artistList.appendChild(frag);
@@ -261,20 +294,82 @@ export function initSpotify(scrambleTo) {
         metaEl.textContent = COUNTS.songs + ' TRACKS · ' + COUNTS.albums + ' ALBUMS · ' + COUNTS.artists + ' ARTISTS';
       }
 
+      // what the sheet shows: the chosen row, else the live track (when it is
+      // on the list), else wherever the rotation stood
+      const shownIdx = () => {
+        if (picked !== null) return picked;
+        return live ? songs.findIndex((s) => s.url === live.url) : idx;
+      };
+
+      const paintStage = (i) => {
+        const s = songs[i] || live;
+        const isLive = !!live && picked === null;
+        stage.classList.toggle('is-live', isLive);
+        stagePart('label').textContent = isLive ? 'Now playing' : picked !== null ? 'Selected' : 'In rotation';
+        stagePart('title').textContent = s.title;
+        stagePart('artist').textContent = s.artist || '';
+        const art = stagePart('cover');
+        const src = s.cover || 'images/profile/sociallinks/spotify_color.svg';
+        if (art.getAttribute('src') !== src) {
+          art.src = stagePart('glow').src = src;
+          art.alt = s.title + ' · ' + s.artist;
+          art.animate([{ opacity: .35 }, { opacity: 1 }], { duration: 260, easing: 'ease-out' });
+        }
+        // a live track from outside the list comes without our release details
+        stagePart('facts').hidden = !s.date;
+        if (s.date) {
+          stagePart('album').textContent = s.album;
+          stagePart('date').textContent = fmtDate.format(new Date(s.date));
+          stagePart('length').textContent = fmtLength(s.sec);
+        }
+        const open = stagePart('open');
+        open.hidden = !s.url;
+        if (s.url) open.href = s.url;
+      };
+
       const markActive = () => {
-        manifestList.querySelectorAll('.manifest__row').forEach((r, i) => {
-          const on = i === idx && !live;
+        const shown = stage ? shownIdx() : idx;
+        manifestList.querySelectorAll('.manifest__row').forEach((r) => {
+          const on = parseInt(r.dataset.idx, 10) === shown && (!!stage || !live);
           r.classList.toggle('is-active', on);
+          if (on) r.setAttribute('aria-current', 'true');
+          else r.removeAttribute('aria-current');
           const st = r.querySelector('.manifest__status');
           if (st) st.textContent = on ? '▸ PLAYING' : '';
         });
+        if (stage) paintStage(shown);
       };
+
+      // songs is newest first, so its index is the date order
+      const collate = new Intl.Collator('en', { sensitivity: 'base' }).compare;
+      const SORTS = {
+        date: (a, b) => a - b,
+        artist: (a, b) => collate(songs[a].artist, songs[b].artist) || a - b,
+        title: (a, b) => collate(songs[a].title, songs[b].title) || a - b
+      };
+      const rowIdx = (li) => parseInt(li.firstElementChild.dataset.idx, 10);
+      const sortRows = (key) => {
+        // moving a node restarts its entry animation; is-sorted turns that off
+        manifest.classList.add('is-sorted');
+        Array.from(manifestList.children)
+          .sort((a, b) => SORTS[key](rowIdx(a), rowIdx(b)))
+          .forEach((li, n) => {
+            li.querySelector('.manifest__idx').textContent = pad2(n + 1);
+            manifestList.appendChild(li);
+          });
+        manifest.querySelectorAll('[data-sort]').forEach((b) => {
+          b.setAttribute('aria-pressed', String(b.dataset.sort === key));
+        });
+      };
+      manifest.querySelectorAll('[data-sort]').forEach((b) => {
+        b.addEventListener('click', () => sortRows(b.dataset.sort));
+      });
 
       // Entry order follows the layout, not the DOM: reading order. The row
       // an element sits in decides its beat (y quantised into bands, so a
       // 1px offset can't desync a row), and its horizontal position adds a
       // left-to-right lead within that row.
-      const SWEEP_SELECTOR = '.manifest__doc, .manifest__head, .mbox__head, .manifest__item, .mtile, .mface, .manifest__foot';
+      const SWEEP_SELECTOR = '.manifest__doc, .manifest__head, .mstage, .mbox__head, .manifest__item, .mtile, .mface, .manifest__foot';
       const SWEEP_BAND  = 18;   // px per row band — what counts as "same row"
       const SWEEP_STEP  = 26;   // ms between two boxes
       const SWEEP_TOTAL = 900;  // ms budget; the step tightens if items are added
@@ -317,10 +412,11 @@ export function initSpotify(scrambleTo) {
       const openManifest = () => {
         lastFocus = document.activeElement;
         clearTimeout(closeTimer);
-        manifest.classList.remove('is-closing');
+        manifest.classList.remove('is-closing', 'is-sorted');
         manifest.hidden = false;
         // reset the scrollers first — the sweep measures where things sit
         manifestList.scrollTop = 0;
+        if (sheetEl) sheetEl.scrollTop = 0;
         const bento = manifest.querySelector('.manifest__bento');
         if (bento) bento.scrollTop = 0;
         // flush the un-hidden state synchronously instead of waiting a frame:
@@ -329,6 +425,8 @@ export function initSpotify(scrambleTo) {
         layoutSweep();
         manifest.classList.add('is-open');
         lockScroll();
+        sheetOpen = !!stage;
+        updateRunState();
         markActive();
         const first = manifestList.querySelector('.manifest__row.is-active') || manifestList.querySelector('.manifest__row');
         if (first) first.focus({ preventScroll: true });
@@ -338,6 +436,9 @@ export function initSpotify(scrambleTo) {
         manifest.classList.add('is-closing');
         manifest.classList.remove('is-open');
         unlockScroll();
+        sheetOpen = false;
+        picked = null;
+        updateRunState();
         clearTimeout(closeTimer);
         closeTimer = setTimeout(() => {
           manifest.hidden = true;
@@ -360,7 +461,13 @@ export function initSpotify(scrambleTo) {
       manifest.addEventListener('click', (e) => {
         if (e.target.closest('[data-manifest-close]')) { closeManifest(); return; }
         const row = e.target.closest('.manifest__row[data-idx]');
-        if (row) { jumpTo(parseInt(row.dataset.idx, 10)); closeManifest(); }
+        if (!row) return;
+        const i = parseInt(row.dataset.idx, 10);
+        if (!stage) { jumpTo(i); closeManifest(); return; }
+        // the sheet stays up; the card behind it follows unless a track is live
+        picked = i;
+        if (live) markActive();
+        else { idx = i; render(); markActive(); }
       });
 
       document.addEventListener('keydown', (e) => {
@@ -378,9 +485,9 @@ export function initSpotify(scrambleTo) {
     const updateRunState = () => {
       clearInterval(timer);
       stopElapsed();
-      if (!cardInView || document.hidden) return;
+      if (!cardInView || document.hidden || sheetOpen) return;
       if (live) startLiveElapsed();
-      else { schedule(); startElapsed(); }
+      else { schedule(); startElapsed(); restartTick(); }
     };
 
     // ---------- LIVE : /nowplaying.json overrides the rotation ------
@@ -455,11 +562,12 @@ export function initSpotify(scrambleTo) {
         swap(() => {
           // the puller sends no cover rather than a stale one; the logo beats
           // leaving the previous track's art up
-          cover.src = t.cover || 'images/profile/sociallinks/spotify_color.svg';
-          cover.alt = t.title + ' · ' + t.artist;
+          setArt(t.cover || 'images/profile/sociallinks/spotify_color.svg', t.title + ' · ' + t.artist);
           scrambleTo(trackEl, t.title);
-          artistEl.textContent = t.artist || '';
+          setArtist(t.artist || '');
+          setDetails(songs.find((s) => s.url === t.url), t.url);
           apply();
+          if (onAfterRender) onAfterRender();
         });
       } else {
         apply();
