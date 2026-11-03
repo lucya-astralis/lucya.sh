@@ -68,7 +68,14 @@ const arrived = new IntersectionObserver((entries) => {
     }
   }
 });
-document.querySelectorAll('.unitlist,.rackphoto,.neobay,.who__pfp,.deck,.stamps,.walls__set,.strip').forEach((el) => arrived.observe(el));
+document.querySelectorAll('.unitlist,.rackphoto,.who__pfp,.deck,.stamps,.walls__set,.strip').forEach((el) => arrived.observe(el));
+// the terminal prints for whoever reads it, so it waits until its screen is well up, not its top edge
+const reading = new IntersectionObserver(([entry]) => {
+  if (!entry.isIntersecting) return;
+  entry.target.classList.add('is-here');
+  reading.disconnect();
+}, { rootMargin: '0px 0px -30% 0px' });
+reading.observe(document.querySelector('.neobay'));
 
 // ---- live data, the same files and rules as the main page -----------------
 // /status.json is polled once and shared; null means no probe, and everything
