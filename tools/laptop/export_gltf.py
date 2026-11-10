@@ -6,6 +6,7 @@ Separate files, not a .glb: GLTFLoader unpacks embedded images through blob:
 URLs, which the site's CSP refuses. Procedural nodes do not survive glTF, so
 shells get flattened textures (make_decals.py) and a tiling grain normal map.
 """
+import hashlib
 import json
 import os
 import sys
@@ -125,6 +126,12 @@ with open(path, encoding="utf8") as f:
 for mat in gltf["materials"]:
     if mat["name"].startswith("side print"):
         mat["alphaMode"] = "BLEND"
+# the lid changes with every sticker but keeps its file name: a hash in the URL makes a browser
+# that holds the old texture fetch the new one (bump ?v= on MODEL_URL in GltfLaptop.js as well)
+for image in gltf["images"]:
+    if image["uri"].startswith("tex_lid"):
+        with open(os.path.join(OUT, image["uri"]), "rb") as f:
+            image["uri"] += "?v=" + hashlib.md5(f.read()).hexdigest()[:8]
 with open(path, "w", encoding="utf8") as f:
     json.dump(gltf, f, separators=(",", ":"))
 
