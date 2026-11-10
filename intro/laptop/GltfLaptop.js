@@ -5,7 +5,9 @@ import { Laptop } from './Laptop.js?v=20261031-leds2';
 
 // Separate .gltf + .bin + .webp on purpose: a .glb's embedded images go through
 // blob: URLs, which the site's CSP refuses.
-const MODEL_URL = 'intro/laptop/cf-qv9/cf-qv9.gltf';
+// The version belongs to the model: bump it whenever the .gltf is exported again, or a returning
+// visitor keeps the old one. The lid textures carry their own hash inside the .gltf (export_gltf.py).
+const MODEL_URL = 'intro/laptop/cf-qv9/cf-qv9.gltf?v=20261110-lid';
 const METRES_TO_CM = 100;
 const GRAIN_STRENGTH = 0.35;
 const LED_GREEN = 0x4dff7c;
