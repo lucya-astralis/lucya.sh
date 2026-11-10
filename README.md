@@ -41,6 +41,10 @@ JavaScript modules, which browsers do not load reliably from `file://` URLs.
   out on the deck, set in the site's fonts; its fields are `PLATES` in `scene.py`.
 - `index.html` / `concept/`: the site. It opens with the laptop intro
   and reuses `js/systems.js`, `js/weather.js` and the same live JSON files.
+- `concept/buttons.js`: the 88 × 31 walls. `concordia` is the group of the Shinsei Concordia
+  sites' own buttons; their GIFs are copies of `sc/branding/buttons/<site>-88x31.gif`
+  (rendered there by `export.py`), saved as `images/88x31 buttons/<site>.gif`. Re-copy them when
+  a button changes, and bump the `?v=` on the `buttons.js` import.
 - `intro/`: 3D laptop intro with its own committed vendor bundles, see
   `intro/README.md`. Only `index.html` loads it. `package.json` is dev tooling for it.
 - `data.json`: profile, KPI, ticker, and specification content.

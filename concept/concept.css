@@ -707,8 +707,14 @@ html.lite .mstage__glow{ display:none; }
 .b81{ display:block; width:88px; height:31px; transition:transform .5s var(--spring); }
 .b81 img{ display:block; width:88px; height:31px; image-rendering:pixelated; }
 .b81:hover{ transform:translateY(-2px) scale(1.08); }
-.walls__friends{ margin-top:clamp(30px,5vh,48px); }
-.walls__friends .wall{ margin-top:12px; }
+.walls__group{ margin-top:clamp(30px,5vh,48px); }
+.walls__group .wall{ margin-top:12px; }
+@media (min-width:561px){
+  /* the small groups keep to their own width and share a row while it fits, else the next wraps below */
+  .walls__groups{ display:flex; flex-wrap:wrap; column-gap:clamp(28px,4vw,56px); }
+  .walls__group{ max-width:100%; }
+  .walls__group .wall{ display:flex; flex-wrap:wrap; justify-content:flex-start; gap:12px; }
+}
 .walls__join{ margin-top:clamp(30px,5vh,48px); }
 .walls__note{ color:var(--dim); }
 .friends__snippet{ display:block; max-width:100%; margin-top:10px; padding:12px 14px; border:0; border-radius:12px; background:rgba(255,255,255,.05); color:var(--dim); font:400 11px/1.5 "JetBrains Mono",monospace; text-align:left; overflow-wrap:anywhere; cursor:pointer; }
