@@ -64,9 +64,11 @@ STICKERS = [
     ("delacy", 72, 62, 30, -6),
     ("inter-astra", 117, 33, 52, -2),
     ("uwu", 158, 141, 25, 6),
-    ("mac", 24, 19, 24, 4),
-    ("disco", 240, 20, 20, 6),
-    ("sprout", 125, 183, 28, -6),   # clear of the silver band along the hinge (y > 199.5), which shows the print on the inside
+    ("mac", 189, 65, 26, 4),
+    ("disco", 202, 134, 22, 6),
+    # pixel art stays straight; its foot must stay above y 199.5, the silver band along the
+    # hinge, which shows the print on the inside of the lid
+    ("sprout", 130, 186, 26, 0),
 ]
 LOGO_CLEAR = (108, 50, 165, 68)
 

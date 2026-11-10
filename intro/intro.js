@@ -1,7 +1,7 @@
 import * as THREE from './vendor/three.bundle.min.js?v=20261031-leds2';
 import { gsap, ScrollTrigger } from './vendor/gsap.bundle.min.js';
 import { createProceduralLaptop } from './laptop/ProceduralLaptop.js?v=20261031-leds2';
-import { createGltfLaptop } from './laptop/GltfLaptop.js?v=20261110-lid';
+import { createGltfLaptop } from './laptop/GltfLaptop.js?v=20261110-lid2';
 import { TIMELINE } from './intro.timeline.js?v=20261031-leds2';
 import { curve } from './curve.js?v=20261031-leds2';
 
