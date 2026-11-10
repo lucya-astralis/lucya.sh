@@ -38,6 +38,10 @@
   window.LUCYA_INTRO = wanted();
   if (!window.LUCYA_INTRO) return;
 
+  // The intro always hands over to the top of the page. Left to itself, a reload puts
+  // the page back where it was, out of sight behind the intro, so it would come up scrolled.
+  history.scrollRestoration = 'manual';
+
   var root = document.documentElement;
   var hold = document.createElement('style');
   hold.textContent =
@@ -51,6 +55,7 @@
   window.lucyaIntroDone = function () {
     if (done) return;
     done = true;
+    scrollTo({ top: 0, behavior: 'instant' });
     root.classList.remove('lintro-hold');
     hold.remove();
     window.dispatchEvent(new CustomEvent('lucya:intro-done'));
