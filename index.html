@@ -36,7 +36,7 @@
 <meta name="twitter:image" content="https://lucya.sh/concept/card.jpg" />
 <meta name="twitter:image:alt" content="lucya - personal website" />
 
-<link rel="stylesheet" href="concept/concept.css?v=20261103-seal" />
+<link rel="stylesheet" href="concept/concept.css?v=20261110-sats" />
 <script src="lite.js"></script>
 <script src="intro/gate.js?v=20261101-skip"></script>
 
@@ -73,7 +73,7 @@
 </script>
 
 <!-- without scripts nothing lifts the boot screen or reveals the sections -->
-<noscript><style>.boot{ display:none; } .rise{ opacity:1; transform:none; } body:not(.is-ready) :is(.hero__word,.hero__jp,.hero__foot,.island,.nowpill){ opacity:1; } .hero__planet{ opacity:1; translate:none; } .fleet > *,.metrics > *{ opacity:1; translate:none; }</style></noscript>
+<noscript><style>.boot{ display:none; } .rise{ opacity:1; transform:none; } body:not(.is-ready) :is(.hero__word,.hero__jp,.hero__foot,.island,.nowpill){ opacity:1; } .hero__planet,.hero__sat{ opacity:1; translate:none; transform:none; } .fleet > *,.metrics > *{ opacity:1; translate:none; }</style></noscript>
 </head>
 <body>
 
@@ -105,6 +105,9 @@
 
   <header class="hero" id="hero">
     <canvas class="hero__planet" id="heroPlanet" aria-hidden="true"></canvas>
+    <!-- after the planet: they come in when it rises (concept.css), built by tools/satellites -->
+    <span class="hero__sat hero__sat--relay" aria-hidden="true"><span class="hero__craft"><img src="concept/sat-relay.webp" alt="" width="760" height="229" decoding="async" /><span class="hero__glint"><img src="concept/sat-relay-glint.webp" alt="" width="760" height="229" decoding="async" fetchpriority="low" /></span></span></span>
+    <span class="hero__sat hero__sat--observer" aria-hidden="true"><span class="hero__craft"><img src="concept/sat-observer.webp" alt="" width="560" height="292" decoding="async" /><span class="hero__glint"><img src="concept/sat-observer-glint.webp" alt="" width="560" height="292" decoding="async" fetchpriority="low" /></span></span></span>
     <h1 class="hero__word"><span class="sr">lucya</span></h1>
     <p class="hero__jp" lang="ja">ルシア</p>
     <div class="hero__foot">
