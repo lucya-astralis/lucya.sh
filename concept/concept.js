@@ -34,7 +34,7 @@ const STICKERS = [
   ['pride', 176, 108, 38, -8], ['potato', 234, 133, 24, 7], ['jaxa', 112, 156, 50, 5], ['clawd', 173, 168, 44, -4],
   ['proxmox', 184, 34, 62, -3], ['delacy', 72, 62, 30, -6],
   ['inter-astra', 117, 33, 52, -2], ['uwu', 158, 141, 25, 6],
-  ['mac', 24, 19, 24, 4], ['disco', 240, 20, 20, 6], ['sprout', 125, 183, 28, -6],
+  ['mac', 189, 65, 26, 4], ['disco', 202, 134, 22, 6], ['sprout', 130, 186, 26, 0],
 ];
 const deck = document.getElementById('deck');
 const logo = document.createElement('div');
