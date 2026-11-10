@@ -28,7 +28,34 @@ SOURCES = [
     ("Delacy.webp", "delacy", "contour", 16),
     ("uwu.jpg", "uwu", 7, 0),
     ("logo-wordmark.png", "inter-astra", "label", 0),
+    ("discovery-stickers.webp", "disco", "contour", 16),
+    ("pixel-sprout.jpg", "sprout", 7, 0),
+    ("happy-mac.webp", "mac", "contour", 16),
 ]
+
+
+def disco_art(img):
+    """The DISCO sticker out of a sheet of five, which is flat navy on white and only 200 px
+    wide: it is blown up and its edges pulled back to crisp, so it still prints sharp, and the
+    sheet's own hairline cut path (too pale to be ink) drops out on the way."""
+    sheet = img.convert("RGB").crop((585, 665, 780, 975))
+    lum = np.asarray(sheet.convert("L"), dtype=np.float32)
+    navy = np.asarray(sheet, dtype=np.float32)[lum < 90].mean(axis=0)
+    cover = np.clip((255 - lum) / (255 - lum[lum < 90].mean()), 0, 1)
+    cover = Image.fromarray(cover, "F").resize((sheet.width * 4, sheet.height * 4), Image.BICUBIC)
+    t = np.clip((np.asarray(cover) - 0.35) / 0.3, 0, 1)
+    cover = t * t * (3 - 2 * t)
+    rgb = 255 - cover[..., None] * (255 - navy)
+    return Image.fromarray(rgb.astype(np.uint8), "RGB")
+
+
+def pixels(img, factor=8):
+    """Pixel art stays square when it grows: nearest, never smoothed."""
+    return img.resize((img.width * factor, img.height * factor), Image.NEAREST)
+
+
+# source images that need preparing before they are cut, by output name
+PREPARE = {"disco": disco_art, "mac": pixels}
 
 
 def spread(mask, radius):
@@ -162,6 +189,8 @@ for name, out, tolerance, edge in SOURCES:
     if not (src / name).exists():
         continue
     img = Image.open(src / name)
+    if out in PREPARE:
+        img = PREPARE[out](img)
     if tolerance == "ring":
         result = cut_ring(img)
     elif tolerance == "tag":
