@@ -291,7 +291,9 @@ export async function runIntro(cover, { skip, leave, load, report }) {
     progress = tl.progress();
     dirty = true;
     hint.classList.toggle('is-gone', progress > 0.02);
-    if (progress >= 1) finish();
+    // at a fractional device pixel ratio the scroller stops a fraction of a pixel
+    // short of its end, and the timeline with it: the last thousandth is invisible
+    if (progress >= 0.999) finish();
   });
 
   const resizeObserver = new ResizeObserver(resize);
