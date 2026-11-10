@@ -19,6 +19,13 @@ export const buttons = [
     ['smile.gif','smile'],
     
   ];
+// one 88x31 per Shinsei Concordia site, rendered in sc/branding/buttons; [file, name, link]
+export const concordia = [
+    ['gov.inter-astra.net.gif', 'gov.inter-astra.net', 'https://gov.inter-astra.net'],
+    ['inter-astra.net.gif', 'inter-astra.net', 'https://inter-astra.net'],
+    ['terra.inter-astra.net.gif', 'terra.inter-astra.net', 'https://terra.inter-astra.net'],
+    ['aizaku.com.gif', 'aizaku.com', 'https://aizaku.com'],
+  ];
 export const friends = [
     ['aspectra.gif', 'aspectra.world', 'https://aspectra.world'],
   ];

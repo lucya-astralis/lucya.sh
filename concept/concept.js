@@ -5,7 +5,7 @@ import { initSpotify } from '../js/spotify.js?v=20261102-classic';
 import { initShelves } from '../js/shelves.js?v=20261102-media';
 import { shelves } from '../js/media-data.js?v=20261102-media';
 import { createScrambler } from '../js/text-scramble.js';
-import { buttons, friends } from './buttons.js';
+import { buttons, concordia, friends } from './buttons.js?v=20261110-sc';
 import { seasons } from './seasons.js';
 
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -159,6 +159,7 @@ const wallButton = (file, name, href) => {
   return el;
 };
 document.getElementById('buttonWall').append(...buttons.map(([file, name]) => wallButton(file, name)));
+document.getElementById('concordiaWall').append(...concordia.map(([file, name, href]) => wallButton(file, name, href)));
 document.getElementById('friendWall').append(...friends.map(([file, name, href]) => wallButton(file, name, href)));
 number(document.querySelectorAll('.walls__set .b81'));
 const snippet = document.getElementById('friendSnippet');
