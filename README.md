@@ -29,6 +29,16 @@ JavaScript modules, which browsers do not load reliably from `file://` URLs.
 - `legal.html` / `legal.js` / `styles.css`: bilingual legal page, language
   selection and its base styles.
 - `planet-gl.js`: the planet behind the hero, shared with gov and terra. `concordia.js`: standalone orrery.
+- `concept/sat-*.webp`: the two satellites over the hero's name, which rise with the planet;
+  `sat-*-glint.webp` is the sun glint on their cells, swept across the wings once they arrive
+  and again every 40-50 s. On scroll each keeps its own depth: the relay runs ahead of the
+  page, the observer lags it a little.
+  Modelled and rendered in Blender by `tools/satellites/scene.py`; `python tools/satellites/build.py`
+  renders them in the background and writes the WebPs. The same scene builds in an open
+  Blender too (see the script's docstring), and `tools/satellites/satellites.blend` holds it.
+  They are marked as flight hardware is: the Shinsei Concordia flag (`tools/satellites/concordia-flag.png`,
+  from the sc branding) and the wordmark printed on a black blanket, and a small data plate on a unit
+  out on the deck, set in the site's fonts; its fields are `PLATES` in `scene.py`.
 - `index.html` / `concept/`: the site. It opens with the laptop intro
   and reuses `js/systems.js`, `js/weather.js` and the same live JSON files.
 - `intro/`: 3D laptop intro with its own committed vendor bundles, see
